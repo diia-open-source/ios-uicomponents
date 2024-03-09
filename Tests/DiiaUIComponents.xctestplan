@@ -1,0 +1,32 @@
+{
+  "configurations" : [
+    {
+      "id" : "C6374974-4F0D-489D-8969-C6F11C30EFD7",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : {
+      "targets" : [
+        {
+          "containerPath" : "container:",
+          "identifier" : "DiiaUIComponents",
+          "name" : "DiiaUIComponents"
+        }
+      ]
+    }
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "DiiaUIComponentsTests",
+        "name" : "DiiaUIComponentsTests"
+      }
+    }
+  ],
+  "version" : 1
+}

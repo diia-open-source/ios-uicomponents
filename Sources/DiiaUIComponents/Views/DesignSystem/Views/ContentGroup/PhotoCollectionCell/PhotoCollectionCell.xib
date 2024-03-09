@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21678"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="PhotoCollectionCell" translatesAutoresizingMaskIntoConstraints="NO" id="2Vs-Du-fUR" customClass="PhotoCollectionCell" customModule="DiiaUIComponents">
+            <rect key="frame" x="0.0" y="0.0" width="194" height="198"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="194" height="198"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="mdq-E2-VSJ">
+                        <rect key="frame" x="0.0" y="0.0" width="194" height="198"/>
+                    </imageView>
+                    <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progressImage="loadingBar" translatesAutoresizingMaskIntoConstraints="NO" id="9xL-AR-av6">
+                        <rect key="frame" x="0.0" y="0.0" width="194" height="4"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="4" id="UYz-mi-fVF"/>
+                        </constraints>
+                        <color key="trackTintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </progressView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="[Завантаження...]" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UPn-eu-P9V">
+                        <rect key="frame" x="26.5" y="88.5" width="141" height="21"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <color key="textColor" red="0.69803921568627447" green="0.75686274509803919" blue="0.80000000000000004" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+            </view>
+            <viewLayoutGuide key="safeArea" id="Brb-dV-kMR"/>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="9xL-AR-av6" secondAttribute="trailing" id="1Qz-wY-4eH"/>
+                <constraint firstItem="UPn-eu-P9V" firstAttribute="centerY" secondItem="2Vs-Du-fUR" secondAttribute="centerY" id="1uR-gA-TmJ"/>
+                <constraint firstItem="9xL-AR-av6" firstAttribute="leading" secondItem="2Vs-Du-fUR" secondAttribute="leading" id="2Fw-pX-vbJ"/>
+                <constraint firstItem="mdq-E2-VSJ" firstAttribute="leading" secondItem="2Vs-Du-fUR" secondAttribute="leading" id="2Oq-ZX-jFC"/>
+                <constraint firstItem="mdq-E2-VSJ" firstAttribute="top" secondItem="2Vs-Du-fUR" secondAttribute="top" id="GFg-f5-Nhw"/>
+                <constraint firstItem="9xL-AR-av6" firstAttribute="top" secondItem="2Vs-Du-fUR" secondAttribute="top" id="Og2-gb-YzQ"/>
+                <constraint firstAttribute="trailing" secondItem="mdq-E2-VSJ" secondAttribute="trailing" id="etG-w7-EkM"/>
+                <constraint firstAttribute="bottom" secondItem="mdq-E2-VSJ" secondAttribute="bottom" id="uyj-eq-wR7"/>
+                <constraint firstItem="UPn-eu-P9V" firstAttribute="centerX" secondItem="2Vs-Du-fUR" secondAttribute="centerX" id="wGq-9S-SqB"/>
+            </constraints>
+            <size key="customSize" width="194" height="198"/>
+            <connections>
+                <outlet property="imageView" destination="mdq-E2-VSJ" id="e9I-9f-bdh"/>
+                <outlet property="loadingIndicator" destination="9xL-AR-av6" id="NyC-qA-hbL"/>
+                <outlet property="loadingTitle" destination="UPn-eu-P9V" id="Oje-TP-ooK"/>
+            </connections>
+            <point key="canvasLocation" x="242.0289855072464" y="149.33035714285714"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <image name="loadingBar" width="104" height="4"/>
+    </resources>
+</document>

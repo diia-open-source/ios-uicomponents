@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21679"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="StartServiceView" customModule="DiiaUIComponents">
+            <connections>
+                <outlet property="attentionView" destination="bjb-i6-r0Q" id="l72-E9-sTr"/>
+                <outlet property="greetingsLabel" destination="Jeq-fm-lLj" id="pCR-yI-BOP"/>
+                <outlet property="infoTextView" destination="opW-zt-y9X" id="jnq-wY-NDC"/>
+                <outlet property="statusView" destination="NZc-SV-dJZ" id="dMj-A8-icH"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fFh-PO-eXi" customClass="ExtendedScrollView" customModule="DiiaUIComponents">
+                    <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                    <subviews>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="TFA-Sd-rTF">
+                            <rect key="frame" x="0.0" y="0.0" width="414" height="390.5"/>
+                            <subviews>
+                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="24" translatesAutoresizingMaskIntoConstraints="NO" id="XYX-Eh-0DK">
+                                    <rect key="frame" x="24" y="16" width="366" height="301.5"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="..." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jeq-fm-lLj" userLabel="Greetings">
+                                            <rect key="frame" x="0.0" y="0.0" width="366" height="25.5"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="21"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <view contentMode="scaleToFill" placeholderIntrinsicWidth="366" placeholderIntrinsicHeight="128" translatesAutoresizingMaskIntoConstraints="NO" id="NZc-SV-dJZ" customClass="StatusInfoView" customModule="DiiaUIComponents">
+                                            <rect key="frame" x="0.0" y="49.5" width="366" height="128"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </view>
+                                        <view contentMode="scaleToFill" placeholderIntrinsicWidth="366" placeholderIntrinsicHeight="100" translatesAutoresizingMaskIntoConstraints="NO" id="bjb-i6-r0Q" customClass="ParameterizedAttentionView" customModule="DiiaUIComponents">
+                                            <rect key="frame" x="0.0" y="201.5" width="366" height="100"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </view>
+                                    </subviews>
+                                </stackView>
+                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="opW-zt-y9X">
+                                    <rect key="frame" x="24" y="333.5" width="366" height="33"/>
+                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                    <color key="textColor" systemColor="labelColor"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                </textView>
+                            </subviews>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstItem="opW-zt-y9X" firstAttribute="top" secondItem="XYX-Eh-0DK" secondAttribute="bottom" constant="16" id="AxR-yK-nRK"/>
+                                <constraint firstAttribute="bottom" secondItem="opW-zt-y9X" secondAttribute="bottom" constant="24" id="Dan-2N-2vQ"/>
+                                <constraint firstItem="XYX-Eh-0DK" firstAttribute="leading" secondItem="TFA-Sd-rTF" secondAttribute="leading" constant="24" id="ffJ-bi-ipG"/>
+                                <constraint firstAttribute="trailing" secondItem="opW-zt-y9X" secondAttribute="trailing" constant="24" id="gcB-wx-cJw"/>
+                                <constraint firstAttribute="trailing" secondItem="XYX-Eh-0DK" secondAttribute="trailing" constant="24" id="hQM-7V-Zpl"/>
+                                <constraint firstItem="opW-zt-y9X" firstAttribute="leading" secondItem="TFA-Sd-rTF" secondAttribute="leading" constant="24" id="lCB-j9-8fd"/>
+                                <constraint firstItem="XYX-Eh-0DK" firstAttribute="top" secondItem="TFA-Sd-rTF" secondAttribute="top" constant="16" id="rVV-i7-TFE"/>
+                            </constraints>
+                        </view>
+                    </subviews>
+                    <constraints>
+                        <constraint firstAttribute="bottom" secondItem="TFA-Sd-rTF" secondAttribute="bottom" id="9Vj-ts-KcG"/>
+                        <constraint firstAttribute="trailing" secondItem="TFA-Sd-rTF" secondAttribute="trailing" id="bFT-sL-9me"/>
+                        <constraint firstItem="TFA-Sd-rTF" firstAttribute="leading" secondItem="fFh-PO-eXi" secondAttribute="leading" id="gIr-DX-WO4"/>
+                        <constraint firstItem="TFA-Sd-rTF" firstAttribute="top" secondItem="fFh-PO-eXi" secondAttribute="top" id="qZp-E6-0CG"/>
+                    </constraints>
+                </scrollView>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstItem="TFA-Sd-rTF" firstAttribute="trailing" secondItem="vUN-kp-3ea" secondAttribute="trailing" id="49V-VO-he0"/>
+                <constraint firstAttribute="bottom" secondItem="fFh-PO-eXi" secondAttribute="bottom" id="Jd5-Bn-7YI"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="leading" secondItem="TFA-Sd-rTF" secondAttribute="leading" id="N18-93-4gb"/>
+                <constraint firstAttribute="trailing" secondItem="fFh-PO-eXi" secondAttribute="trailing" id="ZGx-88-S1b"/>
+                <constraint firstItem="fFh-PO-eXi" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="bCw-eK-WWE"/>
+                <constraint firstItem="fFh-PO-eXi" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="zsH-6u-xlA"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="52" y="126"/>
+        </view>
+    </objects>
+    <resources>
+        <systemColor name="labelColor">
+            <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

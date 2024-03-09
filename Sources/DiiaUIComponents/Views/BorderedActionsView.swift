@@ -1,0 +1,36 @@
+import UIKit
+
+/// design_system_code: btnIconPlainGroupMlc
+public class BorderedActionsView: BaseCodeView {
+    private lazy var contentStackView = UIStackView.create(views: [], spacing: Constants.stackSpacing, in: self, padding: Constants.stackPadding)
+    
+    public override func setupSubviews() {
+        self.backgroundColor = .clear
+        self.layer.cornerRadius = Constants.cornerRadius
+        self.withBorder(width: Constants.borderWidth, color: Constants.borderColor)
+    }
+    
+    // MARK: - Public methods
+    public func configureView(with actions: [IconedLoadingStateViewModel]) {
+        contentStackView.safelyRemoveArrangedSubviews()
+        actions.forEach {
+            let iconedLoadingView = IconedLoadingStateView()
+            iconedLoadingView.configure(viewModel: $0)
+            contentStackView.addArrangedSubview(iconedLoadingView)
+        }
+    }
+    
+    public func setupUI(stackSpacing: CGFloat) {
+        contentStackView.spacing = stackSpacing
+    }
+}
+
+extension BorderedActionsView {
+    private enum Constants {
+        static let stackPadding = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
+        static let stackSpacing: CGFloat = 16
+        static let cornerRadius: CGFloat = 8
+        static let borderWidth: CGFloat = 1
+        static let borderColor = UIColor(AppConstants.Colors.emptyDocumentsBackground)
+    }
+}

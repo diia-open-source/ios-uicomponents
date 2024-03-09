@@ -1,0 +1,16 @@
+/*
+  Localizable.strings
+ 
+*/
+
+// MARK: - Accessibility
+"general_accessibility_back_button_hint" = "Натисніть двічі, щоб повернутися на попередній крок.";
+
+// MARK: - General
+"general_ok" = "Добре";
+"general_done" = "Готово";
+"general_step" = "Крок %@ з %@";
+"general_loading" = "Завантаження...";
+"general_retry" = "Спробувати ще раз";
+"general_close" = "Закрити";
+"general_number_copied" = "Номер скопійовано";

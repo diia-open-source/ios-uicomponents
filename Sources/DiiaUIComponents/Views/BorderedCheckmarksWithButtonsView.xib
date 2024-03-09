@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="BorderedCheckmarksWithButtonsView" customModule="DiiaUIComponents">
+            <connections>
+                <outlet property="altButtonsStack" destination="2hc-UR-GGt" id="v2O-Ed-Ove"/>
+                <outlet property="borderedView" destination="Weo-IR-sTL" id="BZy-y3-7Up"/>
+                <outlet property="checkmarkStack" destination="0zO-XN-XJ2" id="pCh-XY-305"/>
+                <outlet property="mainButton" destination="pLW-We-BG7" id="QkH-xf-kqv"/>
+                <outletCollection property="buttonConstraints" destination="za6-ct-iWx" collectionClass="NSMutableArray" id="21e-nj-UxD"/>
+                <outletCollection property="buttonConstraints" destination="epL-tP-pMQ" collectionClass="NSMutableArray" id="gsd-bl-gwn"/>
+                <outletCollection property="buttonConstraints" destination="HKN-JP-V2k" collectionClass="NSMutableArray" id="yCD-hL-1rp"/>
+                <outletCollection property="buttonConstraints" destination="vB7-OT-A8D" collectionClass="NSMutableArray" id="dOF-VD-T45"/>
+                <outletCollection property="buttonConstraints" destination="HF6-ur-HI7" collectionClass="NSMutableArray" id="gG0-IQ-9g5"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="572" height="329"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2gn-X9-oeR">
+                    <rect key="frame" x="0.0" y="0.0" width="572" height="329"/>
+                    <subviews>
+                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="34y-bf-pGP">
+                            <rect key="frame" x="0.0" y="0.0" width="572" height="329"/>
+                            <subviews>
+                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Weo-IR-sTL" userLabel="BorderedView">
+                                    <rect key="frame" x="0.0" y="0.0" width="572" height="271"/>
+                                    <subviews>
+                                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="0zO-XN-XJ2" userLabel="CheckmarksStack">
+                                            <rect key="frame" x="17" y="17" width="538" height="173"/>
+                                        </stackView>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pLW-We-BG7" customClass="LoadingStateButton" customModule="DiiaUIComponents">
+                                            <rect key="frame" x="17" y="206" width="538" height="48"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="48" id="eGR-Jk-Dov"/>
+                                            </constraints>
+                                            <inset key="contentEdgeInsets" minX="40" minY="0.0" maxX="40" maxY="0.0"/>
+                                            <state key="normal" title="Button"/>
+                                            <connections>
+                                                <action selector="onTapOnMainActionButton:" destination="-1" eventType="touchUpInside" id="A9X-Vg-BZh"/>
+                                            </connections>
+                                        </button>
+                                    </subviews>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <constraints>
+                                        <constraint firstItem="0zO-XN-XJ2" firstAttribute="top" secondItem="Weo-IR-sTL" secondAttribute="top" constant="17" id="HF6-ur-HI7"/>
+                                        <constraint firstAttribute="bottom" secondItem="pLW-We-BG7" secondAttribute="bottom" constant="17" id="HKN-JP-V2k"/>
+                                        <constraint firstAttribute="trailing" secondItem="0zO-XN-XJ2" secondAttribute="trailing" constant="17" id="UHx-tP-eCW"/>
+                                        <constraint firstAttribute="trailing" secondItem="pLW-We-BG7" secondAttribute="trailing" constant="17" id="epL-tP-pMQ"/>
+                                        <constraint firstItem="pLW-We-BG7" firstAttribute="top" secondItem="0zO-XN-XJ2" secondAttribute="bottom" constant="16" id="vB7-OT-A8D"/>
+                                        <constraint firstItem="0zO-XN-XJ2" firstAttribute="leading" secondItem="Weo-IR-sTL" secondAttribute="leading" constant="17" id="xk2-wJ-uDn"/>
+                                        <constraint firstItem="pLW-We-BG7" firstAttribute="leading" secondItem="Weo-IR-sTL" secondAttribute="leading" constant="17" id="za6-ct-iWx"/>
+                                    </constraints>
+                                </view>
+                                <stackView opaque="NO" contentMode="scaleToFill" placeholderIntrinsicWidth="572" placeholderIntrinsicHeight="50" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="2hc-UR-GGt" userLabel="AlternativeButtonsStack">
+                                    <rect key="frame" x="0.0" y="279" width="572" height="50"/>
+                                </stackView>
+                            </subviews>
+                        </stackView>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstItem="34y-bf-pGP" firstAttribute="top" secondItem="2gn-X9-oeR" secondAttribute="top" id="1R6-zB-1Jh"/>
+                        <constraint firstAttribute="trailing" secondItem="34y-bf-pGP" secondAttribute="trailing" id="Y5L-7U-zw8"/>
+                        <constraint firstAttribute="bottom" secondItem="34y-bf-pGP" secondAttribute="bottom" id="ihZ-QO-A5i"/>
+                        <constraint firstItem="34y-bf-pGP" firstAttribute="leading" secondItem="2gn-X9-oeR" secondAttribute="leading" id="uqa-mg-Ajl"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstItem="2gn-X9-oeR" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="25y-jw-wwq"/>
+                <constraint firstAttribute="trailing" secondItem="2gn-X9-oeR" secondAttribute="trailing" id="44w-8y-NWG"/>
+                <constraint firstItem="2gn-X9-oeR" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="Ueq-KE-8bM"/>
+                <constraint firstAttribute="bottom" secondItem="2gn-X9-oeR" secondAttribute="bottom" id="jtX-rw-aK5"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="-704.34782608695662" y="59.933035714285708"/>
+        </view>
+    </objects>
+</document>

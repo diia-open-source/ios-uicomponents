@@ -1,0 +1,27 @@
+import UIKit
+
+extension UIViewController {
+    public class var className: String { String(describing: self) }
+    
+    public func topNonNavigationParent() -> UIViewController {
+        var topParent = self
+        while let nextParent = topParent.parent, (nextParent as? UINavigationController) == nil {
+            topParent = nextParent
+        }
+        
+        return topParent
+    }
+
+    // MARK: - Helping Navigation Methods
+    @objc open func canGoBack() -> Bool {
+        if !view.isUserInteractionEnabled { return false }
+        var canGoBack = true
+        for child in children {
+            if child as? ModalPresentationViewControllerProtocol != nil {
+                canGoBack = false
+                break
+            }
+        }
+        return canGoBack
+    }
+}

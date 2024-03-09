@@ -1,0 +1,43 @@
+import UIKit
+import DiiaCommonTypes
+
+public enum GalleryContentType {
+    case image(viewModel: GalleryImageViewModel)
+    case video(viewModel: GalleryVideoViewModel)
+}
+
+public class GalleryVideoViewModel {
+    let streamLink: String?
+    let downloadLink: String
+    let localFilename: String
+    var preparePlaying: (() -> Void)?
+    var actions: [Action] = []
+    var state: Observable<VideoPlayingState> = .init(value: .loading)
+
+    init(streamLink: String?,
+         downloadLink: String
+    ) {
+        self.streamLink = streamLink
+        self.downloadLink = downloadLink
+        self.localFilename = "video_\(downloadLink.components(separatedBy: "/").last ?? "")"
+    }
+}
+
+public enum VideoPlayingState {
+    case loading
+    case error(message: String)
+    case readyForPlaying(url: URL)
+}
+
+public class GalleryImageViewModel {
+    var image: UIImage?
+    let imageLink: String?
+    var actions: [Action] = []
+
+    public init(imageLink: String?,
+                image: UIImage?
+    ) {
+        self.imageLink = imageLink
+        self.image = image
+    }
+}

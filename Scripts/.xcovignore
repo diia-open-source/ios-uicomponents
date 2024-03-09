@@ -1,0 +1,48 @@
+
+# UI
+- .*ViewController.*.swift
+- .*Controller.swift
+- .*View.swift
+- .*UIView.*.swift
+- .*Cell.*.swift
+- .*UI.*.+Ext.*.swift
+- VerticalRoundButton.swift
+- LeftAlignedCollectionViewFlowLayout.swift
+- LoadingStateButton.swift
+- VCChildComposer.swift
+- Reusable+Extensions.swift
+- BaseView+Extension.swift
+- Storyboarded.swift
+- ScrollingPageControl.swift
+- FloatingTextLabel.swift
+- ZoomAndSnapFlowLayout.swift
+- CheckmarkViewWithDescription.swift
+- NSAttributedString+Ext.swift
+- StubMessageViewV2.swift
+- MediaGallery.swift
+- PanDirectionGestureRecognizer.swift
+
+# General
+- .*Module.swift
+
+# No any logic
+- AppConstants.swift
+- .*Response.swift
+- .*Type.swift
+- .*Model.swift
+- DocumentsLayoutProvider.swift
+- FontBook.swift
+- DSActionParameter.swift
+- ActionButton.swift
+- CAGradientLayer+Ext.swift
+- DispatchQueueHelper.swift
+- DSTicker.swift
+- Logging.swift
+- CALayer+Extension.swift
+- UIComponentsConfiguration.swift
+- DSTableElements.swift
+- DSTitleLabelMlc.swift
+
+# Resource Files
+- R+String.swift
+- R+images.swift
