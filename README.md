@@ -11,6 +11,22 @@ Basic UI components and primitives
 
 ## Getting Started
 
+|Topic|Link|Description|
+|--|--|--|
+|Ministry of Digital Transformation of Ukraine|https://thedigital.gov.ua/|The Official homepage of the Ministry of Digital Transformation of Ukraine| 
+|Diia App|https://diia.gov.ua/|The Official website for the Diia application
+
+#### 1st party
+
+* [DiiaMVPModule](https://github.com/diia-open-source/ios-mvpmodule.git): Model-View-Presenter basic protocols
+* [DiiaCommonTypes](https://github.com/diia-open-source/ios-commontypes.git): Types (classes, strucutres, protocols) that have to be shared amond several packages.
+
+#### 3rd party
+
+* [SwiftMessages](https://github.com/SwiftKickMobile/SwiftMessages)
+* [Lottie](https://github.com/airbnb/lottie-spm.git)
+* [Kingfisher](https://github.com/onevcat/Kingfisher)
+
 ### Installing
 
 To install DiiaUIComponents using [Swift Package Manager](https://github.com/apple/swift-package-manager) you can follow the [tutorial published by Apple](https://developer.apple.com/documentation/xcode/adding_package_dependencies_to_your_app) using the URL for this repo with the current version:

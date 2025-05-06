@@ -4,13 +4,31 @@
 */
 
 // MARK: - Accessibility
-"general_accessibility_back_button_hint" = "Натисніть двічі, щоб повернутися на попередній крок.";
+"general_accessibility_back_button_hint" = "Назад";
+"general_accessibility_page_hint" = "Сторінка %d з %d. %@";
 
 // MARK: - General
 "general_ok" = "Добре";
+"general_back" = "Назад";
+"general_context_menu_open" = "Відкрити контекстне меню";
 "general_done" = "Готово";
+"general_update" = "Оновити";
 "general_step" = "Крок %@ з %@";
 "general_loading" = "Завантаження...";
 "general_retry" = "Спробувати ще раз";
 "general_close" = "Закрити";
 "general_number_copied" = "Номер скопійовано";
+"general_date_picker_hint" = "дд / мм / рррр";
+"general_time_picker_hint" = "00 : 00";
+
+"media_upload_error" = "Сталась помилка";
+
+"calendar_empty_chips" = "Спочатку оберіть дату реєстрації шлюбу";
+
+"file_failed_to_upload" = "Не вдалося завантажити";
+"file_file_too_large" = "Файл завеликий. Завантажте файл до 5MB";
+
+"pagination_error_text" = "Не вдалося завантажити дані, спробуйте ще раз";
+
+// MARK: - ToolBar
+"toolbar_done" = "Готово";

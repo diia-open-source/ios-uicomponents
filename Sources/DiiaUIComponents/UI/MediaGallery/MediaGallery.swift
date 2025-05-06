@@ -70,13 +70,11 @@ public class MediaGallery: UIViewController, Rotatable {
         }
     }
 
-    #if os(iOS)
     public var hideStatusBar: Bool = true {
         didSet {
             self.setNeedsStatusBarAppearanceUpdate()
         }
     }
-    #endif
 
     public var isSwipeToDismissEnabled: Bool = true
     private var flowLayout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
@@ -164,13 +162,11 @@ public class MediaGallery: UIViewController, Rotatable {
         }
     }
 
-    #if os(iOS)
     public override var prefersStatusBarHidden: Bool {
         get {
             return hideStatusBar
         }
     }
-    #endif
 
     // MARK: Rotation Handling
     public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -184,17 +180,13 @@ public class MediaGallery: UIViewController, Rotatable {
         super.viewWillTransition(to: size, with: coordinator)
     }
 
-    #if os(iOS)
     public override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .allButUpsideDown
     }
-    #endif
-
-    #if os(iOS)
+    
     public override var shouldAutorotate: Bool {
         return true
     }
-    #endif
 
     // MARK: - Internal Methods
     func updatePageControl() {
@@ -203,15 +195,11 @@ public class MediaGallery: UIViewController, Rotatable {
     
     // MARK: Gesture Handlers
     private func setupGestureRecognizers() {
-
-        #if os(iOS)
             let panGesture = PanDirectionGestureRecognizer(direction: PanDirection.vertical, target: self, action: #selector(wasDragged(_:)))
             imageCollectionView.addGestureRecognizer(panGesture)
             imageCollectionView.isUserInteractionEnabled = true
-        #endif
     }
 
-    #if os(iOS)
     @objc private func wasDragged(_ gesture: PanDirectionGestureRecognizer) {
 
         guard let image = gesture.view, isSwipeToDismissEnabled else { return }
@@ -265,7 +253,6 @@ public class MediaGallery: UIViewController, Rotatable {
 
         }
     }
-    #endif
 
     // MARK: Private Methods
     private func setupCollectionView() -> UICollectionView {
@@ -282,9 +269,7 @@ public class MediaGallery: UIViewController, Rotatable {
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.backgroundColor = UIColor.clear
-        #if os(iOS)
-            collectionView.isPagingEnabled = true
-        #endif
+        collectionView.isPagingEnabled = true
 
         // Set up collection view constraints
         var imageCollectionViewConstraints: [NSLayoutConstraint] = []
@@ -356,7 +341,7 @@ public class MediaGallery: UIViewController, Rotatable {
                                                          toItem: pageControl,
                                                          attribute: NSLayoutConstraint.Attribute.bottom,
                                                          multiplier: 1.0,
-                                                         constant: 15)
+                                                         constant: Constants.pageControlBottomPadding)
 
         view.addConstraints([pageControlCenterXConstraint!, pageControlBottomConstraint!])
     }
@@ -463,5 +448,12 @@ extension MediaGallery: UIGestureRecognizerDelegate {
             gestureRecognizer is UITapGestureRecognizer &&
             otherGestureRecognizer.view is MediaGalleryPhotoCell &&
             gestureRecognizer.view == imageCollectionView
+    }
+}
+
+
+extension MediaGallery {
+    enum Constants {
+        static let pageControlBottomPadding: CGFloat = 32
     }
 }

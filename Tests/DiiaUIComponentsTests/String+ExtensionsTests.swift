@@ -125,20 +125,77 @@ final class String_ExtensionsTests: XCTestCase {
         XCTAssertNotEqual(phone.count, modifiedPhone.count)
     }
     
-    func test_percentEncodedUrl() {
-        // Arrange
-        let sutWithoutGaps = "https://www.google.com"
-        let sutWithGaps = "https://www.google.com/start end"
-
-        // Act
-        let modifiedWithoutGaps = sutWithoutGaps.percentEncodedUrl()
-        let modifiedWithGaps = sutWithGaps.percentEncodedUrl()
-        
-        // Assert
-        XCTAssertEqual(sutWithoutGaps, modifiedWithoutGaps)
-        XCTAssertNotEqual(sutWithGaps, modifiedWithGaps)
+    func test_percentEncodedUrl_returnsCorrectResult_forUrlString_withOneWhiteSpace() {
+        checkIsPercentEncodedUrlStringCorrect(
+            string: "https://www.example.com/start end",
+            expectedResult: "https://www.example.com/start%20end"
+        )
     }
     
+    func test_percentEncodedUrl_returnsCorrectResult_forUrlString_withMultipleSpaces() {
+        checkIsPercentEncodedUrlStringCorrect(
+            string: "https://example.com/some path with spaces",
+            expectedResult: "https://example.com/some%20path%20with%20spaces"
+        )
+    }
+    
+    func test_percentEncodedUrl_returnsCorrectResult_forUrlString_withoutWhitespace() {
+        checkIsPercentEncodedUrlStringCorrect(
+            string: "https://www.example.com",
+            expectedResult: "https://www.example.com"
+        )
+    }
+    
+    func test_percentEncodedUrl_returnsCorrectResult_forUrlString_withEmptyQueryParameter() {
+        checkIsPercentEncodedUrlStringCorrect(
+            string: "https://example.com/anyPath?parameter=",
+            expectedResult: "https://example.com/anyPath?parameter="
+        )
+    }
+    
+    func test_percentEncodedUrl_returnsCorrectResult_forUrlString_withMultipleQueryParameters() {
+        checkIsPercentEncodedUrlStringCorrect(
+            string: "https://example.com/anyPath?param1=value1&param2=value with space",
+            expectedResult: "https://example.com/anyPath?param1=value1&param2=value%20with%20space"
+        )
+    }
+    
+    func test_percentEncodedUrl_returnsCorrectResult_forUrlString_withArrayQueryParameter() {
+        checkIsPercentEncodedUrlStringCorrect(
+            string: "https://example.com/anyPath?array[]=item1&array[]=item2",
+            expectedResult: "https://example.com/anyPath?array%5B%5D=item1&array%5B%5D=item2"
+        )
+    }
+    
+    func test_percentEncodedUrl_returnsCorrectResult_forUrlString_withUnicodeCharacters() {
+        checkIsPercentEncodedUrlStringCorrect(
+            string: "https://example.com/emojiPath/😀",
+            expectedResult: "https://example.com/emojiPath/%F0%9F%98%80"
+        )
+    }
+
+    func test_percentEncodedUrl_returnsCorrectResult_forEmptyUrlString() {
+        checkIsPercentEncodedUrlStringCorrect(
+            string: "",
+            expectedResult: ""
+        )
+    }
+    
+    func test_percentEncodedUrl_returnsNil_ifUrlStringIsInvalid() {
+        let invalidUrlString = "ht!tp://any invalid url string"
+        let errorMessage = "Given url string: \"\(invalidUrlString)\" - is valid. Should be invalid"
+        
+        let urlFromInvalidString = URL(string: invalidUrlString)
+        XCTAssertNil(urlFromInvalidString, errorMessage)
+
+        let nsurlFromInvalidString = NSURL(string: invalidUrlString)
+        XCTAssertNil(nsurlFromInvalidString, errorMessage)
+
+        checkIsPercentEncodedUrlStringCorrect(
+            string: invalidUrlString,
+            expectedResult: nil
+        )
+    }
     
     func test_withoutSpaces() {
         // Arrange
@@ -264,5 +321,14 @@ final class String_ExtensionsTests: XCTestCase {
         // Assert
         XCTAssertTrue(resultStringWith.contains(".pdf"))
         XCTAssertTrue(resultStringWithout.contains(".pdf"))
+    }
+    
+    // MARK: - Private
+    private func checkIsPercentEncodedUrlStringCorrect(string: String,
+                                                    expectedResult: String?,
+                                                    file: StaticString = #filePath,
+                                                    line: UInt = #line) {
+        let result = string.percentEncodedUrl()
+        XCTAssertEqual(result, expectedResult, file: file, line: line)
     }
 }

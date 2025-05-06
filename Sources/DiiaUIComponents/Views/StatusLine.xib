@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="mGT-Jp-zjF" userLabel="Status Line" customClass="MessageView" customModule="SwiftMessages">
+            <rect key="frame" x="0.0" y="0.0" width="600" height="88"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="[Message Body]" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jtv-Px-mvN" userLabel="Body Label">
+                    <rect key="frame" x="24" y="56" width="552" height="20"/>
+                    <accessibility key="accessibilityConfiguration">
+                        <bool key="isElement" value="NO"/>
+                    </accessibility>
+                    <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="12"/>
+                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="Jtv-Px-mvN" firstAttribute="top" secondItem="mGT-Jp-zjF" secondAttribute="top" constant="56" id="3Vw-vt-dmv"/>
+                <constraint firstItem="Jtv-Px-mvN" firstAttribute="leading" secondItem="mGT-Jp-zjF" secondAttribute="leading" constant="24" id="4N7-n5-kn6"/>
+                <constraint firstAttribute="bottom" secondItem="Jtv-Px-mvN" secondAttribute="bottom" constant="12" id="Zf9-hI-HHf"/>
+                <constraint firstAttribute="trailing" secondItem="Jtv-Px-mvN" secondAttribute="trailing" constant="24" id="vwh-CO-fqv"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <userDefinedRuntimeAttributes>
+                <userDefinedRuntimeAttribute type="number" keyPath="leftLayoutMarginAddition">
+                    <integer key="value" value="24"/>
+                </userDefinedRuntimeAttribute>
+                <userDefinedRuntimeAttribute type="number" keyPath="rightLayoutMarginAddition">
+                    <integer key="value" value="24"/>
+                </userDefinedRuntimeAttribute>
+                <userDefinedRuntimeAttribute type="boolean" keyPath="collapseLayoutMarginAdditions" value="NO"/>
+                <userDefinedRuntimeAttribute type="number" keyPath="topLayoutMarginAddition">
+                    <integer key="value" value="56"/>
+                </userDefinedRuntimeAttribute>
+                <userDefinedRuntimeAttribute type="number" keyPath="bottomLayoutMarginAddition">
+                    <integer key="value" value="12"/>
+                </userDefinedRuntimeAttribute>
+            </userDefinedRuntimeAttributes>
+            <connections>
+                <outlet property="bodyLabel" destination="Jtv-Px-mvN" id="bcr-eT-Nhm"/>
+            </connections>
+            <point key="canvasLocation" x="495.6521739130435" y="343.52678571428572"/>
+        </view>
+    </objects>
+</document>

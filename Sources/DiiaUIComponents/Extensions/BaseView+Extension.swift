@@ -61,24 +61,22 @@ public extension DiiaMVPModule.BaseView where Self: UIViewController {
     }
 
     func showSuccessMessage(message: String) {
-        let messageView = MessageView.viewFromNib(layout: .statusLine)
-        messageView.configureTheme(backgroundColor: .init("#65C680"), foregroundColor: .black)
+        let messageView: MessageView = MessageView.viewFromNib(layout: .statusLine,
+                                                               bundle: Bundle.module)
+        messageView.configureTheme(backgroundColor: .init(AppConstants.Colors.sendCopiesSuccess),
+                                   foregroundColor: .black)
         messageView.configureContent(body: message)
-        messageView.backgroundHeight = 84.0
         messageView.bodyLabel?.font = FontBook.usualFont
-        messageView.constraints.forEach({
-            if $0.firstItem is UILabel || $0.secondItem is UILabel {
-                $0.isActive = false
-            }
-        })
-        messageView.bodyLabel?.fillSuperview(padding: .init(top: 50, left: 24, bottom: 12, right: 24))
         SwiftMessages.show(view: messageView)
     }
 
     func showError(error: String) {
-        let messageView = MessageView.viewFromNib(layout: .statusLine)
-        messageView.configureTheme(backgroundColor: .init("#FAEB64"), foregroundColor: .black)
+        let messageView: MessageView = MessageView.viewFromNib(layout: .statusLine,
+                                                               bundle: Bundle.module)
+        messageView.configureTheme(backgroundColor: .init(AppConstants.Colors.yellowErrorColor),
+                                   foregroundColor: .black)
         messageView.configureContent(body: error)
+        messageView.bodyLabel?.font = FontBook.usualFont
         messageView.titleLabel?.text = nil
         messageView.button?.setTitle(nil, for: .normal)
         messageView.button?.backgroundColor = .clear
@@ -87,7 +85,7 @@ public extension DiiaMVPModule.BaseView where Self: UIViewController {
     }
     
     func closeModule(animated: Bool) {
-        if let presented = parent as? ModalPresentationViewControllerProtocol {
+        if let presented = topNonNavigationModalController() {
             presented.close(animated: animated)
         } else if let navigationController = navigationController,
                   presentingViewController != nil, navigationController.viewControllers.count > 1 {
@@ -132,4 +130,19 @@ public extension DiiaMVPModule.BaseView where Self: UIViewController {
         let topVC = self.topNonNavigationParent()
         VCChildComposer.addChild(child, to: topVC, animationType: .none)
     }
+}
+
+private extension UIViewController {
+    func topNonNavigationModalController() -> ModalPresentationViewControllerProtocol? {
+        var currentVC = self
+        while let nextParent = currentVC.parent, (nextParent as? UINavigationController) == nil {
+            if let pc = nextParent as? ModalPresentationViewControllerProtocol {
+                return pc
+            }
+            currentVC = nextParent
+        }
+        
+        return nil
+    }
+    
 }

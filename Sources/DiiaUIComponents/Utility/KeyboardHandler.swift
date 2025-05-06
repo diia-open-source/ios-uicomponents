@@ -59,15 +59,15 @@ public final class KeyboardHandler {
 public enum KeyboardHandlingType {
     case constraint(constraint: NSLayoutConstraint, withoutInset: CGFloat, keyboardInset: CGFloat, superview: UIView)
     case scroll(scrollView: UIScrollView, offset: CGFloat)
+    case combined(scrollView: UIScrollView, constraint: NSLayoutConstraint, initialBottomInset: CGFloat, keyboardInset: CGFloat, superview: UIView)
     
     func implement(keyboardFrame: CGRect) {
         switch self {
+        
         case .constraint(let constraint, let withoutInset, let keyboardInset, let superview):
             var safeAreaOffset: CGFloat = 0
-            if #available(iOS 11.0, *) {
-                let window = UIApplication.shared.keyWindow
-                safeAreaOffset = window?.safeAreaInsets.bottom ?? 0
-            }
+            let window = UIApplication.shared.keyWindow
+            safeAreaOffset = window?.safeAreaInsets.bottom ?? 0
 
             if keyboardFrame.height == .zero {
                 constraint.constant = withoutInset
@@ -77,6 +77,7 @@ public enum KeyboardHandlingType {
             UIView.animate(withDuration: 0.25) {
                 superview.layoutIfNeeded()
             }
+            
         case .scroll(let scrollView, let offset):
             if let superview = scrollView.superview {
                 let keyboardSize = superview.convert(keyboardFrame, from: nil).size
@@ -84,6 +85,23 @@ public enum KeyboardHandlingType {
                 scrollView.contentInset = contentInset
                 scrollView.scrollIndicatorInsets = contentInset
             }
+            
+        case .combined(let scrollView, let constraint, let initialBottomInset, let keyboardInset, let superview):
+            let contentInset = UIEdgeInsets(top: scrollView.contentInset.top, left: 0, bottom: Constants.spaceToContent, right: 0)
+            scrollView.contentInset = contentInset
+            scrollView.scrollIndicatorInsets = contentInset
+            
+            let window = UIApplication.shared.keyWindow
+            let safeAreaOffset = window?.safeAreaInsets.bottom ?? 0
+            let updatedBottomInset = keyboardFrame.height + keyboardInset - safeAreaOffset
+            constraint.constant = (keyboardFrame.height == .zero) ? initialBottomInset : updatedBottomInset
+            UIView.animate(withDuration: 0.25) {
+                superview.layoutIfNeeded()
+            }
         }
+    }
+    
+    private enum Constants {
+        static let spaceToContent: CGFloat = 100
     }
 }

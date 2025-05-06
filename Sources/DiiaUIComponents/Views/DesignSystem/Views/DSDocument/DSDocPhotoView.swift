@@ -10,7 +10,7 @@ public class DSDocPhotoView: BaseCodeView {
         addSubview(photoView)
         photoView.fillSuperview()
         photoView.heightAnchor.constraint(equalTo: photoView.widthAnchor, multiplier: DocumentsLayoutProvider.docPhotoProportion).isActive = true
-        
+        photoView.contentMode = .scaleAspectFill
         layer.masksToBounds = true
         layer.cornerRadius = Constants.viewCorner
     }

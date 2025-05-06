@@ -21,6 +21,7 @@ public class DocumentErrorView: UIView {
     @IBOutlet weak private var titleLabel: UILabel!
     @IBOutlet weak private var detailsLabel: UILabel!
     @IBOutlet weak private var actionButton: VerticalRoundButton!
+    @IBOutlet weak private var detailsLabelTrailingConstraint: NSLayoutConstraint!
     
     // MARK: - Properties
     private var onButtonAction: Callback?
@@ -57,6 +58,10 @@ public class DocumentErrorView: UIView {
         onButtonAction = viewModel.action?.callback
         actionButton.setTitle(viewModel.action?.title, for: .normal)
         actionButton.isHidden = viewModel.action == nil
+    }
+    
+    public func setDescriptionTrailing(offset: CGFloat) {
+        detailsLabelTrailingConstraint.constant = offset
     }
     
     // MARK: - Private Methods

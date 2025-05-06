@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21679"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="e-Ukraine-Regular.otf">
+            <string>e-Ukraine-Regular</string>
+        </array>
+    </customFonts>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="HorizontalCollectionView" customModule="Diia" customModuleProvider="target">
+            <connections>
+                <outlet property="collectionHeightConstraint" destination="jxc-7x-Ptr" id="326-Vz-pd9"/>
+                <outlet property="collectionView" destination="L6q-8x-wkC" id="7Fs-2g-gwy"/>
+                <outlet property="scrollingPageContainer" destination="4e8-hT-DKe" id="E5x-fb-tpt"/>
+                <outlet property="scrollingPageControl" destination="zaE-C0-Bqz" id="acE-GQ-xE3"/>
+                <outlet property="titleLabel" destination="JMv-ku-aqG" id="Jo0-gb-24X"/>
+                <outlet property="titleLabelContainer" destination="WKi-y4-kVf" id="hLd-bw-PDE"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="SNa-Ff-fc7">
+            <rect key="frame" x="0.0" y="0.0" width="420" height="369"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="9" translatesAutoresizingMaskIntoConstraints="NO" id="eoa-1j-IdL">
+                    <rect key="frame" x="0.0" y="48" width="420" height="287"/>
+                    <subviews>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WKi-y4-kVf">
+                            <rect key="frame" x="0.0" y="0.0" width="420" height="49"/>
+                            <subviews>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" text="[Title]" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JMv-ku-aqG">
+                                    <rect key="frame" x="24" y="8" width="372" height="41"/>
+                                    <fontDescription key="fontDescription" name="e-Ukraine-Regular" family="e-Ukraine" pointSize="12"/>
+                                    <nil key="textColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                            </subviews>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstItem="JMv-ku-aqG" firstAttribute="top" secondItem="WKi-y4-kVf" secondAttribute="top" constant="8" id="1LL-UW-b78"/>
+                                <constraint firstItem="JMv-ku-aqG" firstAttribute="leading" secondItem="WKi-y4-kVf" secondAttribute="leading" constant="24" id="7lr-En-RmD"/>
+                                <constraint firstAttribute="bottom" secondItem="JMv-ku-aqG" secondAttribute="bottom" id="UuI-O5-SbV"/>
+                                <constraint firstAttribute="trailing" secondItem="JMv-ku-aqG" secondAttribute="trailing" constant="24" id="iuc-f0-2J5"/>
+                            </constraints>
+                        </view>
+                        <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="L6q-8x-wkC">
+                            <rect key="frame" x="0.0" y="58" width="420" height="200"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstAttribute="height" priority="999" constant="200" id="jxc-7x-Ptr"/>
+                            </constraints>
+                            <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="10" minimumInteritemSpacing="8" id="zZz-co-VH0">
+                                <size key="itemSize" width="128" height="128"/>
+                                <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                <inset key="sectionInset" minX="24" minY="0.0" maxX="24" maxY="0.0"/>
+                            </collectionViewFlowLayout>
+                            <connections>
+                                <outlet property="dataSource" destination="-1" id="1sS-oG-tIa"/>
+                                <outlet property="delegate" destination="-1" id="4c2-fv-Lw8"/>
+                            </connections>
+                        </collectionView>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4e8-hT-DKe">
+                            <rect key="frame" x="0.0" y="267" width="420" height="20"/>
+                            <subviews>
+                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zaE-C0-Bqz" customClass="ScrollingPageControl" customModule="DiiaUIComponents">
+                                    <rect key="frame" x="168.5" y="8" width="83" height="12"/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="83" id="WEA-NY-9Fq"/>
+                                        <constraint firstAttribute="height" constant="12" id="uKe-Re-GSb"/>
+                                    </constraints>
+                                </view>
+                            </subviews>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstAttribute="bottom" secondItem="zaE-C0-Bqz" secondAttribute="bottom" id="2Cr-I0-Lz8"/>
+                                <constraint firstItem="zaE-C0-Bqz" firstAttribute="centerX" secondItem="4e8-hT-DKe" secondAttribute="centerX" id="UjR-JX-3rY"/>
+                                <constraint firstItem="zaE-C0-Bqz" firstAttribute="top" secondItem="4e8-hT-DKe" secondAttribute="top" constant="8" id="ylZ-0K-6MS"/>
+                            </constraints>
+                        </view>
+                    </subviews>
+                </stackView>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="FnV-Mt-CUw"/>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstItem="eoa-1j-IdL" firstAttribute="bottom" secondItem="FnV-Mt-CUw" secondAttribute="bottom" id="4if-cO-dju"/>
+                <constraint firstItem="FnV-Mt-CUw" firstAttribute="top" secondItem="eoa-1j-IdL" secondAttribute="top" id="Pbd-cZ-wST"/>
+                <constraint firstItem="eoa-1j-IdL" firstAttribute="leading" secondItem="FnV-Mt-CUw" secondAttribute="leading" id="rXQ-be-6xQ"/>
+                <constraint firstItem="eoa-1j-IdL" firstAttribute="trailing" secondItem="FnV-Mt-CUw" secondAttribute="trailing" id="xb1-P7-qyN"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="-486.95652173913049" y="179.79910714285714"/>
+        </view>
+    </objects>
+</document>

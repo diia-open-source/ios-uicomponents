@@ -4,7 +4,7 @@ import SwiftMessages
 public class DSTablePrimaryItemView: BaseCodeView {
     
     private let titleLabel = UILabel().withParameters(font: FontBook.usualFont, numberOfLines: 0)
-    private let subtitleLabel = UILabel().withParameters(font: FontBook.smallHeadingFont, numberOfLines: 0)
+    private let subtitleLabel = UILabel().withParameters(font: FontBook.mediumHeadingFont, numberOfLines: 0)
     private let iconView: UIImageView = .init(image: UIImage(named: Constants.iconName)?
         .withRenderingMode(.alwaysTemplate))
         .withSize(Constants.iconSize)
@@ -65,18 +65,7 @@ public class DSTablePrimaryItemView: BaseCodeView {
         guard let value = subtitleLabel.text else { return }
         UIPasteboard.general.string = value
         UINotificationFeedbackGenerator().notificationOccurred(.success)
-        showSuccessMessage(message: R.Strings.general_number_copied.localized())
-    }
-    
-    private func showSuccessMessage(message: String) {
-        let messageView = MessageView.viewFromNib(layout: .statusLine)
-        messageView.configureTheme(backgroundColor: .init(Constants.messageViewColor), foregroundColor: .black)
-        messageView.configureContent(body: message)
-        messageView.titleLabel?.text = nil
-        messageView.button?.setTitle(nil, for: .normal)
-        messageView.button?.backgroundColor = .clear
-        messageView.button?.tintColor = .clear
-        SwiftMessages.show(view: messageView)
+        SwiftMessages.showSuccessMessage(message: R.Strings.general_number_copied.localized())
     }
 }
 
@@ -85,6 +74,5 @@ extension DSTablePrimaryItemView {
         static let iconSize: CGSize = .init(width: 24, height: 24)
         static let spacing: CGFloat = 8
         static let iconName = "copyIcon"
-        static let messageViewColor = "#65C680"
     }
 }

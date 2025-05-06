@@ -111,13 +111,8 @@ public class TitledDateTextFieldView: UIView {
             datePicker.preferredDatePickerStyle = .wheels
         }
 
-        let toolbar = UIToolbar()
-        toolbar.sizeToFit()
-
-        let doneButton = UIBarButtonItem(title: R.Strings.general_done.localized(), style: UIBarButtonItem.Style.done, target: self, action: #selector(dateUpdated))
-        let spaceButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: nil, action: nil)
+        let toolbar = ToolbarWithTrailingButton(target: self, action: #selector(dateUpdated))
         
-        toolbar.setItems([spaceButton, doneButton], animated: false)
         datePickerTextField.inputAccessoryView = toolbar
     }
     

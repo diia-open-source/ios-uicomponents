@@ -1,16 +1,39 @@
 import UIKit
 import DiiaCommonTypes
 
-public struct StubMessageViewModel {
+public class StubMessageViewModel {
     public let icon: String
     public let title: String?
     public let descriptionText: String?
-    public let repeatAction: Callback?
+    public let componentId: String?
+    public let btnTitle: String?
+    public let parameters: [TextParameter]?
+    public var repeatAction: Callback?
     
-    public init(icon: String, title: String? = nil, descriptionText: String? = nil, repeatAction: Callback? = nil) {
+    public init(icon: String = "",
+                title: String? = nil,
+                btnTitle: String? = nil,
+                descriptionText: String? = nil,
+                componentId: String? = nil,
+                parameters: [TextParameter]? = nil,
+                repeatAction: Callback? = nil) {
         self.icon = icon
         self.title = title
+        self.btnTitle = btnTitle
         self.descriptionText = descriptionText
+        self.parameters = parameters
+        self.componentId = componentId
+        self.repeatAction = repeatAction
+    }
+    
+    public init(model: DSStubMessageMlc,
+                repeatAction: Callback? = nil) {
+        self.icon = model.icon ?? ""
+        self.title = model.title
+        self.btnTitle = model.btnStrokeAdditionalAtm?.label
+        self.descriptionText = model.description
+        self.componentId = model.componentId
+        self.parameters = model.parameters
         self.repeatAction = repeatAction
     }
 }
@@ -20,9 +43,10 @@ public class StubMessageViewV2: BaseCodeView {
     // MARK: - UI Elements
     private let emojiLabel = UILabel().withParameters(font: FontBook.stubEmoji)
     private let titleLabel = UILabel().withParameters(font: FontBook.emptyStateTitleFont)
-    private let descriptionLabel = UILabel().withParameters(font: FontBook.usualFont)
+    private let descriptionTextView = UITextView()
     private let repeatButton = VerticalRoundButton()
     
+    private var urlOpener: URLOpenerProtocol?
     private var viewModel: StubMessageViewModel?
     
     // MARK: - Life Cycle
@@ -35,17 +59,33 @@ public class StubMessageViewV2: BaseCodeView {
     public func configure(with viewModel: StubMessageViewModel,
                           titleFont: UIFont = FontBook.emptyStateTitleFont,
                           emojiFont: UIFont = FontBook.stubEmoji,
-                          buttonFont: UIFont = FontBook.usualFont) {
+                          buttonFont: UIFont = FontBook.usualFont,
+                          urlOpener: URLOpenerProtocol? = nil) {
+        accessibilityIdentifier = viewModel.componentId
+        
+        self.urlOpener = urlOpener
         self.viewModel = viewModel
-        emojiLabel.text = viewModel.icon
+        
         titleLabel.isHidden = viewModel.title?.count ?? 0 == 0
         titleLabel.text = viewModel.title
-        descriptionLabel.isHidden = viewModel.descriptionText?.count ?? 0 == 0
-        descriptionLabel.text = viewModel.descriptionText
-        repeatButton.isHidden = viewModel.repeatAction == nil
         titleLabel.font = titleFont
+        descriptionTextView.font = FontBook.usualFont
+
+        if let params = viewModel.parameters {
+            descriptionTextView.attributedText = viewModel.descriptionText?.attributedTextWithParameters(parameters: params)
+        } else {
+            descriptionTextView.text = viewModel.descriptionText
+        }
+       
+        descriptionTextView.textAlignment = .center
+        descriptionTextView.isHidden = viewModel.descriptionText?.count ?? 0 == 0
+        
         emojiLabel.font = emojiFont
+        emojiLabel.text = viewModel.icon
+
+        repeatButton.isHidden = viewModel.btnTitle == nil || viewModel.repeatAction == nil
         repeatButton.titleLabel?.font = buttonFont
+        repeatButton.setTitle(viewModel.btnTitle, for: .normal)
     }
     
     public func configure(btnTitle: String,
@@ -65,7 +105,7 @@ public class StubMessageViewV2: BaseCodeView {
         let textStack = UIStackView.create(
             views: [
                 titleLabel,
-                descriptionLabel
+                descriptionTextView
             ],
             spacing: Constants.descriptionSpacing,
             alignment: .center)
@@ -83,9 +123,11 @@ public class StubMessageViewV2: BaseCodeView {
         stack.fillSuperview()
         stack.setCustomSpacing(Constants.buttonSpacing, after: textStack)
         
-        emojiLabel.textAlignment = .center
+        descriptionTextView.configureForParametrizedText()
+        descriptionTextView.delegate = self
+        
         titleLabel.textAlignment = .center
-        descriptionLabel.textAlignment = .center
+        emojiLabel.textAlignment = .center
     }
     
     private func setupButton() {
@@ -103,6 +145,12 @@ public class StubMessageViewV2: BaseCodeView {
     // MARK: - Actions
     @objc private func repeatTapped() {
         viewModel?.repeatAction?()
+    }
+}
+
+extension StubMessageViewV2: UITextViewDelegate {
+    public func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+        return !(urlOpener?.url(urlString: URL.absoluteString, linkType: nil) ?? false)
     }
 }
 

@@ -18,7 +18,7 @@ public class CheckmarkViewModel {
 public class CheckmarkView: BaseCodeView {
     
     // MARK: - Properties
-    private let checmarkImageView = UIImageView()
+    private let checkmarkImageView = UIImageView()
     private let textLabel = UILabel().withParameters(font: FontBook.usualFont)
     private var isActive = true
     private var onChange: ((Bool) -> Void)?
@@ -26,19 +26,24 @@ public class CheckmarkView: BaseCodeView {
     private var isChecked = false {
         didSet {
             let image = isChecked ? R.image.checkbox_enabled.image : R.image.checkbox_disabled.image
-            checmarkImageView.image = image
+            checkmarkImageView.image = image
+            accessibilityTraits = isChecked ? [.button, .selected] : [.button]
             onChange?(isChecked)
         }
     }
     
     // MARK: - LifeCycle
     public override func setupSubviews() {
-        addSubview(checmarkImageView)
+        addSubview(checkmarkImageView)
         addSubview(textLabel)
         
-        checmarkImageView.anchor(top: topAnchor, leading: leadingAnchor, bottom: nil, trailing: nil, size: Constants.checkMarkSize)
+        checkmarkImageView.anchor(top: topAnchor,
+                                  leading: leadingAnchor,
+                                  bottom: nil,
+                                  trailing: nil,
+                                  size: Constants.checkMarkSize)
         textLabel.anchor(top: topAnchor,
-                         leading: checmarkImageView.trailingAnchor,
+                         leading: checkmarkImageView.trailingAnchor,
                          bottom: bottomAnchor,
                          trailing: trailingAnchor,
                          padding: .init(top: 0, left: Constants.leftTextPadding, bottom: 0, right: 0))
@@ -48,13 +53,27 @@ public class CheckmarkView: BaseCodeView {
         isUserInteractionEnabled = true
         
         isChecked = false
+        
+        setupAccessibility()
     }
     
     // MARK: - Public Methods
-    public func configure(text: String, isChecked: Bool, onChange: ((Bool) -> Void)?) {
+    public func configure(text: String,
+                          isChecked: Bool,
+                          componentId: String? = nil,
+                          onChange: ((Bool) -> Void)?) {
+        accessibilityIdentifier = componentId
+        accessibilityLabel = text
+        
         self.isChecked = isChecked
         self.onChange = onChange
-        self.textLabel.text = text
+        
+        if let attributed: NSAttributedString = text.attributed(font: FontBook.usualFont,
+                                                                lineHeight: Constants.lineHeight) {
+            self.textLabel.attributedText = attributed
+        } else {
+            self.textLabel.text = text
+        }
     }
     
     public func setIsActive(isActive: Bool) {
@@ -70,6 +89,11 @@ public class CheckmarkView: BaseCodeView {
     @objc private func onTap() {
         guard isActive else { return }
         isChecked.toggle()
+    }
+    
+    // MARK: - Accessibility
+    private func setupAccessibility() {
+        isAccessibilityElement = true
     }
 }
 

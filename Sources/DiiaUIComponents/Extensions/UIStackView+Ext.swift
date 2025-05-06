@@ -4,7 +4,7 @@ public extension UIStackView {
     
     @discardableResult
     static func create(_ axis: NSLayoutConstraint.Axis = .vertical,
-                       views: [UIView],
+                       views: [UIView] = [],
                        spacing: CGFloat = 0,
                        alignment: UIStackView.Alignment = .fill,
                        distribution: UIStackView.Distribution = .fill,
@@ -20,16 +20,6 @@ public extension UIStackView {
             stackView.fillSuperview(padding: padding)
         }
         return stackView
-    }
-    
-    func addBackground(color: UIColor, cornerRadius: CGFloat = 0) {
-        let view = UIView()
-        view.backgroundColor = color
-        view.layer.cornerRadius = cornerRadius
-        
-        view.translatesAutoresizingMaskIntoConstraints = false
-        insertSubview(view, at: 0)
-        view.fillSuperview()
     }
     
     func safelyRemoveArrangedSubviews() {

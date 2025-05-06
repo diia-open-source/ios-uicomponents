@@ -4,19 +4,21 @@ import DiiaCommonTypes
 public class IconedLoadingStateViewModel: NSObject {
     public let name: String
     public let image: UIImage?
+    public let componentId: String?
     public var clickHandler: Callback?
     @objc public dynamic var isLoading: Bool
     
     public init(name: String,
                 image: UIImage?,
                 clickHandler: Callback? = nil,
-                isLoading: Bool = false) {
+                isLoading: Bool = false,
+                componentId: String? = nil) {
         self.name = name
         self.image = image
         self.clickHandler = clickHandler
         self.isLoading = isLoading
+        self.componentId = componentId
     }
-    
 }
 
 public class IconedLoadingStateView: BaseCodeView {
@@ -33,6 +35,8 @@ public class IconedLoadingStateView: BaseCodeView {
         
         addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onClick)))
         isUserInteractionEnabled = true
+        
+        setupAccessibility()
     }
     
     deinit {
@@ -41,6 +45,9 @@ public class IconedLoadingStateView: BaseCodeView {
     }
     
     public func configure(viewModel: IconedLoadingStateViewModel) {
+        accessibilityIdentifier = viewModel.componentId
+        accessibilityLabel = viewModel.name
+        
         self.viewModel = viewModel
         imageView.image = viewModel.image
         imageView.contentMode = .scaleAspectFit
@@ -52,6 +59,8 @@ public class IconedLoadingStateView: BaseCodeView {
     }
     
     public func updateState(isLoading: Bool) {
+        self.isUserInteractionEnabled = !isLoading
+        self.superview?.isUserInteractionEnabled = !isLoading
         if isLoading {
             imageView.image = R.image.gradientCircleWithInsets.image
             imageView.startRotating()
@@ -65,9 +74,16 @@ public class IconedLoadingStateView: BaseCodeView {
         mainStack?.alignment = alignment
     }
     
+    // MARK: - Private Methods
     @objc private func onClick() {
         if viewModel?.isLoading == true { return }
         viewModel?.clickHandler?()
+    }
+    
+    // MARK: - Accessibility
+    private func setupAccessibility() {
+        isAccessibilityElement = true
+        accessibilityTraits = .button
     }
 }
 

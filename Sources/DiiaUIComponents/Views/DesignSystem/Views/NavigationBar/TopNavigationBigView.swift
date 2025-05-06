@@ -2,18 +2,22 @@ import UIKit
 import DiiaCommonTypes
 
 public struct TopNavigationBigViewModel {
+    public let componentId: String?
     public let title: String
     public let details: String?
     public let backAction: Callback?
     public let action: Action?
     
-    public init(title: String,
-                details: String? = nil,
-                backAction: Callback? = nil,
-                action: Action? = nil
+    public init(
+        title: String,
+        details: String? = nil,
+        componentId: String? = nil,
+        backAction: Callback? = nil,
+        action: Action? = nil
     ) {
         self.title = title
         self.details = details
+        self.componentId = componentId
         self.backAction = backAction
         self.action = action
     }
@@ -78,6 +82,7 @@ public class TopNavigationBigView: BaseCodeView {
     
     // MARK: - Public Methods
     public func configure(viewModel: TopNavigationBigViewModel) {
+        accessibilityIdentifier = viewModel.componentId
         titleLabel.text = viewModel.title
         if let backAction = viewModel.backAction {
             backButton.action = .init(title: nil, image: R.image.menu_back.image, callback: backAction)

@@ -19,9 +19,10 @@ public struct AppConstants {
         static let dadaGray = "#DADADA"
         static let statusHistoryGray = "#D1D1D1"
         static let downloadButtonBorderColor = "#C9D8E7"
-        
+
         static let tickerGrayColor = "#ECECEC"
         static let tickerBlueColor = "#E2F2FE"
+        static let tickerRedColor = "#D95336"
         public static let uncheckedRoundTabBackgroundColor = "#ECF2F7"
     }
     

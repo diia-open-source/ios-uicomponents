@@ -10,6 +10,7 @@ public class GalleryVideoViewModel {
     let streamLink: String?
     let downloadLink: String
     let localFilename: String
+    var localFileURL: URL?
     var preparePlaying: (() -> Void)?
     var actions: [Action] = []
     var state: Observable<VideoPlayingState> = .init(value: .loading)
@@ -26,6 +27,7 @@ public class GalleryVideoViewModel {
 public enum VideoPlayingState {
     case loading
     case error(message: String)
+    case readyForLoading(url: URL)
     case readyForPlaying(url: URL)
 }
 

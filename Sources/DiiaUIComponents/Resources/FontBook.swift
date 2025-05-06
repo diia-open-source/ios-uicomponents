@@ -67,6 +67,7 @@ public extension FontBook {
         }
     }()
     
+    /// Font: e-Ukraine Regular 36px
     static let bigHeading: UIFont = {
         switch UIScreen.main.bounds.width {
         case 414, 428, 430:
@@ -78,8 +79,9 @@ public extension FontBook {
         }
     }()
     
-    static let stubEmoji: UIFont = FontBook.mainFont.regular.size(52)
+    static let stubEmoji: UIFont = FontBook.mainFont.regular.size(48)
     
+    /// Font: e-Ukraine Regular 32px
     static let bigEmoji: UIFont = {
         switch UIScreen.main.bounds.width {
         case 414, 428, 430:
@@ -91,6 +93,7 @@ public extension FontBook {
         }
     }()
     
+    /// Font: e-Ukraine Regular 24px
     static let smallEmoji: UIFont = {
         switch UIScreen.main.bounds.width {
         case 414, 428, 430:
@@ -117,6 +120,7 @@ public extension FontBook {
         return FontBook.mainFont.regular.size(30)
     }()
     
+    /// Font: e-Ukraine Regular 29px
     static var numbersHeadingFont: UIFont = {
         switch UIScreen.main.bounds.width {
         case 414, 428, 430:
@@ -128,6 +132,7 @@ public extension FontBook {
         }
     }()
     
+    /// Font: e-Ukraine Regular 26px
     static var largeFont: UIFont = {
         switch UIScreen.main.bounds.width {
         case 414, 428, 430:
@@ -139,6 +144,7 @@ public extension FontBook {
         }
     }()
     
+    /// Font: e-Ukraine Regular 23px
     static var detailsTitleFont: UIFont = {
         switch UIScreen.main.bounds.width {
         case 414, 428, 430:
@@ -161,6 +167,7 @@ public extension FontBook {
         }
     }()
     
+    /// Font: e-Ukraine Regular 21px
     static var cardsHeadingFont: UIFont = {
         switch UIScreen.main.bounds.width {
         case 414, 428, 430:
@@ -183,6 +190,7 @@ public extension FontBook {
         }
     }()
     
+    /// Font: e-Ukraine Regular 20px
     static var largeTitleFont: UIFont = {
         switch UIScreen.main.bounds.width {
         case 414, 428, 430:
@@ -194,6 +202,7 @@ public extension FontBook {
         }
     }()
     
+    /// Font: e-Ukraine Regular 19px
     static var titleFont: UIFont = {
         switch UIScreen.main.bounds.width {
         case 414, 428, 430:
@@ -205,6 +214,7 @@ public extension FontBook {
         }
     }()
     
+    /// Font: e-Ukraine Regular 18px
     static var emptyStateTitleFont: UIFont = {
         switch UIScreen.main.bounds.width {
         case 414, 428, 430:
@@ -216,6 +226,7 @@ public extension FontBook {
         }
     }()
     
+    /// Font: e-Ukraine Regular 16px
     static var smallHeadingFont: UIFont = {
         switch UIScreen.main.bounds.width {
         case 414, 428, 430:
@@ -260,6 +271,7 @@ public extension FontBook {
         }
     }()
     
+    /// Font: e-Ukraine Regular 14px
     static let bigText: UIFont = {
         switch UIScreen.main.bounds.width {
         case 414, 428, 430:
@@ -271,6 +283,7 @@ public extension FontBook {
         }
     }()
     
+    /// Font: e-Ukraine Regular 11px
     static var statusFont: UIFont = {
         switch UIScreen.main.bounds.width {
         case 414, 428, 430:
@@ -282,6 +295,7 @@ public extension FontBook {
         }
     }()
     
+    /// Font: e-Ukraine Regular 12px
     static var usualFont: UIFont = {
         switch UIScreen.main.bounds.width {
         case 414, 428, 430:
@@ -326,6 +340,7 @@ public extension FontBook {
         }
     }()
     
+    /// Font: e-Ukraine Regular 10px
     static var tabBarTitle: UIFont = {
         switch UIScreen.main.bounds.width {
         case 414, 428, 430:
@@ -337,6 +352,7 @@ public extension FontBook {
         }
     }()
     
+    /// Font: e-Ukraine Regular 9px
     static var smallTitle: UIFont = {
         switch UIScreen.main.bounds.width {
         case 414, 428, 430:
@@ -348,6 +364,7 @@ public extension FontBook {
         }
     }()
     
+    /// Font: e-Ukraine Regular 13px
     static let emojiFont: UIFont = {
         switch UIScreen.main.bounds.width {
         case 414, 428, 430:
@@ -359,6 +376,7 @@ public extension FontBook {
         }
     }()
     
+    /// Font: e-Ukraine Regular 38px
     static let grandTextFont: UIFont = {
         switch UIScreen.main.bounds.width {
         case 414, 428, 430:

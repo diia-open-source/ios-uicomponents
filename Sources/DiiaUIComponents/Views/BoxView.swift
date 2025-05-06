@@ -22,8 +22,8 @@ public class BoxView<T: UIView>: UIView {
     }
     
     @discardableResult
-    public func withConstraints(insets: UIEdgeInsets = .zero, size: CGSize = .zero, centeredX: Bool = false, centeredY: Bool = false) -> BoxView<T> {
-        if insets != .zero {
+    public func withConstraints(insets: UIEdgeInsets? = nil, size: CGSize = .zero, centeredX: Bool = false, centeredY: Bool = false) -> BoxView<T> {
+        if let insets = insets {
             subviewConstraints?.top?.constant = insets.top
             subviewConstraints?.bottom?.constant = -insets.bottom
             subviewConstraints?.leading?.constant = insets.left

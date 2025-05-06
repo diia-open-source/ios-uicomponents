@@ -31,6 +31,28 @@ public extension UIImage {
 
         return img
     }
+    
+    class func gradientImage(with colors: [UIColor],
+                             startPoint: CGPoint = CGPoint(x: 0, y: 0),
+                             endPoint: CGPoint = CGPoint(x: 1, y: 1),
+                             size: CGSize = CGSize(width: 1, height: 1)) -> UIImage {
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.colors = colors.map { $0.cgColor }
+        gradientLayer.startPoint = startPoint
+        gradientLayer.endPoint = endPoint
+        
+        gradientLayer.frame = CGRect(origin: .zero, size: size)
+        
+        UIGraphicsBeginImageContext(size)
+        defer { UIGraphicsEndImageContext() }
+        
+        guard let context = UIGraphicsGetCurrentContext() else {
+            return UIImage() 
+        }
+        
+        gradientLayer.render(in: context)
+        return UIGraphicsGetImageFromCurrentImageContext() ?? UIImage()
+    }
 
     class func qrCode(from string: String) -> UIImage? {
         let data = string.data(using: String.Encoding.ascii)
@@ -81,6 +103,7 @@ public extension UIImage {
         return nil
     }
 
+    // TODO: Check if it works with self.scale
     func scaled(forFittingSize fittingSize: CGSize, scale: CGFloat = 1) -> UIImage {
         let size = self.size
         guard size.width > fittingSize.width || size.height > fittingSize.height else {
@@ -88,9 +111,9 @@ public extension UIImage {
         }
         let fixedFittingSize = CGSize(width: fittingSize.width.isZero ? .greatestFiniteMagnitude : fittingSize.width,
                                       height: fittingSize.height.isZero ? .greatestFiniteMagnitude : fittingSize.height)
-        let scale = max(size.width/fixedFittingSize.width, size.height/fixedFittingSize.height)
-        let newSize = CGSize(width: size.width / scale, height: size.height / scale)
-
+        let imageScale = max(size.width/fixedFittingSize.width, size.height/fixedFittingSize.height)
+        let newSize = CGSize(width: size.width / imageScale, height: size.height / imageScale)
+        
         UIGraphicsBeginImageContextWithOptions(newSize, false, scale)
         self.draw(in: CGRect(origin: CGPoint.zero, size: newSize))
         let newImage = UIGraphicsGetImageFromCurrentImageContext()

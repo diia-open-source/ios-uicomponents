@@ -1,6 +1,7 @@
 import UIKit
+import DiiaCommonTypes
 
-public class TitledMultilineTextView: BaseCodeView {
+public class TitledMultilineTextView: BaseCodeView, DSInputComponentProtocol {
     
     public let textView = UITextView()
     
@@ -47,7 +48,7 @@ public class TitledMultilineTextView: BaseCodeView {
                         textFont: UIFont = FontBook.usualFont,
                         errorFont: UIFont = FontBook.smallTitle,
                         errorColor: UIColor = UIColor(AppConstants.Colors.persianRed),
-                        instructionColor: UIColor = .black,
+                        instructionColor: UIColor = UIColor.black.withAlphaComponent(0.5),
                         separatorColor: UIColor = .statusGray) {
         titleLabel.withParameters(font: titleFont)
         errorLabel.withParameters(font: errorFont)
@@ -106,14 +107,6 @@ public class TitledMultilineTextView: BaseCodeView {
         }
     }
     
-    @objc private func textFieldDidChangeValue(_ textField: UITextField) {
-        let inputText = textField.text ?? .empty
-        viewModel?.onChangeText?(inputText)
-        if !errorLabel.isHidden {
-            updateInstructionsState()
-        }
-    }
-    
     private func updateInstructionsState() {
         let inputText = textView.text ?? .empty
         let errorText = error(for: inputText)
@@ -121,11 +114,11 @@ public class TitledMultilineTextView: BaseCodeView {
         errorLabel.isHidden = errorText == nil
         
         if errorText == nil {
-            separator.backgroundColor = inputText.isEmpty ? separatorColor : .black
-            textView.textColor = .black
+            separator.backgroundColor = separatorColor
+            titleLabel.textColor = .black
         } else {
             separator.backgroundColor = errorLabel.textColor
-            textView.textColor = errorLabel.textColor
+            titleLabel.textColor = errorLabel.textColor
         }
         instructionsLabel.isHidden = !errorLabel.isHidden
             || viewModel?.instructionsText?.count ?? 0 == 0
@@ -139,32 +132,73 @@ public class TitledMultilineTextView: BaseCodeView {
         }
         return nil
     }
+    
+    //MARK: - DSInputComponentProtocol
+    public func isValid() -> Bool {
+        guard let inputText = textView.text else { return false }
+        
+        if viewModel?.mandatory == true {
+            return !inputText.isEmpty && error(for: inputText) == nil
+        } else {
+            return error(for: inputText) == nil
+        }
+    }
+    
+    public func inputCode() -> String {
+        return viewModel?.inputCode ?? viewModel?.id ?? Constants.inputCode
+    }
+    
+    public func inputData() -> AnyCodable? {
+        guard let inputText = textView.text, !inputText.isEmpty else { return nil }
+        return .string(inputText)
+    }
+    
+    public func setOnChangeHandler(_ handler: @escaping () -> Void) {
+        viewModel?.onChangeText = { _ in
+            handler()
+        }
+    }
 }
 
 extension TitledMultilineTextView: UITextViewDelegate {
     public func textViewDidBeginEditing(_ textView: UITextView) {
-        // Remove placeholder when started editing
         if textView.textColor == UIColor.lightGray {
             textView.text = nil
             textView.textColor = UIColor.black
+            titleLabel.textColor = UIColor.black
+            errorLabel.isHidden = true
         }
+        separator.backgroundColor = .black
     }
 
     public func textViewDidChange(_ textView: UITextView) {
-        // Pass text to presenter when text is changed
         let text = textView.text ?? ""
         viewModel?.onChangeText?(text)
+        if !errorLabel.isHidden {
+            updateInstructionsState()
+        }
     }
 
     public func textViewDidEndEditing(_ textView: UITextView) {
-        updateInstructionsState()
         // Add placeholder if field is empty
         if textView.text.isEmpty {
+            titleLabel.textColor = .black
+            errorLabel.isHidden = true
+            separator.backgroundColor = .black
             showTextViewPlaceholder()
+        } else {
+            updateInstructionsState()
         }
     }
 
     public func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         return viewModel?.shouldChangeCharacters?(textView.text, range, text) ?? true
+    }
+}
+
+// MARK: - Constants
+extension TitledMultilineTextView {
+    private enum Constants {
+        static let inputCode = "inputTextMultilineMlc"
     }
 }

@@ -16,7 +16,8 @@ public struct TextValidationErrorGenerator {
     }
     
     public init(validationModel: InputValidationModel) {
-        let prefix = validationModel.flags?.count ?? 0 > 0 ? "(?\((validationModel.flags ?? []).joined()))" : ""
+        let flags = validationModel.flags?.filter { $0 != "g" } ?? []
+        let prefix = flags.count > 0 ? "(?\(flags.joined()))" : ""
         self.type = .regEx(regEx: prefix + validationModel.regexp)
         self.error = validationModel.errorMessage
     }
@@ -35,6 +36,7 @@ public enum TextValidator: Validator {
     case number(min: Double?, max: Double?)
     case formattedNumber(min: Double?, max: Double?)
     case regEx(regEx: String)
+    case date(minDate: Date?, maxDate: Date?, dateFormatter: DateFormatter)
     
     public func isValid(value: String?) -> Bool {
         guard let value = value else { return false }
@@ -44,17 +46,30 @@ public enum TextValidator: Validator {
         case .length(let min, let max):
             return value.count >= min && value.count <= max
         case .number(let min, let max):
-            guard let doubleValue = Double(value) else { return false }
+            guard let doubleValue = Double(value.replacingOccurrences(of: ",", with: ".")) else { return false }
             return doubleValue >= (min ?? .leastNormalMagnitude)
                 && doubleValue <= (max ?? .greatestFiniteMagnitude)
         case .formattedNumber(let min, let max):
-            let valueWithoutSpacing = value.replacingOccurrences(of: " ", with: "")
-            guard let doubleValue = Double(valueWithoutSpacing) else { return false }
+            let valueWithoutSpacingAndComma = value.replacingOccurrences(of: " ", with: "").replacingOccurrences(of: ",", with: ".")
+            guard let doubleValue = Double(valueWithoutSpacingAndComma) else { return false }
             return doubleValue >= (min ?? .leastNormalMagnitude)
                 && doubleValue <= (max ?? .greatestFiniteMagnitude)
         case .regEx(let regEx):
-            let predicate = NSPredicate(format: "SELF MATCHES %@", regEx)
-            return predicate.evaluate(with: value)
+            do {
+                let regex = try NSRegularExpression(pattern: regEx, options: [])
+                if regex.firstMatch(in: value, options: [], range: NSMakeRange(0, value.utf16.count)) != nil {
+                    return true
+                } else {
+                    return false
+                }
+            } catch {
+                return false
+            }
+        case .date(let minDate, let maxDate, let dateFormatter):
+            guard let date = dateFormatter.date(from: value) else { return false }
+            if let maxDate = maxDate, maxDate < date { return false }
+            if let minDate = minDate, minDate > date { return false }
+            return true
         }
     }
     
@@ -66,7 +81,7 @@ public enum TextValidator: Validator {
     public static let nameValidator: TextValidator = .regEx(regEx: "(?<! )[-a-zA-ZА-ЩЬЮЯҐЄІЇа-щьюяґєії`’'‘\\- ]{1,70}")
     public static let ukrNameValidator: TextValidator = .regEx(regEx: "(?<! )[А-ЩЬЮЯҐЄІЇа-щьюяґєії`’'‘\\- ]{1,70}")
     public static let phoneNumberValidator: TextValidator = .regEx(regEx: "^(((\\+)|(00))?[0-9]{12}$)|([0-9]{10})")
-    public static let ukrPhoneNumberMaskedValidator: TextValidator = .regEx(regEx: "^(\\+)?38 \\((039|050|063|066|067|068|073|091|092|093|094|095|096|097|098|099)\\) \\d{3} \\d{2} \\d{2}$")
+    public static let ukrPhoneNumberMaskedValidator: TextValidator = .regEx(regEx: "^(\\+)?38 \\((077|075|039|050|063|066|067|068|073|091|092|093|094|095|096|097|098|099)\\) \\d{3} \\d{2} \\d{2}$")
     public static let passportDepartmentValidator: TextValidator = .regEx(regEx: "^[ а-щА-ЩьюяЮЯґєЄіІїЇ0-9ʼ,-]{0,150}")
     public static let passportNumberValidator: TextValidator = .regEx(regEx: "^[ a-zA-Zа-яА-ЩьюяЮЯґєЄіІїЇ0-9ʼ,-]{0,20}")
 }
@@ -147,4 +162,13 @@ public struct InputValidationModel: Codable {
     public let regexp: String
     public let flags: [String]?
     public let errorMessage: String?
+    
+    public init(regexp: String,
+         flags: [String]?,
+         errorMessage: String?
+    ) {
+        self.regexp = regexp
+        self.flags = flags
+        self.errorMessage = errorMessage
+    }
 }

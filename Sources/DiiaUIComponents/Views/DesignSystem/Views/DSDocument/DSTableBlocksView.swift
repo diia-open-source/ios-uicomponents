@@ -1,6 +1,4 @@
-import Foundation
 import UIKit
-import DiiaMVPModule
 
 public class DSTableBlocksView: BaseCodeView {
     
@@ -11,10 +9,10 @@ public class DSTableBlocksView: BaseCodeView {
         tableBlocks.fillSuperview(padding: Constants.blockPadding)
     }
     
-    public func configure(model: [DSTableBlockItemModel]) {
+    public func configure(model: [DSTableBlockItemModel], eventHandler: ((ConstructorItemEvent) -> Void)? = nil) {
         model.forEach({ item in
             let block = DSTableBlockOrgView()
-            block.configure(for: item)
+            block.configure(for: item, eventHandler: eventHandler)
             tableBlocks.addArrangedSubview(block)
         })
     }

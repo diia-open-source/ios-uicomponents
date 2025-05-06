@@ -56,10 +56,10 @@ public extension String {
     }
     
     func percentEncodedUrl() -> String? {
-        if URL(string: self) != nil {
-            return self
+        if let nsUrl = NSURL(string: self) {
+            return nsUrl.absoluteString
         }
-        return self.addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed)
+        return nil
     }
     
     func capitalizingFirstLetter() -> String {

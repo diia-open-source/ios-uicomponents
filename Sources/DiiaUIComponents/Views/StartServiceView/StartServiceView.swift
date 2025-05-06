@@ -7,7 +7,6 @@ public class StartServiceView: UIView {
     @IBOutlet private weak var attentionView: ParameterizedAttentionView!
     @IBOutlet private weak var statusView: StatusInfoView!
     @IBOutlet private weak var infoTextView: UITextView!
-    private var urlOpener: URLOpenerProtocol?
 
     // MARK: - Life Cycle
     override init(frame: CGRect) {
@@ -26,10 +25,6 @@ public class StartServiceView: UIView {
     }
     
     // MARK: - Setup
-    public func set(urlOpener: URLOpenerProtocol?) {
-        self.urlOpener = urlOpener
-    }
-
     public func configure(greetings: String, info: String?, parameters: [TextParameter] = []) {
         greetingsLabel.text = greetings
         infoTextView.attributedText = info?.attributedTextWithParameters(font: FontBook.usualFont, parameters: parameters)
@@ -38,7 +33,7 @@ public class StartServiceView: UIView {
     public func configureAttention(attention: ParameterizedAttentionMessage?) {
         attentionView.isHidden = attention == nil
         guard let attention = attention else { return }
-        attentionView.configure(with: attention, urlOpener: urlOpener)
+        attentionView.configure(with: attention, urlOpener: UIComponentsConfiguration.shared.urlOpener)
     }
     
     public func configureStatus(message: GeneralStatusMessage?) {
@@ -72,7 +67,7 @@ private extension StartServiceView {
 
 extension StartServiceView: UITextViewDelegate {
     public func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
-        return !(urlOpener?.url(urlString: URL.absoluteString, linkType: nil) ?? false)
+        return !(UIComponentsConfiguration.shared.urlOpener?.url(urlString: URL.absoluteString, linkType: nil) ?? false)
     }
 }
 

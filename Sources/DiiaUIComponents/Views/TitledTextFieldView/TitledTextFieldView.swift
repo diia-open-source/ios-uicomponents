@@ -1,21 +1,39 @@
 import UIKit
+import DiiaCommonTypes
 
-public struct TitledTextFieldViewModel {
+public enum TextFieldState {
+    case unfocused, focused, error
+}
+
+public class TitledTextFieldViewModel {
+    public let componentId: String?
+    public let id: String?
+    public let inputCode: String?
     public let title: String
     public let placeholder: String
     public let attributedPlaceholder: NSMutableAttributedString?
+    public let blocker: Bool?
+    public let mandatory: Bool?
     public let validators: [TextValidationErrorGenerator]
+    public let mask: String?
     public let defaultText: String?
     public let instructionsText: String?
     public let keyboardType: UIKeyboardType
-    public let onChangeText: ((String) -> Void)?
-    public let shouldChangeCharacters: ((String?, NSRange, String) -> Bool)?
+    public var onChangeText: ((String) -> Void)?
+    public var shouldChangeCharacters: ((String?, NSRange, String) -> Bool)?
     public let onEndEditing: ((String) -> Void)?
+    public let fieldState = Observable<TextFieldState>(value: .unfocused)
     
-    public init(title: String,
+    public init(componentId: String? = nil,
+                id: String? = nil,
+                inputCode: String? = nil,
+                title: String,
                 placeholder: String,
                 attributedPlaceholder: NSMutableAttributedString? = nil,
                 validators: [TextValidationErrorGenerator] = [],
+                mask: String? = nil,
+                blocker: Bool? = false,
+                mandatory: Bool? = false,
                 defaultText: String? = nil,
                 instructionsText: String? = nil,
                 keyboardType: UIKeyboardType = .default,
@@ -23,10 +41,16 @@ public struct TitledTextFieldViewModel {
                 shouldChangeCharacters: ((String?, NSRange, String) -> Bool)? = nil,
                 onEndEditing: ((String) -> Void)? = nil
     ) {
+        self.componentId = componentId
+        self.id = id
+        self.inputCode = inputCode
         self.title = title
         self.placeholder = placeholder
         self.attributedPlaceholder = attributedPlaceholder
         self.validators = validators
+        self.mask = mask
+        self.blocker = blocker
+        self.mandatory = mandatory
         self.defaultText = defaultText
         self.instructionsText = instructionsText
         self.onChangeText = onChangeText
@@ -36,34 +60,48 @@ public struct TitledTextFieldViewModel {
     }
 }
 
-public class TitledTextFieldView: BaseCodeView {
+/// design_system_code: inputTextMlc
+public class TitledTextFieldView: BaseCodeView, DSInputComponentProtocol {
     public let textField = UITextField()
     
     private let titleLabel = UILabel().withParameters(font: FontBook.smallTitle)
-    private let separator = UIView().withHeight(2)
+    private let separator = UIView().withHeight(Constants.separatorHeight)
     private let errorLabel = UILabel().withParameters(font: FontBook.smallTitle)
-    private let instructionsLabel = UILabel().withParameters(font: FontBook.smallTitle)
+    private let instructionsLabel = UILabel().withParameters(font: FontBook.smallTitle, textColor: .gray)
 
-    private var viewModel: TitledTextFieldViewModel?
+    private(set) var viewModel: TitledTextFieldViewModel?
     private var separatorColor: UIColor = .statusGray
     
     public override func setupSubviews() {
+        translatesAutoresizingMaskIntoConstraints = false
         backgroundColor = .clear
         addSubview(titleLabel)
         addSubview(textField)
-        addSubview(separator)
-        addSubview(errorLabel)
-        titleLabel.anchor(top: topAnchor, leading: leadingAnchor, bottom: nil, trailing: trailingAnchor)
-        textField.anchor(top: titleLabel.bottomAnchor, leading: leadingAnchor, bottom: nil, trailing: trailingAnchor, padding: .init(top: 6, left: 0, bottom: 0, right: 0))
+        titleLabel.anchor(top: topAnchor,
+                          leading: leadingAnchor,
+                          bottom: nil,
+                          trailing: trailingAnchor)
+        textField.anchor(top: titleLabel.bottomAnchor,
+                         leading: leadingAnchor,
+                         trailing: trailingAnchor,
+                         padding: .init(top: Constants.offset, left: .zero, bottom: .zero, right: .zero))
         
-        let stack = UIStackView.create(views: [separator, errorLabel, instructionsLabel], spacing: 8)
+        let stack = UIStackView.create(views: [separator, errorLabel, instructionsLabel],
+                                       spacing: Constants.stackSpacing)
         addSubview(stack)
-        stack.anchor(top: textField.bottomAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor, padding: .init(top: 8, left: 0, bottom: 0, right: 0))
+        stack.anchor(top: textField.bottomAnchor,
+                     leading: leadingAnchor,
+                     bottom: bottomAnchor,
+                     trailing: trailingAnchor,
+                     padding: .init(top: Constants.offset, left: .zero, bottom: .zero, right: .zero))
         
         textField.autocapitalizationType = .none
         textField.autocorrectionType = .no
         textField.delegate = self
         textField.addTarget(self, action: #selector(textFieldDidChangeValue(_:)), for: .editingChanged)
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(textFieldDidTapValue))
+        tapRecognizer.numberOfTapsRequired = 1
+        self.addGestureRecognizer(tapRecognizer)
         setupUI()
     }
     
@@ -71,12 +109,13 @@ public class TitledTextFieldView: BaseCodeView {
                         textFont: UIFont = FontBook.usualFont,
                         errorFont: UIFont = FontBook.smallTitle,
                         errorColor: UIColor = UIColor(AppConstants.Colors.persianRed),
-                        instructionColor: UIColor = .black,
+                        instructionColor: UIColor = .gray,
                         separatorColor: UIColor = .statusGray) {
         titleLabel.withParameters(font: titleFont)
         errorLabel.withParameters(font: errorFont, textColor: errorColor)
         instructionsLabel.withParameters(font: errorFont, textColor: instructionColor)
         textField.font = textFont
+        textField.tintColor = .black
         separator.backgroundColor = separatorColor
         self.separatorColor = separatorColor
         
@@ -86,18 +125,45 @@ public class TitledTextFieldView: BaseCodeView {
     
     public func configure(viewModel: TitledTextFieldViewModel) {
         self.viewModel = viewModel
+        accessibilityIdentifier = viewModel.componentId
+        
         titleLabel.text = viewModel.title
         textField.placeholder = viewModel.placeholder
         if let attributedPlaceholder = viewModel.attributedPlaceholder {
             textField.attributedPlaceholder = attributedPlaceholder
         }
-        textField.text = viewModel.defaultText
+        if textField.text == nil || textField.text?.isEmpty == true {
+            textField.text = viewModel.defaultText
+        }
         textField.keyboardType = viewModel.keyboardType
         instructionsLabel.text = viewModel.instructionsText
-        instructionsLabel.isHidden = viewModel.instructionsText?.count ?? 0 == 0
+        instructionsLabel.isHidden = viewModel.instructionsText?.isEmpty == true
         errorLabel.text = nil
         errorLabel.isHidden = true
         updateInstructionsState()
+        
+        self.viewModel?.fieldState.observe(observer: self) { [weak self] textFieldState in
+            guard let self = self else { return }
+            switch textFieldState {
+            case .focused:
+                self.separator.backgroundColor = .black
+                self.titleLabel.textColor = .black
+                self.instructionsLabel.isHidden = self.viewModel?.instructionsText?.isEmpty == true
+                self.errorLabel.isHidden = true
+            case .unfocused:
+                self.errorLabel.isHidden = self.errorLabel.text == nil
+                self.separator.backgroundColor = .statusGray
+                self.titleLabel.textColor = .black
+                self.instructionsLabel.isHidden = self.viewModel?.instructionsText?.isEmpty == true
+                self.errorLabel.isHidden = true
+            case .error:
+                let errorColor = errorLabel.textColor
+                self.titleLabel.textColor = errorColor
+                self.separator.backgroundColor = errorColor
+                self.errorLabel.isHidden = false
+                self.instructionsLabel.isHidden = true
+            }
+        }
     }
     
     public func validate() {
@@ -125,6 +191,11 @@ public class TitledTextFieldView: BaseCodeView {
         }
     }
     
+    
+    @objc private func textFieldDidTapValue() {
+        textField.becomeFirstResponder()
+    }
+    
     @objc private func textFieldDidChangeValue(_ textField: UITextField) {
         let inputText = textField.text ?? .empty
         viewModel?.onChangeText?(inputText)
@@ -134,19 +205,17 @@ public class TitledTextFieldView: BaseCodeView {
     }
     
     private func updateInstructionsState() {
-        let inputText = textField.text ?? .empty
+        var inputText = textField.text ?? .empty
+        if let mask = viewModel?.mask {
+            inputText = inputText.removingMask(mask: mask) ?? inputText
+        }
         let errorText = error(for: inputText)
         errorLabel.text = errorText
-        errorLabel.isHidden = errorText == nil
-        if errorText == nil {
-            separator.backgroundColor = inputText.isEmpty ? separatorColor : .black
-            textField.textColor = .black
+        if errorText != nil {
+            self.viewModel?.fieldState.value = .error
         } else {
-            separator.backgroundColor = errorLabel.textColor
-            textField.textColor = errorLabel.textColor
+            self.viewModel?.fieldState.value = inputText.isEmpty ? .unfocused : .focused
         }
-        instructionsLabel.isHidden = !errorLabel.isHidden
-            || viewModel?.instructionsText?.count ?? 0 == 0
     }
     
     private func error(for text: String) -> String? {
@@ -158,13 +227,44 @@ public class TitledTextFieldView: BaseCodeView {
         }
         return nil
     }
+    
+    //MARK: - DSInputComponentProtocol
+    public func isValid() -> Bool {
+        guard let inputText = textField.text else { return false }
+        
+        if viewModel?.mandatory == true {
+            return !inputText.isEmpty && error(for: inputText) == nil
+        } else {
+            return error(for: inputText) == nil
+        }
+    }
+    
+    public func inputCode() -> String {
+        return viewModel?.inputCode ?? viewModel?.id ?? Constants.inputCode
+    }
+    
+    public func inputData() -> AnyCodable? {
+        guard let inputText = textField.text, !inputText.isEmpty else { return nil }
+        return .string(inputText)
+    }
+    
+    public func setOnChangeHandler(_ handler: @escaping () -> Void) {
+        viewModel?.onChangeText = { _ in
+            handler()
+        }
+    }
 }
 
 extension TitledTextFieldView: UITextFieldDelegate {
+    
+    public func textFieldDidBeginEditing(_ textField: UITextField) {
+        self.viewModel?.fieldState.value = errorLabel.text == nil ? .focused : .error
+    }
+    
     public func textFieldDidEndEditing(_ textField: UITextField) {
         updateInstructionsState()
-        let inputText = textField.text ?? .empty
-        viewModel?.onEndEditing?(inputText)
+        viewModel?.onEndEditing?(textField.text ?? .empty)
+        self.viewModel?.fieldState.value = errorLabel.text == nil ? .unfocused : .error
     }
     
     public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
@@ -174,5 +274,15 @@ extension TitledTextFieldView: UITextFieldDelegate {
     public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
+    }
+}
+
+// MARK: - Constants
+extension TitledTextFieldView {
+    private enum Constants {
+        static let inputCode = "inputText"
+        static let offset: CGFloat = 8
+        static let stackSpacing: CGFloat = 8
+        static let separatorHeight: CGFloat = 2
     }
 }

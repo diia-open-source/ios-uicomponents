@@ -23,9 +23,11 @@ public class PairView: BaseCodeView {
         setupUI()
     }
     
-    public func configure(title: String, details: String) {
+    public func configure(title: String, details: String?) {
         titleLabel.text = title
         detailsLabel.text = details
+        
+        detailsLabel.isHidden = details == nil
         
         layoutIfNeeded()
     }

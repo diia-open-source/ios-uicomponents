@@ -2,26 +2,31 @@ import UIKit
 
 // MARK: - DSChipItemView
 public struct DSChipItem {
+    public let code: String?
     public let name: String
     public let numCount: Int?
     public var isSelected: Bool
+    public let action: DSActionParameter?
     
-    public init(name: String,
+    public init(code: String? = nil,
+                name: String,
                 numCount: Int?,
-                isSelected: Bool) {
+                isSelected: Bool,
+                action: DSActionParameter?) {
+        self.code = code
         self.name = name
         self.numCount = numCount
         self.isSelected = isSelected
+        self.action = action
     }
 }
 
-/// design_system_code: chipMlc
 public class DSChipItemView: BaseCodeView {
     private var itemLabel = UILabel()
     private var itemNumContainer = UIView()
     private var itemCounterLabel = UILabel()
     
-    private (set) var viewModel: DSChipItem?
+    private(set) var viewModel: DSChipItem?
     
     var isSelected: Bool = false {
         didSet {
@@ -29,7 +34,8 @@ public class DSChipItemView: BaseCodeView {
         }
     }
     public override func setupSubviews() {
-        itemLabel.textColor = .black
+        itemLabel.withParameters(font: FontBook.usualFont)
+        itemCounterLabel.withParameters(font: FontBook.usualFont)
         itemCounterLabel.textColor = .white
         itemCounterLabel.textAlignment = .center
         itemNumContainer.backgroundColor = .black
@@ -51,10 +57,10 @@ public class DSChipItemView: BaseCodeView {
         
         itemLabel.text = viewModel.name
         
-        itemNumContainer.isHidden = viewModel.numCount == nil && !(viewModel.numCount == 0)
+        itemNumContainer.isHidden = viewModel.numCount == nil || viewModel.numCount == 0
         
         if let numCount = viewModel.numCount, numCount != 0 {
-            itemCounterLabel.text = numCount.description
+            itemCounterLabel.text = numCount < 100 ? numCount.description : "99+"
         }
         
         backgroundColor = viewModel.isSelected ? .white : Constants.uncheckedColor
@@ -67,7 +73,7 @@ private extension DSChipItemView {
         static let labelHeight: CGFloat = 20
         static let stackSpacing: CGFloat = 8
         static let labelPadding: CGFloat = 4
-        static let offset: UIEdgeInsets = UIEdgeInsets(top: 10, left: 18, bottom: 10, right: 10)
+        static let offset: UIEdgeInsets = UIEdgeInsets(top: 10, left: 18, bottom: 10, right: 18)
     }
 }
 
@@ -101,7 +107,9 @@ public class DSChipTabsView: BaseCodeView {
         itemStack.distribution = .fill
         
         itemsScroll.translatesAutoresizingMaskIntoConstraints = false
-        itemsScroll.fillSuperview(padding: Constants.offset)
+        itemsScroll.fillSuperview(padding: Constants.scrollViewInsets)
+        itemsScroll.contentInset = Constants.offset
+        itemsScroll.contentOffset = Constants.startOffset
         itemsScroll.showsHorizontalScrollIndicator = false
         itemStack.fillSuperview()
         
@@ -139,5 +147,7 @@ private extension DSChipTabsView {
         static let itemHeight: CGFloat = 40
         static let stackSpacing: CGFloat = 8
         static let offset: UIEdgeInsets = UIEdgeInsets(top: 0, left: 24, bottom: 0, right: 24)
+        static let startOffset = CGPoint(x: -24, y: .zero)
+        static let scrollViewInsets: UIEdgeInsets = .init(top: 16, left: 0, bottom: 16, right: 0)
     }
 }

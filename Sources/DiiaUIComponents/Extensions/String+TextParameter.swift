@@ -29,14 +29,12 @@ public extension String {
 
             switch parameter.type {
             case .link:
-                if let link = parameter.data.resource.percentEncodedUrl() {
+                if let link = parameter.data.resource.percentEncodedUrl(), !link.isEmpty {
                     attributedText.addAttributes([.link: link], range: replacedRange)
                 }
             case .phone:
-                if parameter.data.resource.isValidPhoneNumber {
-                    let phoneLink = "tel://\(parameter.data.resource.components(separatedBy: CharacterSet.decimalDigits.inverted).joined())"
-                    attributedText.addAttributes([.link: phoneLink], range: replacedRange)
-                }
+                let phoneLink = "tel://\(parameter.data.resource.components(separatedBy: CharacterSet.decimalDigits.inverted).joined())"
+                attributedText.addAttributes([.link: phoneLink], range: replacedRange)
             case .email:
                 if parameter.data.resource.isValidEmail {
                     let emailLink = "mailto:\(parameter.data.resource)"

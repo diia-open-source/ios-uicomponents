@@ -1,3 +1,3 @@
 import Foundation
 
-protocol Rotatable {}
+public protocol Rotatable {}

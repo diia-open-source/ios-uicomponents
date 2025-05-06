@@ -2,7 +2,7 @@ import UIKit
 
 /// design_system_code: topGroupOrg
 public class DSTopGroupView: BaseCodeView {
-    private var navigation = DSNavigationBarView()
+    private var navigation = TopNavigationView()
     private var tabChipView = DSChipTabsView()
     
     public override func setupSubviews() {
@@ -10,17 +10,13 @@ public class DSTopGroupView: BaseCodeView {
         stack([navigation, tabChipView], spacing: Constants.stackSpacing)
     }
     
-    public func configure(navigationViewModel: DSNavigationBarViewModel,
+    public func configure(title: String,
                           tabsViewModel: DSChipTabViewModel? = nil) {
-        navigation.configure(viewModel: navigationViewModel)
+        navigation.setupTitle(title: title)
         tabChipView.isHidden = tabsViewModel == nil
         if let tabs = tabsViewModel {
             tabChipView.configure(viewModel: tabs)
         }
-    }
-    
-    public func setupTitle(_ title: String, font: UIFont? = nil) {
-        navigation.setupTitle(title, font: font)
     }
 }
 

@@ -8,10 +8,11 @@ public class DSTableItemView: BaseCodeView {
     internal var subValue = UILabel()
     internal var supportLabel = UILabel()
     internal var icon = UIImageView()
-    internal var actionButton = UIButton()
+    internal var actionButton = ActionButton(type: .icon)
         
     internal func setupUI() {
         actionButton.withSize(Constants.buttonSize)
+        actionButton.iconRenderingMode = .alwaysOriginal
         
         label.isHidden = true
         subLabel.isHidden = true
@@ -36,7 +37,7 @@ public class DSTableItemView: BaseCodeView {
         subValue.textColor = Constants.lightBlack
         subLabel.textColor = Constants.lightBlack
         
-        icon.contentMode = .left
+        icon.contentMode = .scaleAspectFit
     }
 }
 

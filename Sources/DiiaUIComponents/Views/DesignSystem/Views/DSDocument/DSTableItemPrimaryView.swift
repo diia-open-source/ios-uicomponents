@@ -17,8 +17,19 @@ public class DSTableItemPrimaryView: BaseCodeView {
         stack([titleLabel, valueIconStack], spacing: Constants.stackSpacing)
         
         iconButtonView.withSize(Constants.imageSize)
+        iconButtonView.contentHorizontalAlignment = .leading
         
         setupView()
+    }
+    
+    public func configure(for title: String, value: String, withIcon: Bool) {
+        titleLabel.text = title
+        valueLabel.text = value
+        iconButtonView.isHidden = !withIcon
+        if withIcon {
+            iconButtonView.setImage(UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: Constants.copyImage),
+                                    for: .normal)
+        }
     }
     
     public func configure(model: DSTableItemPrimaryMlc) {
@@ -63,27 +74,14 @@ public class DSTableItemPrimaryView: BaseCodeView {
         guard let resource = valueLabel.text else { return }
         UIPasteboard.general.string = resource
         UINotificationFeedbackGenerator().notificationOccurred(.success)
-        showSuccessMessage(message: R.Strings.general_number_copied.localized())
+        SwiftMessages.showSuccessMessage(message: R.Strings.general_number_copied.localized())
     }
-    
-    private func showSuccessMessage(message: String) {
-        let messageView = MessageView.viewFromNib(layout: .statusLine)
-        messageView.configureTheme(backgroundColor: .init(Constants.messageViewColor),
-                                   foregroundColor: .black)
-        messageView.configureContent(body: message)
-        messageView.titleLabel?.text = nil
-        messageView.button?.setTitle(nil, for: .normal)
-        messageView.button?.backgroundColor = .clear
-        messageView.button?.tintColor = .clear
-        SwiftMessages.show(view: messageView)
-    }
-    
 }
 
 extension DSTableItemPrimaryView {
     enum Constants {
-        static let messageViewColor = "#65C680"
         static let stackSpacing: CGFloat = 8
         static let imageSize = CGSize(width: 32, height: 32)
+        static let copyImage = "copy"
     }
 }

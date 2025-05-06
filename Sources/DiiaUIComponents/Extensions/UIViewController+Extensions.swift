@@ -15,13 +15,11 @@ extension UIViewController {
     // MARK: - Helping Navigation Methods
     @objc open func canGoBack() -> Bool {
         if !view.isUserInteractionEnabled { return false }
-        var canGoBack = true
         for child in children {
             if child as? ModalPresentationViewControllerProtocol != nil {
-                canGoBack = false
-                break
+                return false
             }
         }
-        return canGoBack
+        return true
     }
 }

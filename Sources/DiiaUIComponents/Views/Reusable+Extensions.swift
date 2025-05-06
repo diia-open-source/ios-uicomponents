@@ -42,6 +42,9 @@ extension NibLoadable where Self: UIView {
 
 // MARK: - UICollectionView
 public extension UICollectionView {
+    final func register<T: UICollectionViewCell>(cellType: T.Type) where T: NibReusable {
+        register(cellType.nib, forCellWithReuseIdentifier: cellType.reuseID)
+    }
     
     final func register<T: UICollectionViewCell>(cellType: T.Type) where T: Reusable {
         register(cellType.self, forCellWithReuseIdentifier: cellType.reuseID)
@@ -93,7 +96,10 @@ public extension UICollectionView {
 
 // MARK: - UITableView
 public extension UITableView {
-
+    final func register<T: UITableViewCell>(cellType: T.Type) where T: NibReusable {
+        register(cellType.nib, forCellReuseIdentifier: cellType.reuseID)
+    }
+    
     final func register<T: UITableViewCell>(cellType: T.Type) where T: Reusable {
         register(cellType.self, forCellReuseIdentifier: cellType.reuseID)
     }

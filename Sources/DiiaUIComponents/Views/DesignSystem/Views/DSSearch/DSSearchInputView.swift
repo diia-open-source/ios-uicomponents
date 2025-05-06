@@ -1,6 +1,13 @@
 import UIKit
 import DiiaCommonTypes
 
+public struct DSSearchModel: Codable {
+    public let componentId: String?
+    public let label : String
+    public let iconLeft: DSIconModel?
+    public let iconRight: DSIconModel?
+}
+
 public class DSSearchInputView: BaseCodeView {
     
     private var searchTextField = UITextField()
@@ -36,7 +43,8 @@ public class DSSearchInputView: BaseCodeView {
     
     private func setupUI() {
         layer.cornerRadius = Constants.cornerRadius
-        
+        backgroundColor = .white
+
         searchTextField.returnKeyType = .search
         searchTextField.textColor = .black
         searchTextField.tintColor = .black
@@ -56,8 +64,8 @@ public class DSSearchInputView: BaseCodeView {
     
     public func setup(placeholder: String,
                       font: UIFont = FontBook.usualFont,
-                      delegate: UITextFieldDelegate?,
-                      isActive: Bool,
+                      delegate: UITextFieldDelegate? = nil,
+                      isActive: Bool = true,
                       closeCallback: Callback? = nil,
                       textChangeCallback: Callback? = nil) {
         self.searchTextField.placeholder = placeholder
@@ -118,10 +126,9 @@ extension DSSearchInputView {
         static let placeholderDefaultEdge: CGFloat = 0
         static let viewPadding = UIEdgeInsets.init(top: 8, left: 12, bottom: 8, right: 8)
         static let viewSpacing: CGFloat = 8
-        static let viewHeight: CGFloat = 40
+        static let viewHeight: CGFloat = 24
         static let cornerRadius: CGFloat = 16
         static let buttonSize = CGSize(width: 24, height: 24)
         static let iconSize = CGSize(width: 24, height: 24)
     }
-    
 }

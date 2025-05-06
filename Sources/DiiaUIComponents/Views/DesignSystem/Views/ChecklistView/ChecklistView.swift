@@ -1,23 +1,36 @@
 import UIKit
+import DiiaCommonTypes
 
 // MARK: - ViewModel
 public class ChecklistViewModel {
     public let id: String?
     public let title: String?
     public let items: [ChecklistItemViewModel]
+    public let plainButton: Action?
     public let checklistType: ChecklistType
     public var onClick: (() -> Void)?
+    public let componentId: String?
+    public let inputCode: String?
+    public let mandatory: Bool?
     
     public init(id: String? = nil,
                 title: String?,
                 items: [ChecklistItemViewModel],
+                plainButton: Action? = nil,
                 checklistType: ChecklistType,
+                componentId: String? = nil,
+                inputCode: String? = nil,
+                mandatory: Bool? = nil,
                 onClick: (() -> Void)? = nil) {
         self.id = id
         self.title = title
         self.items = items
+        self.plainButton = plainButton
         self.checklistType = checklistType
         self.onClick = onClick
+        self.componentId = componentId
+        self.inputCode = inputCode
+        self.mandatory = mandatory
     }
     
     public func updateSelectionState(forItem selectedItem: ChecklistItemViewModel) {
@@ -33,21 +46,25 @@ public class ChecklistViewModel {
         onClick?()
     }
     
-    public func deselectAll() {
-        items.forEach { $0.isSelected = false }
+    public func deselectAll(except itemCode: String? = nil) {
+        items.forEach {
+            if $0.code == itemCode { return }
+            $0.isSelected = false
+        }
     }
     
     public func selectedItems() -> [ChecklistItemViewModel] {
-        return items.filter({ $0.isSelected })
+        return items.filter({ $0.isSelected && $0.isAvailable})
     }
 }
 
 /// design_system_code: checkboxRoundGroupOrg, radioBtnGroupOrg
-public class ChecklistView: BaseCodeView {
-    private lazy var stackView = UIStackView.create(views: [], in: self)
+///
+public class ChecklistView: BaseCodeView, DSInputComponentProtocol {
+    private lazy var stackView = UIStackView.create(in: self)
     private var itemViews: [ChecklistItemView] = []
     
-    private var viewModel: ChecklistViewModel?
+    private(set) var viewModel: ChecklistViewModel?
     
     public override func setupSubviews() {
         self.backgroundColor = .white
@@ -69,6 +86,10 @@ public class ChecklistView: BaseCodeView {
                 addSeparatorView()
             }
         }
+        
+        if let plainButtonVM = viewModel.plainButton {
+            addPlainButton(with: plainButtonVM)
+        }
     }
     
     // MARK: - Private Methods
@@ -81,9 +102,10 @@ public class ChecklistView: BaseCodeView {
     }
 
     private func appendItemView(with itemVM: ChecklistItemViewModel) {
+        accessibilityIdentifier = itemVM.componentId
         guard let viewModel = viewModel else { return }
-        itemVM.onClick = {
-            viewModel.updateSelectionState(forItem: itemVM)
+        itemVM.onClick = { [weak viewModel] in
+            viewModel?.updateSelectionState(forItem: itemVM)
         }
 
         let itemView = ChecklistItemView()
@@ -94,6 +116,16 @@ public class ChecklistView: BaseCodeView {
         stackView.addArrangedSubview(itemViewBox)
     }
     
+    private func addPlainButton(with model: Action) {
+        let plainButton = ActionButton()
+        plainButton.setupUI(font: FontBook.usualFont, secondaryColor: .clear)
+        plainButton.withHeight(Constants.buttonHeight)
+        plainButton.titleEdgeInsets = Constants.buttonTitleEdgeInsets
+        plainButton.action = model
+        addSeparatorView()
+        stackView.addArrangedSubview(plainButton)
+    }
+    
     private func addSeparatorView() {
         let separatorBox = BoxView(subview: UIView()).withConstraints(
             insets: .zero,
@@ -102,12 +134,44 @@ public class ChecklistView: BaseCodeView {
         separatorBox.subview.backgroundColor = UIColor(AppConstants.Colors.emptyDocuments)
         stackView.addArrangedSubview(separatorBox)
     }
+    
+    //MARK: - DSInputComponentProtocol
+    public func isValid() -> Bool {
+        if viewModel?.mandatory == false {
+            return true
+        } else {
+            return !(viewModel?.selectedItems().isEmpty ?? true)
+        }
+    }
+    
+    public func inputCode() -> String {
+        return viewModel?.inputCode ?? viewModel?.id ?? "radioBtnGroupOrg"
+    }
+    
+    public func inputData() -> AnyCodable? {
+        guard let viewModel = viewModel else { return nil }
+        switch viewModel.checklistType {
+        case .single:
+            return viewModel.selectedItems().first?.getInputData()
+        case .multiple:
+            let codeList: [AnyCodable] = viewModel.selectedItems().compactMap {
+                return $0.getInputData()
+            }
+            return .array(codeList)
+        }
+    }
+    
+    public func setOnChangeHandler(_ handler: @escaping () -> Void) {
+        viewModel?.onClick = handler
+    }
 }
 
 // MARK: - Constants
 extension ChecklistView {
     private enum Constants {
         static let cornerRadius: CGFloat = 8
+        static let buttonTitleEdgeInsets: UIEdgeInsets = .init(top: 0, left: 8, bottom: 0, right: 0)
+        static let buttonHeight: CGFloat = 56
         static let contentInsets = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
         static let separatorHeight: CGFloat = 1
     }

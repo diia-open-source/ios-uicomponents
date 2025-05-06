@@ -26,7 +26,9 @@ public final class PresentedController: UIViewController, ModalPresentationViewC
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        parent?.viewWillDisappear(animated)
+        parent?.beginAppearanceTransition(false, animated: false)
+        parent?.endAppearanceTransition()
+
         if !isFinishLoading {
             changeTopOffset(offset: 0, animated: true)
             isFinishLoading = true
@@ -35,39 +37,49 @@ public final class PresentedController: UIViewController, ModalPresentationViewC
     
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        parent?.viewDidDisappear(animated)
+
+        UIAccessibility.post(notification: .screenChanged, argument: self)
     }
     
     private func setupViews() {
         view.backgroundColor = .clear
-        generalView.layer.cornerRadius = Constants.cardCornerRadius
+        view.accessibilityViewIsModal = true
+        
         generalView.clipsToBounds = true
+        
         let fullScreenPresentations = [UIModalPresentationStyle.fullScreen, .overFullScreen]
         let isFullScreen = fullScreenPresentations.contains(viewController.modalPresentationStyle)
+        let isCustomPresentation = viewController.modalPresentationStyle == .custom
+
         let topInset = isFullScreen ? 0 : Constants.topPosition
         view.addSubview(generalView)
 
         if !isFullScreen {
-            if #available(iOS 11.0, *) {
-                generalView.anchor(top: view.safeAreaLayoutGuide.topAnchor, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor, padding: .init(top: topInset, left: 0, bottom: 0, right: 0))
-            } else {
-                generalView.anchor(top: topLayoutGuide.bottomAnchor, leading: view.leadingAnchor, bottom: view.bottomAnchor, trailing: view.trailingAnchor, padding: .init(top: topInset, left: 0, bottom: 0, right: 0))
-            }
+            generalView.layer.cornerRadius = Constants.cardCornerRadius
+            generalView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+            generalView.anchor(top: view.safeAreaLayoutGuide.topAnchor,
+                               leading: view.leadingAnchor,
+                               bottom: view.bottomAnchor,
+                               trailing: view.trailingAnchor,
+                               padding: .init(top: topInset, left: 0, bottom: 0, right: 0))
             presentationView.backgroundColor = Constants.topLineColor
             presentationView.layer.cornerRadius = Constants.topLineHeight/2
             
             generalView.addSubview(childContainerView)
             childContainerView.fillSuperview()
             
-            generalView.addSubview(presentationView)
+            if !isCustomPresentation {
+                generalView.addSubview(presentationView)
+                presentationView.anchor(top: generalView.topAnchor,
+                                        leading: nil,
+                                        bottom: nil,
+                                        trailing: nil,
+                                        padding: .init(top: Constants.topLineInset, left: 0, bottom: 0, right: 0),
+                                        size: .init(width: Constants.topLineWidth, height: Constants.topLineHeight))
+                presentationView.centerXAnchor.constraint(equalTo: generalView.centerXAnchor).isActive = true
+            }
             generalView.backgroundColor = viewController.view.backgroundColor ?? viewController.children.first?.view.backgroundColor
-            presentationView.anchor(top: generalView.topAnchor,
-                                    leading: nil,
-                                    bottom: nil,
-                                    trailing: nil,
-                                    padding: .init(top: Constants.topLineInset, left: 0, bottom: 0, right: 0),
-                                    size: .init(width: Constants.topLineWidth, height: Constants.topLineHeight))
-            presentationView.centerXAnchor.constraint(equalTo: generalView.centerXAnchor).isActive = true
+
             let topView = UIView()
             generalView.addSubview(topView)
             topView.backgroundColor = .clear
@@ -99,7 +111,6 @@ public final class PresentedController: UIViewController, ModalPresentationViewC
     
     // MARK: - Actions
     @objc public func hide(animated: Bool = true) {
-        parent?.viewWillAppear(animated)
         changeTopOffset(offset: Constants.bottomPosition, animated: animated)
     }
     
@@ -119,7 +130,7 @@ public final class PresentedController: UIViewController, ModalPresentationViewC
                 },
                 completion: { [weak self] _ in
                     if isClosing {
-                        self?.close()
+                        self?.removeFromSuperview()
                     }
                 }
             )
@@ -127,15 +138,16 @@ public final class PresentedController: UIViewController, ModalPresentationViewC
             self.generalView.transform = .init(translationX: 0, y: offset)
             self.view.backgroundColor = backColor
             if isClosing {
-                self.close()
+                self.removeFromSuperview()
             }
         }
     }
     
-    private func close() {
+    private func removeFromSuperview() {
         if let parent = self.parent {
             VCChildComposer.removeChild(self, from: parent, animationType: .none)
-            parent.viewDidAppear(true)
+            parent.beginAppearanceTransition(true, animated: false)
+            parent.endAppearanceTransition()
         }
     }
     
@@ -145,7 +157,7 @@ public final class PresentedController: UIViewController, ModalPresentationViewC
         
         switch sender.state {
         case .began:
-            parent?.viewWillAppear(false)
+            break
         case .changed:
             if translation.y > 0 {
                 changeTopOffset(offset: translation.y, animated: false)

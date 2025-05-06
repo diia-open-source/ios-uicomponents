@@ -34,12 +34,12 @@ class VideoControlsView: UIView {
     }
 
     private func makeConstraints() {
-        playButton.withSize(.init(width: 48, height: 48))
+        playButton.withSize(Constants.buttonSize)
         playButton.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         playButton.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-        progressView.anchor(top: nil, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor, padding: .init(top: 0, left: 24, bottom: 48, right: 24), size: .init(width: 0, height: 16))
-        durationLabel.anchor(top: nil, leading: nil, bottom: progressView.topAnchor, trailing: trailingAnchor, padding: .init(top: 0, left: 0, bottom: 4, right: 24))
-        timeLabel.anchor(top: nil, leading: leadingAnchor, bottom: progressView.topAnchor, trailing: nil, padding: .init(top: 0, left: 24, bottom: 4, right: 0))
+        progressView.anchor(top: nil, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor, padding: Constants.progressViewPadding, size: .init(width: 0, height: 16))
+        durationLabel.anchor(top: nil, leading: nil, bottom: progressView.topAnchor, trailing: trailingAnchor, padding: Constants.durationLabelPadding)
+        timeLabel.anchor(top: nil, leading: leadingAnchor, bottom: progressView.topAnchor, trailing: nil, padding: Constants.labelPadding)
 
     }
 
@@ -48,9 +48,7 @@ class VideoControlsView: UIView {
             $0.font = FontBook.usualFont
             $0.textColor = .white
         }
-
-        progressView.maximumTrackTintColor = .white.withAlphaComponent(0.25)
-        progressView.tintColor = .white
+        progressView.setMinimumTrackImage(R.image.loadingBar.image, for: .normal)
         progressView.setThumbImage(R.image.playbackSliderThumb.image, for: .normal)
     }
 
@@ -86,5 +84,14 @@ class VideoControlsView: UIView {
 
     func updateProgress(progress: Float) {
         progressView.value = progress
+    }
+}
+
+extension VideoControlsView {
+    enum Constants {
+        static let buttonSize = CGSize(width: 48, height: 48)
+        static let progressViewPadding = UIEdgeInsets(top: 0, left: 24, bottom: 80, right: 24)
+        static let durationLabelPadding = UIEdgeInsets(top: 0, left: 0, bottom: 4, right: 24)
+        static let labelPadding = UIEdgeInsets(top: 0, left: 24, bottom: 4, right: 0)
     }
 }

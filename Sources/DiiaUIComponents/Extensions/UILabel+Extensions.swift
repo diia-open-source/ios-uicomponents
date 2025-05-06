@@ -17,10 +17,11 @@ public extension UILabel {
     }
     
     @discardableResult
-    func withParameters(font: UIFont, textColor: UIColor = .black, numberOfLines: Int = 0, lineBreakMode: NSLineBreakMode = .byWordWrapping) -> UILabel {
+    func withParameters(font: UIFont, textColor: UIColor = .black, numberOfLines: Int = 0, textAlignment: NSTextAlignment = .natural, lineBreakMode: NSLineBreakMode = .byWordWrapping) -> UILabel {
         self.font = font
         self.textColor = textColor
         self.numberOfLines = numberOfLines
+        self.textAlignment = textAlignment
         self.lineBreakMode = lineBreakMode
         
         return self

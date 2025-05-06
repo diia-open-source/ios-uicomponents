@@ -3,15 +3,28 @@ import DiiaCommonTypes
 
 /// design_system_code: checkboxBtnOrg
 public class BorderedCheckmarksWithButtonsViewModel: NSObject {
-    public let checkmarksTexts: [String]
+    public let checkmarkItems: [DSCheckboxSquareMlc]
     public let buttonActions: [Action]
+    public let componentId: String?
+    
+    public init(
+        checkmarkItems: [DSCheckboxSquareMlc],
+        buttonActions: [Action],
+        componentId: String? = nil
+    ) {
+        self.checkmarkItems = checkmarkItems
+        self.buttonActions = buttonActions
+        self.componentId = componentId
+    }
     
     public init(
         checkmarksTexts: [String],
-        buttonActions: [Action]
+        buttonActions: [Action],
+        componentId: String? = nil
     ) {
-        self.checkmarksTexts = checkmarksTexts
+        self.checkmarkItems = checkmarksTexts.map({DSCheckboxSquareMlc(label: $0)})
         self.buttonActions = buttonActions
+        self.componentId = componentId
     }
 }
 
@@ -19,7 +32,7 @@ public class BorderedCheckmarksWithButtonsView: UIView {
     // MARK: - Outlets
     @IBOutlet private weak var borderedView: UIView!
     @IBOutlet private weak var checkmarkStack: UIStackView!
-    @IBOutlet private weak var mainButton: LoadingStateButton!
+    @IBOutlet private weak var mainButton: DSPrimaryDefaultButton!
     @IBOutlet private weak var altButtonsStack: UIStackView!
     @IBOutlet private var buttonConstraints: [NSLayoutConstraint]!
 
@@ -63,6 +76,7 @@ public class BorderedCheckmarksWithButtonsView: UIView {
     }
 
     public func configure(model: BorderedCheckmarksWithButtonsViewModel) {
+        accessibilityIdentifier = model.componentId
         altButtonsStack.safelyRemoveArrangedSubviews()
         model.buttonActions.enumerated().forEach { index, item in
             if index == 0 {
@@ -76,13 +90,16 @@ public class BorderedCheckmarksWithButtonsView: UIView {
             }
         }
         altButtonsStack.isHidden = model.buttonActions.count < 2
-        checkMarksState = .init(repeating: false, count: model.checkmarksTexts.count)
+        checkMarksState = .init(repeating: false, count: model.checkmarkItems.count)
 
         checkmarkStack.safelyRemoveArrangedSubviews()
-        model.checkmarksTexts.enumerated().forEach { index, item in
+        model.checkmarkItems.enumerated().forEach { index, item in
             let checkmark = BoxView(subview: CheckmarkView())
             checkmarkStack.addArrangedSubview(checkmark)
-            checkmark.subview.configure(text: item, isChecked: false, onChange: { [weak self] isChecked in
+            checkmark.subview.configure(text: item.label,
+                                        isChecked: item.isSelected ?? false,
+                                        componentId: item.componentId,
+                                        onChange: { [weak self] isChecked in
                 self?.checkMarksState[index] = isChecked
             })
         }
@@ -110,7 +127,7 @@ public class BorderedCheckmarksWithButtonsView: UIView {
     public func setMainButtonState(_ state: LoadingStateButton.LoadingState, title: String? = nil) {
         forceSetMainButtonState(state, title: title)
         switch state {
-        case .light, .solid:
+        case .enabled:
             updateActionButtonState()
         default:
             break
@@ -148,7 +165,7 @@ public class BorderedCheckmarksWithButtonsView: UIView {
     private func updateActionButtonState() {
         mainButton.setLoadingState(
             (checkMarksState.allSatisfy({$0}) || checkMarksState.count == 0) && isActive
-            ? .solid
+            ? .enabled
             : .disabled)
     }
 }

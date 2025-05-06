@@ -28,22 +28,22 @@ public extension UIView {
     }
     
     @discardableResult
-    func withSize<T: UIView>(_ size: CGSize) -> T {
+    func withSize(_ size: CGSize) -> Self {
         translatesAutoresizingMaskIntoConstraints = false
         widthAnchor.constraint(equalToConstant: size.width).isActive = true
         heightAnchor.constraint(equalToConstant: size.height).isActive = true
-        return self as! T // swiftlint:disable:this force_cast
+        return self
     }
     
     @discardableResult
-    func withHeight(_ height: CGFloat) -> UIView {
+    func withHeight(_ height: CGFloat) -> Self {
         translatesAutoresizingMaskIntoConstraints = false
         heightAnchor.constraint(equalToConstant: height).isActive = true
         return self
     }
     
     @discardableResult
-    func withWidth(_ width: CGFloat) -> UIView {
+    func withWidth(_ width: CGFloat) -> Self {
         translatesAutoresizingMaskIntoConstraints = false
         widthAnchor.constraint(equalToConstant: width).isActive = true
         return self

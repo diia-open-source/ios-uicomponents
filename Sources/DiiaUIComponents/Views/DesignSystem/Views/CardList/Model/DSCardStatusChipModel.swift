@@ -1,26 +1,27 @@
-//
-//  DSCardStatusChipModel.swift
-//  Diia
-//
 
-public struct DSCardStatusChipModel: Codable {
+import UIKit
+
+public struct DSCardStatusChipModel: Codable, Equatable {
     public let code: String
     public let name: String
     public let type: DSCardStatusChipType
+    public let componentId: String?
     
     public init(code: String,
                 name: String,
-                type: DSCardStatusChipType) {
+                type: DSCardStatusChipType,
+                componentId: String?) {
         self.code = code
         self.name = name
         self.type = type
+        self.componentId = componentId
     }
     
     public var statusTextColor: String {
         switch self.type {
         case .fail, .success:
             return AppConstants.Colors.white
-        case .neutral, .pending:
+        case .neutral, .pending, .white:
             return AppConstants.Colors.black
         }
     }
@@ -35,13 +36,21 @@ public struct DSCardStatusChipModel: Codable {
             return AppConstants.Colors.statusYellow
         case .success:
             return AppConstants.Colors.statusGreen
+        case .white:
+            return AppConstants.Colors.white
+        }
+    }
+    
+    public var borderColor: UIColor {
+        switch self.type {
+        case .white:
+            return .lightGray
+        default:
+            return .clear
         }
     }
 }
 
-public enum DSCardStatusChipType: String, Codable {
-    case success
-    case pending
-    case fail
-    case neutral
+public enum DSCardStatusChipType: String, Codable, Equatable {
+    case success, pending, fail, neutral, white
 }

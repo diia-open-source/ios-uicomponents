@@ -1,8 +1,9 @@
 import UIKit
 
-/// design_system_code: btnIconPlainGroupMlc
+/// design_system_code: btnLoadIconPlainGroupMlc
 public class BorderedActionsView: BaseCodeView {
     private lazy var contentStackView = UIStackView.create(views: [], spacing: Constants.stackSpacing, in: self, padding: Constants.stackPadding)
+    private var viewModels = [IconedLoadingStateViewModel]()
     
     public override func setupSubviews() {
         self.backgroundColor = .clear
@@ -12,8 +13,9 @@ public class BorderedActionsView: BaseCodeView {
     
     // MARK: - Public methods
     public func configureView(with actions: [IconedLoadingStateViewModel]) {
+        viewModels = actions
         contentStackView.safelyRemoveArrangedSubviews()
-        actions.forEach {
+        viewModels.forEach {
             let iconedLoadingView = IconedLoadingStateView()
             iconedLoadingView.configure(viewModel: $0)
             contentStackView.addArrangedSubview(iconedLoadingView)

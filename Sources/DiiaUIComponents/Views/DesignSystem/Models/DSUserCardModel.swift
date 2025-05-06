@@ -1,4 +1,4 @@
-import Foundation
+import UIKit
 
 public struct DSUserCardModel: Codable {
     public let componentId: String?
@@ -7,11 +7,24 @@ public struct DSUserCardModel: Codable {
     public let description: String?
 }
 
-public struct DSUserPictureModel: Codable {
+public class DSUserPictureModel: Codable {
     public let componentId: String?
-    public let useDocPhoto: Bool?
+    public var useDocPhoto: Bool?
     public let defaultImageCode: DSUserPictureCode?
+    public var userPhoto: String?
     public let action: DSActionParameter?
+    
+    init(componentId: String?,
+         useDocPhoto: Bool?,
+         defaultImageCode: DSUserPictureCode?,
+         userPhoto: String?,
+         action: DSActionParameter?) {
+        self.componentId = componentId
+        self.useDocPhoto = useDocPhoto
+        self.defaultImageCode = defaultImageCode
+        self.userPhoto = userPhoto
+        self.action = action
+    }
 }
 
 public enum DSUserPictureCode: String, Codable {

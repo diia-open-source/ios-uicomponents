@@ -12,7 +12,8 @@ public enum DropContentState {
 public class DropContentViewModel: NSObject {
     let title: String
     let placeholder: String
-    public var items: [SearchModel] = [] {
+    
+    public var items: [SearchItemModel] = [] {
         didSet {
             switch items.count {
             case 1: selectedItem = items[0]
@@ -21,17 +22,19 @@ public class DropContentViewModel: NSObject {
             }
         }
     }
-    public var selectedItem: SearchModel? {
+
+    public var selectedItem: SearchItemModel? {
         didSet {
-            if let selectedItem = selectedItem {
-                if items.count == 1 {
-                    state = .single(text: selectedItem.title)
-                } else {
-                    state = .selected(text: selectedItem.title)
-                }
+            guard let selectedItem else { return }
+
+            if items.count == 1 {
+                state = .single(text: selectedItem.title)
+            } else {
+                state = .selected(text: selectedItem.title)
             }
         }
     }
+    
     public var onClick: Callback?
     public var state: DropContentState = .disabled {
         didSet {

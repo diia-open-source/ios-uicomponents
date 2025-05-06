@@ -6,14 +6,15 @@ public class DSTableBlockOrgView: BaseCodeView {
     
     public override func setupSubviews() {
         super.setupSubviews()
+        translatesAutoresizingMaskIntoConstraints = false
         addSubview(planeTableBlock)
         backgroundColor = .white
         layer.cornerRadius = Constants.cornerRadius
         planeTableBlock.fillSuperview(padding: .init(top: Constants.allSidePadding, left: 0, bottom: Constants.allSidePadding, right: 0))
     }
     
-    public func configure(for model: DSTableBlockItemModel) {
-        planeTableBlock.configure(for: model)
+    public func configure(for model: DSTableBlockItemModel, eventHandler: ((ConstructorItemEvent) -> Void)? = nil) {
+        planeTableBlock.configure(for: model, eventHandler: eventHandler)
     }
 }
 

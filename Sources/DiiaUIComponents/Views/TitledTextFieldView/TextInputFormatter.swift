@@ -26,20 +26,59 @@ public enum TextInputFormatter {
         }
     }
     
+    public static func sumFormatter(
+        textField: UITextField,
+        onChange: ((String) -> Void)? = nil
+    ) -> ((String?, NSRange, String) -> Bool) {
+        return { [weak textField] originalText, range, string in
+            if string.isEmpty { return true }
+            let string = string.replacingOccurrences(of: ",", with: ".")
+            var text = originalText ?? ""
+            if let range = Range(range, in: text) {
+                text = text.replacingCharacters(in: range, with: string)
+            }
+            
+            if text.isValidSum {
+                textField?.text = text
+                onChange?(text)
+            }
+            return false
+        }
+    }
+    
     public static func phoneFormatter(
         textField: UITextField,
+        mask: String? = nil,
         onChange: ((String) -> Void)? = nil
     ) -> ((String?, NSRange, String) -> Bool) {
         return { [weak textField] originalText, range, string in
             guard let newString = (originalText as? NSString)?
                 .replacingCharacters(in: range, with: string)
-                .formattedPhoneNumber()
+                .formattedPhoneNumber(mask: mask ?? "+XX (XXX) XXX XX XX")
             else {
                 return false
             }
             textField?.text = newString
             onChange?(newString)
             
+            return false
+        }
+    }
+    
+    public static func textFormatter(
+        textField: UITextField,
+        mask: String,
+        onChange: ((String) -> Void)? = nil
+    ) -> ((String?, NSRange, String) -> Bool) {
+        return { [weak textField] originalText, range, string in
+            guard let newString = (originalText as? NSString)?
+                .replacingCharacters(in: range, with: string)
+                .formattedText(mask: mask)
+            else {
+                return false
+            }
+            textField?.text = newString
+            onChange?(newString)
             return false
         }
     }

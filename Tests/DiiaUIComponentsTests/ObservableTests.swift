@@ -20,6 +20,9 @@ final class ObservableTests: XCTestCase {
             case .readyForPlaying(url: _):
                 XCTFail("event is not expected here")
                 break
+            case .readyForLoading(url: _):
+                XCTFail("event is not expected here")
+                break
             }
         }
         
@@ -45,6 +48,8 @@ final class ObservableTests: XCTestCase {
                 break
             case .readyForPlaying(url: _):
                 break
+            case .readyForLoading(url: _):
+                break
             }
         }
         
@@ -66,6 +71,9 @@ final class ObservableTests: XCTestCase {
                 XCTFail("event is not expected here, once Observation must be called before performing callback")
                 break
             case .readyForPlaying(url: _):
+                XCTFail("event is not expected here")
+                break
+            case .readyForLoading(url: _):
                 XCTFail("event is not expected here")
                 break
             }

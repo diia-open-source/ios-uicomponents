@@ -15,9 +15,15 @@ opt_in_rules:
   - private_outlet
   - multiline_arguments
   - return_arrow_whitespace
-  - unused_import
   - force_unwrapping
 
+analyzer_rules:
+  - unused_import
+  - unused_declaration
+  
+unused_declaration:
+  severity: warning
+  
 cyclomatic_complexity:
   warning: 10
   error: 20

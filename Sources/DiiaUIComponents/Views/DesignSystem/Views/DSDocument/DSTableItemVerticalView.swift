@@ -3,16 +3,17 @@ import SwiftMessages
 
 /// design_system_code: tableItemVerticalMlc
 public class DSTableItemVerticalView: DSTableItemView {
+    private var eventHandler: ((ConstructorItemEvent) -> Void)?
     
     private let mainStack = UIStackView.create(.horizontal, views: [], spacing: Constants.spacing, alignment: .top)
-    private let valueStack = UIStackView.create(.horizontal, views: [], alignment: .center)
+    private let labelStack = UIStackView.create(.horizontal, views: [], alignment: .top)
     private let labelValueStack = UIStackView.create(views: [], spacing: Constants.stackSpacing)
     
     public override func setupSubviews() {
         super.setupSubviews()
         translatesAutoresizingMaskIntoConstraints = false
-        valueStack.addArrangedSubviews([value, UIView(), actionButton])
-        labelValueStack.addArrangedSubviews([label, subLabel, valueStack, subValue, icon])
+        labelStack.addArrangedSubviews([label, UIView(), actionButton])
+        labelValueStack.addArrangedSubviews([labelStack, subLabel, value, subValue, icon])
         mainStack.addArrangedSubviews([supportLabel, labelValueStack])
         addSubview(mainStack)
         mainStack.fillSuperview()
@@ -21,7 +22,8 @@ public class DSTableItemVerticalView: DSTableItemView {
         setupUI()
     }
     
-    public func configure(model: DSTableItemVerticalMlc, image: UIImage? = nil) {
+    public func configure(model: DSTableItemVerticalMlc, image: UIImage? = nil, eventHandler: ((ConstructorItemEvent) -> Void)? = nil) {
+        self.eventHandler = eventHandler
         label.attributedText = model.label?.attributed(font: FontBook.usualFont,
                                                        lineHeightMultiple: Constants.lineHeightMultiply,
                                                        lineHeight: Constants.lineHeight,
@@ -35,6 +37,7 @@ public class DSTableItemVerticalView: DSTableItemView {
                                                        lineHeightMultiple: Constants.lineHeightMultiply,
                                                        lineHeight: Constants.lineHeight,
                                                        lineBreakMode: .byWordWrapping)
+        
         subValue.attributedText = model.secondaryValue?.attributed(font: FontBook.usualFont,
                                                                    color: Constants.lightBlack,
                                                                    lineHeightMultiple: Constants.lineHeightMultiply,
@@ -66,12 +69,14 @@ public class DSTableItemVerticalView: DSTableItemView {
         icon.isHidden = image == nil
         actionButton.isHidden = model.icon == nil || value.isHidden
         
-        if let icon = model.icon {
-            actionButton.setImage(UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: icon.code), for: .normal)
-            actionButton.addTarget(self, action: #selector(copyValue), for: .touchUpInside)
+        if let icon = model.icon, let action = icon.action {
+            actionButton.action = .init(image: UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: icon.code), callback: { [weak self] in
+                self?.handleClick(action: action)
+            })
         }
         
-        self.icon.image = image?.imageByMakingWhiteBackgroundTransparent()?.scaled(forFittingSize: Constants.signSize)
+        self.icon.image = image?.imageByMakingWhiteBackgroundTransparent()?.scaled(forFittingSize: Constants.signSize,
+                                                                                   scale: UIScreen.main.scale)
         self.icon.contentMode = .left
         
         if !supportLabel.isHidden {
@@ -80,32 +85,26 @@ public class DSTableItemVerticalView: DSTableItemView {
         if !actionButton.isHidden {
             actionButton.widthAnchor.constraint(equalTo: widthAnchor, multiplier: Constants.proportionMultiplier).isActive = true
         }
+
+        mainStack.layoutIfNeeded()
     }
     
-    @objc private func copyValue() {
-        guard let resource = value.text else { return }
-        UIPasteboard.general.string = resource
-        UINotificationFeedbackGenerator().notificationOccurred(.success)
-        showSuccessMessage(message: R.Strings.general_number_copied.localized())
+    private func handleClick(action: DSActionParameter) {
+        switch action.type {
+        case "copy":
+            guard let resource = value.text else { return }
+            UIPasteboard.general.string = resource
+            UINotificationFeedbackGenerator().notificationOccurred(.success)
+            SwiftMessages.showSuccessMessage(message: R.Strings.general_number_copied.localized())
+        default:
+            eventHandler?(.action(action))
+        }
     }
-    
-    private func showSuccessMessage(message: String) {
-        let messageView = MessageView.viewFromNib(layout: .statusLine)
-        messageView.configureTheme(backgroundColor: .init(Constants.messageViewColor), foregroundColor: .black)
-        messageView.configureContent(body: message)
-        messageView.titleLabel?.text = nil
-        messageView.button?.setTitle(nil, for: .normal)
-        messageView.button?.backgroundColor = .clear
-        messageView.button?.tintColor = .clear
-        SwiftMessages.show(view: messageView)
-    }
-    
 }
 
 extension DSTableItemVerticalView {
     enum Constants {
         static let signProportion: CGFloat = 3/8
-        static let messageViewColor = "#65C680"
         static let stackSpacing: CGFloat = 4
         static let horizontalSpacing: CGFloat = 12
         static let lineHeightMultiply: CGFloat = 1.25

@@ -55,12 +55,12 @@ public class FloatingTextLabel: BaseCodeView {
         }
     }
     
-    public func configure(model: DSTickerAtom, leadingBuffer: CGFloat = 0) {
+    public func configure(model: DSTickerAtom, leadingBuffer: CGFloat = 16) {
         self.leadingBuffer = leadingBuffer
         withHeight(model.usage.height)
         layoutIfNeeded()
         labelText = model.value
-        configureUI(backgroundImage: backgroundImage(type: model.type))
+        configureUI(backgroundImage: model.type.backgroundImage)
         animate()
         accessibilityIdentifier = model.componentId
     }
@@ -69,22 +69,9 @@ public class FloatingTextLabel: BaseCodeView {
         stopAnimation()
     }
 
-    private func backgroundImage(type: DSTickerType) -> UIImage {
-        switch type {
-        case .neutral:
-            return UIImage.from(color: UIColor(AppConstants.Colors.tickerGrayColor))
-        case .positive:
-            return R.image.insuranceBar.image ?? UIImage()
-        case .informative:
-            return UIImage.from(color: UIColor(AppConstants.Colors.tickerBlueColor))
-        case .warning:
-            return UIImage.from(color: UIColor(AppConstants.Colors.yellowErrorColor))
-        }
-    }
-
     public func configureUI(font: UIFont = FontBook.usualFont,
                             backgroundImage: UIImage = UIImage.from(color: UIColor(AppConstants.Colors.yellowErrorColor)),
-                            leadingBuffer: CGFloat = 0.0,
+                            leadingBuffer: CGFloat = 16,
                             loopStartDelay: TimeInterval = 0.0) {
         self.font = font
         self.backgroundImage = backgroundImage

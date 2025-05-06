@@ -4,24 +4,24 @@ open class LoadingStateButton: UIButton {
 
     // MARK: - LoadingState
     public enum LoadingState {
-        case light
-        case lightLoading
-        case solid
-        case solidLoading
         case loadedWithCheckmark
         case loadedWithArrow
         case disabled
-        case lightDisabled
+        case enabled
+        case loading
     }
     
     // MARK: - Properties
-    public private(set) var loadingState: LoadingState = .light
-    
-    private lazy var loadingImageView: UIImageView = {
-        let view = UIImageView(image: R.image.gradienCircle.image)
-        initialSetup(forLeftView: view)
+    public private(set) var loadingState: LoadingState = .enabled
+    private var buttonStyle: LoadingStateButtonStyle = .solid
         
-        return view
+    private lazy var loadingImageView: AnimationView = {
+        let loadingContainer = LoadingContainerView()
+        loadingContainer.configure(size: Constants.loadingViewSize, loadingImage: R.image.gradienCircle.image)
+        let animationView = AnimationView(loadingContainer)
+        animationView.isHidden = true
+        initialSetup(forLeftView: animationView)
+        return animationView
     }()
     
     private lazy var checkmarkImageView: UIImageView = {
@@ -109,43 +109,46 @@ open class LoadingStateButton: UIButton {
         layoutIfNeeded()
     }
     
+    public func setStyle(style: LoadingStateButtonStyle) {
+        self.buttonStyle = style
+        updateColors()
+    }
+    
+    private func setStyleConfiguration(configuration: ButtonStyleConfiguration) {
+        backgroundColor = configuration.backgroundColor
+        setTitleColor(configuration.titleColor, for: .normal)
+        if let icon = configuration.icon {
+            setImage(icon, for: .normal)
+        }
+        if let borderColor = configuration.borderColor,
+           let borderWidth = configuration.borderWidth,
+           borderWidth > 0 {
+            self.layer.borderWidth = borderWidth
+            self.layer.borderColor = borderColor.cgColor
+        } else {
+            self.layer.borderWidth = 0
+        }
+    }
+    
     // MARK: - Private Methods
     private func updateColors() {
-        let backgroundColor: UIColor
-        let titleColor: UIColor
-        let borderColor: UIColor
-        
         switch loadingState {
-        case .light, .lightLoading:
-            backgroundColor = .clear
-            titleColor = .black
-            borderColor = .black
-        case .solid, .solidLoading:
-            backgroundColor = .black
-            titleColor = .white
-            borderColor = .black
-        case .loadedWithCheckmark, .loadedWithArrow:
-            backgroundColor = UIColor(AppConstants.Colors.sendCopiesSuccess)
-            titleColor = .white
-            borderColor = UIColor(AppConstants.Colors.sendCopiesSuccess)
         case .disabled:
-            backgroundColor = UIColor.black.withAlphaComponent(Constants.disabledAlpha)
-            titleColor = .white
-            borderColor = UIColor.black.withAlphaComponent(Constants.disabledAlpha)
-        case .lightDisabled:
-            backgroundColor = .clear
-            titleColor = .black.withAlphaComponent(Constants.disabledAlpha)
-            borderColor = .black.withAlphaComponent(Constants.disabledAlpha)
+            setStyleConfiguration(configuration: buttonStyle.disabledStyle)
+        case .enabled:
+            setStyleConfiguration(configuration: buttonStyle.enabledStyle)
+        case .loading:
+            setStyleConfiguration(configuration: buttonStyle.loadingStyle)
+        case .loadedWithCheckmark, .loadedWithArrow:
+            self.backgroundColor = UIColor(AppConstants.Colors.sendCopiesSuccess)
+            self.setTitleColor(.white, for: .normal)
+            self.layer.borderColor = UIColor(AppConstants.Colors.sendCopiesSuccess).cgColor
         }
-        
-        self.backgroundColor = backgroundColor
-        self.setTitleColor(titleColor, for: .normal)
-        self.layer.borderColor = borderColor.cgColor
     }
     
     private func updateUserInteraction() {
         switch loadingState {
-        case .solid, .light, .loadedWithArrow:
+        case .enabled, .loadedWithArrow:
             isUserInteractionEnabled = true
         default:
             isUserInteractionEnabled = false
@@ -159,14 +162,14 @@ open class LoadingStateButton: UIButton {
         let stateToProcessUpdating = loadingState
         
         switch stateToProcessUpdating {
-        case .solid, .light, .loadedWithCheckmark, .loadedWithArrow, .disabled, .lightDisabled:
+        case .loadedWithCheckmark, .enabled, .loadedWithArrow, .disabled:
             delay = 0
             shouldBeHidden = true
-            loadingImageView.stopRotation()
-        case .solidLoading, .lightLoading:
+            loadingImageView.isHidden = true
+        case .loading:
             delay = Constants.appearingDelay
             shouldBeHidden = false
-            loadingImageView.startRotating()
+            loadingImageView.isHidden = false
         }
         
         onMainQueueAfter(time: delay) { [weak self] in
@@ -221,6 +224,7 @@ extension LoadingStateButton {
         static let arrowWidth: CGFloat = 15
         static let disabledAlpha: CGFloat = 0.1
         static let leftViewSize: CGFloat = 18
+        static let loadingViewSize = CGSize(width: 16, height: 16)
     }
 }
 
@@ -233,8 +237,70 @@ public enum ButtonState {
     public func loadingState() -> LoadingStateButton.LoadingState {
         switch self {
         case .disabled: return .disabled
-        case .enabled: return .solid
-        case .loading: return .solidLoading
+        case .enabled: return .enabled
+        case .loading: return .loading
         }
+    }
+}
+
+public struct ButtonStyleConfiguration {
+    public let backgroundColor: UIColor
+    public let titleColor: UIColor
+    public let borderColor: UIColor?
+    public let borderWidth: CGFloat?
+    public let icon: UIImage?
+    
+    public init(backgroundColor: UIColor, titleColor: UIColor, borderColor: UIColor? = nil, borderWidth: CGFloat = 0, icon: UIImage? = nil) {
+        self.backgroundColor = backgroundColor
+        self.titleColor = titleColor
+        self.borderColor = borderColor
+        self.borderWidth = borderWidth
+        self.icon = icon
+    }
+}
+
+public struct LoadingStateButtonStyle {
+    public static let solid = LoadingStateButtonStyle(
+        enabledStyle: .init(backgroundColor: .black, titleColor: .white),
+        loadingStyle: .init(backgroundColor: .black, titleColor: .white),
+        disabledStyle: .init(backgroundColor: .black.withAlphaComponent(Constants.disabledAlpha), titleColor: .white)
+    )
+    public static let plain = LoadingStateButtonStyle(
+        enabledStyle: .init(backgroundColor: .clear, titleColor: .black),
+        loadingStyle: .init(backgroundColor: .clear, titleColor: .black),
+        disabledStyle: .init(backgroundColor: .clear, titleColor: .black.withAlphaComponent(Constants.disabledAlpha))
+    )
+    public static let light = LoadingStateButtonStyle(
+        enabledStyle: .init(backgroundColor: .clear, titleColor: .black, borderColor: .black, borderWidth: Constants.borderWidth),
+        loadingStyle: .init(backgroundColor: .clear, titleColor: .black, borderColor: .black, borderWidth: Constants.borderWidth),
+        disabledStyle: .init(backgroundColor: .clear, titleColor: .black.withAlphaComponent(Constants.disabledAlpha), borderColor: .black.withAlphaComponent(Constants.disabledAlpha), borderWidth: Constants.borderWidth)
+    )
+    public static let white = LoadingStateButtonStyle(
+        enabledStyle: .init(backgroundColor: .white, titleColor: .black),
+        loadingStyle: .init(backgroundColor: .white, titleColor: .black),
+        disabledStyle: .init(backgroundColor: .white.withAlphaComponent(Constants.disabledAlpha), titleColor: .black.withAlphaComponent(Constants.disabledAlpha))
+    )
+    public static let whiteBordered = LoadingStateButtonStyle(
+        enabledStyle: .init(backgroundColor: .clear, titleColor: .white, borderColor: .white, borderWidth: Constants.borderWidth),
+        loadingStyle: .init(backgroundColor: .clear, titleColor: .white, borderColor: .white, borderWidth: Constants.borderWidth),
+        disabledStyle: .init(backgroundColor: .clear, titleColor: .white.withAlphaComponent(Constants.disabledAlpha), borderColor: .white.withAlphaComponent(Constants.disabledAlpha), borderWidth: Constants.borderWidth)
+    )
+
+    public let enabledStyle: ButtonStyleConfiguration
+    public let loadingStyle: ButtonStyleConfiguration
+    public let disabledStyle: ButtonStyleConfiguration
+    
+    init(enabledStyle: ButtonStyleConfiguration,
+         loadingStyle: ButtonStyleConfiguration,
+         disabledStyle: ButtonStyleConfiguration
+    ) {
+        self.enabledStyle = enabledStyle
+        self.loadingStyle = loadingStyle
+        self.disabledStyle = disabledStyle
+    }
+    
+    private enum Constants {
+        static let disabledAlpha: CGFloat = 0.1
+        static let borderWidth: CGFloat = 2
     }
 }

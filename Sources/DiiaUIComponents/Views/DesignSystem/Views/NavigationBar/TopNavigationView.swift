@@ -7,6 +7,7 @@ public class TopNavigationView: UIView {
     // MARK: - Outlets
     @IBOutlet weak private var titleLabel: UILabel!
 
+    @IBOutlet weak private var backButton: UIButton!
     @IBOutlet weak private var loadingContainer: UIView!
     @IBOutlet weak private var loadingIndicator: UIProgressView!
     @IBOutlet weak private var loadingLabel: UILabel!
@@ -45,13 +46,16 @@ public class TopNavigationView: UIView {
     // MARK: - Setup
     private func setup() {
         setupUI()
+        backButton.accessibilityLabel = R.Strings.general_back.localized()
+        contextButton.accessibilityLabel = R.Strings.general_context_menu_open.localized()
         loadingContainer.isHidden = true
         stepContainer.isHidden = true
         loadingLabel.text = R.Strings.general_loading.localized()
     }
     
     // MARK: - Public Methods
-    public func setupUI(titleFont: UIFont = FontBook.smallHeadingFont, titleColor: UIColor = .black, backgroundColor: UIColor = .clear) {
+    public func setupUI(titleFont: UIFont = FontBook.smallHeadingFont, titleColor: UIColor = .black, backgroundColor: UIColor = .clear, buttonTintColor: UIColor = .black) {
+        backButton.tintColor = buttonTintColor
         titleLabel?.font = titleFont
         titleLabel?.textColor = titleColor
         self.backgroundColor = backgroundColor

@@ -3,36 +3,31 @@ import UIKit
 /// design_system_code: headingWithSubtitlesMlc
 
 public class DSHeadingWithSubtitleView: BaseCodeView {
-    
     private lazy var headingLabel: UILabel = {
-        let label = UILabel()
-        label.numberOfLines = Constants.headerNumberOfLines
+        let label = UILabel().withParameters(
+            font: Constants.headingFont,
+            numberOfLines: Constants.headerNumberOfLines,
+            lineBreakMode: .byClipping
+        )
         label.minimumScaleFactor = Constants.minimumScaleFactor
         label.adjustsFontSizeToFitWidth = true
-        label.font = Constants.headingFont
-        label.lineBreakMode = .byWordWrapping
-        label.textColor = .black
         return label
     }()
     
-    private var stackView: UIStackView = UIStackView.create(views: [], spacing: Constants.stackSpacing, alignment: .top)
+    private var stackView: UIStackView = UIStackView.create(views: [], spacing: Constants.stackSpacing)
     private var subLabels = [UILabel]()
     
     public override func setupSubviews() {
-        stackView.addArrangedSubview(headingLabel)
         addSubview(stackView)
         stackView.fillSuperview()
+        stackView.addArrangedSubview(headingLabel)
         
         headingLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
         headingLabel.setContentHuggingPriority(.required, for: .horizontal)
     }
     
     public func configure(model: DSHeadingWithSubtitlesModel) {
-        if let attributed: NSAttributedString = model.value.attributed(font: headingLabel.font,
-                                                                       color: headingLabel.textColor,
-                                                                       lineHeightMultiple: Constants.lineMultiplyHeight) {
-            headingLabel.attributedText = attributed
-        }
+        headingLabel.text = model.value
         subLabels = []
         model.subtitles?.forEach({
             self.stackView.addArrangedSubview(self.subtitleLabel(text: $0))
@@ -59,7 +54,6 @@ public class DSHeadingWithSubtitleView: BaseCodeView {
         subLabels.append(label)
         return label
     }
-    
 }
 
 extension DSHeadingWithSubtitleView {
@@ -69,7 +63,7 @@ extension DSHeadingWithSubtitleView {
         static let lineTitleHeight: CGFloat = 24
         static let lineSubtitleHeight: CGFloat = 16
         static let minimumScaleFactor: CGFloat = 0.2
-        static let stackSpacing: CGFloat = 8
+        static let stackSpacing: CGFloat = 16
         static var headingFont: UIFont = {
             switch UIScreen.main.bounds.width {
             case 414, 428, 430:

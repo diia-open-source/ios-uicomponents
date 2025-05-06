@@ -1,0 +1,106 @@
+
+import Foundation
+import UIKit
+import DiiaCommonTypes
+
+public struct DSTableBlockAccordionModel: Codable {
+    public let componentId: String?
+    public let heading: String
+    public let isOpen: Bool
+    public let items: [AnyCodable]
+}
+
+/// design_system_code: tableBlockAccordionOrg
+public class DSTableBlockAccordionView: BaseCodeView {
+    private enum DSTableBlockAccordeonViewState {
+        case opened
+        case closed
+    }
+    
+    private let accordionIcon = UIImageView()
+    private let headingLabel = UILabel().withParameters(font: FontBook.smallHeadingFont)
+    private let mainStack =  UIStackView.create(.vertical, views: [], spacing: Constants.stackSpacing).withMargins(Constants.mainStackInsets)
+    private let itemsStack = UIStackView.create(.vertical, views: [], spacing: Constants.stackSpacing)
+    private let headingStack = UIStackView.create(.horizontal, views: [], spacing: Constants.stackSpacing, alignment: .center)
+    private var isOpened = false
+
+    private var viewFabric = DSViewFabric.instance
+    
+    public override func setupSubviews() {
+        translatesAutoresizingMaskIntoConstraints = false
+        self.backgroundColor = .white
+        self.layer.cornerRadius = Constants.cornerRadius
+        addSubview(mainStack)
+        mainStack.fillSuperview()
+        
+        headingLabel.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        headingLabel.numberOfLines = 0
+        headingStack.addArrangedSubview(headingLabel)
+        
+        accordionIcon.contentMode = .scaleAspectFit
+        accordionIcon.withSize(Constants.accordeonIconSize)
+        headingStack.addArrangedSubview(accordionIcon)
+        mainStack.addArrangedSubview(headingStack)
+        mainStack.addArrangedSubview(itemsStack)
+        
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(onTapped))
+        headingStack.addGestureRecognizer(gesture)
+        headingStack.isUserInteractionEnabled = true
+    }
+    
+    public func configure(with model: DSTableBlockAccordionModel, eventHandler: @escaping ((ConstructorItemEvent) -> Void)) {
+        itemsStack.safelyRemoveArrangedSubviews()
+        
+        headingLabel.text = model.heading
+        self.isOpened = model.isOpen
+        setState(isOpened ? .opened : .closed, animated: false)
+        
+        model.items.forEach { item in
+            if let view = viewFabric.makeView(from: item, withPadding: .custom(paddings: .zero), eventHandler: eventHandler) {
+                itemsStack.addArrangedSubview(view)
+            }
+        }
+    }
+    
+    private func setState(_ state: DSTableBlockAccordeonViewState, animated: Bool) {
+        switch state {
+        case .opened:
+            accordionIcon.image = R.image.expand_minus.image
+        case .closed:
+            accordionIcon.image = R.image.expand_plus.image
+        }
+        
+        let closure = { [weak self] in
+            let isOpened = state == .opened
+
+            self?.itemsStack.isHidden = !isOpened
+            self?.itemsStack.alpha = isOpened ? 1.0 : 0.0
+            self?.layoutIfNeeded()
+        }
+        
+        if animated {
+            UIView.animate(withDuration: Constants.animationDuration, animations: closure)
+        } else {
+            closure()
+        }
+    }
+    
+    @objc private func onTapped() {
+        isOpened.toggle()
+        setState(isOpened ? .opened : .closed, animated: true)
+    }
+    
+    public func setFabric(_ viewFabric: DSViewFabric) {
+        self.viewFabric = viewFabric
+    }
+}
+
+extension DSTableBlockAccordionView {
+    private enum Constants {
+        static let cornerRadius = CGFloat(16)
+        static let mainStackInsets = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
+        static let accordeonIconSize = CGSize(width: 24, height: 24)
+        static let stackSpacing = CGFloat(16)
+        static let animationDuration: TimeInterval = 0.3
+    }
+}

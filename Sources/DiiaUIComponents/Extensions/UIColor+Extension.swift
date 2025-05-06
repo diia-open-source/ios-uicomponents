@@ -1,9 +1,11 @@
 import UIKit
+import Lottie
 
 public extension UIColor {
     static let onboardingBottomColor = #colorLiteral(red: 0.8862745098, green: 0.9254901961, blue: 0.9568627451, alpha: 1) //  E2ECF4
     static let idCardAuthInfoColor = #colorLiteral(red: 0.862745098, green: 0.9215686275, blue: 0.8588235294, alpha: 1) //  E2ECF4
-
+    static let shadowColor = UIColor(red: 0.09, green: 0.13, blue: 0.18, alpha: 0.16)
+    static let halfBlack = UIColor.black.withAlphaComponent(0.5)
 }
 // MARK: -
 
@@ -21,7 +23,6 @@ private struct UIColorConstants {
 }
 
 public extension UIColor {
-
     convenience init(red: Int, green: Int, blue: Int) {
         self.init(red: CGFloat(red) / UIColorConstants.Color.floatMask,
                   green: CGFloat(green) / UIColorConstants.Color.floatMask,
@@ -35,6 +36,18 @@ public extension UIColor {
             green: (hex >> UIColorConstants.Green.bitShift) & UIColorConstants.Color.bitMask,
             blue: hex & UIColorConstants.Color.bitMask
         )
+    }
+}
+
+public extension UIColor {
+    var lottieColor: LottieColor {
+        var red: CGFloat = .zero
+        var green: CGFloat = .zero
+        var blue: CGFloat = .zero
+        var alpha: CGFloat = .zero
+        
+        getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+        return LottieColor(r: Double(red), g: Double(green), b: Double(blue), a: Double(alpha))
     }
 }
 

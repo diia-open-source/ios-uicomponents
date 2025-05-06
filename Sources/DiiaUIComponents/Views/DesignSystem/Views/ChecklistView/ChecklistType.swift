@@ -17,7 +17,7 @@ public enum CheckboxStyle {
     case radioButton
     case radioCheckmark
     
-    public var enabledImage: UIImage? {
+    public var selectedImage: UIImage? {
         switch self {
         case .checkbox:
             return R.image.checkbox_enabled.image
@@ -34,6 +34,17 @@ public enum CheckboxStyle {
             return R.image.checkbox_disabled.image
         case .radioButton, .radioCheckmark:
             return R.image.emptyChecboxBlack.image
+        }
+    }
+    
+    public var disableSelectedImage: UIImage? {
+        switch self {
+        case .checkbox:
+            return R.image.checkboxSquarePartiallySelected.image
+        case .radioButton:
+            return R.image.radioBtnSelectedDisable.image
+        case .radioCheckmark:
+            return R.image.checkBoxSelectedDisable.image
         }
     }
 }

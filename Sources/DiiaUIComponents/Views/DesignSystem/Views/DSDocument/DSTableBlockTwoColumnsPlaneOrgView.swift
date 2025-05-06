@@ -28,7 +28,8 @@ public class DSTableBlockTwoColumnsPlaneOrgView: BaseCodeView {
     }
     
     public func configure(models: DSTableBlockTwoColumnPlaneOrg,
-                          imagesContent: [DSDocumentContentData: UIImage]) {
+                          imagesContent: [DSDocumentContentData: UIImage],
+                          eventHandler: ((ConstructorItemEvent) -> Void)? = nil) {
         if let headingData = models.headingWithSubtitlesMlc {
             let headingView = DSHeadingWithSubtitleView()
             headingView.configure(model: headingData)
@@ -45,9 +46,9 @@ public class DSTableBlockTwoColumnsPlaneOrgView: BaseCodeView {
             for item in itemsData {
                 let view = DSTableItemVerticalView()
                 if let valueImage = item.tableItemVerticalMlc.valueImage, let image = imagesContent[valueImage] {
-                    view.configure(model: item.tableItemVerticalMlc, image: image)
+                    view.configure(model: item.tableItemVerticalMlc, image: image, eventHandler: eventHandler)
                 } else {
-                    view.configure(model: item.tableItemVerticalMlc, image: nil)
+                    view.configure(model: item.tableItemVerticalMlc, image: nil, eventHandler: eventHandler)
                 }
                 verticalStackView.addArrangedSubview(view)
             }

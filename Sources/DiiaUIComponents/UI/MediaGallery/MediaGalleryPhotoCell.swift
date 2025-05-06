@@ -36,8 +36,9 @@ class MediaGalleryPhotoCell: UICollectionViewCell, Reusable {
         imageView.fillSuperview()
 
         contentView.addSubview(actionStack)
-        actionStack.anchor(top: contentView.safeAreaLayoutGuide.topAnchor, leading: nil, bottom: nil, trailing: contentView.safeAreaLayoutGuide.trailingAnchor)
-        actionStack.isHidden = true
+        actionStack.anchor(top: contentView.safeAreaLayoutGuide.topAnchor,
+                           trailing: contentView.safeAreaLayoutGuide.trailingAnchor,
+                           padding: .init(top: Constants.padding, left: .zero, bottom: .zero, right: Constants.padding))
 
         scrollView.delegate = self
 
@@ -136,8 +137,8 @@ class MediaGalleryPhotoCell: UICollectionViewCell, Reusable {
         actionStack.safelyRemoveArrangedSubviews()
         actions.forEach { action in
             let button = ActionButton(action: action, type: .icon)
-            button.tintColor = .white.withAlphaComponent(0.7)
-            button.withSize(.init(width: 36, height: 36))
+            button.tintColor = .white
+            button.withSize(Constants.buttonSize)
             actionStack.addArrangedSubview(button)
         }
     }
@@ -175,5 +176,12 @@ extension MediaGalleryPhotoCell: MediaGalleryCellProtocol {
 
     func resumeAfterRotation() {
         configureForNewImage(animated: false)
+    }
+}
+
+extension MediaGalleryPhotoCell {
+    enum Constants {
+        static let padding: CGFloat = 20
+        static let buttonSize = CGSize(width: 36, height: 36)
     }
 }
