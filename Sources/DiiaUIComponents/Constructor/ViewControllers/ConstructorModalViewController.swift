@@ -5,6 +5,11 @@ import DiiaCommonTypes
 
 public protocol ConstructorModalScreenPresenter: BasePresenter {
     func handleEvent(event: ConstructorItemEvent)
+    func onViewAppear()
+}
+
+public extension ConstructorModalScreenPresenter {
+    func onViewAppear() {}
 }
 
 public protocol ConstructorModalScreenViewProtocol: BaseView {
@@ -16,6 +21,13 @@ public protocol ConstructorModalScreenViewProtocol: BaseView {
     func getInputData() -> [String: AnyCodable]
     func setFabric(_ fabric: DSViewFabric)
     func modify(_ modifier: ConstructorViewModifier)
+    func isVisible() -> Bool
+}
+
+public extension ConstructorModalScreenViewProtocol where Self: UIViewController {
+    func isVisible() -> Bool {
+        return view.window != nil
+    }
 }
 
 public final class ConstructorModalViewController: UIViewController {
@@ -66,6 +78,11 @@ public final class ConstructorModalViewController: UIViewController {
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
         view.addGestureRecognizer(tapRecognizer)
         presenter.configureView()
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        presenter.onViewAppear()
     }
     
     // MARK: - Private
@@ -157,6 +174,10 @@ extension ConstructorModalViewController: ConstructorModalScreenViewProtocol {
     
     public func modify(_ modifier: any ConstructorViewModifier) {
         modifier.modify(viewController: self)
+    }
+    
+    public func isVisible() -> Bool {
+        return view.window != nil
     }
 }
 

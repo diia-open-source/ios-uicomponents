@@ -26,19 +26,26 @@ public final class PresentedController: UIViewController, ModalPresentationViewC
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        parent?.beginAppearanceTransition(false, animated: false)
-        parent?.endAppearanceTransition()
-
         if !isFinishLoading {
+            parent?.beginAppearanceTransition(false, animated: false)
+            parent?.endAppearanceTransition()
             changeTopOffset(offset: 0, animated: true)
             isFinishLoading = true
+        } else {
+            children.last?.beginAppearanceTransition(true, animated: false)
+            children.last?.endAppearanceTransition()
         }
     }
     
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-
         UIAccessibility.post(notification: .screenChanged, argument: self)
+    }
+    
+    public override func viewWillDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        children.last?.beginAppearanceTransition(false, animated: false)
+        children.last?.endAppearanceTransition()
     }
     
     private func setupViews() {

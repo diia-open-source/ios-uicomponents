@@ -369,18 +369,16 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
     }
     
     //MARK: Input Protocol
-    
     public func isValid() -> Bool {
         return viewModel?.selectedChipData.value != nil
     }
+    
     public func inputCode() -> String {
         return viewModel?.inputCode ?? "calendarOrg"
     }
+    
     public func inputData() -> AnyCodable? {
         return viewModel?.selectedChipData.value
-    }
-    public func isVisible() -> Bool {
-        return true
     }
 }
 

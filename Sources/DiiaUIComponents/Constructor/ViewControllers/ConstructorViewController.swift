@@ -15,6 +15,13 @@ public protocol ConstructorScreenViewProtocol: BaseView {
     func setFabric(_ fabric: DSViewFabric)
     func setConditionHandler(_ handler: ConstructorConditionHandler)
     func modify(_ modifier: ConstructorViewModifier)
+    func isVisible() -> Bool
+}
+
+public extension ConstructorScreenViewProtocol where Self: UIViewController {
+    func isVisible() -> Bool {
+        return view.window != nil
+    }
 }
 
 public protocol ConstructorConditionHandler {
