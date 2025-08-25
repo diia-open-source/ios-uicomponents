@@ -35,6 +35,7 @@ public struct DSListGroupItem: Codable {
     public let amountAtm: DSAmountAtmModel?
     public let action: DSActionParameter?
     public let dataJson: String?
+    public let accessibilityDescription: String?
     
     public init(
         id: String? = nil,
@@ -49,7 +50,8 @@ public struct DSListGroupItem: Codable {
         amountAtm: DSAmountAtmModel? = nil,
         chipStatusAtm: DSCardStatusChipModel? = nil,
         action: DSActionParameter? = nil,
-        dataJson: String? = nil
+        dataJson: String? = nil,
+        accessibilityDescription: String? = nil
     ) {
         self.id = id
         self.logoLeft = logoLeft
@@ -64,6 +66,7 @@ public struct DSListGroupItem: Codable {
         self.amountAtm = amountAtm
         self.chipStatusAtm = chipStatusAtm
         self.dataJson = dataJson
+        self.accessibilityDescription = accessibilityDescription
     }
 }
 

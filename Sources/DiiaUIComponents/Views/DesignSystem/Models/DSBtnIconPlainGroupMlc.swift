@@ -60,4 +60,13 @@ public struct DSBtnPlainIconModel: Codable {
         self.action = action
         self.componentId = componentId
     }
+    
+    static let mock = DSBtnPlainIconModel(
+        id: "id",
+        state: .enabled,
+        label: "label",
+        icon: "icon",
+        action: .mock,
+        componentId: "componentId"
+    )
 }

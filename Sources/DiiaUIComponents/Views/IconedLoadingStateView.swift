@@ -1,3 +1,4 @@
+
 import UIKit
 import DiiaCommonTypes
 
@@ -7,17 +8,20 @@ public class IconedLoadingStateViewModel: NSObject {
     public let componentId: String?
     public var clickHandler: Callback?
     @objc public dynamic var isLoading: Bool
+    public let loadingImage: UIImage?
     
     public init(name: String,
                 image: UIImage?,
                 clickHandler: Callback? = nil,
                 isLoading: Bool = false,
-                componentId: String? = nil) {
+                componentId: String? = nil,
+                loadingImage: UIImage? = nil) {
         self.name = name
         self.image = image
         self.clickHandler = clickHandler
         self.isLoading = isLoading
         self.componentId = componentId
+        self.loadingImage = loadingImage
     }
 }
 
@@ -62,7 +66,7 @@ public class IconedLoadingStateView: BaseCodeView {
         self.isUserInteractionEnabled = !isLoading
         self.superview?.isUserInteractionEnabled = !isLoading
         if isLoading {
-            imageView.image = R.image.gradientCircleWithInsets.image
+            imageView.image = viewModel?.loadingImage ?? R.image.gradientCircleWithInsets.image
             imageView.startRotating()
         } else {
             imageView.image = viewModel?.image
@@ -70,8 +74,9 @@ public class IconedLoadingStateView: BaseCodeView {
         }
     }
     
-    public func setupUI(alignment: UIStackView.Alignment) {
+    public func setupUI(alignment: UIStackView.Alignment, titleFont: UIFont) {
         mainStack?.alignment = alignment
+        label.font = titleFont
     }
     
     // MARK: - Private Methods

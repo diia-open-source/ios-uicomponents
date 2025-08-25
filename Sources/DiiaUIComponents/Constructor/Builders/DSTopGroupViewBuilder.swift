@@ -3,13 +3,13 @@ import UIKit
 import DiiaCommonTypes
 
 public struct DSTopGroupViewBuilder: DSViewBuilderProtocol {
-    public static let modelKey = "topGroupOrg"
+    public let modelKey = "topGroupOrg"
     
     public func makeView(from object: AnyCodable,
                          withPadding padding: DSViewPaddingType,
                          viewFabric: DSViewFabric?,
                          eventHandler: @escaping (ConstructorItemEvent) -> Void) -> UIView? {
-        guard let data: DSTopGroupOrg = object.parseValue(forKey: Self.modelKey) else { return nil }
+        guard let data: DSTopGroupOrg = object.parseValue(forKey: self.modelKey) else { return nil }
         let stack = UIStackView.create(spacing: Constants.spacing)
         
         if let navigationPanelMlc = data.navigationPanelMlc {
@@ -24,7 +24,7 @@ public struct DSTopGroupViewBuilder: DSViewBuilderProtocol {
                     title: titleGroupMlc.heroText,
                     details: titleGroupMlc.label,
                     componentId: titleGroupMlc.componentId,
-                    backAction: {
+                    backAction: titleGroupMlc.hideBackButton == true ? nil : {
                         eventHandler(.action(DSActionParameter(type: "back")))
                     },
                     action: Action(iconName: UIComponentsConfiguration.shared.imageProvider?.imageNameForCode(imageCode: titleGroupMlc.mediumIconRight?.code ?? "")) {
@@ -50,11 +50,6 @@ public struct DSTopGroupViewBuilder: DSViewBuilderProtocol {
             stack.addArrangedSubview(scalingTitleView)
         }
         
-        if data.chipTabsOrg != nil {
-            let divider = DSDividerLineView()
-            divider.setupUI(height: Constants.dividerHeight)
-            stack.addArrangedSubview(divider)
-        }
         return stack
     }
     
@@ -64,3 +59,107 @@ public struct DSTopGroupViewBuilder: DSViewBuilderProtocol {
         static let dividerHeight: CGFloat = 1
     }
 }
+
+extension DSTopGroupViewBuilder: DSViewMockableBuilderProtocol {
+    public func makeMockModel() -> AnyCodable {
+        let model = DSTopGroupOrg(
+            titleGroupMlc: DSTopGroupMlc(
+                componentId: "componentId",
+                leftNavIcon: DSIconModel(
+                    code: "code",
+                    accessibilityDescription: "accessibilityDescription",
+                    componentId: "componentId",
+                    action: .init(
+                        type: "iconAction"
+                    ),
+                    isEnable: true
+                ),
+                heroText: "heroText",
+                label: "label",
+                mediumIconRight: DSIconModel(
+                    code: "code",
+                    accessibilityDescription: "accessibilityDescription",
+                    componentId: "componentId",
+                    action: .init(
+                        type: "iconAction"
+                    ),
+                    isEnable: true
+                ),
+                hideBackButton: false
+            ),
+            navigationPanelMlc: DSNavigationPanelMlc(
+                label: "label",
+                ellipseMenu: []
+            ),
+            chipTabsOrg: DSChipGroupOrg(
+                componentId: "componentId",
+                label: "label",
+                preselectedCode: "preselectedCode",
+                items: [DSChipItemMlc(
+                    chipMlc: DSChipMlc(
+                        componentId: "componentId",
+                        label: "label",
+                        code: "code",
+                        badgeCounterAtm: DSBadgeCounterModel(count: 1),
+                        iconLeft: DSIconModel(
+                            code: "code",
+                            accessibilityDescription: "accessibilityDescription",
+                            componentId: "componentId",
+                            action: .init(
+                                type: "iconAction"
+                            ),
+                            isEnable: true
+                        ),
+                        active: false,
+                        selectedIcon: "selectedIcon",
+                        isSelectable: true,
+                        chipInfo: DSChipInfo(hallId: "hallId"),
+                        action: DSActionParameter(type: "action")
+                    ),
+                    chipTimeMlc: DSChipTimeMlc(
+                        componentId: "componentId",
+                        id: "id",
+                        label: "label",
+                        dataJson: .string("dataJson"),
+                        active: false
+                    )
+                )]
+            ),
+            scalingTitleMlc: DSScalingTitleMlc(
+                componentId: "componentId",
+                label: "label"
+            ),
+            searchInputMlc: DSSearchModel(
+                componentId: "componentId",
+                label: "label",
+                iconLeft: DSIconModel(
+                    code: "code",
+                    accessibilityDescription: "accessibilityDescription",
+                    componentId: "componentId",
+                    action: DSActionParameter(
+                        type: "type",
+                        subtype: "subtype",
+                        resource: "resource",
+                        subresource: "subresource"),
+                    isEnable: true
+                ),
+                iconRight: DSIconModel(
+                    code: "code",
+                    accessibilityDescription: "accessibilityDescription",
+                    componentId: "componentId",
+                    action: DSActionParameter(
+                        type: "type",
+                        subtype: "subtype",
+                        resource: "resource",
+                        subresource: "subresource"),
+                    isEnable: true
+                )
+            )
+        )
+        
+        return .dictionary([
+            modelKey: .fromEncodable(encodable: model)
+        ])
+    }
+}
+

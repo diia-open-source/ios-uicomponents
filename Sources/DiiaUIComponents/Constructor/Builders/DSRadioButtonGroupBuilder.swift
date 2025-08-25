@@ -3,18 +3,23 @@ import UIKit
 import DiiaCommonTypes
 
 public struct DSRadioButtonGroupBuilder: DSViewBuilderProtocol {
-    public static let modelKey = "radioBtnGroupOrg"
+    public let modelKey = "radioBtnGroupOrg"
     
     public func makeView(from object: AnyCodable,
                          withPadding paddingType: DSViewPaddingType,
                          viewFabric: DSViewFabric?,
                          eventHandler: @escaping (ConstructorItemEvent) -> Void) -> UIView? {
-        guard let data: DSRadioBtnGroupOrg = object.parseValue(forKey: Self.modelKey) else { return nil }
-        return makeView(from: data, withPadding: paddingType, eventHandler: eventHandler)
+        guard
+            let data: DSRadioBtnGroupOrg = object.parseValue(forKey: self.modelKey),
+            let view = makeView(from: data, eventHandler: eventHandler)
+        else {
+            return nil
+        }
+        let box = BoxView(subview: view).withConstraints(insets: paddingType.defaultPadding(object: object, modelKey: modelKey))
+        return box
     }
     
     func makeView(from data: DSRadioBtnGroupOrg,
-                  withPadding paddingType: DSViewPaddingType,
                   eventHandler: @escaping (ConstructorItemEvent) -> Void) -> UIView? {
         let view = ChecklistView()
         let checkboxItems: [ChecklistItemViewModel] = data.items.map {
@@ -25,6 +30,7 @@ public struct DSRadioButtonGroupBuilder: DSViewBuilderProtocol {
                 details: item.description,
                 rightInfo: item.status,
                 largeLogoRight: item.largeLogoRight,
+                logoRight: item.logoRight,
                 isAvailable: item.isEnabled ?? true,
                 isSelected: item.isSelected ?? false,
                 inputData: item.dataJson,
@@ -60,13 +66,76 @@ public struct DSRadioButtonGroupBuilder: DSViewBuilderProtocol {
             guard let viewModel = viewModel else { return }
             let selectedItems = viewModel.selectedItems()
             eventHandler(.inputChanged(.init(
-                inputCode: data.inputCode ?? Self.modelKey,
+                inputCode: data.inputCode ?? self.modelKey,
                 inputData: .array(selectedItems.map { .string($0.code ?? "") }))))
         }
-        view.configure(with: viewModel)
-        eventHandler(.onComponentConfigured(with: .checkmark(viewModel: viewModel)))
-        let insets = paddingType.defaultPadding()
-        let paddingBox = BoxView(subview: view).withConstraints(insets: insets)
-        return paddingBox
+        view.configure(with: viewModel, eventHandler: eventHandler)
+        return view
+    }
+}
+
+extension DSRadioButtonGroupBuilder: DSViewMockableBuilderProtocol {
+    public func makeMockModel() -> AnyCodable {
+        let model = DSRadioBtnGroupOrg(
+            id: "radioBtnGroupOrg",
+            blocker: nil,
+            title: "title(otional)",
+            condition: nil,
+            items: [
+                DSRadioGroupItem(
+                    condition: nil,
+                    radioBtnMlc: DSRadioButtonMlc(
+                        id: "id1",
+                        label: "label",
+                        status: "status",
+                        type: .rest,
+                        additionalInfo: DSRadioButtonAdditionalInfo(
+                            label: "label",
+                            placeholder: "placeholder",
+                            value: "value(optiona)",
+                            validation: InputValidationModel(regexp: "^([a-zA-Z0-9_%+-]{1,}\\.){0,}[a-zA-Z0-9_%+-]{1,}@([a-zA-Z0-9_%+-]{1,}\\.){1,}(?!ru|su)[A-Za-z]{2,64}$", flags: ["i"], errorMessage: "Невалідний емейл")
+                        ),
+                        componentId: "componentId",
+                        logoLeft: "logoLeft(optional)",
+                        logoRight: "logoRight(optional)",
+                        largeLogoRight: "largeLogoRight(optional)",
+                        description: "description(optional)",
+                        isSelected: false,
+                        isEnabled: true,
+                        dataJson: .string("dataJson1(optional)")
+                    )
+                ),
+                DSRadioGroupItem(
+                    condition: nil,
+                    radioBtnMlc: DSRadioButtonMlc(
+                        id: "id2",
+                        label: "label2",
+                        status: "status",
+                        type: .rest,
+                        additionalInfo: DSRadioButtonAdditionalInfo(
+                            label: "label",
+                            placeholder: "placeholder",
+                            value: "value(optiona)",
+                            validation: InputValidationModel(regexp: "^([a-zA-Z0-9_%+-]{1,}\\.){0,}[a-zA-Z0-9_%+-]{1,}@([a-zA-Z0-9_%+-]{1,}\\.){1,}(?!ru|su)[A-Za-z]{2,64}$", flags: ["i"], errorMessage: "Невалідний емейл")
+                        ),
+                        componentId: "componentId",
+                        logoLeft: "logoLeft(optional)",
+                        logoRight: "logoRight(optional)",
+                        largeLogoRight: "largeLogoRight(optional)",
+                        description: "description(optional)",
+                        isSelected: true,
+                        isEnabled: true,
+                        dataJson: .string("dataJson2(optional)")
+                    )
+                )
+            ],
+            componentId: "componentId",
+            inputCode: "inputCode",
+            mandatory: true,
+            btnPlainIconAtm: .mock
+        )
+        return .dictionary([
+            modelKey: .fromEncodable(encodable: model)
+        ])
     }
 }

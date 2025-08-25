@@ -89,6 +89,7 @@ public class DropContentView: UIView {
     // MARK: - Setup
     private func setup() {
         setupUI()
+        setupAccessibility()
         let tap = UITapGestureRecognizer(target: self, action: #selector(onClick))
         tap.cancelsTouchesInView = false
         isUserInteractionEnabled = true
@@ -186,6 +187,12 @@ public class DropContentView: UIView {
                 self?.setupState(state: vm.state)
             }
         })
+    }
+    
+    // MARK: - Accessibility
+    private func setupAccessibility() {
+        textLabel.isAccessibilityElement = true
+        textLabel.accessibilityTraits = .button
     }
     
     // MARK: - Actions

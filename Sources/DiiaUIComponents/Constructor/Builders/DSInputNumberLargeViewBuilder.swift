@@ -4,7 +4,7 @@ import DiiaCommonTypes
 
 /// design_system_code: inputNumberLargeMlc
 public struct DSInputNumberLargeViewBuilder: DSViewBuilderProtocol {
-    public static let modelKey = "inputNumberLargeMlc"
+    public let modelKey = "inputNumberLargeMlc"
     
     public func makeView(
         from object: AnyCodable,
@@ -12,23 +12,51 @@ public struct DSInputNumberLargeViewBuilder: DSViewBuilderProtocol {
         viewFabric: DSViewFabric?,
         eventHandler: @escaping (ConstructorItemEvent) -> Void
     ) -> UIView? {
-        guard let data: DSInputNumberLargeModel = object.parseValue(forKey: Self.modelKey) else { return nil }
+        guard let data: DSInputNumberLargeModel = object.parseValue(forKey: self.modelKey) else { return nil }
         
         let view = DSInputNumberLargeView()
         let items = data.items.map { $0.inputNumberLargeAtm }
         let viewModel = DSInputNumberLargeViewModel(
-            id: data.componentId ?? Self.modelKey,
+            id: data.componentId ?? self.modelKey,
             items: items,
-            mandatory: data.mandatory)
+            mandatory: data.mandatory,
+            mandatoryCounter: Int(data.mandatoryCounter ?? .empty))
+        eventHandler(.onComponentConfigured(with: .inputLargeNumber(viewModel: viewModel)))
         viewModel.onChange = {
             eventHandler(.inputChanged(ConstructorInputModel(
-                inputCode: Self.modelKey,
+                inputCode: self.modelKey,
                 inputData: .string(viewModel.number))))
         }
         view.configure(with: viewModel)
         
-        let insets = padding.defaultPadding()
+        let insets = padding.defaultPadding(object: object, modelKey: modelKey)
         let paddingBox = BoxView(subview: view).withConstraints(insets: insets)
         return paddingBox
     }
 }
+
+// MARK: - Mock
+extension DSInputNumberLargeViewBuilder: DSViewMockableBuilderProtocol {
+    public func makeMockModel() -> AnyCodable {
+        let model = DSInputNumberLargeModel(
+            componentId: "componentId",
+            items: [
+                DSInputNumberLargeItem(inputNumberLargeAtm:
+                                        DSInputNumberLargeItemData(
+                                            componentId: "componentId",
+                                            placeholder: "placeholder",
+                                            value: "value",
+                                            state: "state",
+                                            mandatory: false
+                                        ))
+            ],
+            mandatory: true,
+            mandatoryCounter: "mandatoryCounter"
+        )
+        
+        return .dictionary([
+            modelKey: .fromEncodable(encodable: model)
+        ])
+    }
+}
+

@@ -50,9 +50,12 @@ public extension UIView {
     }
     
     @discardableResult
-    func withBorder(width: CGFloat, color: UIColor) -> UIView {
+    func withBorder(width: CGFloat, color: UIColor, cornerRadius: CGFloat = .zero) -> UIView {
         layer.borderWidth = width
         layer.borderColor = color.cgColor
+        if cornerRadius != .zero {
+            layer.cornerRadius = cornerRadius
+        }
         return self
     }
 }

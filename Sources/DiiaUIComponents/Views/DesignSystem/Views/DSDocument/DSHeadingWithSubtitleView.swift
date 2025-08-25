@@ -1,3 +1,4 @@
+
 import UIKit
 
 /// design_system_code: headingWithSubtitlesMlc
@@ -28,10 +29,13 @@ public class DSHeadingWithSubtitleView: BaseCodeView {
     
     public func configure(model: DSHeadingWithSubtitlesModel) {
         headingLabel.text = model.value
+        headingLabel.accessibilityAttributedLabel = accessibilityLabel(for: model.value)
         subLabels = []
         model.subtitles?.forEach({
             self.stackView.addArrangedSubview(self.subtitleLabel(text: $0))
         })
+        
+        setupAccessibility()
     }
     
     public func setupUI(textColor: UIColor, font: UIFont) {
@@ -53,6 +57,28 @@ public class DSHeadingWithSubtitleView: BaseCodeView {
         
         subLabels.append(label)
         return label
+    }
+    
+    // MARK: - Accessibility
+    private func setupAccessibility() {        
+        headingLabel.isAccessibilityElement = true
+        headingLabel.accessibilityTraits = .staticText
+        
+        subLabels.forEach({
+            $0.isAccessibilityElement = true
+            $0.accessibilityTraits = .staticText
+        })
+    }
+    
+    private func accessibilityLabel(for text: String) -> NSMutableAttributedString {
+        let mutableAccessibilityLabel = NSMutableAttributedString(string: text)
+        mutableAccessibilityLabel.addAttribute(
+            .accessibilitySpeechLanguage,
+            value: text.textLocale.rawValue,
+            range: NSRange(location: 0, length: text.count)
+        )
+        
+        return mutableAccessibilityLabel
     }
 }
 

@@ -1,3 +1,4 @@
+
 import UIKit
 import DiiaCommonTypes
 
@@ -46,11 +47,27 @@ public class TopNavigationView: UIView {
     // MARK: - Setup
     private func setup() {
         setupUI()
-        backButton.accessibilityLabel = R.Strings.general_back.localized()
-        contextButton.accessibilityLabel = R.Strings.general_context_menu_open.localized()
+        setupAccessibility()
         loadingContainer.isHidden = true
         stepContainer.isHidden = true
         loadingLabel.text = R.Strings.general_loading.localized()
+    }
+    
+    // MARK: - Accessibility
+    private func setupAccessibility() {
+        backButton.isAccessibilityElement = true
+        backButton.accessibilityTraits = .button
+        backButton.accessibilityLabel = R.Strings.general_back.localized()
+        
+        contextButton.isAccessibilityElement = true
+        contextButton.accessibilityTraits = .button
+        contextButton.accessibilityLabel = R.Strings.general_context_menu_open.localized()
+        
+        loadingIndicator.isAccessibilityElement = false
+        
+        loadingLabel.isAccessibilityElement = true
+        loadingLabel.accessibilityTraits = .staticText
+        loadingLabel.accessibilityLabel = R.Strings.general_loading.localized()
     }
     
     // MARK: - Public Methods

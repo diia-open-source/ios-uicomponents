@@ -181,6 +181,7 @@ public class DSCommonCardView: UIView {
     
     public func configure(with model: DSCommonCardViewModel) {
         accessibilityIdentifier = model.componentId
+        viewModel = model
         titleLabel.text = model.title
         
         statusChipView.isHidden = model.chipStatusAtm == nil
@@ -231,6 +232,8 @@ public class DSCommonCardView: UIView {
         }
         
         spacerView.isHidden = !(strokeButton.isHidden && botLabel.isHidden)
+        
+        setupAccessibility()
     }
     
     public func setPrimaryButtonActive(_ isActive: Bool) {
@@ -297,6 +300,31 @@ public class DSCommonCardView: UIView {
         strokeButton.layer.cornerRadius = strokeButton.bounds.height * 0.5
         strokeButton.backgroundColor = .clear
         strokeButton.withBorder(width: Constants.borderWidth, color: .black)
+    }
+    
+    // MARK: - Accessibility
+    private func setupAccessibility() {
+        guard let viewModel else { return }
+        isAccessibilityElement = false
+        
+        let label = viewModel.label ?? ""
+        let description = viewModel.description ?? ""
+        let botLabel = viewModel.botLabel ?? ""
+        
+        container.isAccessibilityElement = true
+        container.accessibilityTraits = .staticText
+        container.accessibilityLabel = "\(viewModel.title), \(label), \(viewModel.subtitles?.map({ $0.value }).joined(separator: ",") ?? ""), \(description), \(botLabel)"
+        container.accessibilityValue = viewModel.chipStatusAtm?.name
+        
+        strokeButton.isAccessibilityElement = true
+        strokeButton.accessibilityTraits = .button
+        strokeButton.accessibilityLabel = viewModel.strokeButtonAction?.title
+        
+        primaryButton.isAccessibilityElement = true
+        primaryButton.accessibilityTraits = .button
+        primaryButton.accessibilityLabel = viewModel.primaryButtonAction?.title
+        
+        accessibilityElements = [container, strokeButton, primaryButton].map({ $0 as Any })
     }
 }
 

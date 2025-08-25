@@ -1,5 +1,7 @@
+
 import UIKit
 import SwiftMessages
+import DiiaCommonTypes
 
 /// design_system_code: tableItemHorizontalMlc
 
@@ -9,11 +11,11 @@ public class DSTableItemHorizontalView: BaseCodeView {
     private let supportLabel = UILabel().withParameters(font: FontBook.usualFont)
     private let titleLabel = UILabel().withParameters(font: FontBook.usualFont)
     private let detailsLabel = UILabel().withParameters(font: FontBook.usualFont)
-    private let valueLabel = UILabel().withParameters(font: FontBook.usualFont)
+    private let valueTextView = UITextView()
     private let valueDetailsLabel = UILabel().withParameters(font: FontBook.usualFont)
     
     private lazy var titleStack = UIStackView.create(views: [titleLabel, detailsLabel])
-    private lazy var valueStack = UIStackView.create(views: [valueLabel, valueDetailsLabel])
+    private lazy var valueStack = UIStackView.create(views: [valueTextView, valueDetailsLabel])
     private lazy var stack = UIStackView.create(.horizontal,
                                                 views: [supportLabel, titleStack, valueStack, iconView],
                                                 spacing: Constants.bigStackSpacing,
@@ -21,35 +23,45 @@ public class DSTableItemHorizontalView: BaseCodeView {
     
     private var supportProportionConstraint: NSLayoutConstraint?
     private var proportionConstraint: NSLayoutConstraint?
-    
+    private var urlOpener: URLOpenerProtocol?
+
     public override func setupSubviews() {
         translatesAutoresizingMaskIntoConstraints = false
         backgroundColor = .clear
         titleLabel.textAlignment = .left
-        valueLabel.textAlignment = .left
+
+        valueTextView.textAlignment = .left
+        valueTextView.font = FontBook.usualFont
+
         addSubview(stack)
         stack.fillSuperview()
         
         titleLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
         titleLabel.setContentHuggingPriority(.required, for: .horizontal)
-        
-        valueLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
-        valueLabel.setContentHuggingPriority(.required, for: .horizontal)
-        
+
+        valueTextView.configureForParametrizedText()
+        valueTextView.delegate = self
+        valueTextView.textContainer.lineBreakMode = .byWordWrapping
+
         valueStack.alignment = .leading
         
         iconView.withSize(Constants.buttonSize)
         
         setupUI()
+        setupAccessibility()
     }
     
-    public func configure(item: DSTableItemHorizontalMlc) {
+    public func configure(item: DSTableItemHorizontalMlc, valueAlignment: NSTextAlignment = .natural, urlOpener: URLOpenerProtocol?) {
+        self.urlOpener = urlOpener
+
         iconView.isHidden = item.icon == nil
+
         if let icon = item.icon {
             iconView.setImage(UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: icon.code)?.withRenderingMode(.alwaysTemplate),
                               for: .normal)
             iconView.addTarget(self, action: #selector(copyValue), for: .touchUpInside)
             iconView.accessibilityTraits = .button
+            iconView.accessibilityLabel = R.Strings.general_accessibility_copy_button.localized()
         }
         iconView.tintColor = .black
         
@@ -57,30 +69,47 @@ public class DSTableItemHorizontalView: BaseCodeView {
                                                           lineHeightMultiple: Constants.lineHeightMultiply,
                                                           lineBreakMode: .byWordWrapping)
         detailsLabel.attributedText = item.secondaryLabel?.attributed(font: titleLabel.font,
-                                                                      color: Constants.lightBlackColor,
+                                                                      color: .black540,
                                                                       lineHeightMultiple: Constants.lineHeightMultiply,
                                                                       lineBreakMode: .byWordWrapping)
-        valueLabel.attributedText = item.value?.attributed(font: titleLabel.font,
-                                                           lineHeightMultiple: Constants.lineHeightMultiply,
-                                                           lineBreakMode: .byWordWrapping)
+        detailsLabel.accessibilityAttributedLabel = accessibilityLabel(for: item.secondaryLabel ?? "")
         
+        setValueAlignment(item.orientation == true ? .right : .left)
+        
+        if let valueParameters = item.valueParameters {
+            valueTextView.attributedText = item.value?.attributedTextWithParameters(parameters: valueParameters)
+        } else {
+            valueTextView.attributedText = item.value?.attributed(font: titleLabel.font,
+                                                                  lineHeightMultiple: Constants.lineHeightMultiply,
+                                                                  textAlignment: valueAlignment,
+                                                                  lineBreakMode: .byWordWrapping)
+        }
+
         valueDetailsLabel.attributedText = item.secondaryValue?.attributed(font: titleLabel.font,
-                                                                           color: Constants.lightBlackColor,
+                                                                           color: .black540,
                                                                            lineHeightMultiple: Constants.lineHeightMultiply,
                                                                            lineBreakMode: .byWordWrapping)
+        valueDetailsLabel.accessibilityAttributedLabel = accessibilityLabel(for: item.secondaryValue ?? "")
+        
         supportLabel.attributedText = item.supportingValue?.attributed(font: titleLabel.font,
                                                                        lineHeightMultiple: Constants.lineHeightMultiply,
                                                                        textAlignment: .right,
                                                                        lineBreakMode: .byWordWrapping)
         titleLabel.isHidden = item.label.isEmpty
-        valueLabel.isHidden = item.value == nil
+        valueTextView.isHidden = item.value == nil
         detailsLabel.isHidden = item.secondaryLabel == nil
         valueDetailsLabel.isHidden = item.secondaryValue == nil
         supportLabel.isHidden = item.supportingValue == nil
+        
+        titleStack.isAccessibilityElement = false
+        valueStack.isAccessibilityElement = false
+        stack.accessibilityElements = [supportLabel, titleLabel, valueTextView, detailsLabel, valueDetailsLabel, iconView]
     }
     
-    public func setDetailsLabelAlignment(_ textAlignment: NSTextAlignment) {
-        detailsLabel.textAlignment = textAlignment
+    public func setValueAlignment(_ textAlignment: NSTextAlignment = .natural) {
+        valueStack.alignment = textAlignment == .right ? .trailing : .leading
+        valueTextView.textAlignment = textAlignment
+        valueDetailsLabel.textAlignment = textAlignment
     }
     
     @discardableResult
@@ -96,8 +125,8 @@ public class DSTableItemHorizontalView: BaseCodeView {
         
         iconView.setImage(iconImage, for: .normal)
         titleLabel.withParameters(font: titleFont)
-        valueLabel.withParameters(font: valueFont)
-        
+        valueTextView.font = valueFont
+
         detailsLabel.withParameters(font: detailsFont, textColor: detailsColor)
         valueDetailsLabel.withParameters(font: valueDetailsFont, textColor: detailsColor)
         
@@ -110,12 +139,10 @@ public class DSTableItemHorizontalView: BaseCodeView {
         supportProportionConstraint?.isActive = true
         
         titleLabel.numberOfLines = numberOfLines
-        valueLabel.numberOfLines = numberOfLines
+        valueTextView.textContainer.maximumNumberOfLines = numberOfLines
         
         if numberOfLines == 1 {
             titleLabel.minimumScaleFactor = Constants.minTextScaleFactor
-            valueLabel.minimumScaleFactor = Constants.minTextScaleFactor
-            valueLabel.adjustsFontSizeToFitWidth = true
         }
         
         setNeedsLayout()
@@ -125,10 +152,36 @@ public class DSTableItemHorizontalView: BaseCodeView {
     }
     
     @objc private func copyValue() {
-        guard let resource = valueLabel.text else { return }
+        guard let resource = valueTextView.text else { return }
         UIPasteboard.general.string = resource
         UINotificationFeedbackGenerator().notificationOccurred(.success)
         SwiftMessages.showSuccessMessage(message: R.Strings.general_number_copied.localized())
+    }
+    
+    // MARK: - Accessibility
+    private func setupAccessibility() {
+        detailsLabel.isAccessibilityElement = true
+        detailsLabel.accessibilityTraits = .staticText
+        
+        valueDetailsLabel.isAccessibilityElement = true
+        valueDetailsLabel.accessibilityTraits = .staticText
+    }
+    
+    private func accessibilityLabel(for text: String) -> NSMutableAttributedString {
+        let mutableAccessibilityLabel = NSMutableAttributedString(string: text)
+        mutableAccessibilityLabel.addAttribute(
+            .accessibilitySpeechLanguage,
+            value: text.textLocale.rawValue,
+            range: NSRange(location: 0, length: text.count)
+        )
+        
+        return mutableAccessibilityLabel
+    }
+}
+
+extension DSTableItemHorizontalView: UITextViewDelegate {
+    public func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+        return !(urlOpener?.url(urlString: URL.absoluteString, linkType: nil) ?? false)
     }
 }
 

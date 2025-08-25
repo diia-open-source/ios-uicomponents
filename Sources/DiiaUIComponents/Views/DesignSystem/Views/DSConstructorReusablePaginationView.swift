@@ -122,6 +122,11 @@ public class DSConstructorReusablePaginationView: BaseCodeView, DSConstructorPag
             tableView.tableFooterView = loadingView
         case .error:
             tableView.tableFooterView = errorView
+        case .viewDidResize:
+            onMainQueue { [weak self] in
+              self?.tableView.beginUpdates()
+              self?.tableView.endUpdates()
+            }
         }
     }
     
@@ -151,7 +156,7 @@ extension DSConstructorReusablePaginationView: UITableViewDataSource, UITableVie
         
         if indexPath.row == itemViews.count - 1,
             let dict = viewModel?.items.first?.dictionary,
-            dict.keys.first(where: { $0 == DSEmptyStateViewBuilder.modelKey}) == nil {
+            dict.keys.first(where: { $0 == "stubMessageMlc" }) == nil {
             fetchNextBatchIfNeeded()
         }
         

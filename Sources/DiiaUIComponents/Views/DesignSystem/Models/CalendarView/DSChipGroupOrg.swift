@@ -32,8 +32,10 @@ public struct DSChipMlc: Codable {
     public let label: String
     public let code: String
     public let badgeCounterAtm: DSBadgeCounterModel?
+    public let iconLeft: DSIconModel?
     public let active: Bool?
     public let selectedIcon: String?
+    public let isSelectable: Bool?
     public let chipInfo: DSChipInfo?
     public let action: DSActionParameter?
     
@@ -42,8 +44,10 @@ public struct DSChipMlc: Codable {
         label: String,
         code: String,
         badgeCounterAtm: DSBadgeCounterModel?,
+        iconLeft: DSIconModel?,
         active: Bool?,
         selectedIcon: String?,
+        isSelectable: Bool?,
         chipInfo: DSChipInfo?,
         action: DSActionParameter?
     ) {
@@ -51,8 +55,10 @@ public struct DSChipMlc: Codable {
         self.label = label
         self.code = code
         self.badgeCounterAtm = badgeCounterAtm
+        self.iconLeft = iconLeft
         self.active = active
         self.selectedIcon = selectedIcon
+        self.isSelectable = isSelectable
         self.chipInfo = chipInfo
         self.action = action
     }

@@ -39,17 +39,21 @@ public class PaymentsInfoView: BaseCodeView {
     public func setupPaymentInfo(paymentInfoOrg: DSTableBlockItemModel) {
         accessibilityIdentifier = paymentInfoOrg.componentId
         stackView.safelyRemoveArrangedSubviews()
+        let horizontalMlcbuilder = DSTableItemHorizontalMlcBuilder()
+        let horizontalLargeMlcbuilder = DSTableItemHorizontalMlcBuilder()
+
         guard let paymentItems = paymentInfoOrg.items else { return }
         for tableItem in paymentItems {
             if let tableItemHorizontalMlc = tableItem.tableItemHorizontalMlc {
-                stackView.addArrangedSubview(sumPair(title: tableItemHorizontalMlc.label,
-                                                     sum: tableItemHorizontalMlc.value ?? ""))
+                let pairView = BoxView(subview: horizontalMlcbuilder.makeView(model: tableItemHorizontalMlc))
+                    .withConstraints(insets: Constants.sumPairPadding)
+                stackView.addArrangedSubview(pairView)
             }
             if let tableItemHorizontalLargeMlc = tableItem.tableItemHorizontalLargeMlc {
                 stackView.addArrangedSubview(separator())
-                stackView.addArrangedSubview(sumPair(title: tableItemHorizontalLargeMlc.label,
-                                                     sum: tableItemHorizontalLargeMlc.value ?? "",
-                                                     font: FontBook.bigText))
+                let pairView = BoxView(subview: horizontalLargeMlcbuilder.makeView(model: tableItemHorizontalLargeMlc))
+                    .withConstraints(insets: Constants.sumPairPadding)
+                stackView.addArrangedSubview(pairView)
             }
         }
         layoutIfNeeded()

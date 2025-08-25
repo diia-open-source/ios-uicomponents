@@ -143,6 +143,8 @@ extension ConstructorPaginationScreenViewController: ConstructorPaginationScreen
                 constructorView?.bodyTableView.setAndLayoutTableFooterView(footer: loadingView)
             case .error:
                 constructorView?.bodyTableView.setAndLayoutTableFooterView(footer: errorView)
+            default:
+                break
             }
         }
     }

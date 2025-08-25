@@ -12,6 +12,9 @@ public class ConstructorScreenView: BaseCodeView {
     
     public var bottomGroupBottomConstraint: NSLayoutConstraint?
     private var bottomGroupHeightConstraint: NSLayoutConstraint?
+    private var stackHeightConstraint: NSLayoutConstraint?
+
+    private var customAccessibilityElements: [Any]?
 
     override public func setupSubviews() {
         addSubview(backgroundImageView)
@@ -33,6 +36,11 @@ public class ConstructorScreenView: BaseCodeView {
         bottomGroupHeightConstraint = bottomStack.heightAnchor.constraint(equalToConstant: 0)
         bottomGroupBottomConstraint = bottomAnchor.constraint(equalTo: bottomStack.bottomAnchor, constant: 0)
         bottomGroupBottomConstraint?.isActive = true
+        
+        // TODO: Fix for bottom inset
+        stackHeightConstraint = bodyStack.heightAnchor.constraint(equalTo: bodyScrollView.heightAnchor, multiplier: 1, constant: -safeAreaInsets.bottom)
+        stackHeightConstraint?.priority = .defaultLow
+        stackHeightConstraint?.isActive = false
     }
     
     public func setupTopGroup(views: [UIView]) {
@@ -43,6 +51,18 @@ public class ConstructorScreenView: BaseCodeView {
     public func setupBody(views: [UIView]) {
         bodyStack.safelyRemoveArrangedSubviews()
         bodyStack.addArrangedSubviews(views)
+        stackHeightConstraint?.isActive = false
+    }
+    
+    public func setupCenteredBody(views: [UIView]) {
+        bodyStack.safelyRemoveArrangedSubviews()
+        let startView = UIView()
+        let endView = UIView()
+        let finalViews: [UIView] = [startView] + views + [endView]
+        
+        bodyStack.addArrangedSubviews(finalViews)
+        startView.heightAnchor.constraint(equalTo: endView.heightAnchor, multiplier: 1, constant: -safeAreaInsets.bottom).isActive = true
+        stackHeightConstraint?.isActive = true
     }
     
     public func setupBottomGroup(views: [UIView]) {
@@ -61,6 +81,22 @@ public class ConstructorScreenView: BaseCodeView {
             bodyScrollView.contentInset.bottom = 0
         }
         bodyScrollView.separatorShouldAlwaysBeVisible = views.isEmpty ? false : nil
+    }
+    
+    public func setCustomAccessibilityElements(elements: [Any]) {
+        let array = [[topGroupStack], elements, [bodyScrollView], [bottomStack]]
+        customAccessibilityElements = array
+        
+        isAccessibilityElement = false
+        accessibilityElements = array.flatMap({ $0 })
+    }
+    
+    public func updateAccessibilityElements() {
+        if customAccessibilityElements != nil {
+            accessibilityElements = customAccessibilityElements.flatMap({ $0 })
+        }
+        
+        UIAccessibility.post(notification: .layoutChanged, argument: self.topGroupStack.subviews.first)
     }
 }
 

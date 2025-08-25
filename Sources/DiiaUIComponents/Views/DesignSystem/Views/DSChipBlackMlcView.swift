@@ -11,6 +11,7 @@ public struct DSChipBlackMlcModel: Codable {
     public let label: String
     public let code: String
     public let active: Bool?
+    public let action: DSActionParameter?
 }
 
 public class DSChipBlackMlcViewModel {
@@ -18,18 +19,21 @@ public class DSChipBlackMlcViewModel {
     public let label: String
     public let code: String
     public var state: Observable<ChipState>
-    public var onClick: Callback?
-    
+    public var onClick: ((ConstructorItemEvent?) -> Void)?
+    public var action: DSActionParameter?
+
     public init(componentId: String?,
                 label: String,
                 code: String,
                 state: Observable<ChipState> = .init(value: .unselected),
-                onClick: Callback? = nil) {
+                onClick: ((ConstructorItemEvent?) -> Void)? = nil,
+                action: DSActionParameter?) {
         self.componentId = componentId
         self.label = label
         self.code = code
         self.state = state
         self.onClick = onClick
+        self.action = action
     }
 }
 
@@ -55,6 +59,7 @@ public class DSChipBlackMlcView: BaseCodeView {
         textLabel.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         textLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
         textLabel.numberOfLines = 1
+        textLabel.textAlignment = .center
         addTapGestureRecognizer()
     }
     public override func layoutSubviews() {
@@ -96,7 +101,11 @@ public class DSChipBlackMlcView: BaseCodeView {
     }
     
     @objc private func onClick() {
-        viewModel?.onClick?()
+        if let action = viewModel?.action {
+            viewModel?.onClick?(.action(action))
+        } else {
+            viewModel?.onClick?(nil)
+        }
     }
     
     static func widthForText(text: String) -> CGFloat {

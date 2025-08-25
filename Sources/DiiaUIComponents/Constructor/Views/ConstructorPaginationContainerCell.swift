@@ -40,6 +40,7 @@ public final class ConstructorPaginationContainerCell: UITableViewCell, Reusable
     // MARK: - Private
     private func initialSetup() {
         self.backgroundColor = .clear
+        setupAccessibility()
     }
     
     private func makeSeparator() -> UIView {
@@ -63,6 +64,11 @@ public final class ConstructorPaginationContainerCell: UITableViewCell, Reusable
     
     private func removeSeparator() {
         separatorView?.removeFromSuperview()
+    }
+    
+    // MARK: - Accessibility
+    private func setupAccessibility() {
+        accessibilityTraits = .button
     }
 }
 

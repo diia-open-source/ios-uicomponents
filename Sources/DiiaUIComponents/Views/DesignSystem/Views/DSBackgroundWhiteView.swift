@@ -47,7 +47,7 @@ public class DSBackgroundWhiteView: BaseCodeView {
         }
         for subview in model.items {
             if let subview = viewFabric.makeView(from: subview,
-                                                 withPadding: .custom(paddings: .zero),
+                                                 withPadding: .fixed(paddings: .zero),
                                                  eventHandler: model.eventHandler) {
                 self.inputFieldsStack.addArrangedSubview(subview)
             }
@@ -63,7 +63,7 @@ extension DSBackgroundWhiteView {
     enum Constants {
         static let contentPadding: CGFloat = 16
         static let stackSpacing: CGFloat = 16
-        static let cornerRadius: CGFloat = 8
+        static let cornerRadius: CGFloat = 16
         static let loadingHeight: CGFloat = 56
     }
 }

@@ -1,5 +1,6 @@
 
 import UIKit
+import DiiaCommonTypes
 
 public struct DSCardStatusChipModel: Codable, Equatable {
     public let code: String
@@ -21,7 +22,7 @@ public struct DSCardStatusChipModel: Codable, Equatable {
         switch self.type {
         case .fail, .success:
             return AppConstants.Colors.white
-        case .neutral, .pending, .white:
+        default:
             return AppConstants.Colors.black
         }
     }
@@ -38,6 +39,8 @@ public struct DSCardStatusChipModel: Codable, Equatable {
             return AppConstants.Colors.statusGreen
         case .white:
             return AppConstants.Colors.white
+        case .blue:
+            return AppConstants.Colors.statusBlue
         }
     }
     
@@ -49,8 +52,17 @@ public struct DSCardStatusChipModel: Codable, Equatable {
             return .clear
         }
     }
+    
+    static let mock = DSCardStatusChipModel(
+        code: "code",
+        name: "name",
+        type: .blue,
+        componentId: "componentId"
+    )
 }
 
-public enum DSCardStatusChipType: String, Codable, Equatable {
-    case success, pending, fail, neutral, white
+public enum DSCardStatusChipType: String, Codable, Equatable, EnumDecodable {
+    public static let defaultValue: DSCardStatusChipType = .neutral
+    
+    case success, pending, fail, neutral, white, blue
 }

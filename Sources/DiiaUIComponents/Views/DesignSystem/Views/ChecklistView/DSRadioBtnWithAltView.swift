@@ -29,11 +29,11 @@ public class DSRadioBtnWithAltView: BaseCodeView, DSInputComponentProtocol {
         self.viewModel = viewModel
         let radioGroupBuilder = DSRadioButtonGroupBuilder()
         for item in viewModel.items {
-            if let groupView = radioGroupBuilder.makeView(from: item.radioBtnGroupOrg,
-                                                          withPadding: .custom(paddings: .zero),
-                                                          eventHandler: viewModel.eventHandler) as? BoxView<ChecklistView> {
+            if let groupView = radioGroupBuilder.makeView(
+                from: item.radioBtnGroupOrg,
+                eventHandler: viewModel.eventHandler) as? ChecklistView {
                 radioBtnStack.addArrangedSubview(groupView)
-                guard let itemViewModel = groupView.subview.viewModel else { return }
+                guard let itemViewModel = groupView.viewModel else { return }
                 viewModel.itemViewModels.append(itemViewModel)
             }
         }

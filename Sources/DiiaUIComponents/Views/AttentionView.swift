@@ -39,6 +39,8 @@ public class AttentionView: BaseCodeView {
         container.addSubview(stackView)
         let anchors = stackView.anchor(top: container.topAnchor, leading: emojiLabel.trailingAnchor, bottom: container.bottomAnchor, trailing: container.trailingAnchor, padding: .init(top: 16, left: 10, bottom: 16, right: 16))
         anchors.bottom?.priority = .defaultHigh
+        
+        setupAccessibility()
     }
     
     // MARK: - Public Methods
@@ -49,6 +51,8 @@ public class AttentionView: BaseCodeView {
         
         titleLabel.isHidden = title?.count ?? 0 == 0
         descriptionLabel.isHidden = description?.count ?? 0 == 0
+        
+        accessibilityLabel = emoji + (title ?? "") + (description ?? "")
         
         setNeedsLayout()
         layoutIfNeeded()
@@ -68,8 +72,16 @@ public class AttentionView: BaseCodeView {
         titleLabel.isHidden = attentionMessage.title?.count ?? 0 == 0
         descriptionLabel.isHidden = attentionMessage.text?.count ?? 0 == 0
         
+        accessibilityLabel = attentionMessage.icon + (attentionMessage.title ?? "") + (attentionMessage.text ?? "")
+        
         setNeedsLayout()
         layoutIfNeeded()
+    }
+    
+    // MARK: - Accessibility
+    private func setupAccessibility() {
+        isAccessibilityElement = true
+        accessibilityTraits = .staticText
     }
 }
 

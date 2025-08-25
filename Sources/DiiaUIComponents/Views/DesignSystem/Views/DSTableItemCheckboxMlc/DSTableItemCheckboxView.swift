@@ -2,14 +2,14 @@
 import UIKit
 import DiiaCommonTypes
 
-public class DSTableItemCheckboxItemViewModel: NSObject {
+public final class DSTableItemCheckboxItemViewModel: NSObject {
     public let componentId: String?
     public let inputCode: String
     public let mandatory: Bool
     public let rows: [DSTableItemCheckboxRowModel]
     public var isSelected: Observable<Bool>
     public var isPartialSelected: Observable<Bool>
-    public let isEnabled: Bool
+    public let isEnabled: Observable<Bool>
     public let dataJson: String?
     public var onClick: Callback?
     
@@ -20,14 +20,14 @@ public class DSTableItemCheckboxItemViewModel: NSObject {
         self.rows = model.rows
         self.isSelected = .init(value: model.isSelected ?? false)
         self.isPartialSelected = .init(value: model.isNotFullSelected ?? false)
-        self.isEnabled = model.isEnabled ?? true
+        self.isEnabled = .init(value: model.isEnabled ?? true)
         self.dataJson = model.dataJson
         self.onClick = nil
     }
 }
 
 /// design_system_code: tableItemCheckboxMlc
-public class DSTableItemCheckboxView: BaseCodeView {
+public final class DSTableItemCheckboxView: BaseCodeView {
     private let mainStack = UIStackView.create(.horizontal, spacing: Constants.horizontalSpacing, alignment: .leading)
     private let rowsStack = UIStackView.create(.vertical, spacing: Constants.rowsSpacing)
     private let checkmarkImageView: UIImageView = .init().withSize(Constants.checkmarkImageSize)
@@ -57,7 +57,19 @@ public class DSTableItemCheckboxView: BaseCodeView {
         viewModel.isPartialSelected.observe(observer: self) { [weak self] _ in
             self?.updateSelectionState()
         }
-        updateAvailabilityState(isEnabled: viewModel.isEnabled)
+        viewModel.isEnabled.observe(observer: self) { [weak self] isEnabled in
+            self?.updateAvailabilityState(isEnabled: isEnabled)
+        }
+    }
+    
+    public func setupUI(titleFont: UIFont = FontBook.usualFont) {
+        for (index, row) in rowsStack.arrangedSubviews.enumerated() {
+            if let pairRow = row as? PairView {
+                pairRow.setupUI(
+                    titleFont: index == 0 ? titleFont : FontBook.usualFont,
+                    titleColor: index == 0 ? DSTextLabelAtmMode.primary.textColor : DSTextLabelAtmMode.secondary.textColor)
+            }
+        }
     }
     
     // MARK: - Private Methods
@@ -66,8 +78,6 @@ public class DSTableItemCheckboxView: BaseCodeView {
         
         let rowView = PairView()
         rowView.setupUI(
-            titleFont: FontBook.usualFont,
-            detailsFont: FontBook.usualFont,
             titleProportion: Constants.pairViewTitleProportion,
             titleColor: textLabelAtm.mode.textColor,
             detailsColor: textLabelAtm.mode.textColor,

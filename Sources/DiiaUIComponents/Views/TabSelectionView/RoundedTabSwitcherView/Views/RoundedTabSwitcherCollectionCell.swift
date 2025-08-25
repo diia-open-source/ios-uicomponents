@@ -1,10 +1,16 @@
 import UIKit
 
-class RoundedTabSwitcherCollectionCell: BaseCollectionNibCell, NibLoadable {
+public class RoundedTabSwitcherCollectionCell: BaseCollectionNibCell {
     
     @IBOutlet weak private var containerView: UIView!
     @IBOutlet weak private var titleLabel: UILabel!
     @IBOutlet weak private var checkboxIcon: UIImageView!
+    
+    public static var nib: UINib {
+        return UINib(nibName: String(describing: self),
+                     bundle: Bundle.module)
+    }
+
     var isSelectedState: Bool = false {
         didSet {
             containerView.backgroundColor = isSelectedState ? .white : Constants.unselectedItem
@@ -13,22 +19,23 @@ class RoundedTabSwitcherCollectionCell: BaseCollectionNibCell, NibLoadable {
     }
     
     static func widthForVM(viewModel: TabSwitcherModel) -> CGFloat {
-        let calculatedWidth: CGFloat = viewModel.title.size(withAttributes: [NSAttributedString.Key.font: FontBook.usualFont]).width + Constants.overallIndent
+        let calculatedWidth: CGFloat = viewModel.title.size(
+            withAttributes: [NSAttributedString.Key.font: FontBook.usualFont])
+            .width + Constants.overallIndent
         return viewModel.isSelected  ? calculatedWidth + Constants.counterViewWidth : calculatedWidth
     }
 
-    override func awakeFromNib() {
+    public override func awakeFromNib() {
         super.awakeFromNib()
-        
         setupUI()
     }
     
-    override func layoutSubviews() {
+    public override func layoutSubviews() {
         super.layoutSubviews()
         containerView.layer.cornerRadius = frame.height / 2
     }
     
-    func configure(tabItem: TabSwitcherModel) {
+    public func configure(tabItem: TabSwitcherModel) {
         titleLabel.text = tabItem.title
         isSelectedState = tabItem.isSelected
     }

@@ -1,18 +1,18 @@
 
-/// design_system_code: halvedCardCarouselOrg
+/// design_system_code: imageCardCarouselOrg
 
 import UIKit
 import DiiaCommonTypes
 
 public struct DSImageCardCarouselBuilder: DSViewBuilderProtocol {
-    public static let modelKey = "imageCardCarouselOrg"
-    
+    public let modelKey = "imageCardCarouselOrg"
+
     public func makeView(from object: AnyCodable,
                          withPadding paddingType: DSViewPaddingType,
                          viewFabric: DSViewFabric?,
                          eventHandler: @escaping (ConstructorItemEvent) -> Void) -> UIView? {
-        guard let data: DSImageCardCarouselModel = object.parseValue(forKey: Self.modelKey) else { return nil }
-        
+        guard let data: DSImageCardCarouselModel = object.parseValue(forKey: self.modelKey) else { return nil }
+
         let view = HorizontalCollectionView()
         view.configure(
             title: nil,
@@ -24,9 +24,34 @@ public struct DSImageCardCarouselBuilder: DSViewBuilderProtocol {
             cellTypes: [GenericCollectionViewCell.self]
         )
         view.setupUI(pageControlDotColor: Constants.dotColor)
-        
+
         let paddingBox = BoxView(subview: view).withConstraints(insets: Constants.paddingInsets)
         return paddingBox
+    }
+}
+
+extension DSImageCardCarouselBuilder: DSViewMockableBuilderProtocol {
+    public func makeMockModel() -> AnyCodable {
+        let imageCard = DSImageCardMlc(
+            imageCardMlc: DSImageCardModel(
+                componentId: "componentId",
+                image: "https://mockurl.com/image.png",
+                label: "Mock Image Card",
+                imageAltText: "Mock image description",
+                iconRight: "home",
+                action: .mock
+            )
+        )
+
+        let model = DSImageCardCarouselModel(
+            componentId: "componentId",
+            dotNavigationAtm: DSDotNavigationModel(count: 1),
+            items: [AnyCodable.fromEncodable(encodable: imageCard)]
+        )
+
+        return .dictionary([
+            modelKey: .fromEncodable(encodable: model)
+        ])
     }
 }
 
@@ -35,7 +60,7 @@ class DSImageCardCarouselDataSource: NSObject, UICollectionViewDataSource {
     private let sourceModel: DSImageCardCarouselModel
     private let eventHandler: (ConstructorItemEvent) -> Void
     private let fabric: DSViewFabric
-    
+
     init(sourceModel: DSImageCardCarouselModel,
          fabric: DSViewFabric,
          eventHandler: @escaping (ConstructorItemEvent) -> Void) {
@@ -43,24 +68,21 @@ class DSImageCardCarouselDataSource: NSObject, UICollectionViewDataSource {
         self.fabric = fabric
         self.eventHandler = eventHandler
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let selectedItem = sourceModel.items[indexPath.row]
+        let item = sourceModel.items[indexPath.row]
         let cell: GenericCollectionViewCell = collectionView.dequeueReusableCell(for: indexPath)
-        if let view = fabric.makeView(from: AnyCodable.fromEncodable(encodable: selectedItem),
-                                      withPadding: .custom(paddings: .zero),
+        if let view = fabric.makeView(from: AnyCodable.fromEncodable(encodable: item),
+                                      withPadding: .fixed(paddings: .zero),
                                       eventHandler: eventHandler) {
-            if let item: BankingCardMlc = selectedItem.parseValue(forKey: BankingCardBuilder.modelKey), let itemId = item.id {
-                cell.configure(with: view, for: itemId)
-            } else {
-                cell.configure(with: view)
-            }
+            let itemId = item.values().first?.getValue(forKey: "id")?.stringValue()
+            cell.configure(with: view, for: itemId)
             return cell
         }
-        
+
         return UICollectionViewCell()
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return sourceModel.items.count
     }

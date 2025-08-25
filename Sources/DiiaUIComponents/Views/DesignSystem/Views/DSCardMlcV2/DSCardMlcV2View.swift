@@ -5,15 +5,24 @@ import UIKit
 public final class DSCardMlcV2View: BaseCodeView {
     private let mainStack = UIStackView.create(.vertical, spacing: Constants.spacing)
     private let contentHStack = UIStackView.create(.horizontal, spacing: Constants.contentHStackSpacing, alignment: .leading)
-    private let contentVStack = UIStackView.create(.vertical, spacing: Constants.spacing)
+    private let contentVStack = UIStackView.create(.vertical, spacing: Constants.mediumSpacing)
     private let descriptionsStack = UIStackView.create()
-    private let singleChipStack = UIStackView.create(.vertical, alignment: .leading)
+    private let rowsStack = UIStackView.create(spacing: Constants.mediumSpacing)
+    private let statusLabelStack = UIStackView.create(.horizontal, alignment: .center, distribution: .fill)
+    private let descriptionLabelStack =  UIStackView.create(spacing: Constants.smallSpacing)
+    private let attentionIconMessageView = DSAttentionIconMessageView()
     private let chipStatusAtmView = DSChipStatusAtmView()
     private let label = UILabel().withParameters(font: FontBook.bigText)
+    private let rightLabel = UILabel().withParameters(font: FontBook.usualFont, textColor: Constants.grayTextColor)
     private let iconUrlView = DSIconUrlAtmView()
-    private let bottomRightIcon = UIImageView()
+    private let bottomIconContainer = UIView()
+    private let bottomRightIcon = DSIconView()
     private var eventHandler: ((ConstructorItemEvent) -> Void) = { _ in }
-    private var model: DSCardMlcV2Model?
+    private var chipsCollectionViewHeightConstraint: NSLayoutConstraint?
+    private var viewModel: DSCardMlcV2ViewModel?
+    
+    private var lastChipsWidthStored: CGFloat = 0
+    private var lastAppliedChipsHeight: CGFloat = 0
     
     private lazy var chipsCollectionView: UICollectionView = {
         let layout = DSCardMlcV2CollectionFlowLayout()
@@ -21,6 +30,8 @@ public final class DSCardMlcV2View: BaseCodeView {
         layout.sectionInset = .zero
         layout.minimumLineSpacing = Constants.minimumLineSpacing
         layout.minimumInteritemSpacing = Constants.minimumLineSpacing
+        layout.estimatedItemSize = .zero
+
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.isScrollEnabled = false
         collectionView.backgroundColor = .clear
@@ -30,6 +41,14 @@ public final class DSCardMlcV2View: BaseCodeView {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.setContentHuggingPriority(.defaultLow, for: .horizontal)
         collectionView.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
+
+        collectionView.showsVerticalScrollIndicator = false
+        collectionView.showsHorizontalScrollIndicator = false
+        collectionView.contentInset = .zero
+        collectionView.scrollIndicatorInsets = .zero
+        collectionView.contentInsetAdjustmentBehavior = .never
+        collectionView.alwaysBounceVertical = false
+
         return collectionView
     }()
     
@@ -40,40 +59,86 @@ public final class DSCardMlcV2View: BaseCodeView {
         addSubviews()
         setupLayout()
         handleTap()
+        
+        bottomRightIcon.onClick = { [weak self] action in
+            self?.viewModel?.onTap?(action)
+        }
     }
+    
     // MARK: - Public methods
     public override func layoutSubviews() {
         super.layoutSubviews()
-        updateCollectionViewHeight()
+        let width = chipsCollectionView.bounds.width
+        guard width > 0 else { return }
+        if width != lastChipsWidthStored {
+            lastChipsWidthStored = width
+            updateCollectionViewHeight()
+        }
     }
     
-    public func configure(with model: DSCardMlcV2Model) {
-        self.model = model
-        accessibilityIdentifier = model.componentId
-        label.text = model.label
+    public func configure(with viewModel: DSCardMlcV2ViewModel) {
+        self.viewModel = viewModel
         
-        singleChipStack.isHidden = model.chipStatusAtm == nil
-        if let chipStatusAtm = model.chipStatusAtm {
+        accessibilityIdentifier = viewModel.componentId
+        label.text = viewModel.label
+        
+        attentionIconMessageView.isHidden = viewModel.attentionIconMessageMlc == nil
+        if let attentionIconMessageMlc = viewModel.attentionIconMessageMlc {
+            attentionIconMessageView.configure(with: attentionIconMessageMlc)
+        }
+        
+        statusLabelStack.isHidden = viewModel.chipStatusAtm == nil && viewModel.rightLabel == nil
+        chipStatusAtmView.isHidden = viewModel.chipStatusAtm == nil
+        if let chipStatusAtm = viewModel.chipStatusAtm {
             chipStatusAtmView.configure(for: chipStatusAtm)
         }
         
-        descriptionsStack.isHidden = model.descriptions == nil
-        if let descriptions = model.descriptions {
+        rightLabel.isHidden = viewModel.rightLabel == nil
+        rightLabel.text = viewModel.rightLabel
+        
+        descriptionsStack.isHidden = viewModel.descriptions == nil
+        if let descriptions = viewModel.descriptions {
             descriptionsStack.safelyRemoveArrangedSubviews()
             descriptions.forEach {
-                let descriptionLabel = UILabel().withParameters(font: FontBook.usualFont, textColor: Constants.descriptionLabelTextColor)
+                let descriptionLabel = UILabel().withParameters(font: FontBook.usualFont, textColor: Constants.grayTextColor)
                 descriptionLabel.text = $0
                 descriptionsStack.addArrangedSubview(descriptionLabel)
             }
         }
         
-        iconUrlView.isHidden = model.iconUrlAtm == nil
-        if let iconUrlAtm = model.iconUrlAtm {
+        rowsStack.isHidden = viewModel.rows?.isEmpty ?? true
+        if let rows = viewModel.rows {
+            rowsStack.safelyRemoveArrangedSubviews()
+            rows.forEach {
+                let rowLabel = UILabel().withParameters(font: FontBook.usualFont, textColor: Constants.grayTextColor)
+                rowLabel.text = $0
+                rowsStack.addArrangedSubview(rowLabel)
+            }
+        }
+        
+        iconUrlView.isHidden = viewModel.iconUrlAtm == nil
+        if let iconUrlAtm = viewModel.iconUrlAtm {
             iconUrlView.configure(with: iconUrlAtm)
         }
         
-        chipsCollectionView.isHidden = model.chips == nil
+        let iconModel = viewModel.currentStateIconModel ?? viewModel.smallIconAtm
+        bottomIconContainer.isHidden = iconModel == nil
+        if let iconModel {
+            bottomRightIcon.setIcon(iconModel)
+        }
+        
+        viewModel.smallIconAtmState.observe(observer: self) { [weak self] state in
+            guard let iconModel = self?.viewModel?.currentStateIconModel else {
+                return
+            }
+            
+            self?.bottomRightIcon.setIcon(iconModel)
+        }
+        
+        chipsCollectionView.isHidden = viewModel.chips.isEmpty
         chipsCollectionView.reloadData()
+        chipsCollectionView.layoutIfNeeded()
+        updateCollectionViewHeight()
     }
     
     public func set(eventHandler: @escaping (ConstructorItemEvent) -> Void) {
@@ -84,17 +149,32 @@ public final class DSCardMlcV2View: BaseCodeView {
     private func addSubviews() {
         addSubview(mainStack)
         mainStack.addArrangedSubviews([
-            singleChipStack,
-            contentHStack
+            statusLabelStack,
+            contentHStack,
+            attentionIconMessageView
         ])
-        singleChipStack.addArrangedSubview(chipStatusAtmView)
+        
+        statusLabelStack.addArrangedSubviews([
+            chipStatusAtmView,
+            rightLabel
+        ])
+        
+        bottomIconContainer.addSubview(bottomRightIcon)
+        
         contentHStack.addArrangedSubviews([
             iconUrlView,
-            contentVStack
+            contentVStack,
+            bottomIconContainer
         ])
-        contentVStack.addArrangedSubviews([
+        
+        descriptionLabelStack.addArrangedSubviews([
             label,
-            descriptionsStack,
+            descriptionsStack
+        ])
+        
+        contentVStack.addArrangedSubviews([
+            descriptionLabelStack,
+            rowsStack,
             chipsCollectionView
         ])
     }
@@ -103,34 +183,43 @@ public final class DSCardMlcV2View: BaseCodeView {
         mainStack.fillSuperview(padding: Constants.mainStackPaddings)
         chipStatusAtmView.withHeight(Constants.chipsHeight)
         iconUrlView.withSize(Constants.iconUrlSize)
+        bottomRightIcon.withSize(Constants.bottomIconUrlSize)
+        
+        chipsCollectionViewHeightConstraint = chipsCollectionView.heightAnchor.constraint(equalToConstant: 0)
+        chipsCollectionViewHeightConstraint?.isActive = true
+        
+        bottomIconContainer.anchor(bottom: contentVStack.bottomAnchor)
+        bottomRightIcon.anchor(bottom: bottomIconContainer.bottomAnchor,trailing: bottomIconContainer.trailingAnchor)
+        bottomIconContainer.widthAnchor.constraint(equalToConstant: Constants.widthAnchor).isActive = true
+        
+        bottomIconContainer.setContentHuggingPriority(.required, for: .horizontal)
+        bottomIconContainer.setContentCompressionResistancePriority(.required, for: .horizontal)
     }
     
     private func updateCollectionViewHeight() {
-        guard let chips = model?.chips, !chips.isEmpty else { return }
+        guard let chips = viewModel?.chips, !chips.isEmpty else {
+            if chipsCollectionViewHeightConstraint?.constant != 0 {
+                chipsCollectionViewHeightConstraint?.constant = 0
+                lastAppliedChipsHeight = 0
+            }
+            return
+        }
         
-        let availableWidth = mainStack.bounds.width - (Constants.mainStackPaddings.left + Constants.mainStackPaddings.right)
-        guard availableWidth > 0 else { return }
+        chipsCollectionView.collectionViewLayout.invalidateLayout()
+        chipsCollectionView.layoutIfNeeded()
         
-        let contentHStackSpacing = Constants.contentHStackSpacing
-        let adjustedWidth = availableWidth - contentHStackSpacing
+        let inset = chipsCollectionView.adjustedContentInset
+        let contentH = chipsCollectionView.collectionViewLayout.collectionViewContentSize.height
+        let verticalInset = inset.top + inset.bottom
         
-        var currentRowWidth: CGFloat = 0
-        var rowCount: CGFloat = 1
-        
-        for chip in chips {
-            let chipWidth = DSChipStatusAtmView.widthForText(text: chip.chipStatusAtm.name)
-            let totalChipWidth = chipWidth + (currentRowWidth > 0 ? Constants.minimumInteritemSpacing : 0)
-            if currentRowWidth + totalChipWidth > adjustedWidth {
-                rowCount += 1
-                currentRowWidth = chipWidth
-            } else {
-                currentRowWidth += totalChipWidth
+        let newHeight = contentH - verticalInset
+   
+        if lastAppliedChipsHeight != newHeight {
+            lastAppliedChipsHeight = newHeight
+            if chipsCollectionViewHeightConstraint?.constant != newHeight {
+                chipsCollectionViewHeightConstraint?.constant = newHeight
             }
         }
-        let chipHeight = Constants.chipsHeight
-        let totalHeight = (rowCount * chipHeight) + ((rowCount - 1) * Constants.minimumLineSpacing)
-        
-        chipsCollectionView.withHeight(totalHeight)
     }
     
     private func handleTap() {
@@ -139,7 +228,7 @@ public final class DSCardMlcV2View: BaseCodeView {
     }
     
     @objc private func onTap() {
-        guard let action = model?.action else { return }
+        guard let action = viewModel?.action else { return }
         eventHandler(.action(action))
     }
 }
@@ -147,11 +236,11 @@ public final class DSCardMlcV2View: BaseCodeView {
 // MARK: - UICollectionViewDataSource
 extension DSCardMlcV2View: UICollectionViewDataSource {
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return model?.chips?.count ?? 0
+        return viewModel?.chips.count ?? 0
     }
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if let chip = model?.chips?[indexPath.item] {
+        if let chip = viewModel?.chips[indexPath.item] {
             let cell: DSCardMlcV2ChipCell = collectionView.dequeueReusableCell(for: indexPath)
             cell.configure(with: chip.chipStatusAtm)
             return cell
@@ -163,7 +252,7 @@ extension DSCardMlcV2View: UICollectionViewDataSource {
 // MARK: - UICollectionViewDelegateFlowLayout
 extension DSCardMlcV2View: UICollectionViewDelegateFlowLayout {
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        guard let chip = model?.chips?[indexPath.item] else { return .zero }
+        guard let chip = viewModel?.chips[indexPath.item] else { return .zero }
         let width = DSChipStatusAtmView.widthForText(text: chip.chipStatusAtm.name)
         return CGSize(width: width, height: Constants.chipsHeight)
     }
@@ -174,13 +263,17 @@ private extension DSCardMlcV2View {
     enum Constants {
         static let cornerRadius: CGFloat = 16
         static let sideInset: CGFloat = 16
-        static let spacing: CGFloat = 8
+        static let spacing: CGFloat = 16
+        static let mediumSpacing: CGFloat = 8
+        static let smallSpacing: CGFloat = 4
         static let mainStackPaddings: UIEdgeInsets = .init(top: 16, left: 16, bottom: 16, right: 16)
         static let contentHStackSpacing: CGFloat = 10
-        static let descriptionLabelTextColor: UIColor = .black.withAlphaComponent(0.3)
+        static let grayTextColor: UIColor = .black.withAlphaComponent(0.5)
         static let chipsHeight: CGFloat = 18
         static let iconUrlSize: CGSize = .init(width: 32, height: 32)
+        static let bottomIconUrlSize: CGSize = .init(width: 24, height: 24)
         static let minimumLineSpacing: CGFloat = 8
         static let minimumInteritemSpacing: CGFloat = 8
+        static let widthAnchor: CGFloat = 24
     }
 }

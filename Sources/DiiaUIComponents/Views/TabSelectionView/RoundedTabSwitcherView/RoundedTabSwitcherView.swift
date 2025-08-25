@@ -12,11 +12,13 @@ public class RoundedTabSwitcherView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         fromNib(bundle: Bundle.module)
+        setupCollectionView()
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         fromNib(bundle: Bundle.module)
+        setupCollectionView()
     }
     
     // MARK: - Lifecycle

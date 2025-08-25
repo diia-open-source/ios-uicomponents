@@ -21,7 +21,7 @@ public class DSMediaTitleViewModel {
 /// design_system_code: mediaTitleOrg
 final public class DSMediaTitleView: BaseCodeView {
     private let titleLabel = UILabel().withParameters(font: FontBook.cardsHeadingFont)
-    private let secondaryLabel = UILabel().withParameters(font: FontBook.usualFont, textColor: Constants.secondaryTextColor, numberOfLines: 1)
+    private let secondaryLabel = UILabel().withParameters(font: FontBook.usualFont, textColor: .black600, numberOfLines: 1)
     private let plainButton = IconedLoadingStateView()
     
     private var viewModel: DSMediaTitleViewModel?

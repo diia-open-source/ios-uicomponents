@@ -46,17 +46,20 @@ public class DSTableBlockAccordionView: BaseCodeView {
         let gesture = UITapGestureRecognizer(target: self, action: #selector(onTapped))
         headingStack.addGestureRecognizer(gesture)
         headingStack.isUserInteractionEnabled = true
+        
+        setupAccessibility()
     }
     
     public func configure(with model: DSTableBlockAccordionModel, eventHandler: @escaping ((ConstructorItemEvent) -> Void)) {
         itemsStack.safelyRemoveArrangedSubviews()
         
         headingLabel.text = model.heading
+        headingStack.accessibilityLabel = model.heading
         self.isOpened = model.isOpen
         setState(isOpened ? .opened : .closed, animated: false)
         
         model.items.forEach { item in
-            if let view = viewFabric.makeView(from: item, withPadding: .custom(paddings: .zero), eventHandler: eventHandler) {
+            if let view = viewFabric.makeView(from: item, withPadding: .fixed(paddings: .zero), eventHandler: eventHandler) {
                 itemsStack.addArrangedSubview(view)
             }
         }
@@ -66,8 +69,10 @@ public class DSTableBlockAccordionView: BaseCodeView {
         switch state {
         case .opened:
             accordionIcon.image = R.image.expand_minus.image
+            headingStack.accessibilityValue = R.Strings.general_accessibility_accordion_opened.localized()
         case .closed:
             accordionIcon.image = R.image.expand_plus.image
+            headingStack.accessibilityValue = R.Strings.general_accessibility_accordion_closed.localized()
         }
         
         let closure = { [weak self] in
@@ -92,6 +97,12 @@ public class DSTableBlockAccordionView: BaseCodeView {
     
     public func setFabric(_ viewFabric: DSViewFabric) {
         self.viewFabric = viewFabric
+    }
+    
+    // MARK: - Accessibility
+    private func setupAccessibility() {
+        headingStack.isAccessibilityElement = true
+        headingStack.accessibilityTraits = .button
     }
 }
 

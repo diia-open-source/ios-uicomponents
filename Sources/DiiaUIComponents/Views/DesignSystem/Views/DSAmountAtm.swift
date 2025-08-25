@@ -12,7 +12,7 @@ public struct DSAmountAtmModel: Codable {
         case .black:
             return AppConstants.Colors.black
         case .green:
-            return AppConstants.Colors.statusGreen
+            return AppConstants.Colors.darkGreen
         case .red:
             return AppConstants.Colors.persianRed
         }

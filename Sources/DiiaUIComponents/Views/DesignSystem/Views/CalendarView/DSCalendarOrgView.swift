@@ -401,7 +401,7 @@ extension DSCalendarOrgView {
             let formatter = DateFormatter()
             formatter.locale = Locale(identifier: "uk_UA")
             formatter.dateFormat = "MM.yyyy"
-            formatter.timeZone = TimeZone(secondsFromGMT: .zero)
+            formatter.timeZone = TimeZone(identifier: "Europe/Kyiv")!
             return formatter
         }()
     }
@@ -411,7 +411,7 @@ private extension Date {
     var monthStr: String {
         var calendar = Calendar.current
         calendar.locale = .init(identifier: "uk_UA")
-        calendar.timeZone = TimeZone(secondsFromGMT: .zero)!
+        calendar.timeZone = TimeZone(identifier: "Europe/Kyiv")!
         let names = calendar.standaloneMonthSymbols
         let month = calendar.component(.month, from: self)
         return names[month - 1]
@@ -422,6 +422,7 @@ private extension DSCalendarOrgView {
     var dateFormatter: DateFormatter {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "uk_UA")
+        formatter.timeZone = TimeZone(identifier: "Europe/Kyiv")!
         formatter.dateFormat = "d"
         return formatter
     }
@@ -430,15 +431,15 @@ private extension DSCalendarOrgView {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "uk_UA")
         formatter.dateFormat = "dd.MM.yyyy"
-        formatter.timeZone = TimeZone(secondsFromGMT: .zero)!
+        formatter.timeZone = TimeZone(identifier: "Europe/Kyiv")!
         return formatter
     }
     
     var calendar: Calendar {
         var calendar = Calendar.current
         calendar.locale = Locale(identifier: "uk_UA")
+        calendar.timeZone = TimeZone(identifier: "Europe/Kyiv")!
         calendar.firstWeekday = 2
-        calendar.timeZone = TimeZone(secondsFromGMT: .zero)!
         return calendar
     }
 }

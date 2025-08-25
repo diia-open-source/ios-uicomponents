@@ -4,7 +4,7 @@ import DiiaCommonTypes
 
 /// design_system_code: backgroundWhiteOrg
 public struct DSBackgroundWhiteViewBuilder: DSViewBuilderProtocol {
-    public static let modelKey = "backgroundWhiteOrg"
+    public let modelKey = "backgroundWhiteOrg"
     
     public func makeView(
         from object: AnyCodable,
@@ -12,7 +12,7 @@ public struct DSBackgroundWhiteViewBuilder: DSViewBuilderProtocol {
         viewFabric: DSViewFabric?,
         eventHandler: @escaping (ConstructorItemEvent) -> Void
     ) -> UIView? {
-        guard let data: DSBackgroundWhiteOrgModel = object.parseValue(forKey: Self.modelKey) else { return nil }
+        guard let data: DSBackgroundWhiteOrgModel = object.parseValue(forKey: self.modelKey) else { return nil }
         
         let view = DSBackgroundWhiteView()
         if let fabric = viewFabric {
@@ -25,8 +25,24 @@ public struct DSBackgroundWhiteViewBuilder: DSViewBuilderProtocol {
             eventHandler: eventHandler
         ))
         
-        let insets = padding.defaultPadding()
+        let insets = padding.defaultPadding(object: object, modelKey: modelKey)
         let container = BoxView(subview: view).withConstraints(insets: insets)
         return container
+    }
+}
+
+extension DSBackgroundWhiteViewBuilder: DSViewMockableBuilderProtocol {
+    public func makeMockModel() -> AnyCodable {
+        let model = DSBackgroundWhiteOrgModel(
+            componentId: "componentId",
+            id: "mock_background_white_id",
+            items: [
+                DSRadioBtnGroupOrgV2Builder().makeMockModel(),
+                DSListWidgetItemBuilder().makeMockModel()
+            ]
+        )
+        return .dictionary([
+            modelKey: .fromEncodable(encodable: model)
+        ])
     }
 }

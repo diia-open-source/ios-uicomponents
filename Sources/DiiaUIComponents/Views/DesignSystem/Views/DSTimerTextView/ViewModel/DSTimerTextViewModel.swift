@@ -48,6 +48,10 @@ public class DSTimerTextViewModel {
         }
     }
     
+    public func getTimerLength() -> Int {
+        return model.expireLabel?.timer ?? Int(Constants.defaultTimerTime)
+    }
+    
     private func startTimer() {
         cancelTimer()
         runTimer = Int(timerLength)

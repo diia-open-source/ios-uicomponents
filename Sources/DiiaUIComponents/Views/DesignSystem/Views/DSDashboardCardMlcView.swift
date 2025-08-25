@@ -21,7 +21,7 @@ public class DSDashboardCardMlcView: BaseCodeView {
     private let amountLabel = UILabel().withParameters(font: FontBook.cardsHeadingFont)
     private let amountSmallLabel = UILabel().withParameters(font: FontBook.emptyStateTitleFont)
     private let descriptionLabel = UILabel().withParameters(font: FontBook.usualFont,
-                                                            textColor: UIColor.black.withAlphaComponent(0.5))
+                                                            textColor: UIColor.black600)
     private let button = ActionButton()
     private var emptyIcon = UIImageView()
     private let emptyDescription = UILabel().withParameters(font: FontBook.usualFont)
@@ -43,8 +43,13 @@ public class DSDashboardCardMlcView: BaseCodeView {
         emptyDescription.textAlignment = .center
         icon.withSize(Constants.imageSize)
         labelStack.addArrangedSubviews([icon, label])
+        
         amountView.addSubview(amountLabel)
+        amountLabel.anchor(top: amountView.topAnchor, leading: amountView.leadingAnchor, bottom: amountView.bottomAnchor)
+        
         amountView.addSubview(amountSmallLabel)
+        amountSmallLabel.anchor(leading: amountLabel.trailingAnchor, bottom: amountView.bottomAnchor, trailing: amountView.trailingAnchor)
+        
         fullViewStack.addArrangedSubviews([labelStack, amountView, descriptionLabel, button])
         emptyStack.addArrangedSubviews([emptyIcon, emptyDescription])
         
@@ -58,18 +63,7 @@ public class DSDashboardCardMlcView: BaseCodeView {
         button.contentEdgeInsets = Constants.buttonTitleEdgeInsets
         
         addSubview(fullViewStack)
-        
         fullViewStack.fillSuperview(padding: .allSides(Constants.padding))
-        
-        amountView.translatesAutoresizingMaskIntoConstraints = false
-        amountLabel.translatesAutoresizingMaskIntoConstraints = false
-        amountSmallLabel.translatesAutoresizingMaskIntoConstraints = false
-        
-        amountView.heightAnchor.constraint(equalToConstant: Constants.lineHeight).isActive = true
-        amountLabel.leadingAnchor.constraint(equalTo: amountView.leadingAnchor).isActive = true
-        amountSmallLabel.leadingAnchor.constraint(equalTo: amountLabel.trailingAnchor).isActive = true
-        amountLabel.heightAnchor.constraint(equalTo: amountView.heightAnchor).isActive = true
-        amountSmallLabel.bottomAnchor.constraint(equalTo: amountLabel.bottomAnchor).isActive = true
         
         emptyIcon.withSize(Constants.emptyImageSize)
         button.withHeight(Constants.buttonHeight)
@@ -100,8 +94,6 @@ public class DSDashboardCardMlcView: BaseCodeView {
                               callback: {[weak self] in
             if let btnAction = self?.viewModel?.dashboardCardMlc.btnSemiLightAtm?.action {
                 self?.viewModel?.eventHandler?(.action(btnAction))
-                self?.isAccessibilityElement = true
-                self?.accessibilityTraits = .button
             }
         })
         
@@ -110,13 +102,37 @@ public class DSDashboardCardMlcView: BaseCodeView {
         addGestureRecognizer(tapViewRecognizer)
         
         configureView(for: viewModel.dashboardCardMlc.type)
-        setupAccessibility()
     }
     
-    private func setupAccessibility() {
+    private func setupAccessibility(for type: DSWidgetType) {
+        label.isAccessibilityElement = true
+        label.accessibilityTraits = .staticText
+        label.accessibilityLabel = viewModel?.dashboardCardMlc.label
+        
         amountView.isAccessibilityElement = true
         amountView.accessibilityTraits = .staticText
-        amountView.accessibilityLabel = "\(viewModel?.dashboardCardMlc.amountLarge ?? "") \(viewModel?.dashboardCardMlc.amountSmall ?? "")"
+        amountView.accessibilityLabel = cashbackAmountAccessibilityFormatted(text: "\(viewModel?.dashboardCardMlc.amountLarge ?? "") \(viewModel?.dashboardCardMlc.amountSmall ?? "")")
+        
+        button.isAccessibilityElement = true
+        button.accessibilityTraits = .button
+        button.accessibilityLabel = viewModel?.dashboardCardMlc.btnSemiLightAtm?.label
+        
+        descriptionLabel.isAccessibilityElement = true
+        descriptionLabel.accessibilityTraits = .staticText
+        descriptionLabel.accessibilityLabel = viewModel?.dashboardCardMlc.description
+        
+        switch type {
+        case .empty:
+            isAccessibilityElement = true
+            accessibilityTraits = .staticText
+            accessibilityLabel = viewModel?.dashboardCardMlc.descriptionCenter
+        case .button:
+            isAccessibilityElement = false
+            accessibilityElements = [label, amountView, button]
+        case .description:
+            isAccessibilityElement = false
+            accessibilityElements = [label, amountView, descriptionLabel]
+        }
     }
     
     @objc private func viewAction() {
@@ -137,22 +153,21 @@ public class DSDashboardCardMlcView: BaseCodeView {
             displayFullStack(false)
             emptyStack.isHidden = false
             backgroundColor = UIColor.init(white: 1.0, alpha: 0.5)
-            accessibilityLabel = viewModel?.dashboardCardMlc.descriptionCenter
         case .button:
             emptyStack.isHidden = true
             displayFullStack(true)
             button.isHidden = false
             descriptionLabel.isHidden = true
             configureGradient(for: .button)
-            accessibilityLabel = "\(viewModel?.dashboardCardMlc.label ?? "") \(viewModel?.dashboardCardMlc.amountLarge ?? "") \(viewModel?.dashboardCardMlc.amountSmall ?? "")"
         case .description:
             emptyStack.isHidden = true
             displayFullStack(true)
             button.isHidden = true
             descriptionLabel.isHidden = false
             configureGradient(for: .description)
-            accessibilityLabel = "\(viewModel?.dashboardCardMlc.label ?? "") \(viewModel?.dashboardCardMlc.amountLarge ?? "") \(viewModel?.dashboardCardMlc.amountSmall ?? "")"
         }
+        
+        setupAccessibility(for: type)
     }
     
     private func configureGradient(for type: DSWidgetType) {
@@ -171,6 +186,20 @@ public class DSDashboardCardMlcView: BaseCodeView {
                                    endPoint: .init(x: 1.0, y: 0.5))
         insertSubview(gradient, at: 0)
         gradient.fillSuperview()
+    }
+    
+    private func cashbackAmountAccessibilityFormatted(text: String) -> String? {
+        let amountWithoutSymbol = text.replacingOccurrences(of: "₴", with: "")
+        let amountWithoutWhiteSpaces = amountWithoutSymbol.replacingOccurrences(of: " ", with: "")
+        let splittedAmount = amountWithoutWhiteSpaces.components(separatedBy: ".")
+        
+        if splittedAmount.count == 2 {
+            let formattedString = R.Strings.made_in_ua_cashback_dashboard_amount.formattedLocalized(arguments: splittedAmount[0], splittedAmount[1])
+            return formattedString
+        }
+        
+        return nil
+        
     }
 }
 

@@ -3,13 +3,26 @@ import DiiaCommonTypes
 
 /// design_system_code: halvedCardCarouselOrg
 public struct DSHalvedCardCarouselBuilder: DSViewBuilderProtocol {
-    public static let modelKey = "halvedCardCarouselOrg"
+    public let modelKey = "halvedCardCarouselOrg"
+    
+    public init() {}
     
     public func makeView(from object: AnyCodable,
                          withPadding paddingType: DSViewPaddingType,
                          viewFabric: DSViewFabric?,
                          eventHandler: @escaping (ConstructorItemEvent) -> Void) -> UIView? {
-        guard let data: DSHalvedCardCarouselModel = object.parseValue(forKey: Self.modelKey) else { return nil }
+        guard let data: DSHalvedCardCarouselModel = object.parseValue(forKey: self.modelKey) else { return nil }
+        let view = makeView(from: data, eventHandler: eventHandler)
+        let paddingBox = BoxView(subview: view).withConstraints(
+            insets: paddingType.insets(
+                for: object,
+                modelKey: modelKey,
+                defaultInsets: Constants.paddingInsets))
+        return paddingBox
+    }
+    
+    public func makeView(from data: DSHalvedCardCarouselModel,
+                         eventHandler: ((ConstructorItemEvent) -> Void)? = nil) -> UIView {
         
         let dataSource = DSHalvedCardCarouselDataSource(sourceModel: data, eventHandler: eventHandler)
         
@@ -23,17 +36,16 @@ public struct DSHalvedCardCarouselBuilder: DSViewBuilderProtocol {
         )
         view.setupUI(pageControlDotColor: Constants.dotColor)
         
-        let paddingBox = BoxView(subview: view).withConstraints(insets: Constants.paddingInsets)
-        return paddingBox
+        return view
     }
 }
 
 // MARK: - Data Source
 class DSHalvedCardCarouselDataSource: NSObject, UICollectionViewDataSource {
     private let sourceModel: DSHalvedCardCarouselModel
-    private let eventHandler: (ConstructorItemEvent) -> Void
+    private let eventHandler: ((ConstructorItemEvent) -> Void)?
     
-    init(sourceModel: DSHalvedCardCarouselModel, eventHandler: @escaping (ConstructorItemEvent) -> Void) {
+    init(sourceModel: DSHalvedCardCarouselModel, eventHandler: ((ConstructorItemEvent) -> Void)?) {
         self.sourceModel = sourceModel
         self.eventHandler = eventHandler
     }
@@ -51,7 +63,7 @@ class DSHalvedCardCarouselDataSource: NSObject, UICollectionViewDataSource {
                 guard let action = halvedCard.action,
                       collectionView.isCellFullyVisible(at: indexPath)
                 else { return }
-                self?.eventHandler(.action(action))
+                self?.eventHandler?(.action(action))
             }
             cell.configure(with: cellVM)
             return cell
@@ -62,7 +74,7 @@ class DSHalvedCardCarouselDataSource: NSObject, UICollectionViewDataSource {
                 guard let action = iconCard.action,
                       collectionView.isCellFullyVisible(at: indexPath)
                 else { return }
-                self?.eventHandler(.action(action))
+                self?.eventHandler?(.action(action))
             })
             return cell
         }
@@ -95,6 +107,39 @@ extension DSHalvedCardCarouselDataSource: AccessibilityDescridable {
 }
 
 // MARK: - Constants
+extension DSHalvedCardCarouselBuilder: DSViewMockableBuilderProtocol {
+    public func makeMockModel() -> AnyCodable {
+        let carouselItem1 = DSHalvedCardCarouselItem(
+            halvedCardMlc: DSHalvedCardCarouselItemModel(
+                id: "card1",
+                title: "Card Title 1",
+                label: "Card Label 1",
+                accessibilityDescription: "First carousel card",
+                image: "https://example.com/image1.jpg",
+                action: DSActionParameter.mock
+            ),
+            iconCardMlc: nil
+        )
+        let carouselItem2 = DSHalvedCardCarouselItem(
+            halvedCardMlc: nil,
+            iconCardMlc: DSIconCardModel(
+                label: "Icon Card",
+                accessibilityDescription: "Icon carousel card",
+                iconLeft: "home",
+                action: DSActionParameter.mock
+            )
+        )
+        
+        let model = DSHalvedCardCarouselModel(
+            dotNavigationAtm: DSDotNavigationModel(count: 2),
+            items: [carouselItem1, carouselItem2]
+        )
+        return .dictionary([
+            modelKey: .fromEncodable(encodable: model)
+        ])
+    }
+}
+
 private enum Constants {
     static var cellSize: CGSize {
         let cellWidth = UIScreen.main.bounds.width - 48

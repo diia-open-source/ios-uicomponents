@@ -1,3 +1,4 @@
+
 import UIKit
 
 extension R {
@@ -34,6 +35,7 @@ extension R {
         case close
         case closeBtn
         case closeRectangle
+        case clearInput
         case loading
         case blackSpinner
         case blackGradientSpinner
@@ -47,9 +49,12 @@ extension R {
         case ds_white_retry = "DS_white_retry"
         case logoUaEu = "DS_logoUaEu"
         case defaultLoadingIcon = "DS_defaultLoadingIcon"
+        case defaultImagePlaceholder = "DS_defaultImagePlaceholder"
         case checkBoxSelectedDisable
         case radioBtnSelectedDisable
         case checkboxSquarePartiallySelected
+        case arrowUp = "arrow_up"
+        case arrowDown = "arrow_down"
         
         var image: UIImage? {
             return UIImage(named: rawValue, in: Bundle.module, compatibleWith: nil)

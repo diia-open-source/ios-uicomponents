@@ -38,10 +38,12 @@ final public class ChildContainerViewController: UIViewController, ModalPresenta
         }
         if visualEffectsOff {
             let visualEffectView = UIView()
-            visualEffectView.backgroundColor = UIColor(displayP3Red: 0, green: 0, blue: 0, alpha: 0.4)
+            visualEffectView.backgroundColor = UIColor.black.withAlphaComponent(0.2)
             return visualEffectView
         } else {
-            return CustomIntensityVisualEffectView(effect: UIBlurEffect(style: UIBlurEffect.Style.light), intensity: 0.15)
+            let blurView = CustomIntensityVisualEffectView(effect: UIBlurEffect(style: .dark), intensity: 0.15)
+            blurView.backgroundColor = UIColor.black.withAlphaComponent(0.2)
+            return blurView
         }
     }()
     
@@ -94,6 +96,7 @@ final public class ChildContainerViewController: UIViewController, ModalPresenta
         } else {
             if let parent = self.parent {
                 VCChildComposer.removeChild(self, from: parent, animationType: .none)
+                parent.updateAccessibilityElements()
             }
         }
     }
@@ -115,6 +118,8 @@ final public class ChildContainerViewController: UIViewController, ModalPresenta
             }
             isAnimationFinished = true
         }
+        
+        parent?.removeAccessibilityElements()
     }
 }
 
@@ -135,9 +140,10 @@ extension ChildContainerViewController: ContainerProtocol {
                        animations: {
                         self.visualEffectView.alpha = 0
                     },
-                    completion: { _ in
-                        if let parent = self.parent {
+                    completion: { [weak self] _ in
+                        if let self, let parent = self.parent {
                             VCChildComposer.removeChild(self, from: parent, animationType: .none)
+                            parent.updateAccessibilityElements()
                         }
                     })
     }

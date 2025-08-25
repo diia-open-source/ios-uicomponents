@@ -48,7 +48,7 @@ final public class DSFullScreenVideoView: BaseCodeView {
         buttonsStackView.isHidden = model.btnPrimaryDefaultAtm == nil && model.btnPlainAtm == nil
         mainButton.isHidden = model.btnPrimaryDefaultAtm == nil
         if let primaryButton = model.btnPrimaryDefaultAtm,
-           let action = primaryButton.action {
+           let _ = primaryButton.action {
             mainButton.setLoadingState(.enabled, withTitle: primaryButton.label)
             mainButton.onClick = { [weak self] in
                 self?.pauseVideo()
@@ -58,7 +58,7 @@ final public class DSFullScreenVideoView: BaseCodeView {
         
         altButton.isHidden = model.btnPlainAtm == nil
         if let btnPlainAtm = model.btnPlainAtm,
-           let action = btnPlainAtm.action {
+           let _ = btnPlainAtm.action {
             altButton.setStyle(style: .plain)
             altButton.setLoadingState(.enabled, withTitle: btnPlainAtm.label)
             altButton.onClick = { [weak self] in

@@ -1,5 +1,6 @@
 import UIKit
 import Lottie
+import DiiaCommonTypes
 
 public class ContentLoadingView: BaseCodeView {
     private lazy var animationView: LottieAnimationView = {
@@ -31,10 +32,19 @@ public class ContentLoadingView: BaseCodeView {
         animationView.withSize(Constants.animationViewSize)
         animationView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         animationView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+        
+        setupAccessibility()
+    }
+    
+    // MARK: - Private methods
+    private func setupAccessibility() {
+        isAccessibilityElement = true
+        accessibilityTraits = .staticText
+        accessibilityLabel = R.Strings.general_accessibility_loading_hint.localized()
     }
     
     // MARK: - Public Methods
-    public func setLoadingState(_ state: LoadingState) {
+    public func setLoadingState(_ state: LoadingState, completion: Callback? = nil) {
         animationView.isHidden = state == .ready
         UIView.animate(
             withDuration: Constants.animationDuration,
@@ -42,8 +52,11 @@ public class ContentLoadingView: BaseCodeView {
                 self.visualEffectView.alpha = state == .loading ? 1 : 0
             })
         if state == .loading {
+            isAccessibilityElement = true
             animationView.play()
         } else {
+            isAccessibilityElement = false
+            completion?()
             animationView.stop()
         }
     }

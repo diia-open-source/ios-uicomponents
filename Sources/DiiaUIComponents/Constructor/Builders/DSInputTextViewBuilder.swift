@@ -4,13 +4,13 @@ import DiiaCommonTypes
 
 /// design_system_code: inputTextMlc
 public struct DSInputTextViewBuilder: DSViewBuilderProtocol {
-    public static let modelKey = "inputTextMlc"
+    public let modelKey = "inputTextMlc"
     
     public func makeView(from object: AnyCodable,
                          withPadding paddingType: DSViewPaddingType,
                          viewFabric: DSViewFabric?,
                          eventHandler: @escaping (ConstructorItemEvent) -> Void) -> UIView? {
-        guard let data: DSInputTextMlc = object.parseValue(forKey: Self.modelKey) else { return nil }
+        guard let data: DSInputTextMlc = object.parseValue(forKey: self.modelKey) else { return nil }
 
         let inputView = TitledTextFieldView()
         inputView.setupUI(
@@ -23,25 +23,65 @@ public struct DSInputTextViewBuilder: DSViewBuilderProtocol {
             validators = validation.map { .init(validationModel: $0) }
         }
 
+        var rightAction: Action? = nil
+        if let rightIcon = data.iconRight, let action = rightIcon.action {
+            rightAction = .init(
+                image: UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: rightIcon.code) ?? UIImage(),
+                callback: {
+                eventHandler(.action(action))
+            })
+        }
+        
         inputView.configure(viewModel: TitledTextFieldViewModel(
             id: data.id,
             inputCode: data.inputCode,
             title: data.label,
             placeholder: data.placeholder ?? .empty,
             validators: validators,
+            mask: data.mask,
             mandatory: data.mandatory,
             defaultText: data.value,
             instructionsText: data.hint,
             keyboardType: UIKeyboardType(rawValue: data.keyboardType ?? .zero) ?? .default,
             onChangeText: { text in
                 eventHandler(.inputChanged(.init(
-                    inputCode: data.inputCode ?? Self.modelKey,
+                    inputCode: data.inputCode ?? self.modelKey,
                     inputData: .string(text))))
-            }
+            },
+            rightAction: rightAction
         ))
 
-        let insets = paddingType.defaultPadding()
+        let insets = paddingType.defaultPadding(object: object, modelKey: modelKey)
         let paddingBox = BoxView(subview: inputView).withConstraints(insets: insets)
         return paddingBox
+    }
+}
+
+// MARK: - Mock
+extension DSInputTextViewBuilder: DSViewMockableBuilderProtocol {
+    public func makeMockModel() -> AnyCodable {
+        let model = DSInputTextMlc(
+            id: "id",
+            blocker: true,
+            label: "label",
+            placeholder: "placeholder",
+            hint: "hint",
+            value: "value",
+            mandatory: true,
+            validation: [
+                InputValidationModel(
+                    regexp: "^([a-zA-Z0-9_%+-]{1,}\\.){0,}[a-zA-Z0-9_%+-]{1,}@([a-zA-Z0-9_%+-]{1,}\\.){1,}(?!ru|su)[A-Za-z]{2,64}$",
+                    flags: ["i"],
+                    errorMessage: "Невалідний емейл"
+                )
+            ],
+            inputCode: "email",
+            iconRight: .mock,
+            keyboardType: 7,
+            isDisable: false
+        )
+        return .dictionary([
+            modelKey: .fromEncodable(encodable: model)
+        ])
     }
 }

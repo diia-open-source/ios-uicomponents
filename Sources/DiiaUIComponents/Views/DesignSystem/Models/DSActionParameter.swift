@@ -1,3 +1,4 @@
+
 import Foundation
 
 public struct DSActionParameter: Codable, Equatable {
@@ -15,4 +16,10 @@ public struct DSActionParameter: Codable, Equatable {
         self.resource = resource
         self.subresource = subresource
     }
+    
+    static let mock: DSActionParameter = DSActionParameter(
+        type: "mockType",
+        subtype: "subtype(optional)",
+        resource: "resource(optional)",
+        subresource: "subresource(optional)")
 }

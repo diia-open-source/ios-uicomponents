@@ -1,3 +1,4 @@
+
 import UIKit
 import SwiftMessages
 
@@ -24,7 +25,11 @@ public class DSTableItemPrimaryView: BaseCodeView {
     
     public func configure(for title: String, value: String, withIcon: Bool) {
         titleLabel.text = title
+        titleLabel.accessibilityLabel = title
+        
         valueLabel.text = value
+        valueLabel.accessibilityLabel = value
+        
         iconButtonView.isHidden = !withIcon
         if withIcon {
             iconButtonView.setImage(UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: Constants.copyImage),
@@ -52,6 +57,7 @@ public class DSTableItemPrimaryView: BaseCodeView {
         valueLabel.textColor = .black
         
         iconButtonView.addTarget(self, action: #selector(actionRecognizer), for: .touchUpInside)
+        setupAccessibility()
     }
     
     public func setupUI(textColor: UIColor = .black,
@@ -75,6 +81,19 @@ public class DSTableItemPrimaryView: BaseCodeView {
         UIPasteboard.general.string = resource
         UINotificationFeedbackGenerator().notificationOccurred(.success)
         SwiftMessages.showSuccessMessage(message: R.Strings.general_number_copied.localized())
+    }
+    
+    // MARK: - Accessibility
+    private func setupAccessibility() {
+        titleLabel.isAccessibilityElement = true
+        titleLabel.accessibilityTraits = .staticText
+        
+        valueLabel.isAccessibilityElement = true
+        valueLabel.accessibilityTraits = .staticText
+        
+        iconButtonView.isAccessibilityElement = true
+        iconButtonView.accessibilityTraits = .button
+        iconButtonView.accessibilityLabel = R.Strings.general_accessibility_copy_button.localized()
     }
 }
 

@@ -1,3 +1,4 @@
+
 import UIKit
 import DiiaCommonTypes
 
@@ -60,7 +61,7 @@ public class ChecklistViewModel {
 
 /// design_system_code: checkboxRoundGroupOrg, radioBtnGroupOrg
 ///
-public class ChecklistView: BaseCodeView, DSInputComponentProtocol {
+public class ChecklistView: BaseCodeView, DSInputComponentProtocol, DSResetStateComponentProtocol {
     private lazy var stackView = UIStackView.create(in: self)
     private var itemViews: [ChecklistItemView] = []
     
@@ -72,7 +73,7 @@ public class ChecklistView: BaseCodeView, DSInputComponentProtocol {
     }
     
     // MARK: - Public Methods
-    public func configure(with viewModel: ChecklistViewModel) {
+    public func configure(with viewModel: ChecklistViewModel, eventHandler: ((ConstructorItemEvent) -> Void)? = nil) {
         self.viewModel = viewModel
         stackView.safelyRemoveArrangedSubviews()
         itemViews = []
@@ -90,6 +91,8 @@ public class ChecklistView: BaseCodeView, DSInputComponentProtocol {
         if let plainButtonVM = viewModel.plainButton {
             addPlainButton(with: plainButtonVM)
         }
+        eventHandler?(.onComponentConfigured(with: .checkmark(viewModel: viewModel)))
+        eventHandler?(.onComponentConfigured(with: .resetStateComponent(component: self)))
     }
     
     // MARK: - Private Methods
@@ -100,14 +103,14 @@ public class ChecklistView: BaseCodeView, DSInputComponentProtocol {
         stackView.addArrangedSubview(titleLabelBox)
         addSeparatorView()
     }
-
+    
     private func appendItemView(with itemVM: ChecklistItemViewModel) {
         accessibilityIdentifier = itemVM.componentId
         guard let viewModel = viewModel else { return }
         itemVM.onClick = { [weak viewModel] in
             viewModel?.updateSelectionState(forItem: itemVM)
         }
-
+        
         let itemView = ChecklistItemView()
         itemView.configure(with: itemVM)
         itemView.setupUI(checkboxStyle: viewModel.checklistType.checkboxStyle)
@@ -134,8 +137,10 @@ public class ChecklistView: BaseCodeView, DSInputComponentProtocol {
         separatorBox.subview.backgroundColor = UIColor(AppConstants.Colors.emptyDocuments)
         stackView.addArrangedSubview(separatorBox)
     }
-    
-    //MARK: - DSInputComponentProtocol
+}
+
+//MARK: - DSInputComponentProtocol
+extension ChecklistView {
     public func isValid() -> Bool {
         if viewModel?.mandatory == false {
             return true
@@ -163,6 +168,13 @@ public class ChecklistView: BaseCodeView, DSInputComponentProtocol {
     
     public func setOnChangeHandler(_ handler: @escaping () -> Void) {
         viewModel?.onClick = handler
+    }
+}
+
+//MARK: - DSResetStateComponentProtocol
+extension ChecklistView {
+    public func clearState() {
+        viewModel?.deselectAll()
     }
 }
 

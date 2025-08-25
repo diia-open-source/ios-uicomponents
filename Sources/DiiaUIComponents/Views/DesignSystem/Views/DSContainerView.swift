@@ -44,7 +44,8 @@ public class DSContainerView: BaseCodeView {
         loadingView.anchor(top: topAnchor,
                            leading: leadingAnchor,
                            trailing: trailingAnchor,
-                           padding: .allSides(Constants.contentPadding))
+                           padding: .allSides(Constants.contentPadding),
+                           size: .init(width: .zero, height: Constants.loadingHeight))
         loadingView.isHidden = true
         
         addSubview(inputFieldsStack)
@@ -64,7 +65,7 @@ public class DSContainerView: BaseCodeView {
             self.inputFieldsStack.safelyRemoveArrangedSubviews()
             for subview in subviews {
                 if let subview = viewFabric.makeView(from: subview,
-                                                     withPadding: .custom(paddings: .zero),
+                                                     withPadding: .default,
                                                      eventHandler: viewModel.eventHandler) {
                     self.inputFieldsStack.addArrangedSubview(subview)
                 }
@@ -104,7 +105,7 @@ public class DSContainerView: BaseCodeView {
 extension DSContainerView {
     enum Constants {
         static let contentPadding: CGFloat = 16
-        static let stackSpacing: CGFloat = 16
+        static let stackSpacing: CGFloat = 0
         static let loadingHeight: CGFloat = 56
     }
 }

@@ -4,7 +4,7 @@ import DiiaCommonTypes
 
 /// design_system_code: tableItemCheckboxMlc
 public struct DSTableItemCheckboxViewBuilder: DSViewBuilderProtocol {
-    public static let modelKey = "tableItemCheckboxMlc"
+    public let modelKey = "tableItemCheckboxMlc"
     
     public func makeView(
         from object: AnyCodable,
@@ -12,7 +12,7 @@ public struct DSTableItemCheckboxViewBuilder: DSViewBuilderProtocol {
         viewFabric: DSViewFabric?,
         eventHandler: @escaping (ConstructorItemEvent) -> Void
     ) -> UIView? {
-        guard let model: DSTableItemCheckboxModel = object.parseValue(forKey: Self.modelKey) else { return nil }
+        guard let model: DSTableItemCheckboxModel = object.parseValue(forKey: self.modelKey) else { return nil }
         
         let view = DSTableItemCheckboxView()
         let viewModel = DSTableItemCheckboxItemViewModel(model: model)
@@ -22,6 +22,34 @@ public struct DSTableItemCheckboxViewBuilder: DSViewBuilderProtocol {
         }
         view.configure(with: viewModel)
         
-        return view
+        let box = BoxView(subview: view).withConstraints(insets: padding.insets(for: object, modelKey: modelKey, defaultInsets: .zero))
+        return box
+    }
+}
+
+extension DSTableItemCheckboxViewBuilder: DSViewMockableBuilderProtocol {
+    public func makeMockModel() -> AnyCodable {
+        let model = DSTableItemCheckboxModel(
+            componentId: "componentId",
+            inputCode: "inputCode",
+            mandatory: true,
+            rows: [
+                DSTableItemCheckboxRowModel(
+                    textLabelAtm: DSTextLabelAtmModel(
+                        componentId: "componentId(optional)",
+                        mode: .primary,
+                        label: "label",
+                        value: "value(optional)"
+                    )
+                )
+            ],
+            isSelected: true,
+            isNotFullSelected: true,
+            dataJson: "dataJson(optional)",
+            isEnabled: true
+        )
+        return .dictionary([
+            modelKey: .fromEncodable(encodable: model)
+        ])
     }
 }

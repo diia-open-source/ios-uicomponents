@@ -71,6 +71,8 @@ public class ConstructorModalView: BaseCodeView {
                                                   right: .zero))
         
         loadingIndicator.progressImage = R.image.loadingBar.image
+        
+        setupAccessibility()
     }
     
     public func setupTopGroup(views: [UIView]) {
@@ -128,6 +130,13 @@ public class ConstructorModalView: BaseCodeView {
             options: [.repeat],
             animations: { [unowned self] in self.loadingIndicator.layoutIfNeeded() }
         )
+    }
+    
+    // MARK: - Accessibility
+    private func setupAccessibility() {
+        closeButton.isAccessibilityElement = true
+        closeButton.accessibilityTraits = .button
+        closeButton.accessibilityLabel = R.Strings.general_close.localized()
     }
 }
 

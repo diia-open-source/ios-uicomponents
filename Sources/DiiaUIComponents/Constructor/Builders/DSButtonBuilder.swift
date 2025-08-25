@@ -3,13 +3,13 @@ import UIKit
 import DiiaCommonTypes
 
 public struct DSPrimaryButtonBuilder: DSViewBuilderProtocol {
-    public static let modelKey = "btnPrimaryDefaultAtm"
+    public let modelKey = "btnPrimaryDefaultAtm"
     
     public func makeView(from object: AnyCodable,
                          withPadding paddingType: DSViewPaddingType,
                          viewFabric: DSViewFabric?,
                          eventHandler: @escaping (ConstructorItemEvent) -> Void) -> UIView? {
-        guard let data: DSButtonModel = object.parseValue(forKey: Self.modelKey) else { return nil }
+        guard let data: DSButtonModel = object.parseValue(forKey: self.modelKey) else { return nil }
         
         let button = DSPrimaryDefaultButton()
         button.titleLabel?.font = FontBook.bigText
@@ -23,20 +23,38 @@ public struct DSPrimaryButtonBuilder: DSViewBuilderProtocol {
         button.withHeight(Constants.buttonHeight)
         let stackView = UIStackView.create(.vertical, alignment: .center)
         stackView.addArrangedSubview(button)
-        let insets = (paddingType == .default) ? Constants.defaultPaddings : Constants.smallPaddings
+        let insets = Constants.defaultPaddings
         let paddingBox = BoxView(subview: stackView).withConstraints(insets: insets)
         return paddingBox
     }
 }
 
+extension DSPrimaryButtonBuilder: DSViewMockableBuilderProtocol {
+    public func makeMockModel() -> AnyCodable {
+        let model = DSButtonModel(
+            label: "label",
+            state: DSButtonState.enabled,
+            action: DSActionParameter(
+                type: "type",
+                subtype: "subtype",
+                resource: "resource",
+                subresource: "subresource"),
+            componentId: "componentId"
+        )
+        return .dictionary([
+            modelKey: .fromEncodable(encodable: model)
+        ])
+    }
+}
+
 public struct DSPrimaryWideButtonBuilder: DSViewBuilderProtocol {
-    public static let modelKey = "btnPrimaryWideAtm"
+    public let modelKey = "btnPrimaryWideAtm"
     
     public func makeView(from object: AnyCodable,
                          withPadding paddingType: DSViewPaddingType,
                          viewFabric: DSViewFabric?,
                          eventHandler: @escaping (ConstructorItemEvent) -> Void) -> UIView? {
-        guard let data: DSButtonModel = object.parseValue(forKey: Self.modelKey) else { return nil }
+        guard let data: DSButtonModel = object.parseValue(forKey: self.modelKey) else { return nil }
         
         let button = DSPrimaryDefaultButton()
         button.titleLabel?.font = FontBook.bigText
@@ -54,14 +72,32 @@ public struct DSPrimaryWideButtonBuilder: DSViewBuilderProtocol {
     }
 }
 
+extension DSPrimaryWideButtonBuilder: DSViewMockableBuilderProtocol {
+    public func makeMockModel() -> AnyCodable {
+        let model = DSButtonModel(
+            label: "label",
+            state: DSButtonState.enabled,
+            action: DSActionParameter(
+                type: "type",
+                subtype: "subtype",
+                resource: "resource",
+                subresource: "subresource"),
+            componentId: "componentId"
+        )
+        return .dictionary([
+            modelKey: .fromEncodable(encodable: model)
+        ])
+    }
+}
+
 public struct DSPrimaryLargeButtonBuilder: DSViewBuilderProtocol {
-    public static let modelKey = "btnPrimaryLargeAtm"
+    public let modelKey = "btnPrimaryLargeAtm"
     
     public func makeView(from object: AnyCodable,
                          withPadding paddingType: DSViewPaddingType,
                          viewFabric: DSViewFabric?,
                          eventHandler: @escaping (ConstructorItemEvent) -> Void) -> UIView? {
-        guard let data: DSButtonModel = object.parseValue(forKey: Self.modelKey) else { return nil }
+        guard let data: DSButtonModel = object.parseValue(forKey: self.modelKey) else { return nil }
         
         let button = DSPrimaryDefaultButton()
         button.accessibilityIdentifier = data.componentId
@@ -80,14 +116,32 @@ public struct DSPrimaryLargeButtonBuilder: DSViewBuilderProtocol {
     }
 }
 
+extension DSPrimaryLargeButtonBuilder: DSViewMockableBuilderProtocol {
+    public func makeMockModel() -> AnyCodable {
+        let model = DSButtonModel(
+            label: "label",
+            state: DSButtonState.enabled,
+            action: DSActionParameter(
+                type: "type",
+                subtype: "subtype",
+                resource: "resource",
+                subresource: "subresource"),
+            componentId: "componentId"
+        )
+        return .dictionary([
+            modelKey: .fromEncodable(encodable: model)
+        ])
+    }
+}
+
 public struct DSStrokeButtonBuilder: DSViewBuilderProtocol {
-    public static let modelKey = "btnStrokeDefaultAtm"
+    public let modelKey = "btnStrokeDefaultAtm"
     
     public func makeView(from object: AnyCodable,
                          withPadding paddingType: DSViewPaddingType,
                          viewFabric: DSViewFabric?,
                          eventHandler: @escaping (ConstructorItemEvent) -> Void) -> UIView? {
-        guard let data: DSButtonModel = object.parseValue(forKey: Self.modelKey) else { return nil }
+        guard let data: DSButtonModel = object.parseValue(forKey: self.modelKey) else { return nil }
         
         let button = ActionLoadingStateButton()
         button.accessibilityIdentifier = data.componentId
@@ -107,14 +161,32 @@ public struct DSStrokeButtonBuilder: DSViewBuilderProtocol {
     }
 }
 
+extension DSStrokeButtonBuilder: DSViewMockableBuilderProtocol {
+    public func makeMockModel() -> AnyCodable {
+        let model = DSButtonModel(
+            label: "label",
+            state: DSButtonState.enabled,
+            action: DSActionParameter(
+                type: "type",
+                subtype: "subtype",
+                resource: "resource",
+                subresource: "subresource"),
+            componentId: "componentId"
+        )
+        return .dictionary([
+            modelKey: .fromEncodable(encodable: model)
+        ])
+    }
+}
+
 public struct DSPlainButtonBuilder: DSViewBuilderProtocol {
-    public static let modelKey = "btnPlainAtm"
+    public let modelKey = "btnPlainAtm"
     
     public func makeView(from object: AnyCodable,
                          withPadding paddingType: DSViewPaddingType,
                          viewFabric: DSViewFabric?,
                          eventHandler: @escaping (ConstructorItemEvent) -> Void) -> UIView? {
-        guard let data: DSButtonModel = object.parseValue(forKey: Self.modelKey) else { return nil }
+        guard let data: DSButtonModel = object.parseValue(forKey: self.modelKey) else { return nil }
         
         let button = ActionLoadingStateButton()
         button.setStyle(style: .plain)
@@ -133,14 +205,32 @@ public struct DSPlainButtonBuilder: DSViewBuilderProtocol {
     }
 }
 
+extension DSPlainButtonBuilder: DSViewMockableBuilderProtocol {
+    public func makeMockModel() -> AnyCodable {
+        let model = DSButtonModel(
+            label: "label",
+            state: DSButtonState.enabled,
+            action: DSActionParameter(
+                type: "type",
+                subtype: "subtype",
+                resource: "resource",
+                subresource: "subresource"),
+            componentId: "componentId"
+        )
+        return .dictionary([
+            modelKey: .fromEncodable(encodable: model)
+        ])
+    }
+}
+
 public struct DSButtonLinkBuilder: DSViewBuilderProtocol {
-    public static let modelKey = "btnLinkAtm"
+    public let modelKey = "btnLinkAtm"
     
     public func makeView(from object: AnyCodable,
                          withPadding paddingType: DSViewPaddingType,
                          viewFabric: DSViewFabric?,
                          eventHandler: @escaping (ConstructorItemEvent) -> Void) -> UIView? {
-        guard let data: DSButtonModel = object.parseValue(forKey: Self.modelKey) else { return nil }
+        guard let data: DSButtonModel = object.parseValue(forKey: self.modelKey) else { return nil }
         
         let button = DSLinkButton()
         button.setTitle(data.label)
@@ -157,8 +247,26 @@ public struct DSButtonLinkBuilder: DSViewBuilderProtocol {
     }
 }
 
+extension DSButtonLinkBuilder: DSViewMockableBuilderProtocol {
+    public func makeMockModel() -> AnyCodable {
+        let model = DSButtonModel(
+            label: "label",
+            state: DSButtonState.enabled,
+            action: DSActionParameter(
+                type: "type",
+                subtype: "subtype",
+                resource: "resource",
+                subresource: "subresource"),
+            componentId: "componentId"
+        )
+        return .dictionary([
+            modelKey: .fromEncodable(encodable: model)
+        ])
+    }
+}
+
 public struct DSWhiteLargeButtonBuilder: DSViewBuilderProtocol {
-    public static let modelKey = "btnWhiteLargeAtm"
+    public let modelKey = "btnWhiteLargeAtm"
     
     public let padding: UIEdgeInsets?
     
@@ -170,7 +278,7 @@ public struct DSWhiteLargeButtonBuilder: DSViewBuilderProtocol {
                          withPadding paddingType: DSViewPaddingType,
                          viewFabric: DSViewFabric?,
                          eventHandler: @escaping (ConstructorItemEvent) -> Void) -> UIView? {
-        guard let data: DSButtonModel = object.parseValue(forKey: Self.modelKey) else { return nil }
+        guard let data: DSButtonModel = object.parseValue(forKey: self.modelKey) else { return nil }
         
         let button = DSPrimaryDefaultButton()
         button.titleLabel?.font = FontBook.smallHeadingFont
@@ -183,20 +291,38 @@ public struct DSWhiteLargeButtonBuilder: DSViewBuilderProtocol {
         button.setStyle(style: .white)
         button.contentEdgeInsets = Constants.buttonEdgeInsets
         button.withHeight(Constants.buttonLargeHeight)
-        let buttonPadding = padding ?? paddingType.defaultPadding()
+        let buttonPadding = padding ?? paddingType.defaultPadding(object: object, modelKey: modelKey)
         let paddingBox = BoxView(subview: button).withConstraints(insets: buttonPadding)
         return paddingBox
     }
 }
 
+extension DSWhiteLargeButtonBuilder: DSViewMockableBuilderProtocol {
+    public func makeMockModel() -> AnyCodable {
+        let model = DSButtonModel(
+            label: "label",
+            state: DSButtonState.enabled,
+            action: DSActionParameter(
+                type: "type",
+                subtype: "subtype",
+                resource: "resource",
+                subresource: "subresource"),
+            componentId: "componentId"
+        )
+        return .dictionary([
+            modelKey: .fromEncodable(encodable: model)
+        ])
+    }
+}
+
 public struct BtnStrokeWideAtmBuilder: DSViewBuilderProtocol {
-    public static let modelKey = "btnStrokeWideAtm"
+    public let modelKey = "btnStrokeWideAtm"
     
     public func makeView(from object: AnyCodable,
                          withPadding paddingType: DSViewPaddingType,
                          viewFabric: DSViewFabric?,
                          eventHandler: @escaping (ConstructorItemEvent) -> Void) -> UIView? {
-        guard let data: DSButtonModel = object.parseValue(forKey: Self.modelKey) else { return nil }
+        guard let data: DSButtonModel = object.parseValue(forKey: self.modelKey) else { return nil }
         
         let button = ActionLoadingStateButton()
         button.accessibilityIdentifier = data.componentId
@@ -213,6 +339,24 @@ public struct BtnStrokeWideAtmBuilder: DSViewBuilderProtocol {
         let insets = (paddingType == .default) ? Constants.defaultPaddings : Constants.smallPaddings
         let paddingBox = BoxView(subview: button).withConstraints(insets: insets, centeredX: true)
         return paddingBox
+    }
+}
+
+extension BtnStrokeWideAtmBuilder: DSViewMockableBuilderProtocol {
+    public func makeMockModel() -> AnyCodable {
+        let model = DSButtonModel(
+            label: "label",
+            state: DSButtonState.enabled,
+            action: DSActionParameter(
+                type: "type",
+                subtype: "subtype",
+                resource: "resource",
+                subresource: "subresource"),
+            componentId: "componentId"
+        )
+        return .dictionary([
+            modelKey: .fromEncodable(encodable: model)
+        ])
     }
 }
 

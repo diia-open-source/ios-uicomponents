@@ -20,7 +20,7 @@ public class DSCheckboxCascadeViewModel {
     public let inputCode: String
     public let mandatory: Bool?
     public let tableItemCheckboxMlc: DSTableItemCheckboxItemViewModel?
-    public let items: [DSTableItemCheckboxItemViewModel]
+    public let items: Observable<[DSTableItemCheckboxItemViewModel]>
     public let isEnabled: Bool?
     public var onChange: Callback?
     public let minMandatorySelectedItems: Int
@@ -43,41 +43,33 @@ public class DSCheckboxCascadeViewModel {
             self.tableItemCheckboxMlc = nil
         }
         self.isEnabled = isEnabled
-        self.items = items.map { DSTableItemCheckboxItemViewModel(model: $0) }
+        self.items = Observable(value: items.map { DSTableItemCheckboxItemViewModel(model: $0) })
         self.minMandatorySelectedItems = minMandatorySelectedItems ?? 1
         
-        self.items.forEach {
-            $0.onClick = { [weak self] in
-                self?.childCheckboxClicked()
-            }
-        }
-        self.tableItemCheckboxMlc?.onClick = { [weak self] in
-            self?.headerCheckboxClicked()
-        }
         checkupHeaderState()
     }
     
     public func inputData() -> AnyCodable? {
-        let selectedList: [AnyCodable] = items
+        let selectedList: [AnyCodable] = items.value
             .filter { $0.isSelected.value }
             .compactMap { $0.dataJson ?? $0.inputCode }
             .map { AnyCodable.string($0) }
         return selectedList.isEmpty ? nil : .array(selectedList)
     }
     
-    private func headerCheckboxClicked() {
-        items.forEach { $0.isSelected.value = tableItemCheckboxMlc?.isSelected.value == true }
+    fileprivate func headerCheckboxClicked() {
+        items.value.forEach { $0.isSelected.value = tableItemCheckboxMlc?.isSelected.value == true }
         onChange?()
     }
     
-    private func childCheckboxClicked() {
+    fileprivate func childCheckboxClicked() {
         checkupHeaderState()
         onChange?()
     }
     
     private func checkupHeaderState() {
-        let selectedCount = items.filter { $0.isSelected.value == true }.count
-        if selectedCount == items.count {
+        let selectedCount = items.value.filter { $0.isSelected.value == true }.count
+        if selectedCount == items.value.count {
             tableItemCheckboxMlc?.isSelected.value = true
             tableItemCheckboxMlc?.isPartialSelected.value = false
         } else if selectedCount == 0 {
@@ -112,28 +104,48 @@ final public class DSCheckboxCascadeOrgView: BaseCodeView {
                                                        right: .zero))
     }
     
-    public func configure(with viewModel: DSCheckboxCascadeViewModel) {
+    public func configure(with viewModel: DSCheckboxCascadeViewModel,
+                          eventHandler: ((ConstructorItemEvent) -> Void)? = nil) {
+        
+        eventHandler?(.onComponentConfigured(with: .cascadeView(viewModel: viewModel)))
+        
         accessibilityIdentifier = viewModel.componentId
+        
+        self.viewModel?.items.removeObserver(observer: self)
+        viewModel.items.observe(observer: self) { [weak self, weak viewModel] items in
+            guard let self, let viewModel else { return }
+            
+            items.forEach {
+                $0.onClick = { [weak viewModel] in
+                    viewModel?.childCheckboxClicked()
+                }
+            }
+            viewModel.tableItemCheckboxMlc?.onClick = { [weak viewModel] in
+                viewModel?.headerCheckboxClicked()
+            }
+            
+            self.cascadeContainer.subview.safelyRemoveArrangedSubviews()
+            self.cascadeContainer.withConstraints(insets: .init(
+                top: .zero,
+                left: viewModel.tableItemCheckboxMlc == nil ? .zero : Constants.padding,
+                bottom: .zero,
+                right: .zero))
+            
+            self.tableItemCheckboxView.isHidden = viewModel.tableItemCheckboxMlc == nil
+            self.cascadeContainer.isHidden = items.isEmpty
+            for item in items {
+                let view = DSTableItemCheckboxView()
+                view.configure(with: item)
+                self.cascadeContainer.subview.addArrangedSubview(view)
+            }
+            if let tableItemVM = viewModel.tableItemCheckboxMlc {
+                self.tableItemCheckboxView.configure(with: tableItemVM)
+            }
+            
+            viewModel.childCheckboxClicked()
+        }
+        
         self.viewModel = viewModel
-        
-        cascadeContainer.subview.safelyRemoveArrangedSubviews()
-        cascadeContainer.withConstraints(insets: .init(
-            top: .zero,
-            left: viewModel.tableItemCheckboxMlc == nil ? .zero : Constants.padding,
-            bottom: .zero,
-            right: .zero))
-        
-        tableItemCheckboxView.isHidden = viewModel.tableItemCheckboxMlc == nil
-        if let tableItemVM = viewModel.tableItemCheckboxMlc {
-            tableItemCheckboxView.configure(with: tableItemVM)
-        }
-        
-        cascadeContainer.isHidden = viewModel.items.isEmpty
-        for item in viewModel.items {
-            let view = DSTableItemCheckboxView()
-            view.configure(with: item)
-            cascadeContainer.subview.addArrangedSubview(view)
-        }
     }
 }
 
@@ -141,7 +153,7 @@ extension DSCheckboxCascadeOrgView: DSInputComponentProtocol {
     public func isValid() -> Bool {
         if !(viewModel?.mandatory == true) { return true }
         var selectionCounter = 0
-        let items = viewModel?.items ?? []
+        let items = viewModel?.items.value ?? []
         for item in items {
             if item.mandatory == true && item.isSelected.value == false {
                 return false

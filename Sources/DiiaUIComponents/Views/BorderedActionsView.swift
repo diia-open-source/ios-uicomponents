@@ -31,7 +31,7 @@ extension BorderedActionsView {
     private enum Constants {
         static let stackPadding = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
         static let stackSpacing: CGFloat = 16
-        static let cornerRadius: CGFloat = 8
+        static let cornerRadius: CGFloat = 16
         static let borderWidth: CGFloat = 1
         static let borderColor = UIColor(AppConstants.Colors.emptyDocumentsBackground)
     }

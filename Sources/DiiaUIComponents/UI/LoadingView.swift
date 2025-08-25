@@ -11,6 +11,8 @@ public class LoadingView: BaseCodeView {
             hideGlobal()
         }
         globalLoadingView = show(in: view)
+        
+        UIAccessibility.post(notification: .layoutChanged, argument: globalLoadingView)
     }
     
     public static func hideGlobal() {
@@ -22,16 +24,22 @@ public class LoadingView: BaseCodeView {
     public static func show(in view: UIView) -> LoadingView {
         let loadingView = LoadingView()
         
+        loadingView.isAccessibilityElement = true
+        loadingView.accessibilityTraits = .staticText
+        loadingView.accessibilityViewIsModal = true
+        loadingView.accessibilityLabel = R.Strings.general_accessibility_loading_hint.localized()
+        
         view.isUserInteractionEnabled = false
         loadingView.visualEffectView.alpha = 0
         view.addSubview(loadingView)
         loadingView.fillSuperview()
         
         loadingView.animationView.play()
-        UIView.animate(withDuration: 0.1,
+        UIView.animate(withDuration: Constants.showingAnimationDuration,
                        animations: {
             loadingView.visualEffectView.alpha = 1
         })
+        
         return loadingView
     }
     
@@ -61,9 +69,12 @@ public class LoadingView: BaseCodeView {
     }
     
     public func hide() {
+        superview?.isAccessibilityElement = false
+        superview?.accessibilityViewIsModal = false
+        
         superview?.isUserInteractionEnabled = true
         layer.removeAllAnimations()
-        UIView.animate(withDuration: 0.3,
+        UIView.animate(withDuration: Constants.hidingAnimationDuration,
                        animations: {
             self.visualEffectView.alpha = 0
         }, completion: { [weak self] _ in
@@ -78,5 +89,7 @@ private extension LoadingView {
         static let backgroundColor = UIColor.black.withAlphaComponent(0.6)
         static let animationViewSize = CGSize(width: 80, height: 80)
         static let animationName = "loader_white"
+        static let hidingAnimationDuration: TimeInterval = 0.3
+        static let showingAnimationDuration: TimeInterval = 0.1
     }
 }

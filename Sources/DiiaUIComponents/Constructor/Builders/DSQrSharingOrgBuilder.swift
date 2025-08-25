@@ -3,13 +3,13 @@ import UIKit
 import DiiaCommonTypes
 
 public struct DSQRSharingOrgBuilder: DSViewBuilderProtocol {
-    public static let modelKey = "qrSharingOrg"
+    public let modelKey = "qrSharingOrg"
     
     public func makeView(from object: AnyCodable,
                          withPadding paddingType: DSViewPaddingType,
                          viewFabric: DSViewFabric?,
                          eventHandler: @escaping (ConstructorItemEvent) -> Void) -> UIView? {
-        guard let data: DSQRSharingOrg = object.parseValue(forKey: Self.modelKey) else { return nil }
+        guard let data: DSQRSharingOrg = object.parseValue(forKey: self.modelKey) else { return nil }
         let view = DSQRSharingView()
         
         let stubViewModel = StubMessageViewModel(icon: data.stubMessageMlc?.icon ?? "",
@@ -38,15 +38,43 @@ public struct DSQRSharingOrgBuilder: DSViewBuilderProtocol {
                                              stubViewModel: data.stubMessageMlc == nil ? nil : stubViewModel,
                                              plainButtonViewModels: plainButtonViewModels)
         view.configure(viewModel: viewModel)
-        let container = UIView()
-        container.addSubview(view)
-        view.fillSuperview(padding: .allSides(Constants.offset))
-        return container
+        let box = BoxView(subview: view).withConstraints(insets: paddingType.insets(for: object, modelKey: modelKey, defaultInsets: .allSides(Constants.offset)))
+        return box
     }
 }
 
 private extension DSQRSharingOrgBuilder {
     enum Constants {
         static let offset: CGFloat = 20
+    }
+}
+
+// MARK: - Mock
+extension DSQRSharingOrgBuilder: DSViewMockableBuilderProtocol {
+    public func makeMockModel() -> AnyCodable {
+        let model = DSQRSharingOrg(
+            componentId: "componentId",
+            expireLabel: QRExpireObjectLabel(
+                text: "text",
+                parameters: [
+                    QRExpireObjectParameters(
+                        type: .link,
+                        data: QRSharingParameterData(
+                            name: "name",
+                            alt: "alt",
+                            resource: "resource",
+                            timerTime: 180
+                        )
+                    )
+                ]
+            ),
+            qrLink: "https://mockUrl/qrLink",
+            btnIconPlainGroupMlc: DSBtnIconPlainGroupMlc(items: [DSBtnPlainIconAtm(btnPlainIconAtm: .mock)], componentId: "componentId"),
+            stubMessageMlc: .mock
+        )
+        
+        return .dictionary([
+            modelKey: .fromEncodable(encodable: model)
+        ])
     }
 }

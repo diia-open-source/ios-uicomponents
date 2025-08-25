@@ -2,9 +2,9 @@
 import UIKit
 
 public class DSPhoneCodeSelectorViewModel {
-    fileprivate let icon: String
-    fileprivate let value: String
-    fileprivate let isEditable: Bool
+    public let icon: String
+    public let value: String
+    public let isEditable: Bool
     
     public init(model: DSPhoneCodeModel, isEditable: Bool) {
         self.icon = model.icon

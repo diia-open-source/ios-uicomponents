@@ -4,7 +4,7 @@ import DiiaCommonTypes
 
 /// design_system_code: chipTabsOrg
 public struct DSChipTabsViewBuilder: DSViewBuilderProtocol {
-    public static let modelKey = "chipTabsOrg"
+    public let modelKey = "chipTabsOrg"
     
     public func makeView(
         from object: AnyCodable,
@@ -12,11 +12,11 @@ public struct DSChipTabsViewBuilder: DSViewBuilderProtocol {
         viewFabric: DSViewFabric?,
         eventHandler: @escaping (ConstructorItemEvent) -> Void
     ) -> UIView? {
-        guard let data: DSChipGroupOrg = object.parseValue(forKey: Self.modelKey) else { return nil }
+        guard let data: DSChipGroupOrg = object.parseValue(forKey: self.modelKey) else { return nil }
         
         let view = makeView(data: data, eventHandler: eventHandler)
         
-        let insets = padding.defaultCollectionPadding()
+        let insets = padding.defaultCollectionPadding(object: object, modelKey: modelKey)
         let paddingBox = BoxView(subview: view).withConstraints(insets: insets)
         return paddingBox
     }
@@ -30,17 +30,58 @@ public struct DSChipTabsViewBuilder: DSViewBuilderProtocol {
                 code: chipMlc.code,
                 name: chipMlc.label,
                 numCount: chipMlc.badgeCounterAtm?.count,
+                iconLeft: chipMlc.iconLeft,
                 isSelected: isSelected,
+                isSelectable: chipMlc.isSelectable,
                 action: chipMlc.action)
         }
         let viewModel = DSChipTabViewModel(items: items) { selectedChip in
             if let action = selectedChip.action {
                 eventHandler(.action(action))
             } else {
-                eventHandler(.action(.init(type: Self.modelKey, resource: selectedChip.code)))
+                eventHandler(.action(.init(type: self.modelKey, resource: selectedChip.code)))
             }
         }
-        view.configure(viewModel: viewModel)
+        view.configure(viewModel: viewModel, eventHandler: eventHandler)
         return view
+    }
+}
+
+extension DSChipTabsViewBuilder: DSViewMockableBuilderProtocol {
+    public func makeMockModel() -> AnyCodable {
+        let model = DSChipGroupOrg(
+            componentId: "componentId",
+            label: "Tab Group",
+            preselectedCode: "tab1",
+            items: [
+                DSChipItemMlc(chipMlc: DSChipMlc(
+                    componentId: "componentId",
+                    label: "Tab 1",
+                    code: "tab1",
+                    badgeCounterAtm: DSBadgeCounterModel(count: 3),
+                    iconLeft: DSIconModel.mock,
+                    active: true,
+                    selectedIcon: "home",
+                    isSelectable: true,
+                    chipInfo: DSChipInfo(hallId: "hall1"),
+                    action: DSActionParameter.mock
+                )),
+                DSChipItemMlc(chipMlc: DSChipMlc(
+                    componentId: "componentId",
+                    label: "Tab 2",
+                    code: "home",
+                    badgeCounterAtm: nil,
+                    iconLeft: nil,
+                    active: true,
+                    selectedIcon: nil,
+                    isSelectable: true,
+                    chipInfo: nil,
+                    action: nil
+                ))
+            ]
+        )
+        return .dictionary([
+            modelKey: .fromEncodable(encodable: model)
+        ])
     }
 }

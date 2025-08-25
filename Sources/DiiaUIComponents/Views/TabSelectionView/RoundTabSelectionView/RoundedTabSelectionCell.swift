@@ -55,6 +55,7 @@ public class RoundedTabSelectionCell: BaseCollectionNibCell, NibLoadable {
         super.awakeFromNib()
         
         setupUI()
+        setupAccessibility()
     }
     
     public override func layoutSubviews() {
@@ -71,6 +72,9 @@ public class RoundedTabSelectionCell: BaseCollectionNibCell, NibLoadable {
         if let count = viewModel.count {
             counterLabel.text = String(count)
         }
+        
+        containerView.accessibilityLabel = viewModel.title
+        containerView.accessibilityTraits = viewModel.isSelected ? [.selected, .button] : [.button]
     }
     
     private func setupUI() {
@@ -81,6 +85,11 @@ public class RoundedTabSelectionCell: BaseCollectionNibCell, NibLoadable {
         containerView.layer.masksToBounds = true
         counterIconView.layer.cornerRadius = counterIconView.frame.height / 2
         counterIconView.layer.masksToBounds = true
+    }
+    
+    // MARK: - Accessibility
+    private func setupAccessibility() {
+        containerView.isAccessibilityElement = true
     }
 }
 

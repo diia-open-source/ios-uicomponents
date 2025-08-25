@@ -26,6 +26,8 @@ public class CheckmarkViewWithDescription: UIView {
             } else {
                 self.checkedImageView.image = isChecked ? R.image.checkbox_enabled.image : R.image.checkbox_disabled.image
             }
+            
+            accessibilityTraits = isChecked ? [.selected, .button] : [.button]
         }
     }
     
@@ -33,24 +35,36 @@ public class CheckmarkViewWithDescription: UIView {
     public override init(frame: CGRect) {
         super.init(frame: frame)
         fromNib(bundle: Bundle.module)
+        setupAccessibility()
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         
         fromNib(bundle: Bundle.module)
+        setupAccessibility()
     }
     
     // MARK: - Life Cycle
     public override func awakeFromNib() {
         super.awakeFromNib()
+        
+        setupAccessibility()
     }
     
+    // MARK: - Private methods
     private func setUpUI() {
         self.titleLabel.font = FontBook.usualFont
         self.descriptionLabel.font = FontBook.usualFont
     }
     
+    // MARK: - Accessibility
+    private func setupAccessibility() {
+        isAccessibilityElement = true
+        accessibilityTraits = .button
+    }
+    
+    // MARK: - Public methods
     public func setUp(id: String,
                       title: String,
                       description: String? = nil,
@@ -67,6 +81,9 @@ public class CheckmarkViewWithDescription: UIView {
         }
         self.isChecked = isChecked
         self.bottomSeparatorView.isHidden = isSeparatorHidden
+        
+        accessibilityLabel = title
+        accessibilityValue = description
     }
     
     public func toggleCheck(status: Bool) {

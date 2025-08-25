@@ -40,6 +40,9 @@ public class TitledMultilineTextView: BaseCodeView, DSInputComponentProtocol {
         textView.textContainer.lineFragmentPadding = .zero
         textView.autocapitalizationType = .sentences
         textView.autocorrectionType = .default
+        textView.smartQuotesType = .no
+        textView.smartDashesType = .no
+        textView.smartInsertDeleteType = .no
         textView.delegate = self
         setupUI()
     }
@@ -48,7 +51,7 @@ public class TitledMultilineTextView: BaseCodeView, DSInputComponentProtocol {
                         textFont: UIFont = FontBook.usualFont,
                         errorFont: UIFont = FontBook.smallTitle,
                         errorColor: UIColor = UIColor(AppConstants.Colors.persianRed),
-                        instructionColor: UIColor = UIColor.black.withAlphaComponent(0.5),
+                        instructionColor: UIColor = .black540,
                         separatorColor: UIColor = .statusGray) {
         titleLabel.withParameters(font: titleFont)
         errorLabel.withParameters(font: errorFont)
@@ -92,6 +95,9 @@ public class TitledMultilineTextView: BaseCodeView, DSInputComponentProtocol {
         }
         configure(
             viewModel: TitledTextFieldViewModel(
+                componentId: viewModel.componentId,
+                id: viewModel.id,
+                inputCode: viewModel.id,
                 title: viewModel.title,
                 placeholder: viewModel.placeholder,
                 validators: validators,
@@ -145,7 +151,7 @@ public class TitledMultilineTextView: BaseCodeView, DSInputComponentProtocol {
     }
     
     public func inputCode() -> String {
-        return viewModel?.inputCode ?? viewModel?.id ?? Constants.inputCode
+        return viewModel?.inputCode ?? viewModel?.id ?? viewModel?.componentId ?? Constants.inputCode
     }
     
     public func inputData() -> AnyCodable? {

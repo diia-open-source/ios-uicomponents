@@ -23,18 +23,17 @@ public class DSChipBlackGroupViewModel {
     public let minCount: Int?
     public let maxCount: Int?
     public let items: [DSChipBlackMlcViewModel]
-    public var onClick: Callback?
-    
-   public init(componentId: String?,
-         id: String?,
-         inputCode: String?,
-         mandatory: Bool?,
-         label: String?,
-         minCount: Int?,
-         maxCount: Int?,
-         items: [DSChipBlackMlcViewModel],
-         onClick: Callback? = nil) {
-        
+    public var onClick: ((ConstructorItemEvent?) -> Void)?
+
+    public init(componentId: String?,
+                id: String?,
+                inputCode: String?,
+                mandatory: Bool?,
+                label: String?,
+                minCount: Int?,
+                maxCount: Int?,
+                items: [DSChipBlackMlcViewModel],
+                onClick: ((ConstructorItemEvent?) -> Void)? = nil) {
         self.componentId = componentId
         self.id = id
         self.inputCode = inputCode
@@ -46,11 +45,11 @@ public class DSChipBlackGroupViewModel {
         self.onClick = onClick
     }
     
-    public func updateState(for chip: DSChipBlackMlcViewModel) {
+    public func updateState(for chip: DSChipBlackMlcViewModel, action: ConstructorItemEvent?) {
         let currentlySelectedCount = selectedItems().count
         if chip.state.value == .selected {
             chip.state.value = .unselected
-            onClick?()
+            onClick?(action)
             updateAllChipsState()
             return
         }
@@ -58,11 +57,11 @@ public class DSChipBlackGroupViewModel {
             chip.state.value = .disabled
         } else {
             chip.state.value = .selected
-            onClick?()
+            onClick?(action)
         }
         updateAllChipsState()
     }
-
+    
     private func updateAllChipsState() {
         let currentlySelectedCount = selectedItems().count
         
@@ -78,11 +77,14 @@ public class DSChipBlackGroupViewModel {
     public func selectedItems() -> [DSChipBlackMlcViewModel] {
         return items.filter { $0.state.value == .selected }
     }
+    
+    public func deselectAll() {
+        items.forEach({$0.state.value = .unselected})
+    }
 }
 
-
-//DS code chipBlackGroupOrg
-public class DSChipBlackGroupOrgView: BaseCodeView {
+///DS code chipBlackGroupOrg
+public class DSChipBlackGroupOrgView: BaseCodeView, DSResetStateComponentProtocol {
     private let mainStack = UIStackView.create(.vertical)
     private let separatorView = UIView()
     private let chipTitleLabelContainer = UIView()
@@ -108,57 +110,65 @@ public class DSChipBlackGroupOrgView: BaseCodeView {
         layoutIfNeeded()
     }
     
-    public func configure(with viewModel: DSChipBlackGroupViewModel) {
+    public func configure(with viewModel: DSChipBlackGroupViewModel, eventHandler: ((ConstructorItemEvent) -> Void)? = nil) {
         chipsViewModel = viewModel
         chipsTitleLabel.text = viewModel.label
         setNeedsLayout()
+        
+        eventHandler?(.onComponentConfigured(with: .resetStateComponent(component: self)))
     }
     
     public override func layoutSubviews() {
-            super.layoutSubviews()
-            guard let viewModel = chipsViewModel, viewModel.items.count > 0 else { return }
-            chipItemsVStack.safelyRemoveArrangedSubviews()
-
-            var index = 0
-            var currentVms: [DSChipBlackMlcViewModel] = []
-            var currentWidth: CGFloat = 0
-            let availableWidth = mainStack.frame.width - 2 * Constants.sideInset
-
-            while index < viewModel.items.count {
-                let chip = viewModel.items[index]
-                let width = DSChipBlackMlcView.widthForText(text: chip.label)
-                let additionalSpacing: CGFloat = currentVms.count > 0 ? Constants.chipHorizontalInset : 0
-                let totalWidth = currentWidth + width
-
-                if totalWidth <= availableWidth {
-                    currentWidth += width + additionalSpacing
-                    currentVms.append(viewModel.items[index])
-                } else {
-                    chipItemsVStack.addArrangedSubview(createChipsHstack(chips: currentVms))
-                    currentWidth = width
-                    currentVms = [chip]
-                }
-                index += 1
-            }
-            chipItemsVStack.addArrangedSubview(createChipsHstack(chips: currentVms))
-        }
+        super.layoutSubviews()
+        guard let viewModel = chipsViewModel, viewModel.items.count > 0 else { return }
+        chipItemsVStack.safelyRemoveArrangedSubviews()
         
-        private func createChipsHstack(chips: [DSChipBlackMlcViewModel]) -> UIStackView {
-            let stack = UIStackView.create(
-                .horizontal,
-                views: chips.map { viewModel in
-                    let view = DSChipBlackMlcView()
-                    viewModel.onClick = { [weak self] in
-                        self?.chipsViewModel?.updateState(for: viewModel)
-                    }
-                    view.configure(with: viewModel)
-                    return view
-                },
-                spacing: Constants.chipHorizontalInset)
-            stack.withHeight(Constants.chipHeight)
-            return stack
+        var index = 0
+        var currentVms: [DSChipBlackMlcViewModel] = []
+        var currentWidth: CGFloat = 0
+        let availableWidth = mainStack.frame.width - 2 * Constants.sideInset
+        
+        while index < viewModel.items.count {
+            let chip = viewModel.items[index]
+            let width = DSChipBlackMlcView.widthForText(text: chip.label)
+            let additionalSpacing: CGFloat = currentVms.count > 0 ? Constants.chipHorizontalInset : 0
+            let totalWidth = currentWidth + width
+            
+            if totalWidth <= availableWidth {
+                currentWidth += width + additionalSpacing
+                currentVms.append(viewModel.items[index])
+            } else {
+                chipItemsVStack.addArrangedSubview(createChipsHstack(chips: currentVms))
+                currentWidth = width
+                currentVms = [chip]
+            }
+            index += 1
+        }
+        chipItemsVStack.addArrangedSubview(createChipsHstack(chips: currentVms))
     }
+    
+    private func createChipsHstack(chips: [DSChipBlackMlcViewModel]) -> UIStackView {
+        let stack = UIStackView.create(
+            .horizontal,
+            views: chips.map { viewModel in
+                let view = DSChipBlackMlcView()
+                viewModel.onClick = { [weak self] action in
+                    self?.chipsViewModel?.updateState(for: viewModel, action: action)
+                }
 
+                view.configure(with: viewModel)
+                return view
+            },
+            spacing: Constants.chipHorizontalInset)
+        stack.withHeight(Constants.chipHeight)
+        return stack
+    }
+}
+
+extension DSChipBlackGroupOrgView {
+    public func clearState() {
+        chipsViewModel?.deselectAll()
+    }
 }
 
 extension DSChipBlackGroupOrgView: DSInputComponentProtocol {

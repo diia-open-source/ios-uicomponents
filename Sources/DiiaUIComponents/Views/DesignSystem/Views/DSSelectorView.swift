@@ -42,7 +42,7 @@ public class DSSelectorViewModel {
 /// design_system_code: selectorOrg
 public class DSSelectorView: BaseCodeView, DSInputComponentProtocol {
     private let titleLabel = UILabel().withParameters(font: FontBook.statusFont)
-    private let textLabel = UILabel().withParameters(font: FontBook.usualFont)
+    private let textLabel = UILabel().withParameters(font: FontBook.bigText)
     private let dividerLine = DSDividerLineView()
     private let hintLabel = UILabel().withParameters(font: FontBook.statusFont)
     
@@ -81,6 +81,8 @@ public class DSSelectorView: BaseCodeView, DSInputComponentProtocol {
         viewModel.state.observe(observer: self) { [weak self] state in
             self?.setState(state)
         }
+        
+        setupAccessibility()
     }
     
     // MARK: - Private Methods
@@ -96,6 +98,7 @@ public class DSSelectorView: BaseCodeView, DSInputComponentProtocol {
             isUserInteractionEnabled = false
         case .enabled:
             textLabel.text = viewModel.placeholder
+            textLabel.accessibilityLabel = viewModel.placeholder
             textLabel.textColor = Constants.inactiveColor
             titleLabel.textColor = .black
             dividerLine.backgroundColor = Constants.inactiveColor
@@ -103,6 +106,7 @@ public class DSSelectorView: BaseCodeView, DSInputComponentProtocol {
             alpha = Constants.activeAlpha
         case .selected(let text):
             textLabel.text = text
+            textLabel.accessibilityLabel = text
             textLabel.textColor = .black
             titleLabel.textColor = .black
             dividerLine.backgroundColor = .black
@@ -110,6 +114,7 @@ public class DSSelectorView: BaseCodeView, DSInputComponentProtocol {
             alpha = Constants.activeAlpha
         case .single(let text):
             textLabel.text = text
+            textLabel.accessibilityLabel = text
             alpha = Constants.inactiveAlpha
             isUserInteractionEnabled = false
         default:
@@ -122,6 +127,16 @@ public class DSSelectorView: BaseCodeView, DSInputComponentProtocol {
         tap.cancelsTouchesInView = false
         isUserInteractionEnabled = true
         addGestureRecognizer(tap)
+    }
+    
+    // MARK: - Accessibility
+    private func setupAccessibility() {
+        titleLabel.isAccessibilityElement = true
+        titleLabel.accessibilityTraits = .staticText
+        titleLabel.accessibilityLabel = viewModel?.title
+        
+        textLabel.isAccessibilityElement = true
+        textLabel.accessibilityTraits = .button
     }
     
     // MARK: - Action

@@ -3,13 +3,13 @@ import UIKit
 import DiiaCommonTypes
 
 public struct DSCheckboxGroupBuilder: DSViewBuilderProtocol {
-    public static let modelKey = "checkboxRoundGroupOrg"
+    public let modelKey = "checkboxRoundGroupOrg"
     
     public func makeView(from object: AnyCodable,
                          withPadding paddingType: DSViewPaddingType,
                          viewFabric: DSViewFabric?,
                          eventHandler: @escaping (ConstructorItemEvent) -> Void) -> UIView? {
-        guard let data: DSCheckboxRoundGroupOrg = object.parseValue(forKey: Self.modelKey) else { return nil }
+        guard let data: DSCheckboxRoundGroupOrg = object.parseValue(forKey: self.modelKey) else { return nil }
         var checkboxItems: [ChecklistItemViewModel] = []
         data.items.forEach {
             if let checkboxRoundMlc = $0.checkboxRoundMlc {
@@ -39,15 +39,61 @@ public struct DSCheckboxGroupBuilder: DSViewBuilderProtocol {
             guard let viewModel = viewModel else { return }
             let selectedItems = viewModel.selectedItems()
             eventHandler(.inputChanged(.init(
-                inputCode: data.inputCode ?? Self.modelKey,
+                inputCode: data.inputCode ?? self.modelKey,
                 inputData: .array(selectedItems.map { .string($0.code ?? "") }))))
         }
         
         let view = ChecklistView()
-        view.configure(with: viewModel)
+        view.configure(with: viewModel, eventHandler: eventHandler)
         
-        let insets = paddingType.defaultPadding()
+        let insets = paddingType.defaultPadding(object: object, modelKey: modelKey)
         let paddingBox = BoxView(subview: view).withConstraints(insets: insets)
         return paddingBox
+    }
+}
+
+extension DSCheckboxGroupBuilder: DSViewMockableBuilderProtocol {
+    public func makeMockModel() -> AnyCodable {
+        let model = DSCheckboxRoundGroupOrg(
+            componentId: "componentId",
+            title: "Mock Checkbox Group Title",
+            inputCode: "checkbox_round_group",
+            mandatory: true,
+            items: [
+                DSCheckboxRoundItem(
+                    checkboxRoundMlc: DSCheckboxRoundMlc(
+                        id: "round_checkbox_1",
+                        iconLeft: "home",
+                        label: "First round checkbox",
+                        description: "Description for first checkbox",
+                        action: DSActionParameter.mock,
+                        state: .selected
+                    )
+                ),
+                DSCheckboxRoundItem(
+                    checkboxRoundMlc: DSCheckboxRoundMlc(
+                        id: "round_checkbox_2",
+                        iconLeft: "info",
+                        label: "Second round checkbox",
+                        description: "Description for second checkbox",
+                        action: DSActionParameter.mock,
+                        state: .rest
+                    )
+                ),
+                DSCheckboxRoundItem(
+                    checkboxRoundMlc: DSCheckboxRoundMlc(
+                        id: "round_checkbox_3",
+                        iconLeft: "homedoc",
+                        label: "Third round checkbox",
+                        description: "Description for third checkbox",
+                        action: DSActionParameter.mock,
+                        state: .disable
+                    )
+                )
+            ]
+        )
+        return .dictionary([
+            modelKey: .fromEncodable(encodable: model)
+        ])
     }
 }

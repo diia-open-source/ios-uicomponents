@@ -38,7 +38,7 @@ public class DSLinkButton: UIButton {
         self.setAttributedTitle(attributedString, for: .normal)
         self.setAttributedTitle(attributedString, for: .highlighted)
     }
-    
+
     // MARK: - Actions
     @objc private func onTouch() {
         self.onClick?()

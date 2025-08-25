@@ -1,3 +1,4 @@
+
 import UIKit
 
 public extension UIView {
@@ -38,5 +39,11 @@ public extension UIView {
             return [view]
         }
         return subviews.flatMap { $0.findTypedSubviews() }
+    }
+    
+    func tapGestureRecognizer(_ action: @escaping () -> Void) {
+        isUserInteractionEnabled = true
+        let tapGesture = UITapGestureRecognizerHelper(action: action)
+        addGestureRecognizer(tapGesture)
     }
 }

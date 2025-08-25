@@ -24,10 +24,30 @@ extension AnyCodable {
         }
     }
     
+    public func values() -> [AnyCodable] {
+        switch self {
+        case .dictionary(let dict):
+            return Array(dict.values)
+        case .array(let array):
+            return array
+        default:
+            return []
+        }
+    }
+    
     public func stringValue() -> String? {
         switch self {
         case .string(let string):
             return string
+        default:
+            return nil
+        }
+    }
+    
+    public func getValue(forKey key: String) -> AnyCodable? {
+        switch self {
+        case .dictionary(let dict):
+            return dict[key]
         default:
             return nil
         }

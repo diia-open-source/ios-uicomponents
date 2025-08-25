@@ -24,10 +24,10 @@ final public class DSSmallNotificationItemCell: UICollectionViewCell, Reusable {
     // MARK: - Subviews
     private let smallIconUrlImage = DSIconUrlAtmView()
     private let chipStatusView = DSChipView()
-    private let spacerView = UIView()
     private let titleLabel = UILabel().withParameters(
         font: FontBook.usualFont,
-        numberOfLines: Constants.titleNumberOfLines
+        numberOfLines: Constants.titleNumberOfLines,
+        lineBreakMode: .byTruncatingTail
     )
     private let detailsLabel = UILabel().withParameters(
         font: FontBook.bigText,
@@ -68,25 +68,43 @@ final public class DSSmallNotificationItemCell: UICollectionViewCell, Reusable {
         if let chipStatusModel = viewModel.chipStatusAtm {
             chipStatusView.configure(for: chipStatusModel)
         }
+        layoutIfNeeded()
     }
     
     // MARK: - Private Methods
     private func initialSetup() {
+        let iconTitleStackView = UIStackView.create(
+            .horizontal,
+            views: [
+                smallIconUrlImage,
+                titleLabel
+            ],
+            spacing: Constants.topStackSpacing,
+            alignment: .center)
+
         let topStackView = UIStackView.create(
             .horizontal,
-            views: [smallIconUrlImage, titleLabel, spacerView, chipStatusView],
+            views: [
+                iconTitleStackView,
+                chipStatusView
+            ],
             spacing: Constants.topStackSpacing,
-            alignment: .center
+            alignment: .top
         )
-        contentView.stack(
-            [topStackView, detailsLabel],
-            spacing: Constants.itemSpacing,
-            alignment: .leading,
-            padding: Constants.contentInsets
+        let stack = UIStackView.create(
+            views: [topStackView, detailsLabel],
+            spacing: Constants.itemSpacing
         )
+        contentView.addSubview(stack)
+        stack.anchor(top: contentView.topAnchor, leading: contentView.leadingAnchor, bottom: nil, trailing: contentView.trailingAnchor, padding: Constants.contentInsets)
+        
         smallIconUrlImage.withSize(Constants.iconSize)
         chipStatusView.withHeight(Constants.chipHeight)
-        spacerView.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        chipStatusView.setContentHuggingPriority(.required, for: .horizontal)
+        chipStatusView.setContentCompressionResistancePriority(.required, for: .horizontal)
+        
+        titleLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        titleLabel.setContentHuggingPriority(.defaultLow, for: .horizontal)
         
         setupUI()
         setupAccessibility()
@@ -119,7 +137,7 @@ final public class DSSmallNotificationItemCell: UICollectionViewCell, Reusable {
 // MARK: - Constants
 extension DSSmallNotificationItemCell {
     private enum Constants {
-        static let titleNumberOfLines = 1
+        static let titleNumberOfLines = 2
         static let detailsNumberOfLines = 2
         static let iconSize = CGSize(width: 24, height: 24)
         static let chipHeight: CGFloat = 18

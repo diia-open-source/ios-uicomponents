@@ -18,3 +18,7 @@ public extension DSInputComponentProtocol where Self: UIView {
     
     func setOnChangeHandler(_ handler: @escaping Callback) {}
 }
+
+public protocol DSResetStateComponentProtocol {
+    func clearState()
+}

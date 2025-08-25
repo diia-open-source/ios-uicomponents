@@ -39,6 +39,8 @@ public class DSTickerView: BaseCodeView, AnimatedViewProtocol {
         backgroundView.image = model.type.backgroundImage
         label.textColor = model.type.textColor
         text = model.value
+        
+        accessibilityLabel = model.value
     }
     
     public func startAnimation() {
@@ -65,6 +67,8 @@ public class DSTickerView: BaseCodeView, AnimatedViewProtocol {
         
         backgroundView.fillSuperview()
         scrollView.fillSuperview()
+        
+        setupAccessibility()
     }
     
     private func animateLabel() {
@@ -96,6 +100,12 @@ public class DSTickerView: BaseCodeView, AnimatedViewProtocol {
             y: .zero,
             width: label.intrinsicContentSize.width,
             height: frame.size.height)
+    }
+    
+    // MARK: - Accessibility
+    private func setupAccessibility() {
+        isAccessibilityElement = true
+        accessibilityTraits = .staticText
     }
 }
 

@@ -1,3 +1,4 @@
+
 import UIKit
 import SwiftMessages
 
@@ -5,9 +6,9 @@ import SwiftMessages
 public class DSTableItemVerticalView: DSTableItemView {
     private var eventHandler: ((ConstructorItemEvent) -> Void)?
     
-    private let mainStack = UIStackView.create(.horizontal, views: [], spacing: Constants.spacing, alignment: .top)
-    private let labelStack = UIStackView.create(.horizontal, views: [], alignment: .top)
-    private let labelValueStack = UIStackView.create(views: [], spacing: Constants.stackSpacing)
+    private let mainStack = UIStackView.create(.horizontal, spacing: Constants.spacing, alignment: .top)
+    private let labelStack = UIStackView.create(.horizontal, alignment: .top)
+    private let labelValueStack = UIStackView.create(spacing: Constants.stackSpacing)
     
     public override func setupSubviews() {
         super.setupSubviews()
@@ -20,39 +21,43 @@ public class DSTableItemVerticalView: DSTableItemView {
         icon.heightAnchor.constraint(equalTo: icon.widthAnchor,
                                      multiplier: Constants.signProportion).isActive = true
         setupUI()
+        setupAccessibility()
     }
     
-    public func configure(model: DSTableItemVerticalMlc, image: UIImage? = nil, eventHandler: ((ConstructorItemEvent) -> Void)? = nil) {
+    public func configure(model: DSTableItemVerticalMlc, image: UIImage? = nil, imageAltText: String? = nil, eventHandler: ((ConstructorItemEvent) -> Void)? = nil) {
         self.eventHandler = eventHandler
+        
+        label.accessibilityAttributedLabel = accessibilityLabel(for: model.label ?? "")
         label.attributedText = model.label?.attributed(font: FontBook.usualFont,
                                                        lineHeightMultiple: Constants.lineHeightMultiply,
                                                        lineHeight: Constants.lineHeight,
                                                        lineBreakMode: .byWordWrapping)
+        
         subLabel.attributedText = model.secondaryLabel?.attributed(font: FontBook.usualFont,
-                                                                   color: Constants.lightBlack,
+                                                                   color: .black540,
                                                                    lineHeightMultiple: Constants.lineHeightMultiply,
                                                                    lineHeight: Constants.lineHeight,
                                                                    lineBreakMode: .byWordWrapping)
+        subLabel.accessibilityAttributedLabel = accessibilityLabel(for: model.secondaryLabel ?? "")
+        
+        value.accessibilityAttributedLabel = accessibilityLabel(for: model.value ?? "")
         value.attributedText = model.value?.attributed(font: FontBook.usualFont,
                                                        lineHeightMultiple: Constants.lineHeightMultiply,
                                                        lineHeight: Constants.lineHeight,
                                                        lineBreakMode: .byWordWrapping)
         
         subValue.attributedText = model.secondaryValue?.attributed(font: FontBook.usualFont,
-                                                                   color: Constants.lightBlack,
+                                                                   color: .black540,
                                                                    lineHeightMultiple: Constants.lineHeightMultiply,
                                                                    lineHeight: Constants.lineHeight,
                                                                    lineBreakMode: .byWordWrapping)
-        supportLabel.attributedText = model.supportingValue?.attributed(font: FontBook.usualFont,
-                                                                        lineHeightMultiple: Constants.lineHeightMultiply,
-                                                                        lineHeight: Constants.lineHeight,
-                                                                        textAlignment: .right,
-                                                                        lineBreakMode: .byWordWrapping)
-        
+        subValue.accessibilityAttributedLabel = accessibilityLabel(for: model.secondaryValue ?? "")
+
+        configureSupportingLabel(model: model)
+
         label.setContentCompressionResistancePriority(.required, for: .horizontal)
         label.setContentHuggingPriority(.required, for: .horizontal)
         
-        subLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
         subLabel.setContentHuggingPriority(.required, for: .horizontal)
         
         value.setContentCompressionResistancePriority(.required, for: .horizontal)
@@ -61,7 +66,6 @@ public class DSTableItemVerticalView: DSTableItemView {
         subValue.setContentCompressionResistancePriority(.required, for: .horizontal)
         subValue.setContentHuggingPriority(.required, for: .horizontal)
         
-        supportLabel.isHidden = model.supportingValue == nil
         label.isHidden = model.label == nil
         subLabel.isHidden = model.secondaryLabel == nil
         value.isHidden = model.value == nil
@@ -75,20 +79,50 @@ public class DSTableItemVerticalView: DSTableItemView {
             })
         }
         
-        self.icon.image = image?.imageByMakingWhiteBackgroundTransparent()?.scaled(forFittingSize: Constants.signSize,
-                                                                                   scale: UIScreen.main.scale)
+        self.icon.image = image?
+            .imageByMakingWhiteBackgroundTransparent()?
+            .scaled(
+                forFittingSize: Constants.signSize,
+                scale: UIScreen.main.scale
+            )
+        self.icon.accessibilityLabel = imageAltText
         self.icon.contentMode = .left
-        
-        if !supportLabel.isHidden {
-            supportLabel.widthAnchor.constraint(equalTo: widthAnchor, multiplier: Constants.proportionMultiplier).isActive = true
-        }
+
         if !actionButton.isHidden {
-            actionButton.widthAnchor.constraint(equalTo: widthAnchor, multiplier: Constants.proportionMultiplier).isActive = true
+            actionButton.widthAnchor.constraint(equalTo: widthAnchor, multiplier: Constants.actionButtonWidthMultiplier).isActive = true
         }
 
         mainStack.layoutIfNeeded()
     }
-    
+
+    private func configureSupportingLabel(model: DSTableItemVerticalMlc) {
+        let isHidden = model.supportingValue == nil && model.pointSupportingValue == nil
+        supportLabel.isHidden = isHidden
+
+        if let pointSupportingValue = model.pointSupportingValue {
+            supportLabel.attributedText = pointSupportingValue
+                .attributed(
+                    font: FontBook.usualFont,
+                    lineHeightMultiple: Constants.lineHeightMultiply,
+                    lineHeight: Constants.lineHeight,
+                    textAlignment: .left,
+                    lineBreakMode: .byWordWrapping
+                )
+            supportLabel.widthAnchor.constraint(equalTo: widthAnchor, multiplier: Constants.pointSupportLabelWidthMultiplier).isActive = true
+            mainStack.setCustomSpacing(Constants.supportLabelRightOffset, after: supportLabel)
+        } else if let supportingValue = model.supportingValue {
+            supportLabel.attributedText = supportingValue
+                .attributed(
+                    font: FontBook.usualFont,
+                    lineHeightMultiple: Constants.lineHeightMultiply,
+                    lineHeight: Constants.lineHeight,
+                    textAlignment: .right,
+                    lineBreakMode: .byWordWrapping
+                )
+            supportLabel.widthAnchor.constraint(equalTo: widthAnchor, multiplier: Constants.supportLabelWidthMultiplier).isActive = true
+        }
+    }
+
     private func handleClick(action: DSActionParameter) {
         switch action.type {
         case "copy":
@@ -99,6 +133,35 @@ public class DSTableItemVerticalView: DSTableItemView {
         default:
             eventHandler?(.action(action))
         }
+    }
+    
+    // MARK: - Accessibility
+    private func setupAccessibility() {
+        label.isAccessibilityElement = true
+        label.accessibilityTraits = .staticText
+        
+        value.isAccessibilityElement = true
+        value.accessibilityTraits = .staticText
+        
+        subLabel.isAccessibilityElement = true
+        subLabel.accessibilityTraits = .staticText
+        
+        subValue.isAccessibilityElement = true
+        subValue.accessibilityTraits = .staticText
+        
+        icon.isAccessibilityElement = true
+        icon.accessibilityTraits = .image
+    }
+    
+    private func accessibilityLabel(for text: String) -> NSMutableAttributedString {
+        let mutableAccessibilityLabel = NSMutableAttributedString(string: text)
+        mutableAccessibilityLabel.addAttribute(
+            .accessibilitySpeechLanguage,
+            value: text.textLocale.rawValue,
+            range: NSRange(location: 0, length: text.count)
+        )
+        
+        return mutableAccessibilityLabel
     }
 }
 
@@ -111,7 +174,10 @@ extension DSTableItemVerticalView {
         static let spacing: CGFloat = 12
         static let lineHeight: CGFloat = 24
         static let lightBlack = UIColor.black.withAlphaComponent(0.4)
-        static let proportionMultiplier: CGFloat = 0.1
+        static let actionButtonWidthMultiplier: CGFloat = 0.1
+        static let supportLabelWidthMultiplier: CGFloat = 0.1
+        static let supportLabelRightOffset: CGFloat = 4.0
+        static let pointSupportLabelWidthMultiplier: CGFloat = 0.07
         static let signSize = CGSize(width: 120, height: 40)
     }
 }

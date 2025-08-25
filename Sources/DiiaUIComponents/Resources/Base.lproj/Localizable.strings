@@ -5,12 +5,23 @@
 
 // MARK: - Accessibility
 "general_accessibility_back_button_hint" = "Назад";
-"general_accessibility_page_hint" = "Сторінка %d з %d. %@";
+"general_accessibility_loading_hint" = "Триває завантаження даних, будь ласка, зачекайте";
+"general_accessibility_accordion_opened" = "Розгорнуто";
+"general_accessibility_accordion_closed" = "Згорнуто";
+"general_accessibility_copy_button" = "Скопіювати";
+
+"made_in_ua_cashback_dashboard_amount" = "%@ грн %@ коп";
+
+"recruitment_accessibility_video_play_button" = "Відтворити";
+"document_accessibility_doc_photo" = "Фотографія власника документа";
+"document_accessibility_signature_photo" = "Підпис власника документа";
+
+"accessibility_photo_url" = "Фотографія";
 
 // MARK: - General
 "general_ok" = "Добре";
 "general_back" = "Назад";
-"general_context_menu_open" = "Відкрити контекстне меню";
+"general_context_menu_open" = "Контекстне меню";
 "general_done" = "Готово";
 "general_update" = "Оновити";
 "general_step" = "Крок %@ з %@";

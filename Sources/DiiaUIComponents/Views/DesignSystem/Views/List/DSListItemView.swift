@@ -1,3 +1,4 @@
+
 import UIKit
 import DiiaCommonTypes
 
@@ -14,6 +15,7 @@ public class DSListItemViewModel: NSObject {
     public let details: String?
     public let rightIcon: UIImage?
     public let componentId: String?
+    public let accessibilityDescription: String?
     @objc public dynamic var isEnabled: Bool
     public var onClick: Callback?
     
@@ -27,9 +29,10 @@ public class DSListItemViewModel: NSObject {
                 rightIcon: UIImage? = nil,
                 isEnabled: Bool = true,
                 componentId: String? = nil,
+                accessibilityDescription: String? = nil,
                 chipStatusAtm: DSCardStatusChipModel? = nil,
                 amountAtm: DSAmountAtmModel? = nil,
-                onClick: @escaping Callback = {}
+                onClick: Callback? = nil
     ) {
         self.id = id
         self.leftBase64Icon = leftBase64Icon
@@ -42,9 +45,22 @@ public class DSListItemViewModel: NSObject {
         self.isEnabled = isEnabled
         self.onClick = onClick
         self.componentId = componentId
+        self.accessibilityDescription = accessibilityDescription
         self.chipStatusAtm = chipStatusAtm
         self.amountAtm = amountAtm
         self.isLoading = false
+    }
+    
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(id)
+        hasher.combine(title)
+        return hasher.finalize()
+    }
+    
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let other = object as? DSListItemViewModel else { return false }
+        return self.id == other.id && self.title == other.title
     }
 }
 
@@ -55,7 +71,7 @@ public class DSListItemView: BaseCodeView {
     private let titleLabel = UILabel().withParameters(font: FontBook.bigText,
                                                       lineBreakMode: .byTruncatingTail)
     private let detailsLabel = UILabel().withParameters(font: FontBook.usualFont,
-                                                        textColor: .statusGray,
+                                                        textColor: .black540,
                                                         lineBreakMode: .byTruncatingTail)
     private let rightIconView: UIImageView = UIImageView().withSize(Constants.smallIconSize)
     private lazy var chipStatusView = DSChipStatusAtmView()
@@ -108,8 +124,8 @@ public class DSListItemView: BaseCodeView {
     public func setupUI(stackPadding: UIEdgeInsets) {
         stackAnchors?.top?.constant = stackPadding.top
         stackAnchors?.leading?.constant = stackPadding.left
-        stackAnchors?.bottom?.constant = stackPadding.bottom
-        stackAnchors?.trailing?.constant = stackPadding.right
+        stackAnchors?.bottom?.constant = -stackPadding.bottom
+        stackAnchors?.trailing?.constant = -stackPadding.right
         layoutIfNeeded()
     }
     
@@ -170,6 +186,7 @@ public class DSListItemView: BaseCodeView {
             self.isUserInteractionEnabled = isEnabled
             self.alpha = isEnabled ? 1 : Constants.disabledAlpha
         })
+        
         setupAccessibility()
     }
 
@@ -191,8 +208,12 @@ public class DSListItemView: BaseCodeView {
     
     private func setupAccessibility() {
         isAccessibilityElement = true
-        accessibilityLabel = "\(viewModel?.title ?? "") \(viewModel?.details ?? "") \(viewModel?.amountAtm?.value ?? "")"
-        accessibilityTraits = .button
+        if let accessibilityDescription = viewModel?.accessibilityDescription {
+            accessibilityLabel = accessibilityDescription
+        } else {
+            accessibilityLabel = "\(viewModel?.title ?? "") \(viewModel?.details ?? "") \(viewModel?.amountAtm?.value ?? ""). \(viewModel?.chipStatusAtm?.name ?? "")"
+        }
+        accessibilityTraits = (viewModel?.onClick != nil) ? .button : .staticText
     }
     
     @objc private func onClick() {
@@ -205,7 +226,7 @@ private extension DSListItemView {
         static let bigIconSize = CGSize(width: 32, height: 32)
         static let smallIconSize = CGSize(width: 24, height: 24)
         static let stackSpacing: CGFloat = 16
-        static let textsSpacing: CGFloat = 4
+        static let textsSpacing: CGFloat = 8
         static let defaultStackPadding: UIEdgeInsets = .init(top: 16, left: 16, bottom: 16, right: 16)
         static let disabledAlpha: CGFloat = 0.3
         static let animationDuration: CGFloat = 0.15

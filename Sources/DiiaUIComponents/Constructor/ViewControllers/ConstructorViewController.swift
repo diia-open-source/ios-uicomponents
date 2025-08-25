@@ -4,6 +4,7 @@ import DiiaMVPModule
 import DiiaCommonTypes
 
 public protocol ConstructorScreenViewProtocol: BaseView {
+    func setLocalLoading(isLoading: Bool)
     func setLoadingState(_ state: LoadingState)
     func setInnerTridentLoading(_ state: LoadingState)
     func setupBackground(_ background: ConstructorBackground)
@@ -16,6 +17,9 @@ public protocol ConstructorScreenViewProtocol: BaseView {
     func setConditionHandler(_ handler: ConstructorConditionHandler)
     func modify(_ modifier: ConstructorViewModifier)
     func isVisible() -> Bool
+    func setCustomAccessibilityElements(elements: [Any])
+    func setupBody(for model: DSConstructorModel)
+    func resetBody()
 }
 
 public extension ConstructorScreenViewProtocol where Self: UIViewController {
@@ -59,6 +63,8 @@ final public class ConstructorViewController: UIViewController {
     private var inputViews: [DSInputComponentProtocol] = []
     private var scrollDependentViews: [ScrollDependentComponentProtocol] = []
     private var conditionHandler: ConstructorConditionHandler = BaseConstructorConditionHandlerImpl()
+
+    private var loadingView: LoadingView?
 
     // MARK: - Init
     public init() {
@@ -109,6 +115,17 @@ final public class ConstructorViewController: UIViewController {
         return presenter.canNavigateBack()
     }
     
+    // MARK: - Accessibility
+    public override func updateAccessibilityElements() {
+        if children.isEmpty {
+            constructorView?.updateAccessibilityElements()
+        }
+    }
+    
+    public override func removeAccessibilityElements() {
+        view.accessibilityElements = nil
+    }
+    
     // MARK: - Private
     private func prepareDefaultTopView() -> UIView {
         let topView = TopNavigationView()
@@ -134,6 +151,10 @@ final public class ConstructorViewController: UIViewController {
 
 // MARK: - View logic
 extension ConstructorViewController: ConstructorScreenViewProtocol, RatingFormHolder {
+    public func setCustomAccessibilityElements(elements: [Any]) {
+        constructorView?.setCustomAccessibilityElements(elements: elements)
+    }
+    
     public func setLoadingState(_ state: LoadingState) {
         if let topView = topView() {
             topView.setupLoading(isActive: state == .loading)
@@ -150,7 +171,20 @@ extension ConstructorViewController: ConstructorScreenViewProtocol, RatingFormHo
     public func setInnerTridentLoading(_ state: LoadingState) {
         constructorView?.bodyStack.isHidden = state == .loading
         constructorView?.bottomStack.isHidden = state == .loading
-        constructorView?.loadingView.setLoadingState(state)
+        constructorView?.loadingView.setLoadingState(state) { [weak self] in
+            UIAccessibility.post(notification: .layoutChanged, argument: self?.constructorView?.topGroupStack)
+        }
+    }
+    
+    public func setLocalLoading(isLoading: Bool) {
+        if isLoading {
+            if loadingView == nil {
+                self.loadingView = LoadingView.show(in: view)
+            }
+        } else {
+            loadingView?.hide()
+            loadingView = nil
+        }
     }
     
     public func setupBackground(_ background: ConstructorBackground) {
@@ -175,10 +209,15 @@ extension ConstructorViewController: ConstructorScreenViewProtocol, RatingFormHo
         
         let topViews = viewFabric.topGroupViews(for: model, eventHandler: eventHandler)
         let bodyViews = viewFabric.bodyViews(for: model, eventHandler: eventHandler)
+        let centeredBodyViews = viewFabric.centeredBodyViews(for: model, eventHandler: eventHandler)
         let bottomView = viewFabric.bottomGroupViews(for: model, eventHandler: eventHandler)
         
         constructorView?.setupTopGroup(views: topViews)
-        constructorView?.setupBody(views: bodyViews)
+        if !bodyViews.isEmpty {
+            constructorView?.setupBody(views: bodyViews)
+        } else {
+            constructorView?.setupCenteredBody(views: centeredBodyViews)
+        }
         constructorView?.setupBottomGroup(views: bottomView)
         
         self.inputViews = view.findTypedSubviews()
@@ -213,6 +252,46 @@ extension ConstructorViewController: ConstructorScreenViewProtocol, RatingFormHo
         if let headerContext = headerContext {
             setHeader(headerContext: headerContext)
         }
+    }
+    
+    public func setupBody(for model: DSConstructorModel) {
+        let eventHandler: (ConstructorItemEvent) -> Void = { [weak self] event in
+            self?.presenter.handleEvent(event: event)
+        }
+        
+        let bodyViews = viewFabric.bodyViews(for: model, eventHandler: eventHandler)
+        constructorView?.setupBody(views: bodyViews)
+        
+        self.inputViews = view.findTypedSubviews()
+        self.conditionViews = view.findTypedSubviews()
+        self.scrollDependentViews = view.findTypedSubviews()
+        
+        if let bodyScrollView = constructorView?.bodyScrollView {
+            scrollDependentViews.forEach {
+                $0.scrollViewDidScroll(scrollView: bodyScrollView)
+            }
+            for bodyView in bodyViews {
+                if let bodyView = bodyView as? FullSizedViewProtocol {
+                    bodyView.setHeightEqual(to: bodyScrollView)
+                }
+            }
+        }
+        if !inputViews.isEmpty,
+           let constructorView = constructorView,
+           let bottomConstraint = constructorView.bottomGroupBottomConstraint {
+            keyboardHandler = .init(type: .combined(
+                scrollView: constructorView.bodyScrollView,
+                constraint: bottomConstraint,
+                initialBottomInset: bottomConstraint.constant,
+                keyboardInset: Constants.keyboardSpacing + view.safeAreaInsets.bottom,
+                superview: constructorView))
+        }
+        
+        if !scrollDependentViews.isEmpty, let scrollView = constructorView?.bodyScrollView {
+            scrollViewDidScroll(scrollView)
+        }
+        
+        inputFieldsWasUpdated()
     }
     
     public func setHeader(headerContext: ContextMenuProviderProtocol) {
@@ -267,6 +346,11 @@ extension ConstructorViewController: ConstructorScreenViewProtocol, RatingFormHo
     
     public func modify(_ modifier: any ConstructorViewModifier) {
         modifier.modify(viewController: self)
+    }
+    
+    public func resetBody() {
+        guard let model else { return }
+        setupBody(for: model)
     }
 }
 

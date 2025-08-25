@@ -22,35 +22,43 @@ public class ParameterizedStatusInfoView: BaseCodeView {
     private let titleLabel = UILabel().withParameters(font: FontBook.bigText)
     private let descriptionTextView = UITextView()
     private let emojiLabel = UILabel().withParameters(font: FontBook.smallHeadingFont)
+    private let containerView = UIView()
     private var urlOpener: URLOpenerProtocol?
 
     // MARK: - LifeCycle
     public override func setupSubviews() {
         backgroundColor = .clear
         
-        let container = UIView()
-        container.layer.cornerRadius = Constants.cornerRadius
-        container.backgroundColor = .white.withAlphaComponent(0.5)
-        addSubview(container)
-        container.fillSuperview(padding: .init( top: Constants.containerInset, left: Constants.containerInset, bottom: Constants.containerInset, right: Constants.containerInset))
+        containerView.layer.cornerRadius = Constants.cornerRadius
+        containerView.backgroundColor = .white.withAlphaComponent(Constants.containerBackgroundAlpha)
+        addSubview(containerView)
+        containerView.fillSuperview(padding: .init( top: Constants.containerInset, left: Constants.containerInset, bottom: Constants.containerInset, right: Constants.containerInset))
         
-        container.addSubview(emojiLabel)
-        emojiLabel.anchor(top: container.topAnchor, leading: container.leadingAnchor, bottom: nil, trailing: nil, padding: .init(top: Constants.bigSpacing, left: Constants.bigSpacing, bottom: 0, right: 0))
+        containerView.addSubview(emojiLabel)
+        emojiLabel.anchor(top: containerView.topAnchor, leading: containerView.leadingAnchor, bottom: nil, trailing: nil, padding: .init(top: Constants.bigSpacing, left: Constants.bigSpacing, bottom: 0, right: 0))
         emojiLabel.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         emojiLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
         
         let stack = UIStackView.create(views: [titleLabel, descriptionTextView], spacing: Constants.standardSpacing)
-        container.addSubview(stack)
+        containerView.addSubview(stack)
         stack.anchor(
-            top: container.topAnchor,
+            top: containerView.topAnchor,
             leading: emojiLabel.trailingAnchor,
-            bottom: container.bottomAnchor,
-            trailing: container.trailingAnchor,
+            bottom: containerView.bottomAnchor,
+            trailing: containerView.trailingAnchor,
             padding: .init(top: Constants.bigSpacing, left: Constants.standardSpacing, bottom: Constants.bigSpacing, right: Constants.bigSpacing)
         )
         
         descriptionTextView.configureForParametrizedText()
         descriptionTextView.delegate = self
+        
+        setupAccessibility()
+    }
+    
+    // MARK: - Accessibility
+    private func setupAccessibility() {
+        containerView.isAccessibilityElement = true
+        containerView.accessibilityTraits = .staticText
     }
     
     // MARK: - Public Methods
@@ -66,6 +74,8 @@ public class ParameterizedStatusInfoView: BaseCodeView {
         
         titleLabel.isHidden = message.title.isEmpty
         descriptionTextView.isHidden = message.text.isEmpty
+        
+        containerView.accessibilityLabel = "\(message.icon), \(message.title), \(message.text)"
     }
     
     public func configureFonts(title: UIFont = FontBook.usualFont,
@@ -90,5 +100,6 @@ private extension ParameterizedStatusInfoView {
         static let standardSpacing: CGFloat = 8
         static let bigSpacing: CGFloat = 16
         static let containerInset: CGFloat = 2
+        static let containerBackgroundAlpha: CGFloat = 0.5
     }
 }

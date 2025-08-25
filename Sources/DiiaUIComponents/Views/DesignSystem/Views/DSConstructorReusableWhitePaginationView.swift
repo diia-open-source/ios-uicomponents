@@ -118,6 +118,8 @@ public class DSConstructorReusableWhitePaginationView: BaseCodeView, DSConstruct
             tableView.tableFooterView = loadingView
         case .error:
             tableView.tableFooterView = errorView
+        default:
+            break
         }
         updateLastCell()
     }

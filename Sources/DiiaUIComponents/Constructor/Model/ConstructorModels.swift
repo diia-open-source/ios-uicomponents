@@ -3,9 +3,9 @@ import Foundation
 import DiiaCommonTypes
 
 public struct DSTopGroupOrg: Codable {
-    public let titleGroupMlc: DSTopGroupMlc?
-    public let navigationPanelMlc: DSNavigationPanelMlc?
-    public let chipTabsOrg: DSChipGroupOrg?
+    public var titleGroupMlc: DSTopGroupMlc?
+    public var navigationPanelMlc: DSNavigationPanelMlc?
+    public var chipTabsOrg: DSChipGroupOrg?
     public let scalingTitleMlc: DSScalingTitleMlc?
     public let searchInputMlc: DSSearchModel?
     
@@ -40,19 +40,22 @@ public struct DSTopGroupMlc: Codable {
     public let heroText: String
     public let label: String?
     public let mediumIconRight: DSIconModel?
+    public let hideBackButton: Bool?
     
     public init(
         componentId: String? = nil,
         leftNavIcon: DSIconModel? = nil,
         heroText: String,
         label: String? = nil,
-        mediumIconRight: DSIconModel? = nil
+        mediumIconRight: DSIconModel? = nil,
+        hideBackButton: Bool? = false
     ) {
         self.componentId = componentId
         self.leftNavIcon = leftNavIcon
         self.heroText = heroText
         self.label = label
         self.mediumIconRight = mediumIconRight
+        self.hideBackButton = hideBackButton
     }
 }
 
@@ -508,13 +511,15 @@ public struct DSVerticalCardCarouselItemModel: Codable {
     public let image: String
     public let badgeCounterAtm: DSBadgeCounterModel
     public let action: DSActionParameter?
+    public let imageAltText: String?
     
-    public init(id: String?, title: String, image: String, badgeCounterAtm: DSBadgeCounterModel, action: DSActionParameter?) {
+    public init(id: String?, title: String, image: String, badgeCounterAtm: DSBadgeCounterModel, action: DSActionParameter?, imageAltText: String? = nil) {
         self.id = id
         self.title = title
         self.image = image
         self.badgeCounterAtm = badgeCounterAtm
         self.action = action
+        self.imageAltText = imageAltText
     }
 }
 
@@ -570,9 +575,11 @@ public struct DSArticlePicCarouselItem: Codable {
 
 public struct DSImageData: Codable {
     public let image: String
+    public let accessibilityDescription: String?
     
-    public init(image: String) {
+    public init(image: String, accessibilityDescription: String? = nil) {
         self.image = image
+        self.accessibilityDescription = accessibilityDescription
     }
 }
 

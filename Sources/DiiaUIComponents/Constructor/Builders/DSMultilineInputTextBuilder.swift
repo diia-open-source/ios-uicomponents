@@ -4,13 +4,13 @@ import DiiaCommonTypes
 
 /// design_system_code: inputTextMultilineMlc
 public struct DSMultilineInputTextBuilder: DSViewBuilderProtocol {
-    public static let modelKey = "inputTextMultilineMlc"
-    
+    public let modelKey = "inputTextMultilineMlc"
+
     public func makeView(from object: AnyCodable,
                          withPadding paddingType: DSViewPaddingType,
                          viewFabric: DSViewFabric?,
                          eventHandler: @escaping (ConstructorItemEvent) -> Void) -> UIView? {
-        guard let data: DSInputTextMultilineMlc = object.parseValue(forKey: Self.modelKey) else { return nil }
+        guard let data: DSInputTextMultilineMlc = object.parseValue(forKey: self.modelKey) else { return nil }
 
         let inputView = TitledMultilineTextView()
 
@@ -20,7 +20,9 @@ public struct DSMultilineInputTextBuilder: DSViewBuilderProtocol {
         }
 
         inputView.configure(viewModel: TitledTextFieldViewModel(
+            componentId: data.componentId,
             id: data.componentId,
+            inputCode: data.inputCode,
             title: data.label,
             placeholder: data.placeholder ?? .empty,
             validators: validators,
@@ -29,13 +31,31 @@ public struct DSMultilineInputTextBuilder: DSViewBuilderProtocol {
             instructionsText: data.hint,
             onChangeText: { text in
                 eventHandler(.inputChanged(.init(
-                    inputCode: data.inputCode ?? Self.modelKey,
+                    inputCode: data.inputCode ?? self.modelKey,
                     inputData: .string(text))))
             }
         ))
 
-        let insets = paddingType.defaultPadding()
+        let insets = paddingType.defaultPadding(object: object, modelKey: modelKey)
         let paddingBox = BoxView(subview: inputView).withConstraints(insets: insets)
         return paddingBox
+    }
+}
+
+extension DSMultilineInputTextBuilder: DSViewMockableBuilderProtocol {
+    public func makeMockModel() -> AnyCodable {
+        let model = DSInputTextMultilineMlc(
+            componentId: "componentId",
+            inputCode: "multiline_input",
+            label: "Text input",
+            placeholder: "Enter text",
+            hint: "Enter your text here",
+            value: nil,
+            mandatory: true,
+            validation: []
+        )
+        return .dictionary([
+            modelKey: .fromEncodable(encodable: model)
+        ])
     }
 }

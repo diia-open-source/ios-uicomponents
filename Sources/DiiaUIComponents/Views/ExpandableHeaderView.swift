@@ -30,6 +30,7 @@ public class ExpandableHeaderView: BaseCodeView {
         isUserInteractionEnabled = true
         
         configureUI()
+        setupAccessibility()
     }
     
     public func configureUI(titleFont: UIFont = FontBook.bigText) {
@@ -41,6 +42,8 @@ public class ExpandableHeaderView: BaseCodeView {
         titleLabel.text = title
         setOpened(isOpened: isOpened)
         self.onChange = onChange
+        
+        accessibilityLabel = title
     }
     
     public func setState(_ state: ExpandableHeaderViewState) {
@@ -60,10 +63,20 @@ public class ExpandableHeaderView: BaseCodeView {
     
     public func setOpened(isOpened: Bool) {
         isOpened ? setState(.opened) : setState(.closed)
+        
+        accessibilityValue = isOpened ?
+        R.Strings.general_accessibility_accordion_opened.localized() :
+        R.Strings.general_accessibility_accordion_closed.localized()
     }
     
     @objc private func onTapped() {
         onChange?()
+    }
+    
+    // MARK: - Accessibility
+    private func setupAccessibility() {
+        isAccessibilityElement = true
+        accessibilityTraits = .button
     }
 }
 

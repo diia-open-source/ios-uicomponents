@@ -20,4 +20,18 @@ public struct DSStubMessageMlc: Codable {
         self.parameters = parameters
         self.btnStrokeAdditionalAtm = btnStrokeAdditionalAtm
     }
+    
+    static let mock = DSStubMessageMlc(
+        icon: "👍(optional)",
+        title: "title",
+        description: "description(optional)",
+        componentId: "componentId(optional)",
+        parameters: [
+            TextParameter(
+                type: .link,
+                data: TextParameterData(name: "name", alt: "alt", resource: "resource")
+            )
+        ],
+        btnStrokeAdditionalAtm: .mock
+    )
 }

@@ -4,7 +4,7 @@ import DiiaCommonTypes
 
 /// design_system_code: mapChipTabsOrg
 public struct DSMapChipTabsViewBuilder: DSViewBuilderProtocol {
-    public static let modelKey = "mapChipTabsOrg"
+    public let modelKey = "mapChipTabsOrg"
     
     public func makeView(
         from object: AnyCodable,
@@ -12,11 +12,11 @@ public struct DSMapChipTabsViewBuilder: DSViewBuilderProtocol {
         viewFabric: DSViewFabric?,
         eventHandler: @escaping (ConstructorItemEvent) -> Void
     ) -> UIView? {
-        guard let data: DSMapChipGroupOrg = object.parseValue(forKey: Self.modelKey) else { return nil }
+        guard let data: DSMapChipGroupOrg = object.parseValue(forKey: self.modelKey) else { return nil }
         
         let view = makeView(data: data, eventHandler: eventHandler)
         
-        let insets = padding.defaultCollectionPadding()
+        let insets = padding.defaultCollectionPadding(object: object, modelKey: modelKey)
         let paddingBox = BoxView(subview: view).withConstraints(insets: insets)
         return paddingBox
     }
@@ -41,12 +41,67 @@ public struct DSMapChipTabsViewBuilder: DSViewBuilderProtocol {
         
         let viewModel = DSMapChipTabViewModel(items: items) { selectedMapChip in
             eventHandler(.action(.init(
-                type: Self.modelKey,
+                type: self.modelKey,
                 resource: selectedMapChip.code)))
         }
         
         view.configure(viewModel: viewModel)
         
         return view
+    }
+}
+
+// MARK: - Mock
+extension DSMapChipTabsViewBuilder: DSViewMockableBuilderProtocol {
+    public func makeMockModel() -> AnyCodable {
+        let model = DSMapChipGroupOrg(
+            componentId: "componentId",
+            label: "label",
+            preselectedCode: "preselectedCode",
+            items: [
+                DSMapChipGroupItem(
+                    mapChipMlc: DSMapChipMlc(
+                        componentId: "componentId",
+                        label: "chip1",
+                        icon: "icon",
+                        accessibilityDescription: "accessibilityDescription",
+                        code: "code"
+                    ),
+                    btnWhiteAdditionalIconAtm: DSButtonWhiteAdditionalIconAtm(
+                        id: "id",
+                        state: .enabled,
+                        label: "label",
+                        icon: "icon",
+                        accessibilityDescription: "accessibilityDescription",
+                        badgeCounterAtm: DSBadgeCounterModel(count: 1),
+                        action: .mock,
+                        componentId: "componentId"
+                    )
+                ),
+                DSMapChipGroupItem(
+                    mapChipMlc: DSMapChipMlc(
+                        componentId: "componentId",
+                        label: "chip2",
+                        icon: "icon",
+                        accessibilityDescription: "accessibilityDescription",
+                        code: "code"
+                    ),
+                    btnWhiteAdditionalIconAtm: DSButtonWhiteAdditionalIconAtm(
+                        id: "id",
+                        state: .disabled,
+                        label: "label",
+                        icon: "icon",
+                        accessibilityDescription: "accessibilityDescription",
+                        badgeCounterAtm: DSBadgeCounterModel(count: 1),
+                        action: .mock,
+                        componentId: "componentId"
+                    )
+                )
+            ]
+        )
+        
+        return .dictionary([
+            modelKey: .fromEncodable(encodable: model)
+        ])
     }
 }

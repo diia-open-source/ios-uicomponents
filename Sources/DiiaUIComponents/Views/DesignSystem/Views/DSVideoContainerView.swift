@@ -70,6 +70,7 @@ public class DSVideoContainerView: BaseCodeView {
         playButton.centerYAnchor.constraint(equalTo: container.centerYAnchor).isActive = true
         
         setupPlayButton()
+        setupAcessibility()
         observations = [
             audioSession.observe(\.outputVolume, options: [.new]) { [weak self] _, _ in
                 if self?.isPlaying == true {
@@ -130,6 +131,13 @@ public class DSVideoContainerView: BaseCodeView {
             playerController.showsPlaybackControls = false
             playerController.player?.pause()
         }
+    }
+    
+    // MARK: - Accessibility
+    private func setupAcessibility() {
+        playButton.isAccessibilityElement = true
+        playButton.accessibilityTraits = .button
+        playButton.accessibilityLabel = R.Strings.recruitment_accessibility_video_play_button.localized()
     }
 }
 

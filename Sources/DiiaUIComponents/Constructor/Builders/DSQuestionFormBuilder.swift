@@ -3,10 +3,10 @@ import UIKit
 import DiiaCommonTypes
 
 public struct DSQuestionFormBuilder: DSViewBuilderProtocol {
-    public static let modelKey = "questionFormsOrg"
+    public let modelKey = "questionFormsOrg"
     
     public func makeView(from object: AnyCodable, withPadding padding: DSViewPaddingType, viewFabric: DSViewFabric?, eventHandler: @escaping (ConstructorItemEvent) -> Void) -> UIView? {
-        guard let data: DSQuestionFormsModel = object.parseValue(forKey: Self.modelKey) else { return nil }
+        guard let data: DSQuestionFormsModel = object.parseValue(forKey: self.modelKey) else { return nil }
         let view = DSBackgroundWhiteView()
         
         if let fabric = viewFabric {
@@ -21,13 +21,25 @@ public struct DSQuestionFormBuilder: DSViewBuilderProtocol {
         )
         view.configure(for: viewModel)
         
-        let container = BoxView(subview: view).withConstraints(insets: Constants.padding)
-        return container
+        let box = BoxView(subview: view).withConstraints(insets: padding.defaultPadding(object: object, modelKey: modelKey))
+        return box
     }
 }
 
-private extension DSQuestionFormBuilder {
-    enum Constants {
-        static let padding = UIEdgeInsets(top: 24, left: 24, bottom: 0, right: 24)
+extension DSQuestionFormBuilder: DSViewMockableBuilderProtocol {
+    public func makeMockModel() -> AnyCodable {
+        let model = DSQuestionFormsModel(
+            componentId: "componentId(optional)",
+            id: "id",
+            title: "title(optional)",
+            condition: "condition(optional)",
+            items: [
+                DSRadioBtnGroupOrgV2Builder().makeMockModel(),
+                DSListWidgetItemBuilder().makeMockModel()
+            ]
+        )
+        return .dictionary([
+            modelKey: .fromEncodable(encodable: model)
+        ])
     }
 }

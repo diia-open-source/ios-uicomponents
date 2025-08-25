@@ -1,3 +1,4 @@
+
 import UIKit
 
 public class DSTableBlockPlaneOrgView: BaseCodeView {
@@ -12,6 +13,7 @@ public class DSTableBlockPlaneOrgView: BaseCodeView {
         addSubview(mainStack)
         mainStack.fillSuperview()
         headingStack.addArrangedSubviews([headingLabel, subheadingLabel])
+        setupAccessibility()
     }
     
     public func configure(for model: DSTableBlockItemModel, eventHandler: ((ConstructorItemEvent) -> Void)? = nil) {
@@ -28,14 +30,16 @@ public class DSTableBlockPlaneOrgView: BaseCodeView {
                 font: font,
                 lineHeightMultiple: Constants.lineHeightMultiple)
             headingLabel.numberOfLines = 0
+            headingLabel.accessibilityLabel = heading?.label
 
             subheadingLabel.attributedText = heading?.description?.attributed(
                 font: FontBook.usualFont,
-                color: Constants.lightBlack,
+                color: .black540,
                 lineHeightMultiple: Constants.lineHeightMultiple,
                 lineBreakMode: .byWordWrapping
             )
             subheadingLabel.numberOfLines = 0
+            subheadingLabel.accessibilityLabel = heading?.description
 
             mainStack.addArrangedSubview(BoxView(subview: headingStack).withConstraints(insets: Constants.stackSubviewInsets))
         }
@@ -80,6 +84,10 @@ public class DSTableBlockPlaneOrgView: BaseCodeView {
                                                         color: .white)
                     mainStack.addArrangedSubview(smallEmojiView)
                 }
+                if let btnLinkAtm = item.btnLinkAtm {
+                    let smallEmojiView = btnLinkAtmView(model: btnLinkAtm, eventHandler: eventHandler)
+                    mainStack.addArrangedSubview(smallEmojiView)
+                }
             }
         }
     }
@@ -87,6 +95,16 @@ public class DSTableBlockPlaneOrgView: BaseCodeView {
     private func emojiPanelView(model: DSSmallEmojiPanelMlcl, color: UIColor) -> UIView {
         let view = SmallButtonPanelMlcView()
         view.configure(for: model, color: color)
+        return BoxView(subview: view).withConstraints(insets: Constants.stackSubviewInsets)
+    }
+
+    private func btnLinkAtmView(model: DSButtonModel, eventHandler: ((ConstructorItemEvent) -> Void)? = nil) -> UIView {
+        let view = DSLinkButton()
+        view.setTitle(model.label)
+        view.onClick = {
+            guard let action = model.action else { return }
+            eventHandler?(.action(action))
+        }
         return BoxView(subview: view).withConstraints(insets: Constants.stackSubviewInsets)
     }
 
@@ -105,8 +123,17 @@ public class DSTableBlockPlaneOrgView: BaseCodeView {
     
     private func horizontalTableItem(model: DSTableItemHorizontalMlc) -> BoxView<DSTableItemHorizontalView> {
         let horizontalTableItem = DSTableItemHorizontalView()
-        horizontalTableItem.configure(item: model)
+        horizontalTableItem.configure(item: model, urlOpener: UIComponentsConfiguration.shared.urlOpener)
         return BoxView(subview: horizontalTableItem).withConstraints(insets: Constants.stackSubviewInsets)
+    }
+    
+    // MARK: - Accessibility
+    private func setupAccessibility() {
+        headingLabel.isAccessibilityElement = true
+        headingLabel.accessibilityTraits = .staticText
+        
+        subheadingLabel.isAccessibilityElement = true
+        subheadingLabel.accessibilityTraits = .staticText
     }
 }
 

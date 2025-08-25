@@ -4,13 +4,13 @@ import DiiaCommonTypes
 
 /// design_system_code: verticalCardCarouselOrg
 public struct DSHorizontalCarouselBuilder: DSViewBuilderProtocol {
-    public static let modelKey = "verticalCardCarouselOrg"
+    public let modelKey = "verticalCardCarouselOrg"
     
     public func makeView(from object: AnyCodable,
                          withPadding paddingType: DSViewPaddingType,
                          viewFabric: DSViewFabric?,
                          eventHandler: @escaping (ConstructorItemEvent) -> Void) -> UIView? {
-        guard let data: DSVerticalCardCarouselModel = object.parseValue(forKey: Self.modelKey) else { return nil }
+        guard let data: DSVerticalCardCarouselModel = object.parseValue(forKey: self.modelKey) else { return nil }
                 
         let configurator = DSHorizontalCarouselConfigurator(model: data, eventHandler: eventHandler)
         
@@ -56,6 +56,32 @@ class DSHorizontalCarouselConfigurator: NSObject, UICollectionViewDataSource, UI
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return Constants.cellSize
+    }
+}
+
+extension DSHorizontalCarouselBuilder: DSViewMockableBuilderProtocol {
+    public func makeMockModel() -> AnyCodable {
+        let carouselItem1 = DSVerticalCardCarouselItem(verticalCardMlc: DSVerticalCardCarouselItemModel(
+            id: "card1",
+            title: "Vertical Card 1",
+            image: "https://example.com/image1.jpg",
+            badgeCounterAtm: DSBadgeCounterModel(count: 5),
+            action: DSActionParameter.mock,
+            imageAltText: "Image description"
+        ))
+        let carouselItem2 = DSVerticalCardCarouselItem(verticalCardMlc: DSVerticalCardCarouselItemModel(
+            id: "card2",
+            title: "Vertical Card 2", 
+            image: "https://example.com/image2.jpg",
+            badgeCounterAtm: DSBadgeCounterModel(count: 0),
+            action: nil,
+            imageAltText: "Second image description"
+        ))
+        
+        let model = DSVerticalCardCarouselModel(items: [carouselItem1, carouselItem2])
+        return .dictionary([
+            modelKey: .fromEncodable(encodable: model)
+        ])
     }
 }
 

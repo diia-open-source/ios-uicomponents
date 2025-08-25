@@ -1,4 +1,5 @@
 import UIKit
+import CoreNFC
 
 // swiftlint:disable all
 public extension UIDevice {
@@ -206,20 +207,7 @@ extension UIDevice {
 
 public extension UIDevice {
     static var isNFCAvailable: Bool {
-        let deviceCompatible: Bool
-        
-        switch UIDevice.deviceVersion() {
-        case .iPhone5, .iPhone5S, .iPhone6, .iPhone6Plus, .iPhone6S, .iPhoneSE, .iPhone6SPlus, .simulator:
-            deviceCompatible = false
-        default:
-            deviceCompatible = true
-        }
-        
-        if #available(iOS 13, *) {
-            return deviceCompatible
-        } else {
-            return false
-        }
+        return NFCReaderSession.readingAvailable
     }
 }
 // swiftlint:enable all

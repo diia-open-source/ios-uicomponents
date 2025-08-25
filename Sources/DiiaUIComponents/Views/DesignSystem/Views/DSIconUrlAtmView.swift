@@ -15,6 +15,13 @@ public struct DSIconUrlAtmModel: Codable {
         self.accessibilityDescription = accessibilityDescription
         self.action = action
     }
+    
+    static let mock = DSIconUrlAtmModel(
+        componentId: "componentId(optional)",
+        url: "url",
+        accessibilityDescription: "accessibilityDescription(optional)",
+        action: .mock
+    )
 }
 
 /// design_system_code: iconUrlAtm, smallIconUrlAtm
@@ -39,7 +46,13 @@ public final class DSIconUrlAtmView: BaseCodeView {
             self?.imageView.isHidden = false
             self?.loadingView.isHidden = true
         }
-        imageView.loadImage(imageURL: model.url, placeholder: R.image.defaultLoadingIcon.image, completion: finishCallback, onError: finishCallback)
+        imageView.loadImage(imageURL: model.url, placeholder: R.image.defaultImagePlaceholder.image, completion: finishCallback, onError: finishCallback)
+    }
+    
+    public func configure(with image: UIImage?) {
+        imageView.isHidden = false
+        loadingView.isHidden = true
+        imageView.image = image
     }
     
     public func set(eventHandler: @escaping (ConstructorItemEvent) -> Void) {
@@ -55,7 +68,8 @@ public final class DSIconUrlAtmView: BaseCodeView {
         addSubview(imageView)
         
         imageView.fillSuperview()
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
         handleSelection()
     }
     

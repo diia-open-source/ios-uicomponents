@@ -60,9 +60,13 @@ public class DSTimerTextView: BaseCodeView {
         }
         self.viewModel?.isExpired.removeObserver(observer: self)
         viewModel.isExpired.observe(observer: self) { [weak self] isExpired in
-            guard let self = self else { return }
-            self.expireLabel.isHidden = isExpired
-            self.linkButton.isHidden = !isExpired
+            UIView.animate(withDuration: Constants.animationDuration, animations: {
+                self?.expireLabel.alpha = isExpired ? 0 : 1
+                self?.linkButton.alpha = isExpired ? 1 : 0
+            }, completion: { [weak self] _ in
+                self?.expireLabel.isHidden = isExpired
+                self?.linkButton.isHidden = !isExpired
+            })
         }
     }
 }
@@ -71,6 +75,7 @@ public class DSTimerTextView: BaseCodeView {
 extension DSTimerTextView {
     private enum Constants {
         static let topInset: CGFloat = 24
+        static let animationDuration: TimeInterval = 0.2
         static let defaultPaddings = UIEdgeInsets(top: .zero, left: .zero, bottom: .zero, right: .zero)
         static let buttonEdgeInsets = UIEdgeInsets(top: .zero, left: .zero, bottom: .zero, right: .zero)
     }

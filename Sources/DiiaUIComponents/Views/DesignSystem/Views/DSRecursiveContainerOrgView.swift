@@ -170,7 +170,7 @@ public class DSTemplateContainerOrgView: BaseCodeView {
     
     public func configure(templateModel: AnyCodable, eventHandler: @escaping (ConstructorItemEvent) -> Void) {
         templateContainer.subviews.forEach { $0.removeFromSuperview() }
-        if let view = viewFabric.makeView(from: templateModel, withPadding: .custom(paddings: .zero), eventHandler: eventHandler) {
+        if let view = viewFabric.makeView(from: templateModel, withPadding: .fixed(paddings: .zero), eventHandler: eventHandler) {
             templateContainer.addSubview(view)
             view.fillSuperview()
         }

@@ -3,13 +3,13 @@ import UIKit
 import DiiaCommonTypes
 
 public struct DSSmallCheckIconOrgBuilder: DSViewBuilderProtocol {
-    public static let modelKey = "smallCheckIconOrg"
+    public let modelKey = "smallCheckIconOrg"
     
     public func makeView(from object: AnyCodable,
                          withPadding padding: DSViewPaddingType,
                          viewFabric: DSViewFabric?,
                          eventHandler: @escaping (ConstructorItemEvent) -> Void) -> UIView? {
-        guard let data: DSSmallCheckIconOrgModel = object.parseValue(forKey: Self.modelKey) else { return nil }
+        guard let data: DSSmallCheckIconOrgModel = object.parseValue(forKey: self.modelKey) else { return nil }
         let view = DSSmallCheckIconOrgView()
         let viewModel = DSSmallCheckIconOrgViewModel(
             componentId: data.componentId,
@@ -27,12 +27,37 @@ public struct DSSmallCheckIconOrgBuilder: DSViewBuilderProtocol {
             })
         viewModel.onClick = { [weak viewModel] in
             guard let viewModel = viewModel  else { return }
-            eventHandler(.inputChanged(.init(inputCode: data.inputCode ?? Self.modelKey, inputData: .string(viewModel.selectedCode() ?? .empty))))
+            eventHandler(.inputChanged(.init(inputCode: data.inputCode ?? self.modelKey, inputData: .string(viewModel.selectedCode() ?? .empty))))
         }
        
         view.configure(with: viewModel)
         eventHandler(.onComponentConfigured(with: .smallCheckIcon(viewModel: viewModel)))
-        let paddingBox = BoxView(subview: view).withConstraints(insets: padding.defaultPadding())
+        let paddingBox = BoxView(subview: view).withConstraints(insets: padding.defaultPadding(object: object, modelKey: modelKey))
         return paddingBox
+    }
+}
+
+extension DSSmallCheckIconOrgBuilder: DSViewMockableBuilderProtocol {
+    public func makeMockModel() -> AnyCodable {
+        let model = DSSmallCheckIconOrgModel(
+            id: "id",
+            inputCode: "inputCode",
+            componentId: "componentId",
+            title: "title",
+            items: [
+                SmallCheckIconItem(
+                    smallCheckIconMlc: DSSmallCheckIconMlcModel(
+                        componentId: "componentId",
+                        code: "code",
+                        icon: .blue,
+                        label: "label",
+                        state: .rest
+                    )
+                )
+            ]
+        )
+        return .dictionary([
+            modelKey: .fromEncodable(encodable: model)
+        ])
     }
 }

@@ -18,10 +18,15 @@ public class DSCheckboxButtonViewModel {
         self.mainButtonVM = buttonVM
         self.strokeButtonVM = strokeButtonVM
         self.plainButtonVM = plainButtonVM
+        validateButtons()
     }
     
     public func updateState(selectedCheckbox: CheckmarkViewModel, isSelected: Bool) {
         selectedCheckbox.isChecked = isSelected
+        validateButtons()
+    }
+    
+    public func validateButtons() {
         let isAllChecked = checkboxVMs.allSatisfy({ $0.isChecked })
         mainButtonVM?.state.value = isAllChecked ? .enabled : .disabled
         strokeButtonVM?.state.value = isAllChecked ? .enabled : .disabled
@@ -74,20 +79,6 @@ public class DSCheckboxButtonView: BaseCodeView, DSInputComponentProtocol {
     public func configure(with viewModel: DSCheckboxButtonViewModel) {
         self.viewModel = viewModel
         
-        checkboxStackView.safelyRemoveArrangedSubviews()
-        viewModel.checkboxVMs.forEach { checkboxVM in
-            let checkboxView = CheckmarkView()
-            checkboxView.configure(
-                text: checkboxVM.text,
-                isChecked: checkboxVM.isChecked
-            ) { [weak self] isSelected in
-                self?.viewModel?.updateState(
-                    selectedCheckbox: checkboxVM,
-                    isSelected: isSelected)
-            }
-            checkboxStackView.addArrangedSubview(checkboxView)
-        }
-        
         if let buttonVM = viewModel.mainButtonVM {
             primaryButton.configure(viewModel: buttonVM)
         }
@@ -100,6 +91,20 @@ public class DSCheckboxButtonView: BaseCodeView, DSInputComponentProtocol {
         plainButton.isHidden = viewModel.plainButtonVM == nil
         if let plainButtonVM = viewModel.plainButtonVM {
             plainButton.configure(viewModel: plainButtonVM)
+        }
+        
+        checkboxStackView.safelyRemoveArrangedSubviews()
+        viewModel.checkboxVMs.forEach { checkboxVM in
+            let checkboxView = CheckmarkView()
+            checkboxView.configure(
+                text: checkboxVM.text,
+                isChecked: checkboxVM.isChecked
+            ) { [weak self] isSelected in
+                self?.viewModel?.updateState(
+                    selectedCheckbox: checkboxVM,
+                    isSelected: isSelected)
+            }
+            checkboxStackView.addArrangedSubview(checkboxView)
         }
     }
     

@@ -75,14 +75,14 @@ class DSCheckboxCascadeGroupView: BaseCodeView {
         stackView.fillSuperview()
     }
     
-    public func configure(viewModel: DSCheckboxCascadeGroupOrgViewModel) {
+    public func configure(viewModel: DSCheckboxCascadeGroupOrgViewModel, eventHandler: ((ConstructorItemEvent)-> Void)? = nil) {
         self.accessibilityIdentifier = viewModel.componentId
         self.viewModel = viewModel
         
         stackView.safelyRemoveArrangedSubviews()
         viewModel.items.forEach { item in
             let view = DSCheckboxCascadeOrgView()
-            view.configure(with: item)
+            view.configure(with: item, eventHandler: eventHandler)
             stackView.addArrangedSubview(view)
         }
     }

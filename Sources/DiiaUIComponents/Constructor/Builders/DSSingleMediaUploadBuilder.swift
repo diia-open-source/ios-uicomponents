@@ -3,13 +3,13 @@ import UIKit
 import DiiaCommonTypes
 
 public class DSSingleMediaUploadBuilder: DSViewBuilderProtocol {
-    public static let modelKey = "singleMediaUploadGroupOrg"
+    public let modelKey = "singleMediaUploadGroupOrg"
     
     public func makeView(from object: AnyCodable,
                          withPadding padding: DSViewPaddingType,
                          viewFabric: DSViewFabric?,
                          eventHandler: @escaping (ConstructorItemEvent) -> Void) -> UIView? {
-        guard let data: DSFileUploadModel = object.parseValue(forKey: Self.modelKey) else { return nil }
+        guard let data: DSFileUploadModel = object.parseValue(forKey: self.modelKey) else { return nil }
         let view = DSSingleMediaUploadGroupOrgView()
         let viewModel = DSFileUploadViewModel(title: data.title, descriptionText: data.description, maxCount: 1, aspectRatio: data.aspectRatio)
 
@@ -26,7 +26,22 @@ public class DSSingleMediaUploadBuilder: DSViewBuilderProtocol {
         }
         view.configure(with: viewModel)
         
-        let paddingBox = BoxView(subview: view).withConstraints(insets: padding.defaultPadding())
+        let paddingBox = BoxView(subview: view).withConstraints(insets: padding.defaultPadding(object: object, modelKey: modelKey))
         return paddingBox
+    }
+}
+
+extension DSSingleMediaUploadBuilder: DSViewMockableBuilderProtocol {
+    public func makeMockModel() -> AnyCodable {
+        let model = DSFileUploadModel(
+            title: "title",
+            description: "description",
+            maxCount: 3,
+            btnPlainIconAtm: .mock,
+            aspectRatio: .square
+        )
+        return .dictionary([
+            modelKey: .fromEncodable(encodable: model)
+        ])
     }
 }

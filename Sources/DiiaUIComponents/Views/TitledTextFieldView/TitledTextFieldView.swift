@@ -1,8 +1,9 @@
+
 import UIKit
 import DiiaCommonTypes
 
 public enum TextFieldState {
-    case unfocused, focused, error
+    case unfocused, focused, error(focused: Bool), disabled
 }
 
 public class TitledTextFieldViewModel {
@@ -22,6 +23,7 @@ public class TitledTextFieldViewModel {
     public var onChangeText: ((String) -> Void)?
     public var shouldChangeCharacters: ((String?, NSRange, String) -> Bool)?
     public let onEndEditing: ((String) -> Void)?
+    public let rightAction: Action?
     public let fieldState = Observable<TextFieldState>(value: .unfocused)
     
     public init(componentId: String? = nil,
@@ -39,7 +41,8 @@ public class TitledTextFieldViewModel {
                 keyboardType: UIKeyboardType = .default,
                 onChangeText: ((String) -> Void)? = nil,
                 shouldChangeCharacters: ((String?, NSRange, String) -> Bool)? = nil,
-                onEndEditing: ((String) -> Void)? = nil
+                onEndEditing: ((String) -> Void)? = nil,
+                rightAction: Action? = nil
     ) {
         self.componentId = componentId
         self.id = id
@@ -57,6 +60,7 @@ public class TitledTextFieldViewModel {
         self.onEndEditing = onEndEditing
         self.keyboardType = keyboardType
         self.shouldChangeCharacters = shouldChangeCharacters
+        self.rightAction = rightAction
     }
 }
 
@@ -64,11 +68,13 @@ public class TitledTextFieldViewModel {
 public class TitledTextFieldView: BaseCodeView, DSInputComponentProtocol {
     public let textField = UITextField()
     
+    private let textStack = UIStackView()
     private let titleLabel = UILabel().withParameters(font: FontBook.smallTitle)
     private let separator = UIView().withHeight(Constants.separatorHeight)
     private let errorLabel = UILabel().withParameters(font: FontBook.smallTitle)
-    private let instructionsLabel = UILabel().withParameters(font: FontBook.smallTitle, textColor: .gray)
-
+    private let instructionsLabel = UILabel().withParameters(font: FontBook.smallTitle, textColor: .black540)
+    private let rightButton = ActionButton(type: .icon)
+    
     private(set) var viewModel: TitledTextFieldViewModel?
     private var separatorColor: UIColor = .statusGray
     
@@ -76,20 +82,26 @@ public class TitledTextFieldView: BaseCodeView, DSInputComponentProtocol {
         translatesAutoresizingMaskIntoConstraints = false
         backgroundColor = .clear
         addSubview(titleLabel)
-        addSubview(textField)
+        addSubview(textStack)
         titleLabel.anchor(top: topAnchor,
                           leading: leadingAnchor,
                           bottom: nil,
                           trailing: trailingAnchor)
-        textField.anchor(top: titleLabel.bottomAnchor,
+        textStack.anchor(top: titleLabel.bottomAnchor,
                          leading: leadingAnchor,
                          trailing: trailingAnchor,
                          padding: .init(top: Constants.offset, left: .zero, bottom: .zero, right: .zero))
         
+        textStack.addArrangedSubviews([textField, rightButton])
+        textStack.alignment = .center
+        rightButton.withSize(Constants.rightButtonSize)
+        rightButton.isHidden = true
+        rightButton.tintColor = .black
+        
         let stack = UIStackView.create(views: [separator, errorLabel, instructionsLabel],
                                        spacing: Constants.stackSpacing)
         addSubview(stack)
-        stack.anchor(top: textField.bottomAnchor,
+        stack.anchor(top: textStack.bottomAnchor,
                      leading: leadingAnchor,
                      bottom: bottomAnchor,
                      trailing: trailingAnchor,
@@ -109,7 +121,7 @@ public class TitledTextFieldView: BaseCodeView, DSInputComponentProtocol {
                         textFont: UIFont = FontBook.usualFont,
                         errorFont: UIFont = FontBook.smallTitle,
                         errorColor: UIColor = UIColor(AppConstants.Colors.persianRed),
-                        instructionColor: UIColor = .gray,
+                        instructionColor: UIColor = .black540,
                         separatorColor: UIColor = .statusGray) {
         titleLabel.withParameters(font: titleFont)
         errorLabel.withParameters(font: errorFont, textColor: errorColor)
@@ -134,6 +146,10 @@ public class TitledTextFieldView: BaseCodeView, DSInputComponentProtocol {
         }
         if textField.text == nil || textField.text?.isEmpty == true {
             textField.text = viewModel.defaultText
+        }
+        rightButton.isHidden = viewModel.rightAction == nil
+        if let rightAction = viewModel.rightAction {
+            rightButton.action = rightAction
         }
         textField.keyboardType = viewModel.keyboardType
         instructionsLabel.text = viewModel.instructionsText
@@ -162,6 +178,7 @@ public class TitledTextFieldView: BaseCodeView, DSInputComponentProtocol {
                 self.separator.backgroundColor = errorColor
                 self.errorLabel.isHidden = false
                 self.instructionsLabel.isHidden = true
+            default: break
             }
         }
     }
@@ -212,7 +229,7 @@ public class TitledTextFieldView: BaseCodeView, DSInputComponentProtocol {
         let errorText = error(for: inputText)
         errorLabel.text = errorText
         if errorText != nil {
-            self.viewModel?.fieldState.value = .error
+            self.viewModel?.fieldState.value = .error(focused: !inputText.isEmpty)
         } else {
             self.viewModel?.fieldState.value = inputText.isEmpty ? .unfocused : .focused
         }
@@ -258,13 +275,13 @@ public class TitledTextFieldView: BaseCodeView, DSInputComponentProtocol {
 extension TitledTextFieldView: UITextFieldDelegate {
     
     public func textFieldDidBeginEditing(_ textField: UITextField) {
-        self.viewModel?.fieldState.value = errorLabel.text == nil ? .focused : .error
+        self.viewModel?.fieldState.value = errorLabel.text == nil ? .focused : .error(focused: true)
     }
     
     public func textFieldDidEndEditing(_ textField: UITextField) {
         updateInstructionsState()
         viewModel?.onEndEditing?(textField.text ?? .empty)
-        self.viewModel?.fieldState.value = errorLabel.text == nil ? .unfocused : .error
+        self.viewModel?.fieldState.value = errorLabel.text == nil ? .unfocused : .error(focused: false)
     }
     
     public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
@@ -284,5 +301,6 @@ extension TitledTextFieldView {
         static let offset: CGFloat = 8
         static let stackSpacing: CGFloat = 8
         static let separatorHeight: CGFloat = 2
+        static let rightButtonSize = CGSize(width: 16, height: 16)
     }
 }

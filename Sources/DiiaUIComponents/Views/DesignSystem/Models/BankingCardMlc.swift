@@ -11,6 +11,30 @@ public struct BankingCardMlc: Codable {
     public let logos: [MediumIconAtm]
     public let description: String?
     public let action: DSActionParameter?
+    
+    public init(componentId: String?,
+         id: String? = nil,
+         title: String,
+         image: String? = nil,
+         gradient: String? = nil,
+         paymentSystemLogo: String? = nil,
+         cardNumMask: String? = nil,
+         expirationDate: String? = nil,
+         logos: [MediumIconAtm],
+         description: String? = nil,
+         action: DSActionParameter? = nil) {
+        self.componentId = componentId
+        self.id = id
+        self.title = title
+        self.image = image
+        self.gradient = gradient
+        self.paymentSystemLogo = paymentSystemLogo
+        self.cardNumMask = cardNumMask
+        self.expirationDate = expirationDate
+        self.logos = logos
+        self.description = description
+        self.action = action
+    }
 }
 
 public struct MediumIconAtm: Codable {

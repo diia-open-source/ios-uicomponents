@@ -1,13 +1,14 @@
+
 import UIKit
 import DiiaCommonTypes
 
 public class DSListViewModel: NSObject{
     public let componentId: String?
     public let title: String?
-    public var items: [DSListItemViewModel]
     public let buttonModel: DSBtnPlainIconModel?
     public let eventHandler: ((ConstructorItemEvent) -> ())?
-    @objc public dynamic var isInteractionsEnabled: Bool = true
+    public let items: Observable<[DSListItemViewModel]>
+    public var isInteractionsEnabled = Observable<Bool>(value: true)
 
     public init(componentId: String? = nil,
                 title: String? = nil,
@@ -16,7 +17,7 @@ public class DSListViewModel: NSObject{
                 eventHandler: ((ConstructorItemEvent) -> ())? = nil) {
         self.componentId = componentId
         self.title = title
-        self.items = items
+        self.items = Observable.init(value: items)
         self.buttonModel = buttonModel
         self.eventHandler = eventHandler
     }
@@ -26,7 +27,6 @@ public class DSListViewModel: NSObject{
 public class DSWhiteColoredListView: BaseCodeView {
     private lazy var stackView = UIStackView.create(views: [])
     private var viewModel: DSListViewModel?
-    private var isEnabledObservation: NSKeyValueObservation?
 
     public override func setupSubviews() {
         translatesAutoresizingMaskIntoConstraints = false
@@ -37,27 +37,34 @@ public class DSWhiteColoredListView: BaseCodeView {
     }
     
     // MARK: - Public Methods
-    public func configure(viewModel: DSListViewModel) {
-        self.viewModel = viewModel
+    public func configure(viewModel: DSListViewModel, eventHandler: ((ConstructorItemEvent) -> Void)? = nil) {
+        eventHandler?(.onComponentConfigured(with: .listItems(viewModel: viewModel)))
         self.accessibilityIdentifier = viewModel.componentId
-        stackView.safelyRemoveArrangedSubviews()
-        if let title = viewModel.title {
-            addTitleView(title)
-            addSeparator()
+        
+        self.viewModel?.isInteractionsEnabled.removeObserver(observer: self)
+        viewModel.isInteractionsEnabled.observe(observer: self) { [weak self] isInteractionsEnabled in
+            self?.isUserInteractionEnabled = isInteractionsEnabled
         }
-        for (index, item) in viewModel.items.enumerated() {
-            addListItemView(with: item)
-            if index < viewModel.items.count - 1 || (index == viewModel.items.count - 1 && viewModel.buttonModel != nil) {
-                addSeparator()
+        self.viewModel?.items.removeObserver(observer: self)
+        viewModel.items.observe(observer: self) { [weak self, weak viewModel] items in
+            guard let self, let viewModel else { return }
+            self.stackView.safelyRemoveArrangedSubviews()
+            if let title = viewModel.title {
+                self.addTitleView(title)
+                self.addSeparator()
+            }
+            for (index, item) in items.enumerated() {
+                self.addListItemView(with: item)
+                if index < items.count - 1 || (index == items.count - 1 && viewModel.buttonModel != nil) {
+                    self.addSeparator()
+                }
+            }
+            if let buttonModel = viewModel.buttonModel {
+                self.addButtonPlain(for: buttonModel)
             }
         }
-        if let buttonModel = viewModel.buttonModel {
-            addButtonPlain(for: buttonModel)
-        }
         
-        isEnabledObservation = viewModel.observe(\.isInteractionsEnabled, onChange: { [weak self] isInteractionsEnabled in
-            self?.isUserInteractionEnabled = isInteractionsEnabled
-        })
+        self.viewModel = viewModel
     }
     
     public func setupSubitems(alignment: UIStackView.Alignment = .center,

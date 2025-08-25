@@ -5,6 +5,7 @@ public enum ConstructorItemEvent {
     case unknown
     case action(DSActionParameter)
     case buttonAction(parameters: DSActionParameter, viewModel: DSLoadingButtonViewModel)
+    case cardMlcAction(parameters: DSActionParameter, viewModel: DSCardMlcV2ViewModel)
     case inputChanged(ConstructorInputModel)
     case fileUploaderAction(viewModel: DSFileUploadViewModel)
     case dropContentAction(viewModel: DSSelectorViewModel)
@@ -18,6 +19,7 @@ public enum ConstructorItemEvent {
     case fullVideoAction(model: DSFullScreenVideoOrg)
     case onComponentConfigured(with: ConstructorEventViewType)
     case collectionChange(item: String)
+    case componentSizeDidChange
     
     public func actionParameters() -> DSActionParameter? {
         switch self {
@@ -26,6 +28,7 @@ public enum ConstructorItemEvent {
                 .listAction(let parameters, _, _),
                 .buttonLoadIconAction(let parameters, _),
                 .editListAction(let parameters, _),
+                .cardMlcAction(let parameters, _),
                 .filterButtonAction(let parameters, _):
             return parameters
         case .calendarAction(let event, _):
@@ -48,5 +51,14 @@ public enum ConstructorEventViewType {
     case phoneCodeView(viewModel: DSInputPhoneCodeViewModel)
     case verificationOrg(viewModel: DSVerificationCodesViewModel)
     case loadingButton(viewModel: DSLoadingButtonViewModel)
+    case resetStateComponent(component: DSResetStateComponentProtocol)
+    case chipTabsView(viewModel: DSChipTabViewModel)
+    case centerChipTabsView(viewModel: DSCenterChipBlackTabsOrgViewModel)
     case containerView(viewModel: DSContainerViewModel)
+    case timer(viewModel: DSTimerTextViewModel)
+    case inputLargeNumber(viewModel: DSInputNumberLargeViewModel)
+    case listItems(viewModel: DSListViewModel)
+    case cascadeView(viewModel: DSCheckboxCascadeViewModel)
+    case linkQrShareView(viewModel: DSLinkQrShareViewModel)
+    case titledView(viewModel: DSTitleMlcViewModel)
 }

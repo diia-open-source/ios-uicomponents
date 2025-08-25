@@ -13,6 +13,7 @@ public extension ConstructorModalScreenPresenter {
 }
 
 public protocol ConstructorModalScreenViewProtocol: BaseView {
+    func setLocalLoading(isLoading: Bool)
     func setLoadingState(_ state: LoadingState)
     func setInnerTridentLoading(_ state: LoadingState)
     func configure(model: DSConstructorModel)
@@ -22,6 +23,15 @@ public protocol ConstructorModalScreenViewProtocol: BaseView {
     func setFabric(_ fabric: DSViewFabric)
     func modify(_ modifier: ConstructorViewModifier)
     func isVisible() -> Bool
+    func resetBody()
+}
+
+public extension ConstructorModalScreenViewProtocol {
+    func setLocalLoading(isLoading: Bool) {
+        setInnerTridentLoading(isLoading ? .loading : .ready)
+    }
+    func resetBody() {}
+    func modify(_ modifier: ConstructorViewModifier) {}
 }
 
 public extension ConstructorModalScreenViewProtocol where Self: UIViewController {
@@ -44,6 +54,9 @@ public final class ConstructorModalViewController: UIViewController {
     private var inputViews: [DSInputComponentProtocol] = []
     private var conditionViews: [DSConditionComponentProtocol] = []
     private var scrollDependentViews: [ScrollDependentComponentProtocol] = []
+    private var originalModel: DSConstructorModel?
+    
+    private var loadingView: LoadingView?
     
     // MARK: - Init
     public init() {
@@ -62,7 +75,7 @@ public final class ConstructorModalViewController: UIViewController {
         let view = ConstructorModalView(frame: UIScreen.main.bounds)
         view.bodyScrollView.delegate = self
         self.view = view
-        self.view.backgroundColor = UIColor(AppConstants.Colors.emptyDocuments)
+        self.view.backgroundColor = Constants.backgroundColor
     }
     
     public override func viewDidLoad() {
@@ -103,7 +116,20 @@ extension ConstructorModalViewController: ConstructorModalScreenViewProtocol {
         constructorView?.loadingView.setLoadingState(state)
     }
     
+    public func setLocalLoading(isLoading: Bool) {
+        if isLoading {
+            if loadingView == nil, let parentView = parent?.view {
+                self.loadingView = LoadingView.show(in: parentView)
+            }
+        } else {
+            loadingView?.hide()
+            loadingView = nil
+        }
+    }
+    
     public func configure(model: DSConstructorModel) {
+        self.originalModel = model
+        
         let eventHandler: (ConstructorItemEvent) -> Void = { [weak self] event in
             self?.presenter.handleEvent(event: event)
         }
@@ -115,6 +141,46 @@ extension ConstructorModalViewController: ConstructorModalScreenViewProtocol {
         constructorView?.setupTopGroup(views: topViews)
         constructorView?.setupBody(views: bodyViews)
         constructorView?.setupBottomGroup(views: bottomView)
+        
+        self.conditionViews = view.findTypedSubviews()
+        self.inputViews = view.findTypedSubviews()
+        self.scrollDependentViews = view.findTypedSubviews()
+        
+        if let bodyScrollView = constructorView?.bodyScrollView {
+            scrollDependentViews.forEach {
+                $0.scrollViewDidScroll(scrollView: bodyScrollView)
+            }
+            for bodyView in bodyViews {
+                if let bodyView = bodyView as? FullSizedViewProtocol {
+                    bodyView.setHeightEqual(to: bodyScrollView)
+                }
+            }
+        }
+
+        if !inputViews.isEmpty,
+            let constructorView = constructorView,
+            let bottomConstraint = constructorView.bottomGroupBottomConstraint {
+            keyboardHandler = .init(type: .constraint(
+                constraint: bottomConstraint,
+                withoutInset: bottomConstraint.constant,
+                keyboardInset: Constants.keyboardSpacing + view.safeAreaInsets.bottom,
+                superview: constructorView))
+        }
+        
+        
+        if !scrollDependentViews.isEmpty, let scrollView = constructorView?.bodyScrollView {
+            scrollViewDidScroll(scrollView)
+        }
+        
+        self.inputFieldsWasUpdated()
+    }
+    
+    public func setupBody(model: DSConstructorModel) {
+        let eventHandler: (ConstructorItemEvent) -> Void = { [weak self] event in
+            self?.presenter.handleEvent(event: event)
+        }
+        let bodyViews = self.viewFabric.bodyViews(for: model, eventHandler: eventHandler)
+        self.constructorView?.setupBody(views: bodyViews)
         
         self.conditionViews = view.findTypedSubviews()
         self.inputViews = view.findTypedSubviews()
@@ -179,6 +245,11 @@ extension ConstructorModalViewController: ConstructorModalScreenViewProtocol {
     public func isVisible() -> Bool {
         return view.window != nil
     }
+    
+    public func resetBody() {
+        guard let model = originalModel else { return }
+        setupBody(model: model)
+    }
 }
 
 extension ConstructorModalViewController: UIScrollViewDelegate {
@@ -191,5 +262,6 @@ private extension ConstructorModalViewController {
     enum Constants {
         static let offset: CGFloat = 32
         static let keyboardSpacing: CGFloat = 8
+        static let backgroundColor: UIColor = UIColor("#f1f6f6")
     }
 }

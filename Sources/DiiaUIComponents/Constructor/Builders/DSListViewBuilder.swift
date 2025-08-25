@@ -3,7 +3,7 @@ import UIKit
 import DiiaCommonTypes
 
 public struct DSListViewBuilder: DSViewBuilderProtocol {
-    public static let modelKey = "listItemGroupOrg"
+    public let modelKey = "listItemGroupOrg"
     public init() {}
     
     public func makeView(from object: AnyCodable,
@@ -11,20 +11,21 @@ public struct DSListViewBuilder: DSViewBuilderProtocol {
                          viewFabric: DSViewFabric?,
                          eventHandler: @escaping (ConstructorItemEvent) -> Void
     ) -> UIView? {
-        guard let group: DSListGroup = object.parseValue(forKey: Self.modelKey) else { return nil }
-        return makeView(from: group, withPadding: paddingType, eventHandler: eventHandler)
+        guard let group: DSListGroup = object.parseValue(forKey: self.modelKey) else { return nil }
+        let view = makeView(from: group, eventHandler: eventHandler)
+        let paddingBox = BoxView(subview: view).withConstraints(insets: paddingType.defaultPadding(object: object, modelKey: modelKey))
+        return paddingBox
     }
     
     public func makeView(from listGroup: DSListGroup,
-                         withPadding paddingType: DSViewPaddingType,
                          eventHandler: @escaping (ConstructorItemEvent) -> Void
-    ) -> UIView {
+    ) -> DSWhiteColoredListView {
         let view = DSWhiteColoredListView()
         
         let groupViewModel = DSListViewModel(title: listGroup.title,
                                              buttonModel: listGroup.btnPlainIconAtm,
                                              eventHandler: eventHandler)
-        groupViewModel.items = listGroup.items.map { item in
+        let items = listGroup.items.map { item in
             var listItemState: DSItemListViewState = .enabled
             if let state = item.state {
                 listItemState = state
@@ -40,15 +41,28 @@ public struct DSListViewBuilder: DSViewBuilderProtocol {
                 rightIcon: UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: item.iconRight?.code),
                 isEnabled: listItemState == .enabled,
                 componentId: item.id,
+                accessibilityDescription: item.accessibilityDescription,
                 chipStatusAtm: item.chipStatusAtm,
                 amountAtm: item.amountAtm)
-            viewModel.onClick = { [weak viewModel, weak groupViewModel] in
-                guard let viewModel = viewModel, let groupViewModel = groupViewModel, let parameter = item.action else { return }
-                eventHandler(.listAction(action: parameter, listItem: viewModel, group: groupViewModel))
+            if let parameter = item.action {
+                viewModel.onClick = { [weak viewModel, weak groupViewModel] in
+                    guard let viewModel = viewModel, let groupViewModel = groupViewModel else { return }
+                    eventHandler(.listAction(action: parameter, listItem: viewModel, group: groupViewModel))
+                }
             }
             return viewModel
         }
-        view.configure(viewModel: groupViewModel)
+        groupViewModel.items.value = items
+        view.configure(viewModel: groupViewModel, eventHandler: eventHandler)
+        return view
+    }
+    
+    public func makeView(
+        from listGroup: DSListGroup,
+        withPadding paddingType: DSViewPaddingType,
+        eventHandler: @escaping (ConstructorItemEvent) -> Void
+    ) -> UIView {
+        let view = makeView(from: listGroup, eventHandler: eventHandler)
         let paddingBox = BoxView(subview: view).withConstraints(insets: paddingType.defaultPadding())
         return paddingBox
     }
@@ -57,4 +71,53 @@ public struct DSListViewBuilder: DSViewBuilderProtocol {
 private enum Constants {
     static let cornerRadius: CGFloat = 16
     static let paddings = UIEdgeInsets(top: 16, left: 24, bottom: 0, right: 24)
+}
+
+// MARK: - Mock
+extension DSListViewBuilder: DSViewMockableBuilderProtocol {
+    public func makeMockModel() -> AnyCodable {
+        let model = DSListGroup(
+            title: "title",
+            componentId: "componentId",
+            items: [
+                DSListGroupItem(
+                    id: "id1",
+                    logoLeft: "logoLeft",
+                    iconLeft: .mock,
+                    bigIconLeft: .mock,
+                    leftLogoLink: "https://mockImageLink.com",
+                    iconRight: .mock,
+                    label: "label1",
+                    state: .enabled,
+                    description: "description1",
+                    amountAtm: DSAmountAtmModel(componentId: "componentId", value: "value", colour: .green),
+                    chipStatusAtm: .mock,
+                    action: .mock,
+                    dataJson: "dataJson",
+                    accessibilityDescription: "accessibilityDescription"
+                ),
+                DSListGroupItem(
+                    id: "id2",
+                    logoLeft: "logoLeft",
+                    iconLeft: .mock,
+                    bigIconLeft: .mock,
+                    leftLogoLink: "https://mockImageLink.com",
+                    iconRight: .mock,
+                    label: "label2",
+                    state: .enabled,
+                    description: "description2",
+                    amountAtm: DSAmountAtmModel(componentId: "componentId", value: "value", colour: .green),
+                    chipStatusAtm: .mock,
+                    action: .mock,
+                    dataJson: "dataJson",
+                    accessibilityDescription: "accessibilityDescription"
+                )
+            ],
+            btnPlainIconAtm: .mock
+        )
+        
+        return .dictionary([
+            modelKey: .fromEncodable(encodable: model)
+        ])
+    }
 }

@@ -107,11 +107,10 @@ extension HorizontalCollectionView: UICollectionViewDelegate, UICollectionViewDa
         if let accessibilityDescridable = accessibilityDescridable,
            let accessibilityDescriptions = accessibilityDescridable.accessibilityDescriptions
         {
-            let currentItemPage = indexPath.item + 1
             let description = accessibilityDescriptions[indexPath.item]
             
             cell.isAccessibilityElement = true
-            cell.accessibilityLabel = R.Strings.general_accessibility_page_hint.formattedLocalized(arguments: currentItemPage, pagingData.total, description)
+            cell.accessibilityLabel = description
             cell.accessibilityTraits = .button
         }
         return cell

@@ -9,12 +9,14 @@ public class DSVerticalCardViewModel {
     public let badgeCount: String
     public let imageUrl: String?
     public let touchAction: Callback?
+    public let imageAltText: String?
     
     public init(model: DSVerticalCardCarouselItemModel,
-         touchAction: Callback? = nil) {
+                touchAction: Callback? = nil) {
         self.title = model.title
         self.imageUrl = model.image
         self.touchAction = touchAction
+        self.imageAltText = model.imageAltText
         self.badgeCount = (model.badgeCounterAtm.count > 99)
             ? "99+"
             : String(describing: model.badgeCounterAtm.count)
@@ -63,6 +65,8 @@ final public class DSVerticalCardCell: UICollectionViewCell, Reusable {
             self?.imagePlaceholder.stop()
             self?.imagePlaceholder.isHidden = true
         })
+        
+        setupAccessibility()
     }
     
     // MARK: - Private Methods
@@ -96,6 +100,13 @@ final public class DSVerticalCardCell: UICollectionViewCell, Reusable {
         let tap = UITapGestureRecognizer(target: self, action: #selector(onClick))
         self.addGestureRecognizer(tap)
         self.isUserInteractionEnabled = true
+    }
+    
+    // MARK: - Accessibility
+    private func setupAccessibility() {
+        isAccessibilityElement = true
+        accessibilityTraits = .button
+        accessibilityLabel = viewModel?.imageAltText
     }
     
     // MARK: - Actions

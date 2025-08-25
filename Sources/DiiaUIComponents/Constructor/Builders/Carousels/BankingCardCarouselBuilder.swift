@@ -1,17 +1,15 @@
-
-///design system bankingCardCarouselOrg
-///
 import UIKit
 import DiiaCommonTypes
 
+///design system: bankingCardCarouselOrg
 public struct BankingCardCarouselBuilder: DSViewBuilderProtocol {
-    public static let modelKey = "bankingCardCarouselOrg"
+    public let modelKey = "bankingCardCarouselOrg"
     
     public func makeView(from object: AnyCodable,
                          withPadding paddingType: DSViewPaddingType,
                          viewFabric: DSViewFabric?,
                          eventHandler: @escaping (ConstructorItemEvent) -> Void) -> UIView? {
-        guard let data: DSImageCardCarouselModel = object.parseValue(forKey: Self.modelKey) else { return nil }
+        guard let data: DSImageCardCarouselModel = object.parseValue(forKey: self.modelKey) else { return nil }
         
         let view = HorizontalCollectionView()
         view.configure(
@@ -24,16 +22,16 @@ public struct BankingCardCarouselBuilder: DSViewBuilderProtocol {
             cellTypes: [GenericCollectionViewCell.self],
             eventHandler: eventHandler
         )
-        view.setupUI()
+        view.setupUI(pageControlDotColor: Constants.dotColor)
         
         let bankCards: [BankingCardMlc] = data.items.compactMap({
-            return $0.parseValue(forKey: BankingCardBuilder.modelKey)
+            return $0.parseValue(forKey: "bankingCardMlc")
         })
         if let cellItemId: String = bankCards.first?.id {
             eventHandler(.collectionChange(item: cellItemId))
         }
         
-        let paddingBox = BoxView(subview: view).withConstraints(insets: paddingType.defaultCollectionPadding())
+        let paddingBox = BoxView(subview: view).withConstraints(insets: paddingType.defaultCollectionPadding(object: object, modelKey: modelKey))
         return paddingBox
     }
 }
@@ -44,5 +42,22 @@ private extension BankingCardCarouselBuilder {
             let cellWidth = UIScreen.main.bounds.width - 48
             return CGSize(width: cellWidth, height: 208)
         }
+        
+        static let dotColor = UIColor("#EEF7F1")
+    }
+}
+
+extension BankingCardCarouselBuilder: DSViewMockableBuilderProtocol {
+    public func makeMockModel() -> AnyCodable {
+        let bankCardMock = BankingCardBuilder().makeMockModel()
+        
+        let model = DSImageCardCarouselModel(
+            componentId: "componentId",
+            dotNavigationAtm: DSDotNavigationModel(count: 2),
+            items: [bankCardMock, bankCardMock]
+        )
+        return .dictionary([
+            modelKey: .fromEncodable(encodable: model)
+        ])
     }
 }

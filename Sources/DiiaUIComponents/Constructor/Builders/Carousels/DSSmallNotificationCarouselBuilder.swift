@@ -4,13 +4,13 @@ import DiiaCommonTypes
 
 /// design_system_code: smallNotificationCarouselOrg
 public struct DSSmallNotificationCarouselBuilder: DSViewBuilderProtocol {
-    public static let modelKey = "smallNotificationCarouselOrg"
+    public let modelKey = "smallNotificationCarouselOrg"
     
     public func makeView(from object: AnyCodable,
                          withPadding paddingType: DSViewPaddingType,
                          viewFabric: DSViewFabric?,
                          eventHandler: @escaping (ConstructorItemEvent) -> Void) -> UIView? {
-        guard let data: DSSmallNotificationCarouselModel = object.parseValue(forKey: Self.modelKey) else { return nil }
+        guard let data: DSSmallNotificationCarouselModel = object.parseValue(forKey: self.modelKey) else { return nil }
         
         let dataSource = DSSmallNotificationCarouselDataSource(sourceModel: data, eventHandler: eventHandler)
         
@@ -24,8 +24,47 @@ public struct DSSmallNotificationCarouselBuilder: DSViewBuilderProtocol {
         )
         view.setupUI(pageControlDotColor: Constants.dotColor)
         
-        let paddingBox = BoxView(subview: view).withConstraints(insets: Constants.paddingInsets)
-        return paddingBox
+        let box = BoxView(subview: view).withConstraints(insets: paddingType.insets(for: object, modelKey: modelKey, defaultInsets: Constants.paddingInsets))
+        return box
+    }
+}
+
+extension DSSmallNotificationCarouselBuilder: DSViewMockableBuilderProtocol {
+    public func makeMockModel() -> AnyCodable {
+        let model = DSSmallNotificationCarouselModel(
+            dotNavigationAtm: .init(count: 2),
+            items: [
+                DSSmallNotificationCarouselItem(
+                    smallNotificationMlc: DSSmallNotificationCarouselItemModel(
+                        id: "id",
+                        label: "label",
+                        text: "text",
+                        accessibilityDescription: "accessibilityDescription",
+                        chipStatusAtm: DSCardStatusChipModel(
+                            code: "code",
+                            name: "name",
+                            type: .blue,
+                            componentId: "componentId"
+                        ),
+                        smallIconUrlAtm: .mock,
+                        action: .mock
+                    ),
+                    iconCardMlc: nil
+                ),
+                DSSmallNotificationCarouselItem(
+                    smallNotificationMlc: nil,
+                    iconCardMlc: DSIconCardModel(
+                        label: "label",
+                        accessibilityDescription: "accessibilityDescription(optional)",
+                        iconLeft: "iconLeft",
+                        action: .mock
+                    )
+                )
+            ]
+        )
+        return .dictionary([
+            modelKey: .fromEncodable(encodable: model)
+        ])
     }
 }
 
@@ -97,7 +136,7 @@ extension DSSmallNotificationCarouselDataSource: AccessibilityDescridable {
 private enum Constants {
     static var cellSize: CGSize {
         let cellWidth = UIScreen.main.bounds.width - 48
-        let cellHeight = round(UIScreen.main.bounds.width * 0.28)
+        let cellHeight: CGFloat = 104
         return CGSize(width: cellWidth, height: cellHeight)
     }
     static let paddingInsets = UIEdgeInsets(top: 16, left: 0, bottom: 0, right: 0)

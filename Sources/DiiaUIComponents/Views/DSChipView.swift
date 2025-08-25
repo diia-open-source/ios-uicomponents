@@ -2,7 +2,7 @@
 import UIKit
 
 public class DSChipView: BaseCodeView {
-    private let textLabel = UILabel().withParameters(font: FontBook.statusFont)
+    private let textLabel = UILabel().withParameters(font: FontBook.statusFont, numberOfLines: 1)
     
     // MARK: - Init
     public override func setupSubviews() {
@@ -10,6 +10,14 @@ public class DSChipView: BaseCodeView {
         
         addSubview(textLabel)
         textLabel.fillSuperview(padding: Constants.textPaddings)
+    }
+    
+    public override var intrinsicContentSize: CGSize {
+        let size = textLabel.intrinsicContentSize
+        return CGSize(
+            width: size.width + Constants.textPaddings.left + Constants.textPaddings.right,
+            height: size.height + Constants.textPaddings.top + Constants.textPaddings.bottom
+        )
     }
     
     public override func layoutSubviews() {
@@ -21,7 +29,9 @@ public class DSChipView: BaseCodeView {
         textLabel.text = model.name
         textLabel.textColor = UIColor(model.statusTextColor)
         backgroundColor = UIColor(model.statusViewColor)
-        withBorder(width: Constants.borderWidth, color: model.borderColor)
+        withBorder(width: Constants.borderWidth, color: model.borderColor, cornerRadius: frame.height / 2)
+        setNeedsLayout()
+        layoutIfNeeded()
     }
 }
 

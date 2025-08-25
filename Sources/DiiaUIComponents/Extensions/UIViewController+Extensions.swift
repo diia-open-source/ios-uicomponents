@@ -22,4 +22,8 @@ extension UIViewController {
         }
         return true
     }
+    
+    // TODO: - Remove after Authorization fix https://diia.atlassian.net/browse/IOS-7095
+    @objc open func removeAccessibilityElements() { }
+    @objc open func updateAccessibilityElements() { }
 }

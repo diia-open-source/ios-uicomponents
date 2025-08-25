@@ -1,4 +1,5 @@
 import UIKit
+import NaturalLanguage
 
 public extension String {
     
@@ -153,6 +154,14 @@ public extension String {
         return String(unicodeScalars.filter(CharacterSet.letters.contains))
     }
     
+    var textLocale: NLLanguage {
+        if let language = NLLanguageRecognizer.dominantLanguage(for: self), language == .english {
+            return language
+        }
+        
+        return .ukrainian
+    }
+    
     func replacingMatches(regexPattern: String, with value: String) -> String {
         guard let regex = try? NSRegularExpression(pattern: regexPattern, options: .caseInsensitive) else {
             return self
@@ -167,6 +176,15 @@ public extension String {
             return String(self[strIndex])
         }
         return nil
+    }
+    
+    func parseDecodable<T>(decoder: JSONDecoder) -> T? where T: Decodable {
+        let data = Data(self.utf8)
+        return try? decoder.decode(T.self, from: data)
+    }
+    
+    func parseDecodable<T>() -> T? where T: Decodable {
+        return parseDecodable(decoder: UIComponentsConfiguration.shared.defaultDecoder)
     }
 }
 

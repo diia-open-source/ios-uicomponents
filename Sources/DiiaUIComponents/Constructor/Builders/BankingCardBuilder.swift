@@ -3,13 +3,13 @@ import UIKit
 import DiiaCommonTypes
 
 public struct BankingCardBuilder: DSViewBuilderProtocol {
-    public static let modelKey = "bankingCardMlc"
+    public let modelKey = "bankingCardMlc"
     
     public func makeView(from object: AnyCodable,
                          withPadding padding: DSViewPaddingType,
                          viewFabric: DSViewFabric?,
                          eventHandler: @escaping (ConstructorItemEvent) -> Void) -> UIView? {
-        guard let data: BankingCardMlc = object.parseValue(forKey: Self.modelKey) else { return nil }
+        guard let data: BankingCardMlc = object.parseValue(forKey: self.modelKey) else { return nil }
         
         let view = BankingCardView()
         view.accessibilityIdentifier = data.componentId
@@ -21,9 +21,37 @@ public struct BankingCardBuilder: DSViewBuilderProtocol {
         }
         view.configure(with: viewModel)
         
-        let insets = padding.defaultPadding()
+        let insets = padding.defaultPadding(object: object, modelKey: modelKey)
         let paddingBox = BoxView(subview: view).withConstraints(insets: insets)
         return paddingBox
     }
 }
 
+extension BankingCardBuilder: DSViewMockableBuilderProtocol {
+    public func makeMockModel() -> AnyCodable {
+        let model = BankingCardMlc(
+            componentId: "componentId",
+            id: "id",
+            title: "title",
+            image: "image",
+            gradient: "gradient",
+            paymentSystemLogo: "paymentSystemLogo",
+            cardNumMask: "cardNumMask",
+            expirationDate: "expirationDate",
+            logos: [
+                .init(mediumIconAtm: DSIconModel(
+                        code: "code",
+                        accessibilityDescription: "accessibilityDescription",
+                        componentId: "componentId",
+                        action: .init(type: "iconAction"),
+                        isEnable: true
+                    )
+                )],
+            description: "description",
+            action: .init(type: "BankingCardMlcAction")
+        )
+        return .dictionary([
+            modelKey: .fromEncodable(encodable: model)
+        ])
+    }
+}

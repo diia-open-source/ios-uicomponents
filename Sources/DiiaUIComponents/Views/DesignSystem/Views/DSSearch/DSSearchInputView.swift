@@ -68,7 +68,7 @@ public class DSSearchInputView: BaseCodeView {
                       isActive: Bool = true,
                       closeCallback: Callback? = nil,
                       textChangeCallback: Callback? = nil) {
-        self.searchTextField.placeholder = placeholder
+        self.searchTextField.attributedPlaceholder = placeholder.attributed(font: font, color: .black540)
         self.searchTextField.delegate = self
         self.searchTextField.font = font
         self.isActive = isActive

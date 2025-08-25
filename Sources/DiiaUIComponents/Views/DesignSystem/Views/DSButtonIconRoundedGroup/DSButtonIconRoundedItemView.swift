@@ -49,6 +49,7 @@ public class DSButtonIconRoundedItemView: BaseCodeView {
     // MARK: - Accessibility
     private func setupAccessibility() {
         isAccessibilityElement = true
+        accessibilityTraits = .button
     }
     
     // MARK: - Actions

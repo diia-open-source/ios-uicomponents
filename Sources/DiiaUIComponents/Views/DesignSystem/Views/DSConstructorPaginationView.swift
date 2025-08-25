@@ -18,14 +18,21 @@ public struct DSPaginationItemsModel: Codable {
     public let total: Int?
     public let nextToken: String?
     public let stubMessageMlc: DSStubMessageMlc?
+    public let paginationMessageMlc: DSPaginationMessageMlcModel?
     public let items: [AnyCodable]
     public let template: AlertTemplate?
     
-    public init(items: [AnyCodable]?, total: Int?, nextToken: String?, stubMessageMlc: DSStubMessageMlc?, template: AlertTemplate? = nil) {
+    public init(items: [AnyCodable]?,
+                total: Int?,
+                nextToken: String?,
+                stubMessageMlc: DSStubMessageMlc?,
+                paginationMessageMlc: DSPaginationMessageMlcModel?,
+                template: AlertTemplate? = nil) {
         self.items = items ?? []
         self.total = total
         self.nextToken = nextToken
         self.stubMessageMlc = stubMessageMlc
+        self.paginationMessageMlc = paginationMessageMlc
         self.template = template
     }
     
@@ -35,6 +42,7 @@ public struct DSPaginationItemsModel: Codable {
         self.total = try container.decodeIfPresent(Int.self, forKey: .total)
         self.nextToken = try container.decodeIfPresent(String.self, forKey: .nextToken)
         self.stubMessageMlc = try container.decodeIfPresent(DSStubMessageMlc.self, forKey: .stubMessageMlc)
+        self.paginationMessageMlc = try container.decodeIfPresent(DSPaginationMessageMlcModel.self, forKey: .paginationMessageMlc)
         self.items = try container.decodeIfPresent([AnyCodable].self, forKey: .items) ?? []
         self.template = try container.decodeIfPresent(AlertTemplate.self, forKey: .template)
     }
@@ -50,6 +58,7 @@ public enum PaginationViewState {
     case silentLoading
     case loading
     case error
+    case viewDidResize
     
     public var isLoading: Bool {
         return self == .loading || self == .silentLoading
@@ -154,7 +163,6 @@ public class DSConstructorPaginationView: BaseCodeView, DSConstructorPaginationV
         addSubview(mainStack)
         mainStack.fillSuperview()
         loadingView.withHeight(Constants.loadingHeight)
-        
         mainStack.addArrangedSubviews([itemsStack, loadingView, errorView])
         errorView.isHidden = true
         loadingView.isHidden = true
@@ -219,7 +227,7 @@ public class DSConstructorPaginationView: BaseCodeView, DSConstructorPaginationV
         let separatorView = UIView()
         separatorView.backgroundColor = Constants.separatorColor
         separatorView.withHeight(1)
-        return separatorView
+        return BoxView(subview: separatorView).withConstraints(insets: Constants.separatorInsets)
     }
 }
 
@@ -228,6 +236,7 @@ private extension DSConstructorPaginationView {
         static let retrySpacing:  CGFloat = 16
         static let loadingHeight: CGFloat = 56
         static let retryHeight:  CGFloat = 36
+        static let separatorInsets = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         static let buttonEdgeInsets = UIEdgeInsets(top: 0, left: 32, bottom: 0, right: 32)
         static let retryPadding = UIEdgeInsets(top: 24, left: 24, bottom: 24, right: 24)
         static let separatorColor = UIColor("#E2ECF4")

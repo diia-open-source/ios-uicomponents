@@ -14,7 +14,9 @@ public struct AppConstants {
         static let imagePlaceholder = "#EFF7FE"
         static let disabledText = "#71767A"
         static let statusGreen = "#19BE6F"
+        static let darkGreen = "#008939"
         static let statusYellow = "#FFD600"
+        static let statusBlue = "#BED9F5"
         static let vividTangerine = "#FF9975"
         static let dadaGray = "#DADADA"
         static let statusHistoryGray = "#D1D1D1"
@@ -45,6 +47,8 @@ public extension UIColor {
     static let blackSqueeze = UIColor("#E2ECF4")
     static let statusGreen = UIColor("#60C864")
     static let statusGray = UIColor("#000000").withAlphaComponent(0.3)
+    static let black600 = UIColor("#000000").withAlphaComponent(0.6)
+    static let black540 = UIColor("#000000").withAlphaComponent(0.54)
     
     static let statusHistoryGreen = UIColor("#65C680")
     static let statusHistoryGray = UIColor("#D1D1D1")

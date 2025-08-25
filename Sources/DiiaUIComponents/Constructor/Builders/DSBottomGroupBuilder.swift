@@ -3,13 +3,13 @@ import UIKit
 import DiiaCommonTypes
 
 public struct DSBottomGroupBuilder: DSViewBuilderProtocol {
-    public static let modelKey = "bottomGroupOrg"
+    public let modelKey = "bottomGroupOrg"
     
     public func makeView(from object: AnyCodable,
                          withPadding paddingType: DSViewPaddingType,
                          viewFabric: DSViewFabric?,
                          eventHandler: @escaping (ConstructorItemEvent) -> Void) -> UIView? {
-        guard let bottomGroup: DSBottomGroupOrg = object.parseValue(forKey: Self.modelKey) else { return nil }
+        guard let bottomGroup: DSBottomGroupOrg = object.parseValue(forKey: self.modelKey) else { return nil }
         let stack = setupButtons(with: bottomGroup, withPadding: paddingType, eventHandler: eventHandler)
         let paddingBox = BoxView(subview: stack).withConstraints(insets: Constants.defaultPaddings)
         return paddingBox
@@ -194,5 +194,70 @@ public struct DSBottomGroupBuilder: DSViewBuilderProtocol {
         static let spacing: CGFloat = 16
         static let plainTopPadding: CGFloat = 24
         static let padding: CGFloat = 8
+    }
+}
+
+extension DSBottomGroupBuilder: DSViewMockableBuilderProtocol {
+    public func makeMockModel() -> AnyCodable {
+        let btnModel = DSButtonModel(
+            label: "label",
+            state: DSButtonState.enabled,
+            action: DSActionParameter(
+                type: "type",
+                subtype: "subtype",
+                resource: "resource",
+                subresource: "subresource"),
+            componentId: "componentId"
+        )
+        let model = DSBottomGroupOrg(
+            componentId: "componentId",
+            checkboxBtnOrg: DSCheckboxBtnOrg(
+                items: [
+                    DSCheckboxBtnItem(
+                        checkboxSquareMlc: DSCheckboxSquareMlc(
+                            id: "id",
+                            label: "label",
+                            isSelected: true,
+                            isEnabled: true,
+                            componentId: "componentId",
+                            blocker: true,
+                            options: [
+                                DSCheckboxOption(id: "id", isSelected: true)
+                            ]
+                        )
+                    )
+                ],
+                btnPrimaryDefaultAtm: btnModel,
+                btnPrimaryWideAtm: btnModel,
+                btnStrokeWideAtm: btnModel,
+                btnPlainAtm: btnModel,
+                componentId: "componentId"
+            ),
+            btnPrimaryDefaultAtm: btnModel,
+            btnPrimaryWideAtm: btnModel,
+            btnPlainAtm: btnModel,
+            btnStrokeDefaultAtm: btnModel,
+            btnLoadIconPlainGroupMlc: DSBtnLoadPlainGroupMlc(
+                items: [DSBtnLoadPlainIconAtm(
+                    btnLoadPlainIconAtm: DSBtnPlainIconModel(
+                        id: "id",
+                        state: .enabled,
+                        label: "label",
+                        icon: "icon",
+                        action: DSActionParameter(
+                            type: "type",
+                            subtype: "subtype",
+                            resource: "resource",
+                            subresource: "subresource"),
+                        componentId: "componentId"
+                    )
+                )],
+                componentId: "componentId"
+            ),
+            btnPrimaryLargeAtm: btnModel
+        )
+        return .dictionary([
+            modelKey: .fromEncodable(encodable: model)
+        ])
     }
 }

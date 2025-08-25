@@ -28,7 +28,7 @@ final public class DSHalvedCardCell: UICollectionViewCell, Reusable {
     private let imageView = UIImageView()
     private let detailsLabel = UILabel().withParameters(
         font: FontBook.statusFont,
-        textColor: .statusGray)
+        textColor: .black540)
     private let titleLabel = UILabel().withParameters(
         font: FontBook.bigText,
         numberOfLines: Constants.titleNumberOfLines,

@@ -55,7 +55,7 @@ public class DSDocumentHeadingView: BaseCodeView {
         if let iconAtm = model.iconAtm {
             let imageProvider = UIComponentsConfiguration.shared.imageProvider
             ellipseButton.setImage(imageProvider?.imageForCode(imageCode: iconAtm.code), for: .normal)
-            ellipseButton.accessibilityHint = iconAtm.accessibilityDescription
+            ellipseButton.accessibilityLabel = iconAtm.accessibilityDescription
         }
         ellipseButton.isHidden = model.iconAtm == nil
     }

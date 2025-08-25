@@ -1,5 +1,7 @@
+
 import Foundation
 
+/// design_system_code:  smallIconAtm
 public struct DSIconModel: Codable, Equatable {
     public let code: String
     public let accessibilityDescription: String?
@@ -18,4 +20,12 @@ public struct DSIconModel: Codable, Equatable {
         self.action = action
         self.isEnable = isEnable
     }
+    
+    static let mock = DSIconModel(
+        code: "mockCode",
+        accessibilityDescription: "accessibilityDescription(optional)",
+        componentId: "componentId(optional)",
+        action: .mock,
+        isEnable: true
+    )
 }

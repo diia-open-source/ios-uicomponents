@@ -71,6 +71,8 @@ public class ParameterizedAttentionView: BaseCodeView {
         let bottomAnchor = stackView.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -Constants.stackViewInsets.bottom)
         bottomAnchor.priority = .defaultHigh
         bottomAnchor.isActive = true
+        
+        setupAccessibility()
     }
     
     // MARK: - Public Methods
@@ -87,8 +89,16 @@ public class ParameterizedAttentionView: BaseCodeView {
         titleLabel.isHidden = attentionMessage.title?.count ?? 0 == 0
         descriptionTextView.isHidden = attentionMessage.text?.count ?? 0 == 0
         
+        accessibilityLabel = attentionMessage.icon + (attentionMessage.title ?? "") + (attentionMessage.text ?? "")
+        
         setNeedsLayout()
         layoutIfNeeded()
+    }
+    
+    // MARK: - Accessibility
+    private func setupAccessibility() {
+        isAccessibilityElement = true
+        accessibilityTraits = .staticText
     }
 }
 

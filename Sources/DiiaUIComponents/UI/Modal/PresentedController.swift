@@ -1,3 +1,4 @@
+
 import UIKit
 
 public final class PresentedController: UIViewController, ModalPresentationViewControllerProtocol {
@@ -21,6 +22,7 @@ public final class PresentedController: UIViewController, ModalPresentationViewC
     public override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
+        setupAccessibility()
     }
     
     public override func viewWillAppear(_ animated: Bool) {
@@ -97,6 +99,7 @@ public final class PresentedController: UIViewController, ModalPresentationViewC
                            size: .init(width: 0, height: Constants.topPosition))
             
             VCChildComposer.addChild(viewController, to: self, in: childContainerView, animationType: .none)
+            parent?.removeAccessibilityElements()
             self.generalView.transform = .init(translationX: 0, y: Constants.bottomPosition)
             
             let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(onPanGesture))
@@ -112,7 +115,21 @@ public final class PresentedController: UIViewController, ModalPresentationViewC
                                       trailing: generalView.trailingAnchor)
             
             VCChildComposer.addChild(viewController, to: self, in: childContainerView, animationType: .none)
+            parent?.removeAccessibilityElements()
             self.generalView.transform = .init(translationX: 0, y: Constants.bottomPosition)
+        }
+    }
+    
+    // MARK: - Accessibility
+    private func setupAccessibility() {
+        presentationView.isAccessibilityElement = true
+        presentationView.accessibilityTraits = .button
+        presentationView.accessibilityLabel = R.Strings.general_close.localized()
+        
+        if UIAccessibility.isVoiceOverRunning {
+            presentationView.tapGestureRecognizer { [weak self] in
+                self?.hide()
+            }
         }
     }
     
@@ -153,6 +170,7 @@ public final class PresentedController: UIViewController, ModalPresentationViewC
     private func removeFromSuperview() {
         if let parent = self.parent {
             VCChildComposer.removeChild(self, from: parent, animationType: .none)
+            parent.updateAccessibilityElements()
             parent.beginAppearanceTransition(true, animated: false)
             parent.endAppearanceTransition()
         }
@@ -192,7 +210,7 @@ extension PresentedController: UIGestureRecognizerDelegate {
         let yOffset = (gestureRecognizer as? UIPanGestureRecognizer)?.velocity(in: view).y ?? 0
         let xOffset = (gestureRecognizer as? UIPanGestureRecognizer)?.velocity(in: view).x ?? 0
         if let scrollView = otherGestureRecognizer.view as? UIScrollView {
-            if scrollView.contentOffset.y == 0, yOffset > 0, yOffset.magnitude > xOffset.magnitude {
+            if scrollView.contentOffset.y == -scrollView.contentInset.top, yOffset > 0, yOffset.magnitude > xOffset.magnitude {
                 otherGestureRecognizer.isEnabled = false
                 otherGestureRecognizer.isEnabled = true
                 return true

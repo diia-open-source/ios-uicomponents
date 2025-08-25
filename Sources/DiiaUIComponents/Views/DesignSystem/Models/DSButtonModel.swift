@@ -2,7 +2,7 @@
 import Foundation
 import DiiaCommonTypes
 
-public struct DSButtonModel: Codable {
+public struct DSButtonModel: Codable, Equatable {
     public let label: String
     public let state: DSButtonState?
     public let action: DSActionParameter?
@@ -17,6 +17,13 @@ public struct DSButtonModel: Codable {
         self.action = action
         self.componentId = componentId
     }
+    
+    static let mock = DSButtonModel(
+        label: "mockLabel",
+        state: .enabled,
+        action: .mock,
+        componentId: "componentId(optional)"
+    )
 }
 
 public enum DSButtonState: String, Codable, EnumDecodable {

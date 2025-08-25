@@ -40,15 +40,27 @@ public class StatusInfoView: BaseCodeView {
         emojiLabel.withParameters(font: FontBook.smallHeadingFont)
         titleLabel.withParameters(font: FontBook.usualFont)
         descriptionLabel.withParameters(font: FontBook.bigText)
+        
+        setupAccessibility()
+    }
+    
+    // MARK: - Accessibility
+    private func setupAccessibility() {
+        isAccessibilityElement = true
+        accessibilityTraits = .staticText
     }
     
     // MARK: - Public Methods
     public func configure(message: GeneralStatusMessage) {
         configure(title: message.name, description: message.description, emoji: message.icon)
+        
+        accessibilityLabel = message.icon + (message.name ?? "") + (message.description ?? "")
     }
     
     public func configure(message: AttentionMessage) {
         configure(title: message.title, description: message.text, emoji: message.icon)
+        
+        accessibilityLabel = message.icon + (message.title ?? "") + (message.text ?? "")
     }
     
     public func configure(title: String?, description: String?, emoji: String?) {

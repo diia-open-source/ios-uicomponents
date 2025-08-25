@@ -1,3 +1,4 @@
+
 import UIKit
 import DiiaCommonTypes
 
@@ -5,6 +6,7 @@ public class ChecklistItemViewModel: NSObject {
     public let code: String?
     public let inputData: AnyCodable?
     public let largeLogoRight: String?
+    public let logoRight: String?
     public let title: String
     public let details: String?
     public let rightInfo: String?
@@ -18,6 +20,7 @@ public class ChecklistItemViewModel: NSObject {
                 details: String? = nil,
                 rightInfo: String? = nil,
                 largeLogoRight: String? = nil,
+                logoRight: String? = nil,
                 isAvailable: Bool = true,
                 isSelected: Bool = false,
                 inputData: AnyCodable? = nil,
@@ -26,6 +29,7 @@ public class ChecklistItemViewModel: NSObject {
         self.title = title
         self.details = details
         self.largeLogoRight = largeLogoRight
+        self.logoRight = logoRight
         self.rightInfo = rightInfo
         self.isAvailable = isAvailable
         self.isSelected = isSelected
@@ -50,8 +54,9 @@ public class ChecklistItemView: BaseCodeView {
     private let selectionIcon = UIImageView()
     private let titleLabel = UILabel()
     private let detailsLabel = UILabel()
-    private let rightInfoLabel = UILabel()
-    private let rightLargeImage = UIImageView()
+    private let rightInfoLabel = UILabel().withParameters(font: FontBook.usualFont, textColor: Constants.grayTextColor)
+    private let rightImage = UIImageView().withSize(Constants.rightImageSize)
+    private let rightLargeImage = UIImageView().withSize(Constants.largeRightImageSize)
     
     private var observation: NSKeyValueObservation?
     private var viewModel: ChecklistItemViewModel?
@@ -86,14 +91,15 @@ public class ChecklistItemView: BaseCodeView {
         
         hstack(selectionIcon,
                centralStackView,
+               rightImage,
                rightLargeImage,
                spacing: Constants.stackViewSpacing,
                alignment: .top)
-        rightLargeImage.withSize(Constants.largeRightImageSize)
         rightLargeImage.layer.cornerRadius = Constants.largeRightCorner
         rightLargeImage.layer.borderWidth = Constants.largeImageBorderWidth
         rightLargeImage.layer.borderColor = Constants.largeImageBorderColor
         rightLargeImage.isHidden = true
+        rightImage.isHidden = true
         
         addTapGestureRecognizer()
     }
@@ -101,6 +107,7 @@ public class ChecklistItemView: BaseCodeView {
     // MARK: - Public methods
     public func configure(with viewModel: ChecklistItemViewModel) {
         accessibilityIdentifier = viewModel.componentId
+        accessibilityLabel = viewModel.title
         
         self.viewModel = viewModel
         
@@ -112,18 +119,28 @@ public class ChecklistItemView: BaseCodeView {
         rightInfoLabel.isHidden = viewModel.rightInfo == nil
         rightInfoLabel.text = viewModel.rightInfo
         
-        if let logoRight = viewModel.largeLogoRight {
+        if let largeLogoRight = viewModel.largeLogoRight {
             let imageProvider = UIComponentsConfiguration.shared.imageProvider
-            rightLargeImage.image = imageProvider?.imageForCode(imageCode: logoRight)
+            rightLargeImage.image = imageProvider?.imageForCode(imageCode: largeLogoRight)
             rightLargeImage.isHidden = false
+        }
+        
+        if let logoRight = viewModel.logoRight {
+            let imageProvider = UIComponentsConfiguration.shared.imageProvider
+            rightImage.image = imageProvider?.imageForCode(imageCode: logoRight)
+            rightImage.contentMode = .scaleAspectFit
+            rightImage.isHidden = false
         }
         
         observation = viewModel.observe(\.isSelected, onChange: { [weak self] isSelected in
             guard let self = self else { return }
             self.setSelection(state: isSelected)
+            
+            accessibilityTraits = isSelected ? [.button, .selected] : [.button]
         })
         
         setViewAvailability(viewModel.isAvailable)
+        setupAccessibility()
     }
     
     public func setupUI(checkboxStyle: CheckboxStyle? = nil,
@@ -178,6 +195,10 @@ public class ChecklistItemView: BaseCodeView {
         selectionIcon.alpha = isActive ? Constants.activeIconAlpha : Constants.inactiveIconAlpha
         setupUI(titleColor: isActive ? .black : Constants.grayTextColor)
     }
+    
+    private func setupAccessibility() {
+        isAccessibilityElement = true
+    }
 }
 
 // MARK: - Constants
@@ -190,6 +211,7 @@ extension ChecklistItemView {
         static let grayTextColor = UIColor.statusGray
         static let inactiveIconAlpha: CGFloat = 0.3
         static let activeIconAlpha: CGFloat = 1.0
+        static let rightImageSize = CGSize(width: 32, height: 24)
         static let largeRightImageSize = CGSize(width: 56, height: 36)
         static let largeRightCorner: CGFloat = 4
         static let largeImageBorderColor: CGColor = UIColor(hex: 0x0805A8).withAlphaComponent(0.04).cgColor

@@ -2,7 +2,7 @@ import UIKit
 
 public class DSDocPhotoView: BaseCodeView {
     
-    private var photoView = UIImageView()
+    private var photoView = DSIconUrlAtmView()
     
     public override func setupSubviews() {
         translatesAutoresizingMaskIntoConstraints = false
@@ -15,13 +15,20 @@ public class DSDocPhotoView: BaseCodeView {
         layer.cornerRadius = Constants.viewCorner
     }
     
+    public func configure(imageURL: String, accessibilityDescription: String?) {
+        photoView.configure(with: DSIconUrlAtmModel(componentId: nil,
+                                                    url: imageURL,
+                                                    accessibilityDescription: accessibilityDescription,
+                                                    action: nil))
+    }
+    
     public func configure(content: UIImage?) {
-        photoView.image = content
+        photoView.configure(with: content)
     }
     
     public func configure(content: String?) {
         guard let dataContent = content else { return }
-        photoView.image = .createWithBase64String(dataContent)
+        photoView.configure(with: .createWithBase64String(dataContent))
     }
     
     private func setupUI() {}

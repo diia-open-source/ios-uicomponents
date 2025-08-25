@@ -35,9 +35,18 @@ public class DSTableBlockTwoColumnsPlaneOrgView: BaseCodeView {
             headingView.configure(model: headingData)
             mainStackView.addArrangedSubview(headingView)
         }
-        if let photoItem = models.photo, imagesContent[photoItem] != nil {
+        if let photoItem = models.photo, imagesContent[photoItem] != nil || models.photoURL != nil {
             let photoItemView = DSDocPhotoView()
-            photoItemView.configure(content: imagesContent[photoItem])
+            photoItemView.isAccessibilityElement = true
+            photoItemView.accessibilityTraits = .image
+            photoItemView.accessibilityLabel = R.Strings.document_accessibility_doc_photo.localized()
+            if let photoURL = models.photoURL {
+                photoItemView.configure(
+                    imageURL: photoURL,
+                    accessibilityDescription: R.Strings.accessibility_photo_url.localized())
+            } else {
+                photoItemView.configure(content: imagesContent[photoItem])
+            }
             photoItemView.withBorder(width: 1, color: Constants.borderColor)
             tableStackView.addArrangedSubview(photoItemView)
         }
@@ -46,7 +55,16 @@ public class DSTableBlockTwoColumnsPlaneOrgView: BaseCodeView {
             for item in itemsData {
                 let view = DSTableItemVerticalView()
                 if let valueImage = item.tableItemVerticalMlc.valueImage, let image = imagesContent[valueImage] {
-                    view.configure(model: item.tableItemVerticalMlc, image: image, eventHandler: eventHandler)
+                    
+                    let imageAltText: String?
+                    switch valueImage {
+                    case .photo:
+                        imageAltText = R.Strings.document_accessibility_doc_photo.localized()
+                    case .signature:
+                        imageAltText = R.Strings.document_accessibility_signature_photo.localized()
+                    }
+                    
+                    view.configure(model: item.tableItemVerticalMlc, image: image, imageAltText: imageAltText, eventHandler: eventHandler)
                 } else {
                     view.configure(model: item.tableItemVerticalMlc, image: nil, eventHandler: eventHandler)
                 }

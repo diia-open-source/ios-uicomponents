@@ -129,7 +129,7 @@ public class DSInputTimeView: BaseCodeView, DSInputComponentProtocol {
                  textFieldFont: UIFont = FontBook.bigText,
                  errorFont: UIFont = FontBook.smallTitle,
                  errorColor: UIColor = UIColor(AppConstants.Colors.persianRed),
-                 instructionColor: UIColor = .black,
+                 instructionColor: UIColor = .black540,
                  separatorColor: UIColor = .statusGray) {
         titleLabel.withParameters(font: titleFont)
         errorLabel.withParameters(font: errorFont, textColor: errorColor)

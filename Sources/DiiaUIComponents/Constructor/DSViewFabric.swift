@@ -5,6 +5,7 @@ import DiiaCommonTypes
 public struct DSConstructorModel: Codable {
     public let topGroup: [AnyCodable]
     public let body: [AnyCodable]?
+    public let centeredBody: [AnyCodable]?
     public let bottomGroup: [AnyCodable]?
     public let ratingForm: PublicServiceRatingForm?
     public let template: AlertTemplate?
@@ -13,6 +14,7 @@ public struct DSConstructorModel: Codable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.topGroup = (try? container.decodeIfPresent([AnyCodable].self, forKey: .topGroup)) ?? []
         self.body = try? container.decodeIfPresent([AnyCodable].self, forKey: .body)
+        self.centeredBody = try? container.decodeIfPresent([AnyCodable].self, forKey: .centeredBody)
         self.bottomGroup = try? container.decodeIfPresent([AnyCodable].self, forKey: .bottomGroup)
         self.ratingForm = try? container.decodeIfPresent(PublicServiceRatingForm.self, forKey: .ratingForm)
         self.template = try? container.decodeIfPresent(AlertTemplate.self, forKey: .template)
@@ -20,11 +22,13 @@ public struct DSConstructorModel: Codable {
     
     public init(topGroup: [AnyCodable] = [],
                 body: [AnyCodable]? = [],
+                centeredBody: [AnyCodable]? = nil,
                 bottomGroup: [AnyCodable]? = [],
                 ratingForm: PublicServiceRatingForm? = nil,
                 template: AlertTemplate? = nil) {
         self.topGroup = topGroup
         self.body = body
+        self.centeredBody = centeredBody
         self.bottomGroup = bottomGroup
         self.ratingForm = ratingForm
         self.template = template
@@ -36,8 +40,11 @@ public class DSViewFabric {
     
     private var viewBuilders: [String: DSViewBuilderProtocol]
     
-    public init(viewBuilders: [String: DSViewBuilderProtocol] = DSViewFabric.builders) {
-        self.viewBuilders = viewBuilders
+    public init(viewBuilders: [DSViewBuilderProtocol] = DSViewFabric.defaultBuilders) {
+        self.viewBuilders = [:]
+        viewBuilders.forEach {
+            self.viewBuilders[$0.modelKey] = $0
+        }
     }
     
     public func makeView(
@@ -45,13 +52,20 @@ public class DSViewFabric {
         withPadding: DSViewPaddingType,
         eventHandler: @escaping (ConstructorItemEvent) -> Void
     ) -> UIView? {
-        if let key = object.keys().first,
-           let builder = viewBuilders[key],
-           let view = builder.makeView(from: object, withPadding: withPadding, viewFabric: self, eventHandler: eventHandler)
-        {
-            return view
+        guard let key = object.keys().first else {
+            return nil
         }
-        return nil
+
+        guard let builder = viewBuilders[key] else {
+            log("Can not find builder for key: \(key)")
+            return nil
+        }
+
+        guard let view = builder.makeView(from: object, withPadding: withPadding, viewFabric: self, eventHandler: eventHandler) else {
+            log("Can not create view for key: \(key)")
+            return nil
+        }
+        return view
     }
     
     public func topGroupViews(for model: DSConstructorModel, eventHandler: @escaping (ConstructorItemEvent) -> Void) -> [UIView] {
@@ -65,6 +79,13 @@ public class DSViewFabric {
         }
     }
     
+    public func centeredBodyViews(for model: DSConstructorModel, eventHandler: @escaping (ConstructorItemEvent) -> Void) -> [UIView] {
+        return (model.centeredBody ?? []).enumerated().compactMap { (index, element) in
+            let paddingType: DSViewPaddingType = (index == 0) ? .firstComponent : .default
+            return makeView(from: element, withPadding: paddingType, eventHandler: eventHandler)
+        }
+    }
+    
     public func bottomGroupViews(for model: DSConstructorModel, eventHandler: @escaping (ConstructorItemEvent) -> Void) -> [UIView] {
         return (model.bottomGroup ?? []).enumerated().compactMap { (index, element) in
             let paddingType: DSViewPaddingType = (index == 0) ? .firstComponent : .default
@@ -72,125 +93,9 @@ public class DSViewFabric {
         }
     }
     
-    public func setBuilder(_ builder: DSViewBuilderProtocol, forKey key: String) {
-        viewBuilders[key] = builder
+    public func setBuilder(_ builder: DSViewBuilderProtocol) {
+        viewBuilders[builder.modelKey] = builder
     }
-    
-    public static let builders: [String: DSViewBuilderProtocol] = [
-        DSTopGroupViewBuilder.modelKey: DSTopGroupViewBuilder(),
-        DSSearchInputViewBuilder.modelKey: DSSearchInputViewBuilder(),
-        DSTitleLabelBuilder.modelKey: DSTitleLabelBuilder(),
-        DSSubtitleLabelBuilder.modelKey: DSSubtitleLabelBuilder(),
-        DSSectionTitleBuilder.modelKey: DSSectionTitleBuilder(),
-        DSAttentionMessageViewBuilder.modelKey: DSAttentionMessageViewBuilder(),
-        DSCardListViewBuilder.modelKey: DSCardListViewBuilder(),
-        DSTextLabelBuilder.modelKey: DSTextLabelBuilder(),
-        DSTextViewBuilder.modelKey: DSTextViewBuilder(),
-        DSButtonIconGroupBuilder.modelKey: DSButtonIconGroupBuilder(),
-        DSCheckboxGroupBuilder.modelKey: DSCheckboxGroupBuilder(),
-        DSRadioButtonGroupBuilder.modelKey: DSRadioButtonGroupBuilder(),
-        DSRadioBtnWithAltOrgBuilder.modelKey: DSRadioBtnWithAltOrgBuilder(),
-        DSCheckboxButtonOrgBuilder.modelKey: DSCheckboxButtonOrgBuilder(),
-        DSSmallNotificationCarouselBuilder.modelKey: DSSmallNotificationCarouselBuilder(),
-        DSHalvedCardCarouselBuilder.modelKey: DSHalvedCardCarouselBuilder(),
-        DSImageViewBuilder.modelKey: DSImageViewBuilder(),
-        DSListViewBuilder.modelKey: DSListViewBuilder(),
-        DSVideoContainerBuilder.modelKey: DSVideoContainerBuilder(),
-        DSStatusMessageBuilder.modelKey: DSStatusMessageBuilder(),
-        DSEmptyStateViewBuilder.modelKey: DSEmptyStateViewBuilder(),
-        DSBlackCardBuilder.modelKey: DSBlackCardBuilder(),
-        DSWhiteCardBuilder.modelKey: DSWhiteCardBuilder(),
-        DSImageCardBuilder.modelKey: DSImageCardBuilder(),
-        DSHorizontalCarouselBuilder.modelKey: DSHorizontalCarouselBuilder(),
-        DSButtonIconRoundedGroupBuilder.modelKey: DSButtonIconRoundedGroupBuilder(),
-        DSMediaTitleBuilder.modelKey: DSMediaTitleBuilder(),
-        DSArticlePicCarouselBuilder.modelKey: DSArticlePicCarouselBuilder(),
-        DSBottomGroupBuilder.modelKey: DSBottomGroupBuilder(),
-        DSPrimaryButtonBuilder.modelKey: DSPrimaryButtonBuilder(),
-        DSPrimaryLargeButtonBuilder.modelKey: DSPrimaryLargeButtonBuilder(),
-        DSPrimaryWideButtonBuilder.modelKey: DSPrimaryWideButtonBuilder(),
-        DSStrokeButtonBuilder.modelKey: DSStrokeButtonBuilder(),
-        BtnStrokeWideAtmBuilder.modelKey: BtnStrokeWideAtmBuilder(),
-        DSPlainButtonBuilder.modelKey: DSPlainButtonBuilder(),
-        DSButtonLinkBuilder.modelKey: DSButtonLinkBuilder(),
-        DSTableBlockOrgBuilder.modelKey: DSTableBlockOrgBuilder(),
-        DSDocHeadingBuilder.modelKey: DSDocHeadingBuilder(),
-        DSHeadingWithSubtitlesBuilder.modelKey: DSHeadingWithSubtitlesBuilder(),
-        DSTableItemPrimaryBuilder.modelKey: DSTableItemPrimaryBuilder(),
-        DSAvatarViewBuilder.modelKey: DSAvatarViewBuilder(),
-        DSChipAtomBuilder.modelKey: DSChipAtomBuilder(),
-        DSTickerAtmBuilder.modelKey: DSTickerAtmBuilder(),
-        DSInputTextViewBuilder.modelKey: DSInputTextViewBuilder(),
-        DSQRSharingOrgBuilder.modelKey: DSQRSharingOrgBuilder(),
-        DSEditAutomaticallyDeterminedValueBuilder.modelKey: DSEditAutomaticallyDeterminedValueBuilder(),
-        DSQuestionFormBuilder.modelKey: DSQuestionFormBuilder(),
-        DSFileUploadGroupBuilder.modelKey: DSFileUploadGroupBuilder(),
-        DSGroupFilesAddBuilder.modelKey: DSGroupFilesAddBuilder(),
-        DSDividerLineBuilder.modelKey: DSDividerLineBuilder(),
-        DSTableBlockAccordionViewBuilder.modelKey: DSTableBlockAccordionViewBuilder(),
-        DSTableItemVerticalMlcBuilder.modelKey: DSTableItemVerticalMlcBuilder(),
-        DSTableItemHorizontalMlcBuilder.modelKey: DSTableItemHorizontalMlcBuilder(),
-        DSTableItemPrimaryMlcBuilder.modelKey: DSTableItemPrimaryMlcBuilder(),
-        DSDocTableItemHorizontalMlcBuilder.modelKey: DSDocTableItemHorizontalMlcBuilder(),
-        DSDocTableItemHorizontalLongerMlcBuilder.modelKey: DSDocTableItemHorizontalLongerMlcBuilder(),
-        DSTableItemHorizontalLargeMlcBuilder.modelKey: DSTableItemHorizontalLargeMlcBuilder(),
-        DSSmallEmojiPanelMlcBuilder.modelKey: DSSmallEmojiPanelMlcBuilder(),
-        DSTableBlockPlaneOrgBuilder.modelKey: DSTableBlockPlaneOrgBuilder(),
-        DSInputNumberLargeViewBuilder.modelKey: DSInputNumberLargeViewBuilder(),
-        DSTimerTextViewBuilder.modelKey: DSTimerTextViewBuilder(),
-        DSPaymentInfoBuilder.modelKey: DSPaymentInfoBuilder(),
-        DSButtonIconPlainGroupBuilder.modelKey: DSButtonIconPlainGroupBuilder(),
-        DSSharingCodesBuilder.modelKey: DSSharingCodesBuilder(),
-        DSPaginationListViewBuilder.modelKey: DSPaginationListViewBuilder(),
-        DSListWidgetItemBuilder.modelKey: DSListWidgetItemBuilder(),
-        DSMultilineInputTextBuilder.modelKey: DSMultilineInputTextBuilder(),
-        DSInputNumberViewBuilder.modelKey: DSInputNumberViewBuilder(),
-        DSInputNumberFractionalViewBuilder.modelKey: DSInputNumberFractionalViewBuilder(),
-        DSSelectorOrgBuilder.modelKey: DSSelectorOrgBuilder(),
-        DSInputDateMlcBuilder.modelKey: DSInputDateMlcBuilder(),
-        DSInputTimeMlcBuilder.modelKey: DSInputTimeMlcBuilder(),
-        DSCalendarOrgBuilder.modelKey: DSCalendarOrgBuilder(),
-        DSInputDateTimeMlcBuilder.modelKey: DSInputDateTimeMlcBuilder(),
-        DSDashboardCardMlcBuilder.modelKey: DSDashboardCardMlcBuilder(),
-        DSDashboardCardTileOrgBuilder.modelKey: DSDashboardCardTileOrgBuilder(),
-        DSAlertCardBuilder.modelKey: DSAlertCardBuilder(),
-        DSAttentionIconMessageBuilder.modelKey: DSAttentionIconMessageBuilder(),
-        DSGrayTitleAtmBulder.modelKey: DSGrayTitleAtmBulder(),
-        DSListItemMlcBuilder.modelKey: DSListItemMlcBuilder(),
-        DSPaginationListWhiteViewBuilder.modelKey: DSPaginationListWhiteViewBuilder(),
-        DSLargeTickerAtmViewBuilder.modelKey: DSLargeTickerAtmViewBuilder(),
-        DSListEditGroupViewBuilder.modelKey: DSListEditGroupViewBuilder(),
-        DSInputPhoneCodeBuilder.modelKey: DSInputPhoneCodeBuilder(),
-        DSWhiteLargeButtonBuilder.modelKey: DSWhiteLargeButtonBuilder(),
-        DSChipsBlackOrgBuilder.modelKey: DSChipsBlackOrgBuilder(),
-        DSSearchBarOrgBuilder.modelKey: DSSearchBarOrgBuilder(),
-        DSSwitchModeViewBuilder.modelKey: DSSwitchModeViewBuilder(),
-        DSCheckboxBtnWhiteOrgBuilder.modelKey: DSCheckboxBtnWhiteOrgBuilder(),
-        DSSingleMediaUploadBuilder.modelKey: DSSingleMediaUploadBuilder(),
-        DSSmallCheckIconOrgBuilder.modelKey: DSSmallCheckIconOrgBuilder(),
-        DSPhotoGroupOrgBuilder.modelKey: DSPhotoGroupOrgBuilder(),
-        DSBackgroundWhiteViewBuilder.modelKey: DSBackgroundWhiteViewBuilder(),
-        DSTableItemCheckboxViewBuilder.modelKey: DSTableItemCheckboxViewBuilder(),
-        DSTableMainHeadingBuilder.modelKey: DSTableMainHeadingBuilder(),
-        DSScalingTitleBuilder.modelKey: DSScalingTitleBuilder(),
-        DSTitleLabelIconViewBuilder.modelKey: DSTitleLabelIconViewBuilder(),
-        DSMapChipTabsViewBuilder.modelKey: DSMapChipTabsViewBuilder(),
-        DSHorizontalScrollCardBuilder.modelKey: DSHorizontalScrollCardBuilder(),
-        DSVerificationCodesBuilder.modelKey: DSVerificationCodesBuilder(),
-        DSTableBlockTwoColumnsOrgBuilder.modelKey: DSTableBlockTwoColumnsOrgBuilder(),
-        DSImageCardCarouselBuilder.modelKey: DSImageCardCarouselBuilder(),
-        DSChipTabsViewBuilder.modelKey: DSChipTabsViewBuilder(),
-        DSLoopingVideoCardBuilder.modelKey: DSLoopingVideoCardBuilder(),
-        DSCardMlcV2Builder.modelKey: DSCardMlcV2Builder(),
-        DSCheckboxCascadeGroupBuilder.modelKey: DSCheckboxCascadeGroupBuilder(),
-        DSCheckboxCascadeBuilder.modelKey: DSCheckboxCascadeBuilder(),
-        DSRecursiveContainerOrgBuilder.modelKey: DSRecursiveContainerOrgBuilder(),
-        TableSecondaryHeadingBuilder.modelKey: TableSecondaryHeadingBuilder(),
-        BankingCardCarouselBuilder.modelKey: BankingCardCarouselBuilder(),
-        BankingCardBuilder.modelKey: BankingCardBuilder(),
-        UpdatedContainerViewBuilder.modelKey: UpdatedContainerViewBuilder(),
-        SpacerBuilder.modelKey: SpacerBuilder()
-    ]
 }
 
 extension DSConstructorModel {
@@ -232,4 +137,152 @@ extension DSConstructorModel {
         
         return nil
     }
+}
+
+public extension DSViewFabric {
+    static let defaultBuilders: [DSViewBuilderProtocol] = [
+        DSTopGroupViewBuilder(),
+        DSSearchInputViewBuilder(),
+        DSTitleLabelBuilder(),
+        DSSubtitleLabelBuilder(),
+        DSSectionTitleBuilder(),
+        DSAttentionMessageViewBuilder(),
+        DSCardListViewBuilder(),
+        DSTextLabelBuilder(),
+        DSTextViewBuilder(),
+        DSButtonIconGroupBuilder(),
+        DSCheckboxGroupBuilder(),
+        DSRadioButtonGroupBuilder(),
+        DSRadioBtnWithAltOrgBuilder(),
+        DSCheckboxButtonOrgBuilder(),
+        DSSmallNotificationCarouselBuilder(),
+        DSHalvedCardCarouselBuilder(),
+        DSImageViewBuilder(),
+        DSListViewBuilder(),
+        DSVideoContainerBuilder(),
+        DSStatusMessageBuilder(),
+        DSStubMessageMlcViewBuilder(),
+        DSBlackCardBuilder(),
+        DSWhiteCardBuilder(),
+        DSImageCardBuilder(),
+        DSHorizontalCarouselBuilder(),
+        DSButtonIconRoundedGroupBuilder(),
+        DSMediaTitleBuilder(),
+        DSArticlePicCarouselBuilder(),
+        DSBottomGroupBuilder(),
+        DSPrimaryButtonBuilder(),
+        DSPrimaryLargeButtonBuilder(),
+        DSPrimaryWideButtonBuilder(),
+        DSStrokeButtonBuilder(),
+        BtnStrokeWideAtmBuilder(),
+        DSPlainButtonBuilder(),
+        DSButtonLinkBuilder(),
+        DSTableBlockOrgBuilder(),
+        DSDocHeadingBuilder(),
+        DSHeadingWithSubtitlesBuilder(),
+        DSTableItemPrimaryBuilder(),
+        DSFinalScreenBlockBuilder(),
+        DSAvatarViewBuilder(),
+        DSChipAtomBuilder(),
+        DSTickerAtmBuilder(),
+        DSInputTextViewBuilder(),
+        DSQRSharingOrgBuilder(),
+        DSLinkQrShareViewBuilder(),
+        DSQuestionFormBuilder(),
+        DSFileUploadGroupBuilder(),
+        DSGroupFilesAddBuilder(),
+        DSDividerLineBuilder(),
+        DSTableBlockAccordionViewBuilder(),
+        DSTableItemVerticalMlcBuilder(),
+        DSTableItemHorizontalMlcBuilder(),
+        DSTableItemPrimaryMlcBuilder(),
+        DSDocTableItemHorizontalMlcBuilder(),
+        DSTableItemHorizontalLargeMlcBuilder(),
+        DSSmallEmojiPanelMlcBuilder(),
+        DSTableBlockPlaneOrgBuilder(),
+        DSInputNumberLargeViewBuilder(),
+        DSTimerTextViewBuilder(),
+        DSPaymentInfoBuilder(),
+        DSButtonIconPlainGroupBuilder(),
+        DSSharingCodesBuilder(),
+        DSPaginationListViewBuilder(),
+        DSListWidgetItemBuilder(),
+        DSMultilineInputTextBuilder(),
+        TextItemVerticalMlcBuilder(),
+        DSInputNumberViewBuilder(),
+        DSInputNumberFractionalViewBuilder(),
+        DSSelectorOrgBuilder(),
+        DSInputDateMlcBuilder(),
+        DSInputTimeMlcBuilder(),
+        DSCalendarOrgBuilder(),
+        DSInputDateTimeMlcBuilder(),
+        DSDashboardCardMlcBuilder(),
+        DSDashboardCardTileOrgBuilder(),
+        DSAlertCardBuilder(),
+        DSAttentionIconMessageBuilder(),
+        DSGrayTitleAtmBulder(),
+        DSListItemMlcBuilder(),
+        DSPaginationListWhiteViewBuilder(),
+        DSLargeTickerAtmViewBuilder(),
+        DSListEditGroupViewBuilder(),
+        DSInputPhoneCodeBuilder(),
+        DSWhiteLargeButtonBuilder(),
+        DSChipsBlackOrgBuilder(),
+        DSSearchBarOrgBuilder(),
+        DSSwitchModeViewBuilder(),
+        DSCheckboxBtnWhiteOrgBuilder(),
+        DSSingleMediaUploadBuilder(),
+        DSSmallCheckIconOrgBuilder(),
+        DSPhotoGroupOrgBuilder(),
+        DSBackgroundWhiteViewBuilder(),
+        DSTableItemCheckboxViewBuilder(),
+        DSTableMainHeadingBuilder(),
+        DSScalingTitleBuilder(),
+        DSTitleCentralizedMlcBuilder(),
+        DSNavigationPanelMlcV2Builder(),
+        DSTitleLabelIconViewBuilder(),
+        DSMapChipTabsViewBuilder(),
+        DSHorizontalScrollCardBuilder(),
+        DSVerificationCodesBuilder(),
+        DSTableBlockTwoColumnsOrgBuilder(),
+        DSImageCardCarouselBuilder(),
+        DSChipTabsViewBuilder(),
+        DSLoopingVideoCardBuilder(),
+        DSCardMlcV2Builder(),
+        DSCheckboxCascadeGroupBuilder(),
+        DSCheckboxCascadeBuilder(),
+        DSRecursiveContainerOrgBuilder(),
+        TableSecondaryHeadingBuilder(),
+        BankingCardCarouselBuilder(),
+        BankingCardBuilder(),
+        UpdatedContainerViewBuilder(),
+        SpacerBuilder(),
+        DSTextItemHorizontalBuilder(),
+        OutlineButtonOrgBuilder(),
+		DSBtnWhiteLargeIconAtmBuilder(),
+		InputPhoneCodeV2Builder(),
+        DSPaginationMessageMlcBuilder(),
+        DSRadioBtnGroupOrgV2Builder(),
+		PaymentInfoV2Builder(),
+        DSEditAutomaticallyDeterminedValueBuilder(),
+        DSItemReadViewBuilder(),
+        DSStubInfoMessageMlcViewBuilder(),
+        DSTextBlockViewBuilder(),
+        InputTextV2Builder(),
+        DSAccordionOrgBuilder(),
+        DSTableAccordionOrgViewBuilder(),
+        DSAlertCardV2Builder(),
+        DSTableBlockOrgV2Builder(),
+        DSSubTitleCentralizedMlcBuilder(),
+        DSCenterChipBlackTabsOrgBuilder(),
+        DSBtnSlideMlcBuilder(),
+        DSLinkSharingMlcBuilder(),
+        DSQrCodeOrgBuilder(),
+        DSInputBlockViewBuilder(),
+        DSDetailsTextValueViewBuilder(),
+        DSEditAutomaticallyDeterminedValueBuilder(),
+        PhotoCardCarouselBuilder(),
+        PhotoCardMlcBuidler(),
+        CardProgressMlcBuilder()
+    ]
 }

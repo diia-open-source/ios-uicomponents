@@ -1,5 +1,9 @@
 import Foundation
 
+public protocol UIComponentsLogger {
+    func log(_ items: Any...)
+}
+
 public func log(_ items: Any...) {
-    items.forEach { print($0) }
+    UIComponentsConfiguration.shared.logger?.log(items)
 }

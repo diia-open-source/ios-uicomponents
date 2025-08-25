@@ -143,6 +143,7 @@ open class ActionSheetViewController: UIViewController, ChildSubcontroller {
         
         let firstView = BoxView(subview: UIView()).withConstraints(size: .init(width: actionStackView.frame.width, height: Constants.smallSpacing))
         firstView.subview.backgroundColor = .white
+        firstView.isAccessibilityElement = false
         actionStackView.addArrangedSubview(firstView)
         
         for (index, groupActions) in actions.enumerated() {
@@ -184,6 +185,7 @@ open class ActionSheetViewController: UIViewController, ChildSubcontroller {
             insets: .init(top: 0, left: needSpacing ? Constants.spacing : 0, bottom: 0, right: needSpacing ? Constants.spacing : 0),
             size: .init(width: .zero, height: separatorParams.height))
         separatorView.subview.backgroundColor = Constants.separatorColor
+        separatorView.isAccessibilityElement = false
         actionStackView.addArrangedSubview(separatorView)
     }
 
@@ -191,6 +193,8 @@ open class ActionSheetViewController: UIViewController, ChildSubcontroller {
         button.setTitleColor(.black, for: .normal)
         button.backgroundColor = .white
         button.titleLabel?.font = FontBook.bigText
+        button.isAccessibilityElement = true
+        button.accessibilityTraits = .button
         button.contentHorizontalAlignment = align
         button.contentVerticalAlignment = .center
         button.contentEdgeInsets = .init(top: Constants.spacing,
@@ -221,7 +225,12 @@ open class ActionSheetViewController: UIViewController, ChildSubcontroller {
     }
     
     private func configureAccessibility() {
-        UIAccessibility.post(notification: .layoutChanged, argument: actionStackView.subviews.first)
+        guard let firstButton = actionStackView.subviews.first(where: { $0 is ActionButton }) else {
+            UIAccessibility.post(notification: .layoutChanged, argument: self.view)
+            return
+        }
+        
+        UIAccessibility.post(notification: .layoutChanged, argument: firstButton)
     }
     
     // MARK: - Actions

@@ -48,6 +48,8 @@ public class DSImageContainerView: BaseCodeView {
         } else {
             configure(url: data.image)
         }
+        
+        setupAccessibility(accessibilityDescription: data.accessibilityDescription)
     }
 
     private func updateImage(_ image: UIImage) {
@@ -63,6 +65,16 @@ public class DSImageContainerView: BaseCodeView {
         self.imageHeightConstraints?.isActive = true
         
         self.layoutIfNeeded()
+    }
+    
+    private func setupAccessibility(accessibilityDescription: String?) {
+        if let accessibilityDescription {
+            isAccessibilityElement = true
+            accessibilityTraits = .image
+            accessibilityLabel = accessibilityDescription
+        } else {
+            isAccessibilityElement = false
+        }
     }
 }
 

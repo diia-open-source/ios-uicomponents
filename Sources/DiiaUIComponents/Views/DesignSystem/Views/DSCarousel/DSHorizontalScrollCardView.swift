@@ -96,7 +96,7 @@ final public class DSHorizontalScrollCardView: BaseCodeView {
         for card in data.cardsGroup {
             if let cardView = builder.makeView(
                 from: card,
-                withPadding: .custom(paddings: Constants.itemPadding),
+                withPadding: .fixed(paddings: Constants.itemPadding),
                 eventHandler: eventHandler) as? BoxView<DSWhiteColoredListView> {
                 cardView.subview.setupSubitems(alignment: .top,
                                                titleLines: Constants.titleLines,

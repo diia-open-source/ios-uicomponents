@@ -4,14 +4,14 @@ import DiiaCommonTypes
 
 struct DSSharingCodesBuilder: DSViewBuilderProtocol{
     
-    public static let modelKey = "sharingCodesOrg"
+    public let modelKey = "sharingCodesOrg"
     
     func makeView(from object: AnyCodable,
                   withPadding padding: DSViewPaddingType,
                   viewFabric: DSViewFabric?,
                   eventHandler: @escaping (ConstructorItemEvent) -> Void) -> UIView? {
         
-        guard let data: DSSharingCodesOrg = object.parseValue(forKey: Self.modelKey) else { return nil }
+        guard let data: DSSharingCodesOrg = object.parseValue(forKey: self.modelKey) else { return nil }
         
         let view = DSSharingCodesOrgView()
 
@@ -39,13 +39,30 @@ struct DSSharingCodesBuilder: DSViewBuilderProtocol{
                                                    stubViewModel: stubViewModel,
                                                    itemsVMs: plainButtonViewModels)
         view.configure(for: viewModel)
-        let container = BoxView(subview: view).withConstraints(insets: Constants.padding)
-        return container
+        let box = BoxView(subview: view).withConstraints(insets: padding.insets(for: object, modelKey: modelKey, defaultInsets: Constants.padding))
+        return box
     }
 }
 
 private extension DSSharingCodesBuilder {
     enum Constants {
         static let padding = UIEdgeInsets(top: 24, left: 0, bottom: 0, right: 0)
+    }
+}
+
+extension DSSharingCodesBuilder: DSViewMockableBuilderProtocol {
+    public func makeMockModel() -> AnyCodable {
+        let model = DSSharingCodesOrg(
+            componentId: "componentId",
+            expireLabel: DSExpireLabelBox(expireLabelFirst: "expireLabelFirst", expireLabelLast: "expireLabelLast", timer: 320),
+            qrCodeMlc: QRCodeMlc(qrLink: "qrLink", componentId: "componentId"),
+            btnLoadIconPlainGroupMlc: DSBtnLoadPlainGroupMlc(items: [
+                DSBtnLoadPlainIconAtm(btnLoadPlainIconAtm: .mock)
+            ], componentId: "componentId"),
+            stubMessageMlc: DSStubMessageMlc.mock
+        )
+        return .dictionary([
+            modelKey: .fromEncodable(encodable: model)
+        ])
     }
 }

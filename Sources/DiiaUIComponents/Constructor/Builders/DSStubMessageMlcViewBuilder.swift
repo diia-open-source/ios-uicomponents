@@ -3,8 +3,8 @@ import UIKit
 import DiiaCommonTypes
 
 /// design_system_code: stubMessageMlc
-public struct DSEmptyStateViewBuilder: DSViewBuilderProtocol {
-    public static let modelKey = "stubMessageMlc"
+public struct DSStubMessageMlcViewBuilder: DSViewBuilderProtocol {
+    public let modelKey = "stubMessageMlc"
     
     public let padding: UIEdgeInsets?
     
@@ -16,7 +16,7 @@ public struct DSEmptyStateViewBuilder: DSViewBuilderProtocol {
                          withPadding paddingType: DSViewPaddingType,
                          viewFabric: DSViewFabric?,
                          eventHandler: @escaping (ConstructorItemEvent) -> Void) -> UIView? {
-        guard let stub: DSStubMessageMlc = object.parseValue(forKey: Self.modelKey) else { return nil }
+        guard let stub: DSStubMessageMlc = object.parseValue(forKey: self.modelKey) else { return nil }
         
         let view = StubMessageViewV2()
         view.configure(
@@ -28,11 +28,21 @@ public struct DSEmptyStateViewBuilder: DSViewBuilderProtocol {
                 }),
             urlOpener: UIComponentsConfiguration.shared.urlOpener)
         
-        let paddingBox = BoxView(subview: view).withConstraints(insets: padding ?? Constants.paddingInsets)
+        let defaultPaddings = padding ?? Constants.paddingInsets
+        let paddingBox = BoxView(subview: view).withConstraints(insets: paddingType.insets(for: object, modelKey: modelKey, defaultInsets: defaultPaddings))
         return paddingBox
     }
 }
 
 private enum Constants {
     static let paddingInsets = UIEdgeInsets(top: 64, left: 24, bottom: 0, right: 24)
+}
+
+extension DSStubMessageMlcViewBuilder: DSViewMockableBuilderProtocol {
+    public func makeMockModel() -> AnyCodable {
+        let model = DSStubMessageMlc.mock
+        return .dictionary([
+            modelKey: .fromEncodable(encodable: model)
+        ])
+    }
 }

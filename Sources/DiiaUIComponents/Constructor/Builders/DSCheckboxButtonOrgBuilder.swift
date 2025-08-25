@@ -3,16 +3,16 @@ import UIKit
 import DiiaCommonTypes
 
 public struct DSCheckboxButtonOrgBuilder: DSViewBuilderProtocol {
-    public static let modelKey = "checkboxBtnOrg"
+    public let modelKey = "checkboxBtnOrg"
     
     public func makeView(from object: AnyCodable,
                          withPadding paddingType: DSViewPaddingType,
                          viewFabric: DSViewFabric?,
                          eventHandler: @escaping (ConstructorItemEvent) -> Void) -> UIView? {
-        guard let model: DSCheckboxBtnOrg = object.parseValue(forKey: Self.modelKey) else { return nil }
+        guard let model: DSCheckboxBtnOrg = object.parseValue(forKey: self.modelKey) else { return nil }
         
         let view = makeView(model: model, eventHandler: eventHandler)
-        let paddingBox = BoxView(subview: view).withConstraints(insets: paddingType.defaultPadding())
+        let paddingBox = BoxView(subview: view).withConstraints(insets: paddingType.defaultPadding(object: object, modelKey: modelKey))
         return paddingBox
     }
     
@@ -63,5 +63,48 @@ public struct DSCheckboxButtonOrgBuilder: DSViewBuilderProtocol {
             plainButtonVM: plainButtomVM)
         view.configure(with: viewModel)
         return view
+    }
+}
+
+extension DSCheckboxButtonOrgBuilder: DSViewMockableBuilderProtocol {
+    public func makeMockModel() -> AnyCodable {
+        let model = DSCheckboxBtnOrg(
+            items: [
+                DSCheckboxBtnItem(
+                    checkboxSquareMlc: DSCheckboxSquareMlc(
+                        id: "checkbox_1",
+                        label: "First checkbox option",
+                        isSelected: true,
+                        isEnabled: true,
+                        componentId: "componentId",
+                        blocker: false,
+                        options: [
+                            DSCheckboxOption(id: "option_1", isSelected: true)
+                        ]
+                    )
+                ),
+                DSCheckboxBtnItem(
+                    checkboxSquareMlc: DSCheckboxSquareMlc(
+                        id: "checkbox_2",
+                        label: "Second checkbox option",
+                        isSelected: false,
+                        isEnabled: true,
+                        componentId: "componentId",
+                        blocker: false,
+                        options: [
+                            DSCheckboxOption(id: "option_2", isSelected: false)
+                        ]
+                    )
+                )
+            ],
+            btnPrimaryDefaultAtm: DSButtonModel.mock,
+            btnPrimaryWideAtm: DSButtonModel.mock,
+            btnStrokeWideAtm: DSButtonModel.mock,
+            btnPlainAtm: DSButtonModel.mock,
+            componentId: "componentId"
+        )
+        return .dictionary([
+            modelKey: .fromEncodable(encodable: model)
+        ])
     }
 }

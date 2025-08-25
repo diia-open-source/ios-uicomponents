@@ -4,7 +4,7 @@ import DiiaCommonTypes
 
 public struct DSPaginationListWhiteViewBuilder: DSViewBuilderProtocol {
     
-    public static let modelKey = "paginationListWhiteOrg"
+    public let modelKey = "paginationListWhiteOrg"
     
     public init() {}
     
@@ -12,7 +12,7 @@ public struct DSPaginationListWhiteViewBuilder: DSViewBuilderProtocol {
                   withPadding padding: DSViewPaddingType,
                   viewFabric: DSViewFabric? = nil,
                   eventHandler: @escaping (ConstructorItemEvent) -> Void) -> UIView? {
-        guard let data: DSPaginationListModel = object.parseValue(forKey: Self.modelKey) else { return nil }
+        guard let data: DSPaginationListModel = object.parseValue(forKey: self.modelKey) else { return nil }
         
         let view = DSConstructorWhitePaginationView()
         if let fabric = viewFabric {
@@ -22,7 +22,7 @@ public struct DSPaginationListWhiteViewBuilder: DSViewBuilderProtocol {
         view.set(eventHandler: eventHandler)
         view.configure(with: viewModel)
         let boxView = BoxView(subview: view)
-            .withConstraints(insets: Constants.tablePadding)
+            .withConstraints(insets: padding.defaultPadding(object: object, modelKey: modelKey))
         return boxView
     }
 }
@@ -30,5 +30,14 @@ public struct DSPaginationListWhiteViewBuilder: DSViewBuilderProtocol {
 extension DSPaginationListWhiteViewBuilder {
     enum Constants {
         static let tablePadding = UIEdgeInsets(top: 24, left: 24, bottom: 0, right: 24)
+    }
+}
+
+extension DSPaginationListWhiteViewBuilder: DSViewMockableBuilderProtocol {
+    public func makeMockModel() -> AnyCodable {
+        let model = DSPaginationListModel(componentId: "componentId", limit: 50, showDivider: false)
+        return .dictionary([
+            modelKey: .fromEncodable(encodable: model)
+        ])
     }
 }

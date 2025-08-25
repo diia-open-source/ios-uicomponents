@@ -4,13 +4,13 @@ import DiiaCommonTypes
 
 /// design_system_code: inputNumberFractionalMlc
 public struct DSInputNumberFractionalViewBuilder: DSViewBuilderProtocol {
-    public static let modelKey = "inputNumberFractionalMlc"
+    public let modelKey = "inputNumberFractionalMlc"
     
     public func makeView(from object: AnyCodable,
                          withPadding paddingType: DSViewPaddingType,
                          viewFabric: DSViewFabric?,
                          eventHandler: @escaping (ConstructorItemEvent) -> Void) -> UIView? {
-        guard let data: DSInputNumberMlc = object.parseValue(forKey: Self.modelKey) else { return nil }
+        guard let data: DSInputNumberMlc = object.parseValue(forKey: self.modelKey) else { return nil }
 
         let inputView = TitledTextFieldView()
 
@@ -35,12 +35,34 @@ public struct DSInputNumberFractionalViewBuilder: DSViewBuilderProtocol {
             keyboardType: .decimalPad,
             onChangeText: { text in
                 eventHandler(.inputChanged(.init(
-                    inputCode: data.inputCode ?? Self.modelKey,
+                    inputCode: data.inputCode ?? self.modelKey,
                     inputData: .string(text))))
             }
         ))
 
-        let paddingBox = BoxView(subview: inputView).withConstraints(insets: paddingType.defaultPadding())
+        let paddingBox = BoxView(subview: inputView).withConstraints(insets: paddingType.defaultPadding(object: object, modelKey: modelKey))
         return paddingBox
+    }
+}
+
+// MARK: - Mock
+extension DSInputNumberFractionalViewBuilder: DSViewMockableBuilderProtocol {
+    public func makeMockModel() -> AnyCodable {
+        let model = DSInputNumberMlc(
+            componentId: "componentId",
+            inputCode: "inputCode",
+            label: "label",
+            placeholder: "placeholder",
+            hint: "hint",
+            value: 0,
+            maxValue: 100,
+            minValue: 0,
+            mandatory: true,
+            errorMessage: "errorMessage"
+        )
+        
+        return .dictionary([
+            modelKey: .fromEncodable(encodable: model)
+        ])
     }
 }

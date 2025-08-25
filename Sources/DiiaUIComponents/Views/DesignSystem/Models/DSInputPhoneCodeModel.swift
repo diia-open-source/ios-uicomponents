@@ -10,6 +10,7 @@ public struct DSInputPhoneCodeModel: Codable {
     public let inputPhoneMlc: DSInputPhoneModel
     public let codeValueId: String?
     public let codeValueIsEditable: Bool?
+    public let isDisable: Bool?
     public let codes: [DSPhoneCodeModel]
     
     public init(
@@ -21,7 +22,8 @@ public struct DSInputPhoneCodeModel: Codable {
         inputPhoneMlc: DSInputPhoneModel,
         codeValueId: String?,
         codeValueIsEditable: Bool?,
-        codes: [DSPhoneCodeModel]
+        codes: [DSPhoneCodeModel],
+        isDisable: Bool?
     ) {
         self.componentId = componentId
         self.label = label
@@ -32,6 +34,7 @@ public struct DSInputPhoneCodeModel: Codable {
         self.codeValueId = codeValueId
         self.codeValueIsEditable = codeValueIsEditable
         self.codes = codes
+        self.isDisable = isDisable
     }
 }
 
@@ -78,6 +81,7 @@ public struct DSPhoneCodeModel: Codable {
     public var value: String
     public let icon: String
     public let validation: [InputValidationModel]?
+    public let isDisable: Bool?
     
     public init(
         id: String,
@@ -87,7 +91,8 @@ public struct DSPhoneCodeModel: Codable {
         description: String,
         value: String,
         icon: String,
-        validation: [InputValidationModel]?
+        validation: [InputValidationModel]?,
+        isDisable: Bool?
     ) {
         self.id = id
         self.maskCode = maskCode
@@ -97,5 +102,6 @@ public struct DSPhoneCodeModel: Codable {
         self.value = value
         self.icon = icon
         self.validation = validation
+        self.isDisable = isDisable
     }
 }
