@@ -1,3 +1,4 @@
+
 import UIKit
 
 public class ActionCollectionCell: BaseCollectionNibCell, NibLoadable {

@@ -9,7 +9,7 @@ public struct DSInputTextMlc: Codable {
     public let placeholder: String?
     public let hint: String?
     public let value: String?
-    public let mask: String?
+    public let maskCode: String?
     public let mandatory: Bool?
     public let validation: [InputValidationModel]?
     public let inputCode: String?
@@ -17,7 +17,7 @@ public struct DSInputTextMlc: Codable {
     public let keyboardType: Int?
     public let isDisable: Bool?
     
-    public init(id: String?, blocker: Bool?, label: String, placeholder: String?, hint: String?, value: String?, mandatory: Bool?, validation: [InputValidationModel]?, inputCode: String?, iconRight: DSIconModel? = nil, mask: String? = nil, keyboardType: Int? = nil, isDisable: Bool? = nil) {
+    public init(id: String?, blocker: Bool?, label: String, placeholder: String?, hint: String?, value: String?, mandatory: Bool?, validation: [InputValidationModel]?, inputCode: String?, iconRight: DSIconModel? = nil, maskCode: String? = nil, keyboardType: Int? = nil, isDisable: Bool? = nil) {
         self.id = id
         self.blocker = blocker
         self.label = label
@@ -29,7 +29,7 @@ public struct DSInputTextMlc: Codable {
         self.inputCode = inputCode
         self.keyboardType = keyboardType
         self.isDisable = isDisable
-        self.mask = mask
+        self.maskCode = maskCode
         self.iconRight = iconRight
     }
 }

@@ -1,3 +1,4 @@
+
 import Foundation
 
 open class SelectableViewModel: NSObject {

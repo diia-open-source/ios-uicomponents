@@ -1,3 +1,4 @@
+
 import UIKit
 
 class EqualTabCollectionCell: BaseCollectionNibCell, NibLoadable {

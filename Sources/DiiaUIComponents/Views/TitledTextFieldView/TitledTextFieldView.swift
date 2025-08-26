@@ -196,6 +196,7 @@ public class TitledTextFieldView: BaseCodeView, DSInputComponentProtocol {
                 title: viewModel.title,
                 placeholder: viewModel.placeholder,
                 validators: validators,
+                mask: viewModel.mask,
                 defaultText: viewModel.defaultText,
                 instructionsText: viewModel.instructionsText,
                 keyboardType: viewModel.keyboardType,

@@ -29,7 +29,7 @@ public struct InputTextV2Builder: DSViewBuilderProtocol {
             title: data.label,
             placeholder: data.placeholder ?? .empty,
             validators: validators,
-            mask: data.mask,
+            mask: data.maskCode,
             mandatory: data.mandatory,
             defaultText: data.value,
             instructionsText: data.hint,
@@ -40,7 +40,19 @@ public struct InputTextV2Builder: DSViewBuilderProtocol {
                     inputData: .string(text))))
             }
         )
-
+        
+        if let mask = data.maskCode {
+            viewModel.shouldChangeCharacters = TextInputFormatter.textFormatter(
+                textField: inputView.textField,
+                mask: mask,
+                onChange: { text in
+                    eventHandler(.inputChanged(.init(
+                        inputCode: data.inputCode ?? self.modelKey,
+                        inputData: .string(text.removingMask(mask: mask) ?? text))))
+                }
+            )
+        }
+        
         inputView.configure(viewModel: viewModel)
 
         if data.isDisable == true {

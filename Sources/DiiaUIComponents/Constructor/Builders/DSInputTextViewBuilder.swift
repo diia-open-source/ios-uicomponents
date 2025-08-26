@@ -32,13 +32,13 @@ public struct DSInputTextViewBuilder: DSViewBuilderProtocol {
             })
         }
         
-        inputView.configure(viewModel: TitledTextFieldViewModel(
+        let vm = TitledTextFieldViewModel(
             id: data.id,
             inputCode: data.inputCode,
             title: data.label,
             placeholder: data.placeholder ?? .empty,
             validators: validators,
-            mask: data.mask,
+            mask: data.maskCode,
             mandatory: data.mandatory,
             defaultText: data.value,
             instructionsText: data.hint,
@@ -49,8 +49,22 @@ public struct DSInputTextViewBuilder: DSViewBuilderProtocol {
                     inputData: .string(text))))
             },
             rightAction: rightAction
-        ))
-
+        )
+        
+        if let mask = data.maskCode {
+            vm.shouldChangeCharacters = TextInputFormatter.textFormatter(
+                textField: inputView.textField,
+                mask: mask,
+                onChange: { text in
+                    eventHandler(.inputChanged(.init(
+                        inputCode: data.inputCode ?? self.modelKey,
+                        inputData: .string(text.removingMask(mask: mask) ?? text))))
+                }
+            )
+        }
+        
+        inputView.configure(viewModel: vm)
+        
         let insets = paddingType.defaultPadding(object: object, modelKey: modelKey)
         let paddingBox = BoxView(subview: inputView).withConstraints(insets: insets)
         return paddingBox

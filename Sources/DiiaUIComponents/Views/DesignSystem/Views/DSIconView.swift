@@ -30,6 +30,7 @@ public class DSIconView: BaseCodeView {
     // MARK: - Public Methods
     public func setIcon(_ icon: DSIconModel) {
         self.model = icon
+        self.isUserInteractionEnabled = icon.action != nil
 
         accessibilityIdentifier = icon.componentId
         accessibilityLabel = icon.accessibilityDescription

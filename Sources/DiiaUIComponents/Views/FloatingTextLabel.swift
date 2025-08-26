@@ -1,3 +1,4 @@
+
 import UIKit
 
 /// design_system_code: tickerAtm
