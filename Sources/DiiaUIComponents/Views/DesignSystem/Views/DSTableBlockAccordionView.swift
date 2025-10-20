@@ -19,9 +19,9 @@ public class DSTableBlockAccordionView: BaseCodeView {
     
     private let accordionIcon = UIImageView()
     private let headingLabel = UILabel().withParameters(font: FontBook.smallHeadingFont)
-    private let mainStack =  UIStackView.create(.vertical, views: [], spacing: Constants.stackSpacing).withMargins(Constants.mainStackInsets)
-    private let itemsStack = UIStackView.create(.vertical, views: [], spacing: Constants.stackSpacing)
-    private let headingStack = UIStackView.create(.horizontal, views: [], spacing: Constants.stackSpacing, alignment: .center)
+    private let mainStack =  UIStackView.create(.vertical, spacing: Constants.stackSpacing).withMargins(Constants.mainStackInsets)
+    private let itemsStack = UIStackView.create(.vertical, spacing: Constants.stackSpacing)
+    private let headingStack = UIStackView.create(.horizontal, spacing: Constants.stackSpacing, alignment: .center)
     private var isOpened = false
 
     private var viewFabric = DSViewFabric.instance

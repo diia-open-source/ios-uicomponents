@@ -29,7 +29,7 @@ class DSLogoLinkView: BaseCodeView {
             self?.imageView.isHidden = false
             self?.loadingView.isHidden = true
         }
-        imageView.loadImage(imageURL: link, placeholder: R.image.defaultLoadingIcon.image, completion: finishCallback, onError: finishCallback)
+        imageView.loadImage(imageURL: link, placeholder: R.image.defaultIconLarge.image, completion: finishCallback, onError: finishCallback)
     }
     
     public func configure(data: DSLogoAtm) {

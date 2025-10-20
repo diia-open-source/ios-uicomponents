@@ -62,10 +62,10 @@ public final class DSMediaUploadViewModel: NSObject {
 
 /// design_system_code: mediaUploadGroupOrg
 public final class DSMediaUploadView: BaseCodeView {
-    private let mainStack =  UIStackView.create(views: [], spacing: Constants.stackSpacing)
-    private let collectionStack = UIStackView.create(views: [], spacing: Constants.stackSpacing)
-    private let buttonStack = UIStackView.create(views: [])
-    private let titleStack = UIStackView.create(views: [], spacing: Constants.titleStackSpacing).withMargins(Constants.titleStackMargins)
+    private let mainStack =  UIStackView.create(spacing: Constants.stackSpacing)
+    private let collectionStack = UIStackView.create(spacing: Constants.stackSpacing)
+    private let buttonStack = UIStackView.create()
+    private let titleStack = UIStackView.create(spacing: Constants.titleStackSpacing).withMargins(Constants.titleStackMargins)
     private let separatorView = UIView().withHeight(Constants.separatorHeight)
     private let titleLabel = UILabel().withParameters(font: FontBook.usualFont)
     private let mediaDescriptionLabel = UILabel().withParameters(font: FontBook.statusFont, textColor: .black.withAlphaComponent(0.5))

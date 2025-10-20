@@ -44,15 +44,13 @@ public extension UIImage {
         
         gradientLayer.frame = CGRect(origin: .zero, size: size)
         
-        UIGraphicsBeginImageContext(size)
-        defer { UIGraphicsEndImageContext() }
+        let renderer = UIGraphicsImageRenderer(bounds: gradientLayer.frame)
         
-        guard let context = UIGraphicsGetCurrentContext() else {
-            return UIImage() 
+        let image = renderer.image { context in
+            gradientLayer.render(in: context.cgContext)
         }
         
-        gradientLayer.render(in: context)
-        return UIGraphicsGetImageFromCurrentImageContext() ?? UIImage()
+        return image
     }
 
     class func qrCode(from string: String) -> UIImage? {

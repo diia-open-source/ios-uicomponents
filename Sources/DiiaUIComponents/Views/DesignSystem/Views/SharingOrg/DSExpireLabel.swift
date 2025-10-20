@@ -34,15 +34,26 @@ public final class DSExpireLabel: BaseCodeView {
                      trailing: trailingAnchor,
                      size: .init(width: .zero,
                                  height: Constants.timerHeight))
+        
+        setupAccessibility()
     }
     
     public func configure(for model: DSExpireLabelBox) {
         firstLabel.text = model.expireLabelFirst
         lastLabel.text = model.expireLabelLast
+        
+        accessibilityLabel = model.expireLabelFirst
     }
     
     public func updateTimer(with text: String) {
         timerLabel.text = text
+        
+        accessibilityValue = text + (lastLabel.text ?? "")
+    }
+    
+    private func setupAccessibility() {
+        isAccessibilityElement = true
+        accessibilityTraits = [.staticText, .updatesFrequently]
     }
 }
 

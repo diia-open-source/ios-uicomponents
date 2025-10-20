@@ -205,10 +205,8 @@ public class DSInputDateView: BaseCodeView, DSInputComponentProtocol {
 
         datePicker.datePickerMode = .date
         datePicker.locale = .init(identifier: "uk_UA")
-        if #available(iOS 13.4, *) {
-            datePicker.preferredDatePickerStyle = .wheels
-        }
-
+        datePicker.preferredDatePickerStyle = .wheels
+        
         let toolbar = ToolbarWithTrailingButton(target: self, action: #selector(dateUpdated))
         
         datePickerTextField.inputAccessoryView = toolbar

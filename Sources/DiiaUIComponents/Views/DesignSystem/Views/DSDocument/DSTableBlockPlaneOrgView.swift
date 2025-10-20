@@ -3,8 +3,8 @@ import UIKit
 
 public class DSTableBlockPlaneOrgView: BaseCodeView {
     
-    let mainStack = UIStackView.create(.vertical, views: [], spacing: Constants.stackSpacing)
-    let headingStack = UIStackView.create(.vertical, views: [], spacing: Constants.headingSpacing)
+    let mainStack = UIStackView.create(.vertical, spacing: Constants.stackSpacing)
+    let headingStack = UIStackView.create(.vertical, spacing: Constants.headingSpacing)
     let headingLabel = UILabel()
     let subheadingLabel = UILabel()
 
@@ -100,6 +100,7 @@ public class DSTableBlockPlaneOrgView: BaseCodeView {
 
     private func btnLinkAtmView(model: DSButtonModel, eventHandler: ((ConstructorItemEvent) -> Void)? = nil) -> UIView {
         let view = DSLinkButton()
+        view.contentHorizontalAlignment = .left
         view.setTitle(model.label)
         view.onClick = {
             guard let action = model.action else { return }

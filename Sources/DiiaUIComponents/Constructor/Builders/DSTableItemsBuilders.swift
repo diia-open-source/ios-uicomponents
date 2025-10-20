@@ -21,7 +21,7 @@ public struct DSTableItemVerticalMlcBuilder: DSViewBuilderProtocol {
             return BoxView(subview: view).withConstraints(insets: paddingType.defaultPadding(object: object, modelKey: modelKey))
         } else {
             let view = DSTableItemVerticalView()
-            view.configure(model: data, eventHandler: eventHandler)
+            view.configure(model: data, eventHandler: eventHandler, urlOpener: UIComponentsConfiguration.shared.urlOpener)
             return BoxView(subview: view).withConstraints(insets: paddingType.defaultPadding(object: object, modelKey: modelKey))
         }
     }

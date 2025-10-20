@@ -51,7 +51,7 @@ public class DSTableBlockTwoColumnsPlaneOrgView: BaseCodeView {
             photoItemView.withBorder(width: 1, color: Constants.borderColor)
             tableStackView.addArrangedSubview(photoItemView)
         }
-        let verticalStackView = UIStackView.create(.vertical, views: [], spacing: Constants.verticalStackSpace)
+        let verticalStackView = UIStackView.create(.vertical, spacing: Constants.verticalStackSpace)
         if let itemsData = models.items {
             for item in itemsData {
                 let view = DSTableItemVerticalView()

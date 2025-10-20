@@ -5,7 +5,7 @@ import UIKit
 public class DSTableItemsBlock: BaseCodeView {
     
     private let tableHeadingLabel = UILabel().withParameters(font: FontBook.smallHeadingFont)
-    private let blockStack = UIStackView.create(views: [], spacing: Constants.stackSpacing)
+    private let blockStack = UIStackView.create(spacing: Constants.stackSpacing)
     private let whiteView = UIView()
     
     // MARK: Life cycle

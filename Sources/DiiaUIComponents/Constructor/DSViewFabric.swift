@@ -283,6 +283,7 @@ public extension DSViewFabric {
         DSEditAutomaticallyDeterminedValueBuilder(),
         PhotoCardCarouselBuilder(),
         PhotoCardMlcBuidler(),
+        DSSelectorOrgV2Builder(),
         CardProgressMlcBuilder()
     ]
 }

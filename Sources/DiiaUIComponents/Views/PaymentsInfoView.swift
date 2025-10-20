@@ -15,7 +15,7 @@ public struct PaymentPair {
 
 public class PaymentsInfoView: BaseCodeView {
 
-    private let stackView = UIStackView.create(views: [], spacing: Constants.spacing)
+    private let stackView = UIStackView.create(spacing: Constants.spacing)
     
     public override func setupSubviews() {
         backgroundColor = .white.withAlphaComponent(Constants.backgroundAlpha)

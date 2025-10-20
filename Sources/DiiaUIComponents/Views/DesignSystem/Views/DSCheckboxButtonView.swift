@@ -35,7 +35,7 @@ public class DSCheckboxButtonViewModel {
 
 public class DSCheckboxButtonView: BaseCodeView, DSInputComponentProtocol {
     
-    private let checkboxStackView = UIStackView.create(views: [], spacing: Constants.spacing)
+    private let checkboxStackView = UIStackView.create(spacing: Constants.spacing)
     private let primaryButton = DSPrimaryDefaultButton()
     private let plainButton = DSLoadingButton()
     private let strokeButtonBox: BoxView<DSLoadingButton> = {

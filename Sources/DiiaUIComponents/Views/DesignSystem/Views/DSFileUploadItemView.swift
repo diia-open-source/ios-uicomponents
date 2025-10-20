@@ -49,9 +49,9 @@ final public class DSFileUploadItemView: BaseCodeView {
     private let icon = UIImageView()
     private let titleLabel = UILabel().withParameters(font: FontBook.bigText)
     private let errorLabel = UILabel().withParameters(font: FontBook.usualFont)
-    private let mainStack = UIStackView.create(views: []).withMargins(Constants.mainStackInsets)
-    private let fileStack = UIStackView.create(.horizontal, views: [], spacing: Constants.fileStackSpacing, alignment: .center)
-    private let labelsStack = UIStackView.create(views: [])
+    private let mainStack = UIStackView.create().withMargins(Constants.mainStackInsets)
+    private let fileStack = UIStackView.create(.horizontal, spacing: Constants.fileStackSpacing, alignment: .center)
+    private let labelsStack = UIStackView.create()
     
     private weak var viewModel: DSFileUploadItemViewModel?
     

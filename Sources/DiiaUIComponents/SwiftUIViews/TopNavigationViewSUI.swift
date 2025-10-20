@@ -3,7 +3,6 @@ import SwiftUI
 import DiiaMVPModule
 import DiiaCommonTypes
 
-@available(iOS 13.0, *)
 public final class TopNavigationViewModel: ObservableObject {
     public let contextMenu: ContextMenuProviderProtocol
     @Published var title: String
@@ -26,7 +25,6 @@ public final class TopNavigationViewModel: ObservableObject {
     }
 }
 
-@available(iOS 13.0, *)
 public struct TopNavigationViewSUI: View {
     @ObservedObject var viewModel: TopNavigationViewModel
 

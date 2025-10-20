@@ -14,6 +14,8 @@ enum R {
         case document_accessibility_signature_photo
         
         case accessibility_photo_url
+        case general_accessibility_filters_applied
+        case general_accessibility_text_field_clear_button
         
         // MARK: - General
         case general_ok

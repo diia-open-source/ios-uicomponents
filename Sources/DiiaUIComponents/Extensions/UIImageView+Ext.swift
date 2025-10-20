@@ -17,7 +17,11 @@ public enum ImagePositionAlignment {
 
 public extension UIImageView {
     func loadImage(imageURL: String?, placeholder: UIImage? = nil, completion: Callback? = nil, onError: Callback? = nil) {
-        loadImageViaKFService(imageURL: imageURL, placeholder: placeholder, completion: completion, onError: onError)
+        if let loader = UIComponentsConfiguration.shared.imageLoader {
+            loader.loadImage(to: self, imageURL: imageURL, placeholder: placeholder, completion: completion, onError: onError)
+        } else {
+            loadImageViaKFService(imageURL: imageURL, placeholder: placeholder, completion: completion, onError: onError)
+        }
     }
 
     func loadImageFromPrivateRepo(imageURL: String?,
@@ -100,4 +104,12 @@ public extension UIImageView {
             }
         )
     }
+}
+
+public protocol ImageLoaderProtocol {
+    func loadImage(to imageView: UIImageView,
+                   imageURL: String?,
+                   placeholder: UIImage?,
+                   completion: Callback?,
+                   onError: Callback?)
 }

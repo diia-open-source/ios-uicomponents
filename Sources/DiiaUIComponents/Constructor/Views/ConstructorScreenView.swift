@@ -5,10 +5,10 @@ public class ConstructorScreenView: BaseCodeView {
     
     public let backgroundImageView = UIImageView()
     public let loadingView = ContentLoadingView()
-    public let topGroupStack: UIStackView = .create(views: [])
-    public let bodyStack: UIStackView = .create(views: [])
+    public let topGroupStack: UIStackView = .create()
+    public let bodyStack: UIStackView = .create()
     public let bodyScrollView: ExtendedScrollView = .init()
-    public let bottomStack: UIStackView = .create(views: [])
+    public let bottomStack: UIStackView = .create()
     
     public var bottomGroupBottomConstraint: NSLayoutConstraint?
     private var bottomGroupHeightConstraint: NSLayoutConstraint?

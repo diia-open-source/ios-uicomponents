@@ -2,18 +2,37 @@
 import UIKit
 
 public class DSVStackView: BaseCodeView {
+    // MARK: - Properties
     private var arrangedSubviews: [UIView] = []
     
     private var heightConstraint: NSLayoutConstraint?
     private var calculatedHeight: CGFloat = 0
     private var previousLayoutWidth: CGFloat = 0
-    
+    private var needsLayout = false
+
+    // MARK: - Lifecycle
+    public override func setNeedsLayout() {
+        super.setNeedsLayout()
+        needsLayout = true
+    }
+
     public override func setupSubviews() {
         clearSubviews()
         heightConstraint = heightAnchor.constraint(equalToConstant: 0)
         heightConstraint?.isActive = true
     }
-    
+
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+        let width = frame.width
+        if width != previousLayoutWidth || needsLayout {
+            previousLayoutWidth = width
+            needsLayout = false
+            recalculateArrangedSubviewsFrames()
+        }
+    }
+
+    // MARK: - Public
     public func addArrangedSubviews(_ subviews: [UIView]) {
         for view in subviews {
             addSubviewToBottom(view)
@@ -21,16 +40,7 @@ public class DSVStackView: BaseCodeView {
         heightConstraint?.constant = calculatedHeight
         layoutIfNeeded()
     }
-    
-    public override func layoutSubviews() {
-        super.layoutSubviews()
-        let width = frame.width
-        if width != previousLayoutWidth {
-            previousLayoutWidth = width
-            recalculateArrangedSubviewsFrames()
-        }
-    }
-    
+
     public func clearSubviews() {
         calculatedHeight = 0
         heightConstraint?.constant = 0
@@ -38,7 +48,8 @@ public class DSVStackView: BaseCodeView {
         arrangedSubviews = []
         layoutIfNeeded()
     }
-    
+
+    // MARK: - Private
     private func addSubviewToBottom(_ subview: UIView) {
         addSubview(subview)
         subview.translatesAutoresizingMaskIntoConstraints = true

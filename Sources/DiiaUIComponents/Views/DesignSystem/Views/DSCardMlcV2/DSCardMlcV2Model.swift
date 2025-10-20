@@ -8,7 +8,7 @@ public class DSCardMlcV2ViewModel {
     public let rightLabel: String?
     public let descriptions: [String]?
     public let rows: [String]?
-    public let chips: [DSCardStatusChipMlc]
+    public let chips: [DSCardStatusChipMlc]?
     public let iconUrlAtm: DSIconUrlAtmModel?
     public let smallIconAtm: DSIconModel?
     public let smallIconAtmState: Observable<String> = .init(value: .empty)
@@ -28,7 +28,7 @@ public class DSCardMlcV2ViewModel {
                 rightLabel: String?,
                 descriptions: [String]?,
                 rows: [String]?,
-                chips: [DSCardStatusChipMlc],
+                chips: [DSCardStatusChipMlc]?,
                 iconUrlAtm: DSIconUrlAtmModel?,
                 smallIconAtm: DSIconModel?,
                 smallIconAtmWithStates: DSSmallIconAtmWithStatesModel?,
@@ -83,7 +83,7 @@ public struct DSCardMlcV2Model: Codable {
     public let rightLabel: String?
     public let descriptions: [String]?
     public let rows: [String]?
-    public let chips: [DSCardStatusChipMlc]
+    public let chips: [DSCardStatusChipMlc]?
     public let iconUrlAtm: DSIconUrlAtmModel?
     public let smallIconAtm: DSIconModel?
     public let smallIconAtmWithStates: DSSmallIconAtmWithStatesModel?
@@ -96,7 +96,7 @@ public struct DSCardMlcV2Model: Codable {
                 rightLabel: String?,
                 descriptions: [String]?,
                 rows: [String]?,
-                chips: [DSCardStatusChipMlc],
+                chips: [DSCardStatusChipMlc]?,
                 iconUrlAtm: DSIconUrlAtmModel?,
                 smallIconAtm: DSIconModel?,
                 smallIconAtmWithStates: DSSmallIconAtmWithStatesModel?,

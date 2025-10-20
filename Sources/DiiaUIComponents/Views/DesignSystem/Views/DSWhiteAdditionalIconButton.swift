@@ -55,8 +55,10 @@ public class DSWhiteAdditionalIconButton: BaseCodeView {
         label.text = viewModel.name
         
         viewModel.badgeCount.observe(observer: self) { [weak self] count in
-            self?.badgeCounter.isHidden = count == 0
+            let isHidden = count == 0
+            self?.badgeCounter.isHidden = isHidden
             self?.badgeCounter.set(count: String(count))
+            self?.accessibilityValue = isHidden ? nil : R.Strings.general_accessibility_filters_applied.formattedLocalized(arguments: count)
         }
         
         iconView.image = viewModel.image

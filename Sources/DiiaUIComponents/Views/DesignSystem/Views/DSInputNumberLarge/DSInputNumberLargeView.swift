@@ -58,7 +58,6 @@ public class DSInputNumberLargeView: BaseCodeView, DSInputComponentProtocol {
     // MARK: - Subviews
     private lazy var numberStackView = UIStackView.create(
         .horizontal,
-        views: [],
         spacing: Constants.spacing,
         distribution: .fillEqually,
         in: self)

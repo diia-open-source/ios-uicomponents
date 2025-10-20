@@ -115,8 +115,7 @@ public class ChecklistView: BaseCodeView, DSInputComponentProtocol, DSResetState
         itemView.configure(with: itemVM)
         itemView.setupUI(checkboxStyle: viewModel.checklistType.checkboxStyle)
         itemViews.append(itemView)
-        let itemViewBox = BoxView(subview: itemView).withConstraints(insets: Constants.contentInsets)
-        stackView.addArrangedSubview(itemViewBox)
+        stackView.addArrangedSubview(itemView)
     }
     
     private func addPlainButton(with model: Action) {

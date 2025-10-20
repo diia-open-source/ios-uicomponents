@@ -4,13 +4,13 @@ import DiiaCommonTypes
 
 public class ConstructorModalView: BaseCodeView {
     
-    public let topGroupStack: UIStackView = .create(views: [])
-    public let bodyStack: UIStackView = .create(views: [])
+    public let topGroupStack: UIStackView = .create()
+    public let bodyStack: UIStackView = .create()
     public let bodyScrollView: ExtendedScrollView = .init()
-    public let bottomStack: UIStackView = .create(views: [])
+    public let bottomStack: UIStackView = .create()
     public let loadingView = ContentLoadingView()
     
-    private var closeButton = ActionButton(type: .icon)
+    private var closeButton = ActionButton(type: .icon).withSize(Constants.closeBtnSize)
     private var loadingIndicator = UIProgressView()
     private var loadingLabel = UILabel()
     
@@ -23,26 +23,21 @@ public class ConstructorModalView: BaseCodeView {
         loadingView.setLoadingState(.ready)
         
         bodyScrollView.addSubview(bodyStack)
-        addSubviews([topGroupStack, bodyScrollView, bottomStack, bodyScrollView, closeButton])
+        addSubviews([topGroupStack, bodyScrollView, bottomStack, bodyScrollView])
         
         bodyScrollView.contentInset = .init(top: Constants.groupPadding, left: .zero, bottom: .zero, right: .zero)
         
-        closeButton.anchor(top: safeAreaLayoutGuide.topAnchor,
-                           leading: topGroupStack.trailingAnchor,
-                           trailing: trailingAnchor,
-                           padding: Constants.closeBtnPadding,
-                           size: Constants.closeBtnSize)
         closeButton.contentEdgeInsets = Constants.closeBtnInnerPadding
+        closeButton.isHidden = true
+        
         topGroupStack.anchor(top: safeAreaLayoutGuide.topAnchor,
                              leading: leadingAnchor,
-                             bottom: nil,
-                             trailing: nil,
+                             trailing: trailingAnchor,
                              padding: .zero)
         topGroupStack.addArrangedSubview(UIView().withHeight(.zero))
         
         bodyScrollView.anchor(top: topGroupStack.bottomAnchor,
                               leading: leadingAnchor,
-                              bottom: nil,
                               trailing: trailingAnchor)
         bodyStack.fillSuperview()
         bodyStack.anchor(top: bodyScrollView.topAnchor, leading: leadingAnchor, bottom: nil, trailing: trailingAnchor)
@@ -82,14 +77,21 @@ public class ConstructorModalView: BaseCodeView {
             bodyScrollView.contentInset.top = Constants.groupPadding
         } else {
             bodyScrollView.contentInset.top = .zero
-            topGroupStack.addArrangedSubviews(views)
+            
+            var topViews = views
+            setupCloseButton(views: &topViews, for: topGroupStack)
+            
+            topGroupStack.addArrangedSubviews(topViews)
         }
     }
     
     public func setupBody(views: [UIView], withCloseButton: Bool = true) {
-        closeButton.isHidden = !withCloseButton
         bodyStack.safelyRemoveArrangedSubviews()
-        bodyStack.addArrangedSubviews(views)
+        var bodyViews = views
+        if closeButton.isHidden, withCloseButton, !bodyViews.isEmpty {
+            setupCloseButton(views: &bodyViews, for: bodyStack)
+        }
+        bodyStack.addArrangedSubviews(bodyViews)
     }
     
     public func setupBottomGroup(views: [UIView]) {
@@ -108,6 +110,21 @@ public class ConstructorModalView: BaseCodeView {
             bodyScrollView.contentInset.bottom = 0
         }
         bodyScrollView.separatorShouldAlwaysBeVisible = views.isEmpty ? false : nil
+    }
+    
+    private func setupCloseButton(views: inout [UIView], for stackView: UIStackView) {
+        closeButton.isHidden = false
+        closeButton.backgroundColor = .clear
+        let bottomBox = BoxView(subview: closeButton)
+            .withConstraints(insets: .init(top: 0, left: 0, bottom: 0, right: Constants.padding))
+        let topView = views.removeFirst()
+        let spacer = UIView()
+        spacer.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        spacer.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        let topBlock = UIStackView.create(.horizontal,
+                                          views: [topView, spacer, bottomBox],
+                                          alignment: .top)
+        stackView.addArrangedSubview(topBlock)
     }
     
     public func setupCloseAction(action: Action) {

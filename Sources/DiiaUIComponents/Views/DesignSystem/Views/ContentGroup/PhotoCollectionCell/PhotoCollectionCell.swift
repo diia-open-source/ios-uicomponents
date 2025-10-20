@@ -9,11 +9,14 @@ public class PhotoCollectionCell: BaseCollectionNibCell, NibLoadable {
     
     public static let nib = UINib(nibName: reuseID, bundle: Bundle.module)
     
-    public func configure(with imageURL: String, showLoading: Bool = false) {
+    public func configure(with imageURL: String, accessibilityDescription: String? = nil, showLoading: Bool = false) {
         setupStaticViews()
+        setupAccessibility()
         
         let completion = showImageLoading(isActive: showLoading)
         imageView.loadImage(imageURL: imageURL, completion: completion)
+        
+        imageView.accessibilityLabel = accessibilityDescription
     }
 }
 
@@ -64,5 +67,16 @@ private extension PhotoCollectionCell {
         UIView.animate(withDuration: Constants.progressAnimationDuration, delay: 0, options: [.repeat], animations: { [unowned self] in
             self.loadingIndicator.layoutIfNeeded()
         })
+    }
+    
+    func setupAccessibility() {
+        loadingIndicator.isAccessibilityElement = false
+        
+        loadingTitle.isAccessibilityElement = true
+        loadingTitle.accessibilityTraits = .staticText
+        loadingTitle.accessibilityLabel = R.Strings.general_loading.localized()
+        
+        imageView.isAccessibilityElement = true
+        imageView.accessibilityTraits = .image
     }
 }

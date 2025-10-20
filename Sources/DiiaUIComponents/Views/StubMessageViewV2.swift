@@ -8,12 +8,14 @@ public class StubMessageViewModel {
     public let descriptionText: String?
     public let componentId: String?
     public let btnTitle: String?
+    public let btnAccessibilityHint: String?
     public let parameters: [TextParameter]?
     public var repeatAction: Callback?
     
     public init(icon: String = "",
                 title: String? = nil,
                 btnTitle: String? = nil,
+                btnAccessibilityHint: String? = nil,
                 descriptionText: String? = nil,
                 componentId: String? = nil,
                 parameters: [TextParameter]? = nil,
@@ -21,6 +23,7 @@ public class StubMessageViewModel {
         self.icon = icon
         self.title = title
         self.btnTitle = btnTitle
+        self.btnAccessibilityHint = btnAccessibilityHint
         self.descriptionText = descriptionText
         self.parameters = parameters
         self.componentId = componentId
@@ -32,6 +35,7 @@ public class StubMessageViewModel {
         self.icon = model.icon ?? ""
         self.title = model.title
         self.btnTitle = model.btnStrokeAdditionalAtm?.label
+        self.btnAccessibilityHint = model.btnStrokeAdditionalAtm?.accessibilityHint
         self.descriptionText = model.description
         self.componentId = model.componentId
         self.parameters = model.parameters
@@ -54,6 +58,7 @@ public class StubMessageViewV2: BaseCodeView {
     public override func setupSubviews() {
         setupView()
         setupButton()
+        setupAccessibility()
     }
     
     // MARK: - Public Methods
@@ -87,6 +92,7 @@ public class StubMessageViewV2: BaseCodeView {
         repeatButton.isHidden = viewModel.btnTitle == nil || viewModel.repeatAction == nil
         repeatButton.titleLabel?.font = buttonFont
         repeatButton.setTitle(viewModel.btnTitle, for: .normal)
+        repeatButton.accessibilityLabel = viewModel.btnAccessibilityHint ?? viewModel.btnTitle
     }
     
     public func configure(btnTitle: String,
@@ -141,6 +147,11 @@ public class StubMessageViewV2: BaseCodeView {
         repeatButton.contentEdgeInsets = Constants.buttonInsets
         repeatButton.addTarget(self, action: #selector(repeatTapped), for: .touchUpInside)
         repeatButton.withHeight(Constants.buttonHeight)
+    }
+    
+    private func setupAccessibility() {
+        repeatButton.isAccessibilityElement = true
+        repeatButton.accessibilityTraits = .button
     }
     
     // MARK: - Actions

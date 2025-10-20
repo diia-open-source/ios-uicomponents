@@ -139,6 +139,9 @@ class MediaGalleryPhotoCell: UICollectionViewCell, Reusable {
         actions.forEach { action in
             let button = ActionButton(action: action, type: .icon)
             button.tintColor = .white
+            button.isAccessibilityElement = true
+            button.accessibilityTraits = .button
+            button.accessibilityLabel = R.Strings.general_close.localized()
             button.withSize(Constants.buttonSize)
             actionStack.addArrangedSubview(button)
         }

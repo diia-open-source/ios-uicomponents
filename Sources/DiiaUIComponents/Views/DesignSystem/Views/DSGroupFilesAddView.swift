@@ -35,9 +35,9 @@ public class DSGroupFilesAddViewModel {
 }
 
 public class DSGroupFilesAddView: BaseCodeView {
-    private let mainStack =  UIStackView.create(views: [])
-    private let buttonStack = UIStackView.create(views: [])
-    private let filesStack = UIStackView.create(views: [])
+    private let mainStack =  UIStackView.create()
+    private let buttonStack = UIStackView.create()
+    private let filesStack = UIStackView.create()
     private let addButton = ActionButton()
     
     public override func setupSubviews() {

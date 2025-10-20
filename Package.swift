@@ -7,7 +7,7 @@ let package = Package(
     name: "DiiaUIComponents",
     defaultLocalization: "uk",
     platforms: [
-        .iOS(.v12)
+        .iOS(.v15)
     ],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
@@ -19,7 +19,7 @@ let package = Package(
         .package(url: "https://github.com/diia-open-source/ios-commontypes.git", .upToNextMinor(from: Version(1, 0, 0))),
         .package(url: "https://github.com/diia-open-source/ios-mvpmodule.git", .upToNextMinor(from: Version(1, 0, 0))),
         .package(url: "https://github.com/SwiftKickMobile/SwiftMessages", exact: Version(9, 0, 9)),
-        .package(url: "https://github.com/onevcat/Kingfisher", .upToNextMajor(from: "6.3.1")),
+        .package(url: "https://github.com/onevcat/Kingfisher", .upToNextMajor(from: "7.12.0")),
         .package(url: "https://github.com/airbnb/lottie-spm.git", exact: Version(4, 2, 0))
     ],
     targets: [

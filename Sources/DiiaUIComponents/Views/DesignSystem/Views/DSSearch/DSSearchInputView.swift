@@ -40,6 +40,7 @@ public class DSSearchInputView: BaseCodeView {
         clearSearchButton.withSize(Constants.buttonSize)
         stack.backgroundColor = .clear
         setupUI()
+        setupAccessibility()
     }
     
     private func setupUI() {
@@ -61,6 +62,12 @@ public class DSSearchInputView: BaseCodeView {
         searchTextField.addTarget(self, action: #selector(textChanged), for: .editingChanged)
         searchTextField.addTarget(self, action: #selector(editingEnded), for: .editingDidEnd)
         searchTextField.addTarget(self, action: #selector(editingBegin), for: .editingDidBegin)
+    }
+    
+    private func setupAccessibility() {
+        clearSearchButton.isAccessibilityElement = true
+        clearSearchButton.accessibilityTraits = .button
+        clearSearchButton.accessibilityLabel = R.Strings.general_accessibility_text_field_clear_button.localized()
     }
     
     public func setup(placeholder: String,

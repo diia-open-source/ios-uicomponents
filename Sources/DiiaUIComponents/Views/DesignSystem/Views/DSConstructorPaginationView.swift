@@ -202,9 +202,22 @@ public class DSConstructorPaginationView: BaseCodeView, DSConstructorPaginationV
         itemsStack.isHidden = true
     }
     
+    public func setStubMessage(_ items: [AnyCodable]) {
+        backgroundColor = .clear
+        addItems(items)
+    }
+    
     public func setState(state: PaginationViewState) {
         errorView.isHidden = state != .error
         loadingView.isHidden = state != .loading
+        
+        switch state {
+        case .viewDidResize:
+            itemsStack.setNeedsLayout()
+            itemsStack.layoutIfNeeded()
+        default:
+            break
+        }
     }
     
     public func setFabric(_ fabric: DSViewFabric) {

@@ -6,6 +6,7 @@ public class DSSelectorViewModel {
     public let code: String
     public var state: Observable<DropContentState>
     public let title: String
+    public let mandatory: Bool?
     public let placeholder: String
     public let hint: String?
     public let searchList: [DSListWidgetItemsContainer]
@@ -18,6 +19,7 @@ public class DSSelectorViewModel {
         code: String,
         state: DropContentState,
         title: String,
+        mandatory: Bool? = nil,
         placeholder: String,
         hint: String? = nil,
         searchList: [DSListWidgetItemsContainer],
@@ -29,6 +31,7 @@ public class DSSelectorViewModel {
         self.code = code
         self.state = .init(value: state)
         self.title = title
+        self.mandatory = mandatory
         self.placeholder = placeholder
         self.hint = hint
         self.searchList = searchList

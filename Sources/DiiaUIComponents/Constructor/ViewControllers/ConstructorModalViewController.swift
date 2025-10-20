@@ -4,11 +4,15 @@ import DiiaMVPModule
 import DiiaCommonTypes
 
 public protocol ConstructorModalScreenPresenter: BasePresenter {
+    var hasCloseButton: Bool { get }
+    
     func handleEvent(event: ConstructorItemEvent)
     func onViewAppear()
 }
 
 public extension ConstructorModalScreenPresenter {
+    var hasCloseButton: Bool { return true }
+    
     func onViewAppear() {}
 }
 
@@ -139,7 +143,7 @@ extension ConstructorModalViewController: ConstructorModalScreenViewProtocol {
         let bottomView = viewFabric.bottomGroupViews(for: model, eventHandler: eventHandler)
         
         constructorView?.setupTopGroup(views: topViews)
-        constructorView?.setupBody(views: bodyViews)
+        constructorView?.setupBody(views: bodyViews, withCloseButton: presenter.hasCloseButton)
         constructorView?.setupBottomGroup(views: bottomView)
         
         self.conditionViews = view.findTypedSubviews()

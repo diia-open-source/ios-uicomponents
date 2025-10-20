@@ -2,7 +2,7 @@
 import UIKit
 
 public class DSTransparentListView: BaseCodeView {
-    private let stackView = UIStackView.create(views: [])
+    private let stackView = UIStackView.create()
     
     override public func setupSubviews() {
         translatesAutoresizingMaskIntoConstraints = false

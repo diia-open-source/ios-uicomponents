@@ -43,6 +43,7 @@ extension R {
         case play
         case playbackSliderThumb
         case rightArrow = "right_arrow"
+        case arrowRight = "arrow_right"
         case deleteIcon
         case retry
         case ds_ellipseCross = "DS_ellipseCross"
@@ -50,6 +51,7 @@ extension R {
         case logoUaEu = "DS_logoUaEu"
         case defaultLoadingIcon = "DS_defaultLoadingIcon"
         case defaultImagePlaceholder = "DS_defaultImagePlaceholder"
+        case defaultIconLarge = "DS_defaultIconLarge"
         case checkBoxSelectedDisable
         case radioBtnSelectedDisable
         case checkboxSquarePartiallySelected

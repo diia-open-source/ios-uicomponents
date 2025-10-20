@@ -18,7 +18,7 @@ public class DSTableMainHeadingViewModel {
 public class DSTableMainHeadingView: BaseCodeView {
     
     // MARK: - Subviews
-    private let containerStackView = UIStackView.create(views: [], spacing: Constants.spacing)
+    private let containerStackView = UIStackView.create(spacing: Constants.spacing)
     private let titleLabel = UILabel().withParameters(font: FontBook.smallHeadingFont)
     private let descriptionLabel = UILabel().withParameters(font: FontBook.usualFont, textColor: Constants.valueTextColor)
     

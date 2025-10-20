@@ -31,7 +31,7 @@ public class IconedLoadingStateView: BaseCodeView {
     private let label: UILabel = UILabel().withParameters(font: FontBook.usualFont)
     
     private var observation: NSKeyValueObservation?
-    private weak var viewModel: IconedLoadingStateViewModel?
+    private var viewModel: IconedLoadingStateViewModel?
     
     public override func setupSubviews() {
         mainStack = hstack(imageView, label, spacing: Constants.spacing, alignment: .center)

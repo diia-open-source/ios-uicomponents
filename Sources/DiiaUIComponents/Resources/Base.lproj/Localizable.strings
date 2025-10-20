@@ -17,6 +17,8 @@
 "document_accessibility_signature_photo" = "Підпис власника документа";
 
 "accessibility_photo_url" = "Фотографія";
+"general_accessibility_filters_applied" = "Застосовано %d";
+"general_accessibility_text_field_clear_button" = "Очистити поле";
 
 // MARK: - General
 "general_ok" = "Добре";

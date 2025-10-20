@@ -21,10 +21,7 @@ public struct DSPrimaryButtonBuilder: DSViewBuilderProtocol {
         button.configure(viewModel: vm)
         button.contentEdgeInsets = Constants.buttonEdgeInsets
         button.withHeight(Constants.buttonHeight)
-        let stackView = UIStackView.create(.vertical, alignment: .center)
-        stackView.addArrangedSubview(button)
-        let insets = Constants.defaultPaddings
-        let paddingBox = BoxView(subview: stackView).withConstraints(insets: insets)
+        let paddingBox = BoxView(subview: button).withConstraints(insets: paddingType.defaultPadding(object: object, modelKey: modelKey), centeredX: true)
         return paddingBox
     }
 }

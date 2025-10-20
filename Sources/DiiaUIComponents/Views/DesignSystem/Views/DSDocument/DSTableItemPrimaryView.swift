@@ -100,7 +100,7 @@ public class DSTableItemPrimaryView: BaseCodeView {
 extension DSTableItemPrimaryView {
     enum Constants {
         static let stackSpacing: CGFloat = 8
-        static let imageSize = CGSize(width: 32, height: 32)
+        static let imageSize = CGSize(width: 44, height: 44)
         static let copyImage = "copy"
     }
 }

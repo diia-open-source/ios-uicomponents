@@ -25,7 +25,7 @@ public class DSListViewModel: NSObject{
 
 /// design_system_code: listItemGroupOrg
 public class DSWhiteColoredListView: BaseCodeView {
-    private lazy var stackView = UIStackView.create(views: [])
+    private lazy var stackView = UIStackView.create()
     private var viewModel: DSListViewModel?
 
     public override func setupSubviews() {

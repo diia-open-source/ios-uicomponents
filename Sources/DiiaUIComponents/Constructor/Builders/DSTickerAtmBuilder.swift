@@ -17,7 +17,7 @@ public struct DSTickerAtmBuilder: DSViewBuilderProtocol {
         guard let model: DSTickerAtom = object.parseValue(forKey: self.modelKey) else { return nil }
         
         let view = DSTickerView()
-        view.configure(with: model)
+        view.configure(with: model, eventHandler: eventHandler)
         let box = BoxView(subview: view).withConstraints(insets: paddingType.insets(for: object, modelKey: modelKey, defaultInsets: padding))
         return box
     }

@@ -132,7 +132,7 @@ public class TitledTextFieldViewV2: BaseCodeView, DSInputComponentProtocol {
     }
     
     @objc private func textFieldDidChangeValue(_ textField: UITextField) {
-        let inputText = textField.text ?? .empty
+        let inputText = maskCleanedText()
         clearSearchBox.isHidden = inputText.isEmpty
         viewModel?.onChangeText?(inputText)
         if !errorLabel.isHidden {
@@ -179,10 +179,7 @@ public class TitledTextFieldViewV2: BaseCodeView, DSInputComponentProtocol {
     }
     
     private func updateInstructionsState() {
-        var inputText = textField.text ?? .empty
-        if let mask = viewModel?.mask {
-            inputText = inputText.removingMask(mask: mask) ?? inputText
-        }
+        let inputText = maskCleanedText()
         let errorText = error(for: inputText)
         errorLabel.text = errorText
         if errorText != nil {
@@ -202,9 +199,16 @@ public class TitledTextFieldViewV2: BaseCodeView, DSInputComponentProtocol {
         return nil
     }
     
+    private func maskCleanedText() -> String {
+        if let text = textField.text, let mask = viewModel?.mask {
+            return text.removingMask(mask: mask) ?? text
+        }
+        return textField.text ?? .empty
+    }
+    
     //MARK: - DSInputComponentProtocol
     public func isValid() -> Bool {
-        guard let inputText = textField.text else { return false }
+        let inputText = maskCleanedText()
         
         if viewModel?.mandatory == true {
             return !inputText.isEmpty && error(for: inputText) == nil
@@ -218,8 +222,7 @@ public class TitledTextFieldViewV2: BaseCodeView, DSInputComponentProtocol {
     }
     
     public func inputData() -> AnyCodable? {
-        guard let inputText = textField.text, !inputText.isEmpty else { return nil }
-        return .string(inputText)
+        return .string(maskCleanedText())
     }
     
     public func setOnChangeHandler(_ handler: @escaping () -> Void) {
@@ -237,7 +240,7 @@ extension TitledTextFieldViewV2: UITextFieldDelegate {
     
     public func textFieldDidEndEditing(_ textField: UITextField) {
         updateInstructionsState()
-        viewModel?.onEndEditing?(textField.text ?? .empty)
+        viewModel?.onEndEditing?(maskCleanedText())
         self.viewModel?.fieldState.value = errorLabel.text == nil ? .unfocused : .error(focused: false)
     }
     

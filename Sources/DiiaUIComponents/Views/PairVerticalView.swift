@@ -4,12 +4,14 @@ import UIKit
 public struct DocumentItem {
     public let title: String
     public let value: String
+    public let accessibilityValue: String?
     public let isCopyable: Bool
     public let oneLineAligned: Bool
     
-    public init(title: String, value: String, isCopyable: Bool = false, oneLineAligned: Bool = false) {
+    public init(title: String, value: String, accessibilityValue: String? = nil, isCopyable: Bool = false, oneLineAligned: Bool = false) {
         self.title = title
         self.value = value
+        self.accessibilityValue = accessibilityValue
         self.isCopyable = isCopyable
         self.oneLineAligned = oneLineAligned
     }
@@ -29,15 +31,25 @@ public class PairVerticalView: BaseCodeView {
     public override func setupSubviews() {
         stackView = stack([itemTitle, itemValue], alignment: .leading)
         setupUI()
+        setupAccessibility()
+    }
+    
+    // MARK: - Private methods
+    private func setupAccessibility() {
+        itemTitle.isAccessibilityElement = true
+        itemTitle.accessibilityTraits = .staticText
+        
+        itemValue.isAccessibilityElement = true
+        itemValue.accessibilityTraits = .staticText
     }
     
     // MARK: - Public Methods
     
     public func setup(with item: DocumentItem) {
-        configure(with: item.title, value: item.value)
+        configure(with: item.title, value: item.value, accessibilityValue: item.accessibilityValue)
     }
     
-    public func configure(with label: String, value: String) {
+    public func configure(with label: String, value: String, accessibilityValue: String? = nil) {
         if let lineHeightMultiple = lineHeightMultiple {
             itemTitle.setTextWithCurrentAttributes(
                 text: label,
@@ -51,6 +63,9 @@ public class PairVerticalView: BaseCodeView {
             itemTitle.text = label
             itemValue.text = value
         }
+        
+        itemTitle.accessibilityLabel = label
+        itemValue.accessibilityLabel = accessibilityValue ?? value
     }
     
     public func setupUI(titleFont: UIFont = FontBook.usualFont,

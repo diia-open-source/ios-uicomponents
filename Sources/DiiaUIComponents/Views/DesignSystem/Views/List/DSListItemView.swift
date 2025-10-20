@@ -15,7 +15,7 @@ public class DSListItemViewModel: NSObject {
     public let details: String?
     public let rightIcon: UIImage?
     public let componentId: String?
-    public let accessibilityDescription: String?
+    @objc public dynamic var accessibilityDescription: String?
     @objc public dynamic var isEnabled: Bool
     public var onClick: Callback?
     
@@ -88,6 +88,7 @@ public class DSListItemView: BaseCodeView {
     private var loadingObservation: NSKeyValueObservation?
     private var smallIconObservation: NSKeyValueObservation?
     private var isEnabledObservation: NSKeyValueObservation?
+    private var accessibilityDescriptionObservation: NSKeyValueObservation?
     
     public override func setupSubviews() {
         translatesAutoresizingMaskIntoConstraints = false
@@ -185,6 +186,12 @@ public class DSListItemView: BaseCodeView {
             guard let self = self else { return }
             self.isUserInteractionEnabled = isEnabled
             self.alpha = isEnabled ? 1 : Constants.disabledAlpha
+        })
+        
+        accessibilityDescriptionObservation = viewModel.observe(\.accessibilityDescription, onChange: { [weak self] accessibilityDescription in
+            guard let self else { return }
+            
+            self.accessibilityLabel = accessibilityDescription
         })
         
         setupAccessibility()

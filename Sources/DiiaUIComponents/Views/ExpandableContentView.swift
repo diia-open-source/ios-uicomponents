@@ -2,7 +2,7 @@
 import UIKit
 
 public class ExpandableContentView: BaseCodeView {
-    private let stack = UIStackView.create(views: [], spacing: 16)
+    private let stack = UIStackView.create(spacing: 16)
     private let expandableHeader = ExpandableHeaderView()
     private var subview: UIView?
 

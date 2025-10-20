@@ -16,6 +16,7 @@ public class RoundedTabSwitcherCollectionCell: BaseCollectionNibCell {
         didSet {
             containerView.backgroundColor = isSelectedState ? .white : Constants.unselectedItem
             checkboxIcon.isHidden = !isSelectedState
+            containerView.accessibilityTraits = isSelectedState ? [.selected, .button] : [.button]
         }
     }
     
@@ -29,6 +30,7 @@ public class RoundedTabSwitcherCollectionCell: BaseCollectionNibCell {
     public override func awakeFromNib() {
         super.awakeFromNib()
         setupUI()
+        setupAccessibility()
     }
     
     public override func layoutSubviews() {
@@ -37,6 +39,8 @@ public class RoundedTabSwitcherCollectionCell: BaseCollectionNibCell {
     }
     
     public func configure(tabItem: TabSwitcherModel) {
+        containerView.accessibilityLabel = tabItem.title
+        
         titleLabel.text = tabItem.title
         isSelectedState = tabItem.isSelected
     }
@@ -46,6 +50,12 @@ public class RoundedTabSwitcherCollectionCell: BaseCollectionNibCell {
         titleLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
         containerView.layer.cornerRadius = frame.height / 2
         containerView.layer.masksToBounds = true
+    }
+    
+    // MARK: - Accessibility
+    private func setupAccessibility() {
+        containerView.isAccessibilityElement = true
+        containerView.accessibilityTraits = .button
     }
 }
 

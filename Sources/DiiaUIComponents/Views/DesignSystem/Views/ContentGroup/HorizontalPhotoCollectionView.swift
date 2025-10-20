@@ -2,7 +2,7 @@
 import UIKit
 
 public enum HorizontalPhotoCollectionItem {
-    case image(url: String)
+    case image(url: String, accessibilityDescription: String? = nil)
     case video(url: String, previewUrl: String)
 }
 
@@ -85,9 +85,9 @@ extension HorizontalPhotoCollectionView: UICollectionViewDelegate, UICollectionV
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         switch items[indexPath.row] {
-        case .image(let url):
+        case .image(let url, let accessibilityDescription):
             let cell: PhotoCollectionCell = collectionView.dequeueReusableCell(for: indexPath)
-            cell.configure(with: url)
+            cell.configure(with: url, accessibilityDescription: accessibilityDescription)
             return cell
         case .video(_, let previewUrl):
             let cell: VideoCollectionCell = collectionView.dequeueReusableCell(for: indexPath)
@@ -108,7 +108,7 @@ extension HorizontalPhotoCollectionView: MediaGalleryDataSource, MediaGalleryDel
     
     public func mediaInGallery(gallery: MediaGallery, forIndex: Int) -> GalleryContentType? {
         switch items[forIndex] {
-        case .image(let url):
+        case .image(let url, _):
             let vm = GalleryImageViewModel(imageLink: url, image: nil)
             vm.actions = [
                 .init(title: nil, image: R.image.close.image, callback: { [weak self] in

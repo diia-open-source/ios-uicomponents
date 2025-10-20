@@ -159,6 +159,7 @@ public struct DSTableItemVerticalMlc: Codable, Equatable {
     public let valueImage: DSDocumentContentData?
     public let valueImages: [String]?
     public let valueIcons: [DSValueIcon]?
+    public let valueParameters: [TextParameter]?
     public let componentId: String?
     
     public init(supportingValue: String? = nil,
@@ -171,6 +172,7 @@ public struct DSTableItemVerticalMlc: Codable, Equatable {
                 valueImage: DSDocumentContentData? = nil,
                 valueImages: [String]? = nil,
                 valueIcons: [DSValueIcon]? = nil,
+                valueParameters: [TextParameter]? = nil,
                 componentId: String? = nil) {
         self.supportingValue = supportingValue
         self.pointSupportingValue = pointSupportingValue
@@ -182,6 +184,7 @@ public struct DSTableItemVerticalMlc: Codable, Equatable {
         self.valueImage = valueImage
         self.valueImages = valueImages
         self.valueIcons = valueIcons
+        self.valueParameters = valueParameters
         self.componentId = componentId
     }
     
@@ -196,6 +199,11 @@ public struct DSTableItemVerticalMlc: Codable, Equatable {
         valueImage: .photo,
         valueImages: ["valueImage"],
         valueIcons: [DSValueIcon(code: "code", description: "description")],
+        valueParameters: [
+            TextParameter(type: .link,
+                          data: TextParameterData(name: "name",
+                                                  alt: "alt",
+                                                  resource: "resourse"))],
         componentId: "componentId"
     )
 }

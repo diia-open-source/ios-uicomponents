@@ -17,7 +17,7 @@ public struct DSTextItemVerticalMlc: Codable {
 
 public class TextItemVerticalMlcView: BaseCodeView {
 
-    private let stackView = UIStackView.create(views: [], spacing: Constants.smallSpacing)
+    private let stackView = UIStackView.create(spacing: Constants.smallSpacing)
     private let titleLabel = UILabel().withParameters(font: FontBook.usualFont, numberOfLines: 1)
     private let valueLabel = UILabel().withParameters(font: FontBook.usualFont, numberOfLines: 1)
     private let valueConainer = UIView()

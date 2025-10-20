@@ -12,6 +12,13 @@ public struct DSPaginationMessageMlcModel: Codable {
         self.description = description
         self.btnStrokeAdditionalAtm = btnStrokeAdditionalAtm
     }
+
+    static let mock = DSPaginationMessageMlcModel(
+        componentId: "componentId",
+        title: "title",
+        description: "description",
+        btnStrokeAdditionalAtm: .mock
+    )
 }
 
 final public class DSPaginationMessageMlcView: BaseCodeView {

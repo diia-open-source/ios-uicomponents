@@ -63,7 +63,7 @@ class CustomAlertViewController: UIViewController, ChildSubcontroller {
     private let alertView = UIView()
     private let titleLabel = UILabel()
     private let messageLabel = UILabel()
-    private var stackView = UIStackView.create(views: [])
+    private var stackView = UIStackView.create()
 
     private let titleText: String
     private let message: String

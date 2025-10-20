@@ -5,7 +5,7 @@ public class DSTableItemView: BaseCodeView {
         
     internal var label = UILabel()
     internal var subLabel = UILabel()
-    internal var value = UILabel()
+    internal var value = UITextView()
     internal var subValue = UILabel()
     internal var supportLabel = UILabel()
     internal var icon = UIImageView()
@@ -26,7 +26,7 @@ public class DSTableItemView: BaseCodeView {
         label.numberOfLines = 0
         subLabel.numberOfLines = 0
         supportLabel.numberOfLines = 0
-        value.numberOfLines = 0
+        value.textContainer.maximumNumberOfLines = 0
         subValue.numberOfLines = 0
         
         label.font = FontBook.usualFont

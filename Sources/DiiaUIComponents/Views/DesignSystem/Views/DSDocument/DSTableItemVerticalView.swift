@@ -1,22 +1,28 @@
 
 import UIKit
 import SwiftMessages
+import DiiaCommonTypes
 
 /// design_system_code: tableItemVerticalMlc
 public class DSTableItemVerticalView: DSTableItemView {
     private var eventHandler: ((ConstructorItemEvent) -> Void)?
     
     private let mainStack = UIStackView.create(.horizontal, spacing: Constants.spacing, alignment: .top)
-    private let labelStack = UIStackView.create(.horizontal, alignment: .top)
     private let labelValueStack = UIStackView.create(spacing: Constants.stackSpacing)
+    
+    private var urlOpener: URLOpenerProtocol?
     
     public override func setupSubviews() {
         super.setupSubviews()
         translatesAutoresizingMaskIntoConstraints = false
-        labelStack.addArrangedSubviews([label, UIView(), actionButton])
-        labelValueStack.addArrangedSubviews([labelStack, subLabel, value, subValue, icon])
-        mainStack.addArrangedSubviews([supportLabel, labelValueStack])
+        labelValueStack.addArrangedSubviews([label, subLabel, value, subValue, icon])
+        mainStack.addArrangedSubviews([supportLabel, labelValueStack, actionButton])
         addSubview(mainStack)
+        
+        value.configureForParametrizedText()
+        value.delegate = self
+        value.textContainer.lineBreakMode = .byWordWrapping
+        
         mainStack.fillSuperview()
         icon.heightAnchor.constraint(equalTo: icon.widthAnchor,
                                      multiplier: Constants.signProportion).isActive = true
@@ -24,7 +30,12 @@ public class DSTableItemVerticalView: DSTableItemView {
         setupAccessibility()
     }
     
-    public func configure(model: DSTableItemVerticalMlc, image: UIImage? = nil, imageAltText: String? = nil, eventHandler: ((ConstructorItemEvent) -> Void)? = nil) {
+    public func configure(model: DSTableItemVerticalMlc,
+                          image: UIImage? = nil,
+                          imageAltText: String? = nil,
+                          eventHandler: ((ConstructorItemEvent) -> Void)? = nil,
+                          urlOpener: URLOpenerProtocol? = nil) {
+        self.urlOpener = urlOpener
         self.eventHandler = eventHandler
         
         label.accessibilityAttributedLabel = accessibilityLabel(for: model.label ?? "")
@@ -41,10 +52,15 @@ public class DSTableItemVerticalView: DSTableItemView {
         subLabel.accessibilityAttributedLabel = accessibilityLabel(for: model.secondaryLabel ?? "")
         
         value.accessibilityAttributedLabel = accessibilityLabel(for: model.value ?? "")
-        value.attributedText = model.value?.attributed(font: FontBook.usualFont,
-                                                       lineHeightMultiple: Constants.lineHeightMultiply,
-                                                       lineHeight: Constants.lineHeight,
-                                                       lineBreakMode: .byWordWrapping)
+        
+        if let valueParameters = model.valueParameters {
+            value.attributedText = model.value?.attributedTextWithParameters(parameters: valueParameters)
+        } else {
+            value.attributedText = model.value?.attributed(font: FontBook.usualFont,
+                                                           lineHeightMultiple: Constants.lineHeightMultiply,
+                                                           lineHeight: Constants.lineHeight,
+                                                           lineBreakMode: .byWordWrapping)
+        }
         
         subValue.attributedText = model.secondaryValue?.attributed(font: FontBook.usualFont,
                                                                    color: .black540,
@@ -68,13 +84,14 @@ public class DSTableItemVerticalView: DSTableItemView {
         
         label.isHidden = model.label == nil
         subLabel.isHidden = model.secondaryLabel == nil
-        value.isHidden = model.value == nil
+        value.isHidden = model.value == nil || model.value?.isEmpty == true
         subValue.isHidden = model.secondaryValue == nil
         icon.isHidden = image == nil
         actionButton.isHidden = model.icon == nil || value.isHidden
         
         if let icon = model.icon, let action = icon.action {
-            actionButton.action = .init(image: UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: icon.code), callback: { [weak self] in
+            actionButton.action = .init(image: UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: icon.code),
+                                        callback: { [weak self] in
                 self?.handleClick(action: action)
             })
         }
@@ -162,6 +179,15 @@ public class DSTableItemVerticalView: DSTableItemView {
         )
         
         return mutableAccessibilityLabel
+    }
+}
+
+extension DSTableItemVerticalView: UITextViewDelegate {
+    public func textView(_ textView: UITextView,
+                         shouldInteractWith URL: URL,
+                         in characterRange: NSRange,
+                         interaction: UITextItemInteraction) -> Bool {
+        return !(urlOpener?.url(urlString: URL.absoluteString, linkType: nil) ?? false)
     }
 }
 

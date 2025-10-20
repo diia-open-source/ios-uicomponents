@@ -33,10 +33,7 @@ final public class ChildContainerViewController: UIViewController, ModalPresenta
     }
     
     private lazy var visualEffectView: UIView = {
-        var visualEffectsOff = true
-        if #available(iOS 11.0, *) {
-            visualEffectsOff = UIAccessibility.isReduceTransparencyEnabled
-        }
+        var visualEffectsOff = UIAccessibility.isReduceTransparencyEnabled
         if visualEffectsOff {
             let visualEffectView = UIView()
             visualEffectView.backgroundColor = UIColor.black.withAlphaComponent(0.2)
@@ -158,10 +155,7 @@ public class CustomIntensityVisualEffectView: UIVisualEffectView {
     ///   - effect: visual effect, eg UIBlurEffect(style: .dark)
     ///   - intensity: custom intensity from 0.0 (no effect) to 1.0 (full effect) using linear scale
     public init(effect: UIVisualEffect, intensity: CGFloat) {
-        var visualEffectsOff = true
-        if #available(iOS 11.0, *) {
-            visualEffectsOff = UIAccessibility.isReduceTransparencyEnabled
-        }
+        var visualEffectsOff = UIAccessibility.isReduceTransparencyEnabled
         if visualEffectsOff {
             super.init(effect: nil)
             return

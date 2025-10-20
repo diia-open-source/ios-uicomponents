@@ -94,7 +94,7 @@ public class ChecklistItemView: BaseCodeView {
                rightImage,
                rightLargeImage,
                spacing: Constants.stackViewSpacing,
-               alignment: .top)
+               alignment: .top).withMargins(Constants.stackInsets)
         rightLargeImage.layer.cornerRadius = Constants.largeRightCorner
         rightLargeImage.layer.borderWidth = Constants.largeImageBorderWidth
         rightLargeImage.layer.borderColor = Constants.largeImageBorderColor
@@ -108,6 +108,7 @@ public class ChecklistItemView: BaseCodeView {
     public func configure(with viewModel: ChecklistItemViewModel) {
         accessibilityIdentifier = viewModel.componentId
         accessibilityLabel = viewModel.title
+        accessibilityValue = viewModel.details
         
         self.viewModel = viewModel
         
@@ -216,5 +217,6 @@ extension ChecklistItemView {
         static let largeRightCorner: CGFloat = 4
         static let largeImageBorderColor: CGColor = UIColor(hex: 0x0805A8).withAlphaComponent(0.04).cgColor
         static let largeImageBorderWidth: CGFloat = 0.5
+        static let stackInsets = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
     }
 }

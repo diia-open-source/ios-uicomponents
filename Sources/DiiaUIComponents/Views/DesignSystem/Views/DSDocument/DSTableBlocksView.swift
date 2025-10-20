@@ -3,7 +3,7 @@ import UIKit
 
 public class DSTableBlocksView: BaseCodeView {
     
-    private let tableBlocks = UIStackView.create(.vertical, views: [], spacing: Constants.stackSpacing)
+    private let tableBlocks = UIStackView.create(.vertical, spacing: Constants.stackSpacing)
     
     public override func setupSubviews() {
         addSubview(tableBlocks)

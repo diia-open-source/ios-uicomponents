@@ -3,12 +3,10 @@ import SwiftUI
 import UIKit
 import DiiaMVPModule
 
-@available(iOS 13.0, *)
 public protocol NavigableSwiftUIView: View {
     var navigation: NavigationHolder { get }
 }
 
-@available(iOS 13.0, *)
 public final class SwiftUIWrapperController<Content: NavigableSwiftUIView>: UIHostingController<Content>, BaseView {
     public init(content: Content) {
         super.init(rootView: content)
@@ -20,7 +18,6 @@ public final class SwiftUIWrapperController<Content: NavigableSwiftUIView>: UIHo
     }
 }
 
-@available(iOS 13.0, *)
 public final class NavigationHolder: ObservableObject, BaseView {
     public weak var baseView: BaseView?
 

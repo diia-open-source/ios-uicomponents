@@ -134,8 +134,7 @@ public final class DSCardMlcV2View: BaseCodeView {
             
             self?.bottomRightIcon.setIcon(iconModel)
         }
-        
-        chipsCollectionView.isHidden = viewModel.chips.isEmpty
+        chipsCollectionView.isHidden = viewModel.chips?.isEmpty ?? true
         chipsCollectionView.reloadData()
         chipsCollectionView.layoutIfNeeded()
         updateCollectionViewHeight()
@@ -188,12 +187,13 @@ public final class DSCardMlcV2View: BaseCodeView {
         chipsCollectionViewHeightConstraint = chipsCollectionView.heightAnchor.constraint(equalToConstant: 0)
         chipsCollectionViewHeightConstraint?.isActive = true
         
-        bottomIconContainer.anchor(bottom: contentVStack.bottomAnchor)
+        bottomIconContainer.anchor(bottom: contentHStack.bottomAnchor)
         bottomRightIcon.anchor(bottom: bottomIconContainer.bottomAnchor,trailing: bottomIconContainer.trailingAnchor)
         bottomIconContainer.widthAnchor.constraint(equalToConstant: Constants.widthAnchor).isActive = true
         
         bottomIconContainer.setContentHuggingPriority(.required, for: .horizontal)
         bottomIconContainer.setContentCompressionResistancePriority(.required, for: .horizontal)
+        bottomRightIcon.tapArea = .superviewBounds
     }
     
     private func updateCollectionViewHeight() {
@@ -236,11 +236,11 @@ public final class DSCardMlcV2View: BaseCodeView {
 // MARK: - UICollectionViewDataSource
 extension DSCardMlcV2View: UICollectionViewDataSource {
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return viewModel?.chips.count ?? 0
+        return viewModel?.chips?.count ?? 0
     }
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if let chip = viewModel?.chips[indexPath.item] {
+        if let chip = viewModel?.chips?[indexPath.item] {
             let cell: DSCardMlcV2ChipCell = collectionView.dequeueReusableCell(for: indexPath)
             cell.configure(with: chip.chipStatusAtm)
             return cell
@@ -252,7 +252,7 @@ extension DSCardMlcV2View: UICollectionViewDataSource {
 // MARK: - UICollectionViewDelegateFlowLayout
 extension DSCardMlcV2View: UICollectionViewDelegateFlowLayout {
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        guard let chip = viewModel?.chips[indexPath.item] else { return .zero }
+        guard let chip = viewModel?.chips?[indexPath.item] else { return .zero }
         let width = DSChipStatusAtmView.widthForText(text: chip.chipStatusAtm.name)
         return CGSize(width: width, height: Constants.chipsHeight)
     }
@@ -267,13 +267,13 @@ private extension DSCardMlcV2View {
         static let mediumSpacing: CGFloat = 8
         static let smallSpacing: CGFloat = 4
         static let mainStackPaddings: UIEdgeInsets = .init(top: 16, left: 16, bottom: 16, right: 16)
-        static let contentHStackSpacing: CGFloat = 10
+        static let contentHStackSpacing: CGFloat = 16
         static let grayTextColor: UIColor = .black.withAlphaComponent(0.5)
         static let chipsHeight: CGFloat = 18
         static let iconUrlSize: CGSize = .init(width: 32, height: 32)
         static let bottomIconUrlSize: CGSize = .init(width: 24, height: 24)
         static let minimumLineSpacing: CGFloat = 8
         static let minimumInteritemSpacing: CGFloat = 8
-        static let widthAnchor: CGFloat = 24
+        static let widthAnchor: CGFloat = 44
     }
 }

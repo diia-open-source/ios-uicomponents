@@ -4,7 +4,7 @@ import UIKit
 /// design_system_code: cardsListOrg
 public class DSCardListView: BaseCodeView {
     
-    private let stackView = UIStackView.create(.vertical, views: [], spacing: Constants.stackSpacing)
+    private let stackView = UIStackView.create(.vertical, spacing: Constants.stackSpacing)
    
     deinit {
         stackView.safelyRemoveArrangedSubviews()

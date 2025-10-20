@@ -36,7 +36,6 @@ public class DSButtonToggleGroupViewModel {
 public class DSButtonToggleGroupView: BaseCodeView {
     private lazy var itemsStackView = UIStackView.create(
         .horizontal,
-        views: [],
         spacing: Constants.spacing,
         alignment: .center,
         distribution: .fillEqually,

@@ -6,8 +6,7 @@ import DiiaCommonTypes
 public class DSTableAccordionOrgView: BaseCodeView {
     // MARK: - Properties
     private let mainStack =  UIStackView.create(
-        .vertical,
-        views: []
+        .vertical
     )
 
     private lazy var headingView = DSTableMainHeadingView()

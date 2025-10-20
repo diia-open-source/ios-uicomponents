@@ -14,7 +14,7 @@ public struct InfoBlockViewConfig {
 
 open class InfoBlockView: BaseCodeView {
     private let infoBlockViewConfig: InfoBlockViewConfig
-    private let blocksStack = UIStackView.create(views: [])
+    private let blocksStack = UIStackView.create()
 
     // MARK: - Lifecycle
     public init(config: InfoBlockViewConfig = .init()) {
@@ -82,7 +82,7 @@ public struct TitledContentViewConfig {
 public class TitledContentView: BaseCodeView {
     private let titledContenViewConfig: TitledContentViewConfig
     let titleLabel = UILabel().withParameters(font: FontBook.smallHeadingFont)
-    let contentStack = UIStackView.create(views: [])
+    let contentStack = UIStackView.create()
 
     // MARK: - Lifecycle
     public init(config: TitledContentViewConfig = .init()) {

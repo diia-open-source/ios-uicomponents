@@ -3,7 +3,7 @@ import UIKit
 
 /// design_system_code: btnLoadIconPlainGroupMlc
 public class BorderedActionsView: BaseCodeView {
-    private lazy var contentStackView = UIStackView.create(views: [], spacing: Constants.stackSpacing, in: self, padding: Constants.stackPadding)
+    private lazy var contentStackView = UIStackView.create(spacing: Constants.stackSpacing, in: self, padding: Constants.stackPadding)
     private var viewModels = [IconedLoadingStateViewModel]()
     
     public override func setupSubviews() {

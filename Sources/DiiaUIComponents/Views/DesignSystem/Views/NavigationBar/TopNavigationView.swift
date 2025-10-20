@@ -55,6 +55,8 @@ public class TopNavigationView: UIView {
     
     // MARK: - Accessibility
     private func setupAccessibility() {
+        isAccessibilityElement = false
+        
         backButton.isAccessibilityElement = true
         backButton.accessibilityTraits = .button
         backButton.accessibilityLabel = R.Strings.general_back.localized()
@@ -70,6 +72,11 @@ public class TopNavigationView: UIView {
         loadingLabel.accessibilityLabel = R.Strings.general_loading.localized()
     }
     
+    private func updateAccessibilityElements() {
+        accessibilityElements = [backButton, titleLabel, contextButton].map({ $0 as Any })
+        UIAccessibility.post(notification: .layoutChanged, argument: self.titleLabel)
+    }
+    
     // MARK: - Public Methods
     public func setupUI(titleFont: UIFont = FontBook.smallHeadingFont, titleColor: UIColor = .black, backgroundColor: UIColor = .clear, buttonTintColor: UIColor = .black) {
         backButton.tintColor = buttonTintColor
@@ -81,6 +88,7 @@ public class TopNavigationView: UIView {
     
     public func setupTitle(title: String?) {
         titleLabel.text = title
+        titleLabel.accessibilityLabel = title
     }
     
     public func setupOnClose(callback: Callback?) {
@@ -97,7 +105,11 @@ public class TopNavigationView: UIView {
         loadingIndicator.setProgress(0.0, animated: false)
         loadingContainer.isHidden = !isActive
         
-        if !isActive { return }
+        if !isActive {
+            updateAccessibilityElements()
+            return
+        }
+        
         self.loadingIndicator.layoutIfNeeded()
         self.loadingIndicator.setProgress(1.0, animated: false)
         UIView.animate(

@@ -97,6 +97,7 @@ public class DSRecursiveContainerOrgView: BaseCodeView {
             templateViewsDict[id] = nil
             if let arrIndex = templateViews.firstIndex(where: { $0 === removingView }) {
                 templateViews.remove(at: arrIndex)
+                if isValid() { UIAccessibility.post(notification: .layoutChanged, argument: addButton) }
             }
             eventHandler?(.inputChanged(.init(inputCode: inputCode(), inputData: inputData())))
             updateButtonState()
@@ -114,6 +115,8 @@ public class DSRecursiveContainerOrgView: BaseCodeView {
         templateViews.append(templateView)
         itemsStack.addArrangedSubview(templateView)
         eventHandler?(.inputChanged(.init(inputCode: inputCode(), inputData: inputData())))
+        
+        UIAccessibility.post(notification: .layoutChanged, argument: templateViews.last)
     }
     
     private func updateButtonState() {

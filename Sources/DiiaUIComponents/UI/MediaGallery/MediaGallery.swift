@@ -83,6 +83,10 @@ public class MediaGallery: UIViewController, Rotatable {
     private var pageControlBottomConstraint: NSLayoutConstraint?
     private var pageControlCenterXConstraint: NSLayoutConstraint?
     private var needsLayout = false
+    
+    private var isVoiceOverRunning: Bool {
+        return UIAccessibility.isVoiceOverRunning
+    }
 
     // MARK: Public Interface
     public init(delegate: MediaGalleryDelegate, dataSource: MediaGalleryDataSource) {
@@ -143,14 +147,14 @@ public class MediaGallery: UIViewController, Rotatable {
         view.backgroundColor = UIColor.black
 
         pageControl.currentPageIndicatorTintColor = UIColor.white
-        pageControl.pageIndicatorTintColor = UIColor(white: 0.75, alpha: 0.35) //Dim Gray
+        pageControl.pageIndicatorTintColor = Constants.pageIndicatorTintColor
         setupPageControl()
         setupGestureRecognizers()
         if startPage != 0 {
             currentPage = startPage
             imageCollectionView.isHidden = true
         }
-        pageControl.isHidden = dataSource?.numberOfImagesInGallery(gallery: self) ?? 0 < 2
+        pageControl.isHidden = dataSource?.numberOfImagesInGallery(gallery: self) ?? 0 < Constants.pageIndicatorMinCount
     }
 
     public override func viewDidAppear(_ animated: Bool) {
@@ -216,12 +220,12 @@ public class MediaGallery: UIViewController, Rotatable {
         if gesture.state == UIGestureRecognizer.State.ended {
 
             var swipeDistance: CGFloat = 0
-            let swipeBuffer: CGFloat = 50
+            let swipeBuffer: CGFloat = Constants.swipeBuffer
             var animateImageAway = false
 
             if yFromCenter > -swipeBuffer && yFromCenter < swipeBuffer {
                 // reset everything
-                UIView.animate(withDuration: 0.25, animations: {
+                UIView.animate(withDuration: Constants.restingAnimationDuration, animations: {
                     self.view.backgroundColor = self.backgroundColor.withAlphaComponent(1.0)
                     image.center = CGPoint(x: self.view.bounds.midX, y: self.view.bounds.midY)
                 })
@@ -240,7 +244,7 @@ public class MediaGallery: UIViewController, Rotatable {
                 }
                 
                 UIView.animate(
-                    withDuration: 0.35,
+                    withDuration: Constants.draggingAnimationDuration,
                     animations: {
                         self.view.alpha = 0
                         image.center = CGPoint(x: self.view.bounds.midX, y: swipeDistance)
@@ -309,13 +313,14 @@ public class MediaGallery: UIViewController, Rotatable {
         view.addSubview(collectionView)
         view.addConstraints(imageCollectionViewConstraints)
         
-        collectionView.contentSize = CGSize(width: 1000.0, height: 1.0)
+        collectionView.contentSize = CGSize(width: Constants.collectionViewContentWidth, height: 1.0)
 
         return collectionView
     }
     
     private func setupPageControl() {
         pageControl.translatesAutoresizingMaskIntoConstraints = false
+        pageControl.isAccessibilityElement = true
 
         pageControl.numberOfPages = numberOfImages
         pageControl.currentPage = 0
@@ -325,6 +330,10 @@ public class MediaGallery: UIViewController, Rotatable {
 
         pageControl.alpha = 1
         pageControl.isHidden = hidePageControl
+        
+        if isVoiceOverRunning {
+            pageControl.addTarget(self, action: #selector(pageControlValueChanged(_:)), for: .valueChanged)
+        }
 
         view.addSubview(pageControl)
 
@@ -365,6 +374,11 @@ public class MediaGallery: UIViewController, Rotatable {
                 cell.setVideo(viewModel: viewModel)
             }
         }
+    }
+    
+    @objc private func pageControlValueChanged(_ sender: UIPageControl) {
+        currentPage = sender.currentPage
+        scrollToImage(withIndex: currentPage)
     }
 }
 
@@ -417,14 +431,17 @@ extension MediaGallery: UICollectionViewDelegate {
         if let cell = imageCollectionView.cellForItem(at: IndexPath(item: currentPage, section: 0)) as? MediaGalleryVideoCell {
             cell.setNeedsToPlay()
         }
-        UIView.animate(
-            withDuration: 1.0,
-            delay: 2.0,
-            options: UIView.AnimationOptions.curveEaseInOut,
-            animations: { () -> Void in
-                self.pageControl.alpha = 0.0
-            },
-            completion: nil)
+        
+        if !isVoiceOverRunning {
+            UIView.animate(
+                withDuration: 1.0,
+                delay: Constants.animationDelay,
+                options: UIView.AnimationOptions.curveEaseInOut,
+                animations: { () -> Void in
+                    self.pageControl.alpha = 0.0
+                },
+                completion: nil)
+        }
     }
 
     public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
@@ -456,5 +473,12 @@ extension MediaGallery: UIGestureRecognizerDelegate {
 extension MediaGallery {
     enum Constants {
         static let pageControlBottomPadding: CGFloat = 32
+        static let animationDelay: TimeInterval = 2.0
+        static let collectionViewContentWidth: CGFloat = 1000.0
+        static let draggingAnimationDuration: TimeInterval = 0.35
+        static let restingAnimationDuration: TimeInterval = 0.25
+        static let swipeBuffer: CGFloat = 50
+        static let pageIndicatorMinCount: Int = 2
+        static let pageIndicatorTintColor: UIColor = UIColor(white: 0.75, alpha: 0.35) //Dim Gray
     }
 }

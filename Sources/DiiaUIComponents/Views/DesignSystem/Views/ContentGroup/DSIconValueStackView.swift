@@ -2,7 +2,7 @@
 import UIKit
 
 public class DSIconValueStackView: BaseCodeView {
-    private let stack = UIStackView.create(views: [], spacing: 24)
+    private let stack = UIStackView.create(spacing: 24)
     private var imageProvider: DSImageNameProvider? = UIComponentsConfiguration.shared.imageProvider
     
     public override func setupSubviews() {

@@ -15,7 +15,7 @@ public class DSHeadingWithSubtitleView: BaseCodeView {
         return label
     }()
     
-    private var stackView: UIStackView = UIStackView.create(views: [], spacing: Constants.stackSpacing)
+    private var stackView: UIStackView = UIStackView.create(spacing: Constants.stackSpacing)
     private var subLabels = [UILabel]()
     
     public override func setupSubviews() {
@@ -92,7 +92,7 @@ extension DSHeadingWithSubtitleView {
         static let stackSpacing: CGFloat = 16
         static var headingFont: UIFont = {
             switch UIScreen.main.bounds.width {
-            case 414, 428, 430:
+            case 414...:
                 return FontBook.mainFont.regular.size(24)
             case 320:
                 return FontBook.mainFont.regular.size(17)

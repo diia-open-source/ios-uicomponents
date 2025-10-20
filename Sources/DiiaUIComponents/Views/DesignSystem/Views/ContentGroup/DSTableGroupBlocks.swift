@@ -41,7 +41,7 @@ public struct DSTableItemModel: Codable {
 }
 
 public class DSTableGroupBlocks: BaseCodeView {
-    private let groupBlocksStack = UIStackView.create(views: [], spacing: Constants.stackSpacing)
+    private let groupBlocksStack = UIStackView.create(spacing: Constants.stackSpacing)
     
     override public func setupSubviews() {
         super.setupSubviews()

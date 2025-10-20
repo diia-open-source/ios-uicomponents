@@ -265,9 +265,7 @@ public final class PhotoCardCarouselView: BaseCodeView {
                         pageControlSelectedColor: UIColor = .black) {
         scrollingPageControl.pageIndicatorTintColor = pageControlDotColor
         scrollingPageControl.currentPageIndicatorTintColor = pageControlSelectedColor
-        if #available(iOS 14.0, *) {
-            scrollingPageControl.backgroundStyle = .minimal
-        }
+        scrollingPageControl.backgroundStyle = .minimal
     }
     
     public func reloadData() {

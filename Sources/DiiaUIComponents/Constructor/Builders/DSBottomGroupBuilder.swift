@@ -18,7 +18,7 @@ public struct DSBottomGroupBuilder: DSViewBuilderProtocol {
     private func setupButtons(with model: DSBottomGroupOrg,
                               withPadding paddingType: DSViewPaddingType,
                               eventHandler: @escaping (ConstructorItemEvent) -> Void) -> UIView {
-        let buttonStack = UIStackView.create(.vertical, views: [], alignment: .center)
+        let buttonStack = UIStackView.create(.vertical, alignment: .center)
         buttonStack.accessibilityIdentifier = model.componentId
 
         if let btnLoadIconPlainGroupMlc = model.btnLoadIconPlainGroupMlc {

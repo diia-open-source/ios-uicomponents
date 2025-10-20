@@ -24,6 +24,7 @@ final class CardProgressMlcView: BaseCodeView {
     
     override func setupSubviews() {
         setupViews()
+        setupAccessibility()
     }
 
     func configure(with model: CardProgressMlc, eventHandler: ((ConstructorItemEvent) -> Void)?) {
@@ -54,6 +55,7 @@ final class CardProgressMlcView: BaseCodeView {
                 self?.eventHandler?(.action(imageAction))
             }
         }
+        leftImageView.accessibilityLabel = model.leftBigImage?.accessibilityDescription
         leftImageView.isUserInteractionEnabled = !(model.leftBigImage?.action == nil)
         if let infoAction = model.iconRight?.action {
             rightImageView.tapGestureRecognizer {[weak self] in
@@ -62,6 +64,10 @@ final class CardProgressMlcView: BaseCodeView {
         }
         rightImageView.isUserInteractionEnabled = !(model.iconRight?.action == nil)
         if let cardAction = model.action {
+            rightImageView.isAccessibilityElement = true
+            rightImageView.accessibilityTraits = .button
+            rightImageView.accessibilityLabel = model.iconRight?.accessibilityDescription
+            
             tapGestureRecognizer {[weak self] in
                 self?.eventHandler?(.action(cardAction))
             }
@@ -108,6 +114,11 @@ final class CardProgressMlcView: BaseCodeView {
                                            spacing: Constants.padding)
         addSubview(viewStack)
         viewStack.fillSuperview(padding: .allSides(Constants.padding))
+    }
+    
+    private func setupAccessibility() {
+        leftImageView.isAccessibilityElement = true
+        leftImageView.accessibilityTraits = .image
     }
 }
 

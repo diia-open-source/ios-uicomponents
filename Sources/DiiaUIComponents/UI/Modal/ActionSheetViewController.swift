@@ -55,7 +55,7 @@ open class ActionSheetViewController: UIViewController, ChildSubcontroller {
     
     private let containerView = UIView()
     private let scrollView = UIScrollView()
-    private let actionStackView = UIStackView.create(views: [])
+    private let actionStackView = UIStackView.create()
     private var lastButtonSeparatorHeightConstraint: NSLayoutConstraint?
     private let lastButton = ActionButton()
     

@@ -55,13 +55,13 @@ public class StatusInfoView: BaseCodeView {
     public func configure(message: GeneralStatusMessage) {
         configure(title: message.name, description: message.description, emoji: message.icon)
         
-        accessibilityLabel = message.icon + (message.name ?? "") + (message.description ?? "")
+        accessibilityLabel = [message.icon, message.name, message.description].compactMap({ $0 }).joined()
     }
     
     public func configure(message: AttentionMessage) {
         configure(title: message.title, description: message.text, emoji: message.icon)
         
-        accessibilityLabel = message.icon + (message.title ?? "") + (message.text ?? "")
+        accessibilityLabel = [message.icon, message.title, message.text].compactMap({ $0 }).joined()
     }
     
     public func configure(title: String?, description: String?, emoji: String?) {
@@ -71,6 +71,8 @@ public class StatusInfoView: BaseCodeView {
         
         titleLabel.isHidden = title?.count ?? 0 == 0
         descriptionLabel.isHidden = description?.count ?? 0 == 0
+        
+        accessibilityLabel = [emoji, title, description].compactMap({ $0 }).joined()
     }
     
     public func configureFonts(title: UIFont = FontBook.usualFont, description: UIFont = FontBook.bigText, emoji: UIFont = FontBook.smallHeadingFont) {

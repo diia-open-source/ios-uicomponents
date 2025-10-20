@@ -67,20 +67,10 @@ extension DSLinkQrShareViewBuilder: DSViewMockableBuilderProtocol {
                 qrCodeMlc: QRCodeMlc(qrLink: "https://mock.com", componentId: "componentId"),
                 expireLabel: DSExpireLabelBox(expireLabelFirst: "expireLabelFirst", expireLabelLast: "expireLabelLast", timer: 180),
                 stateAfterExpiration: DSQrCodeOrgModelExpirationModel(
-                    paginationMessageMlc: DSPaginationMessageMlcModel(
-                        componentId: "componentId",
-                        title: "title",
-                        description: "description",
-                        btnStrokeAdditionalAtm: .mock
-                    )
+                    paginationMessageMlc: .mock
                 )
             ),
-            paginationMessageMlc: DSPaginationMessageMlcModel(
-                componentId: "componentId",
-                title: "title",
-                description: "description",
-                btnStrokeAdditionalAtm: .mock
-            )
+            paginationMessageMlc: .mock
         )
         
         return .dictionary([

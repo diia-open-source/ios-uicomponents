@@ -72,10 +72,10 @@ final public class DSFileUploadViewModel: NSObject {
 
 /// DS_Code: fileUploadGroupOrg
 final public  class DSFileUploadView: BaseCodeView, DSInputComponentProtocol {
-    private let mainStack =  UIStackView.create(views: [])
-    private let filesStack = UIStackView.create(views: [])
-    private let titleStack = UIStackView.create(views: [], spacing: Constants.titleStackConstants).withMargins(Constants.titleStackMargins)
-    private let buttonStack = UIStackView.create(views: [])
+    private let mainStack =  UIStackView.create()
+    private let filesStack = UIStackView.create()
+    private let titleStack = UIStackView.create(spacing: Constants.titleStackConstants).withMargins(Constants.titleStackMargins)
+    private let buttonStack = UIStackView.create()
     private let titleLabel = UILabel().withParameters(font: FontBook.usualFont)
     private let descriptionLabel = UILabel().withParameters(font: FontBook.statusFont, textColor: Constants.detailsTextColor)
     private let addButton = ActionButton()

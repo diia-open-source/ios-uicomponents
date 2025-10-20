@@ -5,7 +5,7 @@ import DiiaCommonTypes
 /// design_system_code: docHeadingOrg
 public class DSDocumentHeadingView: BaseCodeView {
     
-    private var stackView = UIStackView.create(views: [], spacing: Constants.spacing)
+    private var stackView = UIStackView.create(spacing: Constants.spacing)
     
     private lazy var ellipseButton: UIButton = {
         let button = UIButton()
@@ -32,6 +32,7 @@ public class DSDocumentHeadingView: BaseCodeView {
         if let headingWithSubtitlesMlc = model.headingWithSubtitlesMlc {
             let headerView = DSHeadingWithSubtitleView()
             headerView.configure(model: headingWithSubtitlesMlc)
+            headerView.setupUI(textColor: .black, font: Constants.headingFont)
             stackView.addArrangedSubview(headerView)
         }
         if let headingWithSubtitlesMlc = model.headingWithSubtitleWhiteMlc {
@@ -78,5 +79,13 @@ extension DSDocumentHeadingView {
         static let spacing: CGFloat = 8
         static let buttonSize = CGSize(width: 44, height: 44)
         static let fixedFontSize = FontBook.mainFont.regular.size(29)
+        static var headingFont: UIFont = {
+            switch UIScreen.main.bounds.width {
+            case ..<414:
+                return FontBook.mainFont.regular.size(17)
+            default:
+                return FontBook.mainFont.regular.size(24)
+            }
+        }()
     }
 }

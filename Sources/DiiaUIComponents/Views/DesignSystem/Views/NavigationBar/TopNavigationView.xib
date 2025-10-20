@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23727" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23721"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -26,10 +26,10 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="aeD-k6-m2r" userLabel="TopStack">
-                    <rect key="frame" x="0.0" y="0.0" width="433" height="136"/>
+                    <rect key="frame" x="0.0" y="0.0" width="433" height="102"/>
                     <subviews>
-                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lGa-jy-18Z" userLabel="TopView">
-                            <rect key="frame" x="0.0" y="0.0" width="433" height="56"/>
+                        <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lGa-jy-18Z" userLabel="TopView">
+                            <rect key="frame" x="0.0" y="0.0" width="433" height="15.5"/>
                             <subviews>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pPI-4S-yXV">
                                     <rect key="frame" x="12" y="12" width="44" height="44"/>
@@ -45,12 +45,12 @@
                                     </connections>
                                 </button>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Szv-cj-5Oj">
-                                    <rect key="frame" x="64" y="22" width="305" height="22"/>
+                                    <rect key="frame" x="64" y="22" width="305" height="0.0"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                     <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <nil key="highlightedColor"/>
                                 </label>
-                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MvC-39-PQX">
+                                <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MvC-39-PQX">
                                     <rect key="frame" x="377" y="12" width="44" height="44"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="44" id="eed-ac-gCA"/>
@@ -76,8 +76,8 @@
                                 <constraint firstItem="pPI-4S-yXV" firstAttribute="top" secondItem="lGa-jy-18Z" secondAttribute="top" constant="12" id="w48-Q4-wxd"/>
                             </constraints>
                         </view>
-                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0gL-3a-xPJ" userLabel="StepContainer">
-                            <rect key="frame" x="0.0" y="56" width="433" height="44"/>
+                        <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0gL-3a-xPJ" userLabel="StepContainer">
+                            <rect key="frame" x="0.0" y="15.5" width="433" height="44"/>
                             <subviews>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nxD-5c-d4a" customClass="PublicServiceStepView" customModule="DiiaUIComponents">
                                     <rect key="frame" x="24" y="4" width="385" height="28"/>
@@ -95,8 +95,8 @@
                                 <constraint firstAttribute="trailing" secondItem="nxD-5c-d4a" secondAttribute="trailing" constant="24" id="x4T-e8-FlN"/>
                             </constraints>
                         </view>
-                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pjf-bA-hH2" userLabel="ProgressContainer">
-                            <rect key="frame" x="0.0" y="100" width="433" height="36"/>
+                        <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pjf-bA-hH2" userLabel="ProgressContainer">
+                            <rect key="frame" x="0.0" y="59.5" width="433" height="42.5"/>
                             <subviews>
                                 <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progressImage="loadingBar" translatesAutoresizingMaskIntoConstraints="NO" id="6hc-mP-09J">
                                     <rect key="frame" x="0.0" y="0.0" width="433" height="4"/>
@@ -105,7 +105,7 @@
                                     </constraints>
                                     <color key="trackTintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </progressView>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="[Завантаження...]" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7Sl-4f-bBa">
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="[Завантаження...]" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7Sl-4f-bBa">
                                     <rect key="frame" x="24" y="22" width="385" height="14"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                     <nil key="textColor"/>

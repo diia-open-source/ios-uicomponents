@@ -5,9 +5,9 @@ class ConstructorPaginationScreenView: BaseCodeView {
     
     public let backgroundImageView = UIImageView()
     public let loadingView = ContentLoadingView()
-    let topGroupStack: UIStackView = .create(views: [])
+    let topGroupStack: UIStackView = .create()
     let bodyTableView = UITableView()
-    let bottomStack: UIStackView = .create(views: [])
+    let bottomStack: UIStackView = .create()
     
     var bottomGroupBottomConstraint: NSLayoutConstraint?
     private var bottomGroupHeightConstraint: NSLayoutConstraint?

@@ -4,12 +4,13 @@ import DiiaCommonTypes
 
 /// design_system_code: tickerAtm
 public class DSTickerView: BaseCodeView, AnimatedViewProtocol {
-    
     private let scrollView = UIScrollView()
     private let backgroundView = UIImageView()
     private let label = UILabel().withParameters(font: FontBook.usualFont)
     
     // MARK: - Properties
+    private var model: DSTickerAtom?
+    private var eventsHandler: ((ConstructorItemEvent) -> Void)?
     private var originalTextWidth: CGFloat = .zero
     private var isAnimating = false
     private var text: String = .empty {
@@ -32,15 +33,21 @@ public class DSTickerView: BaseCodeView, AnimatedViewProtocol {
     }
     
     // MARK: - Public Methods
-    public func configure(with model: DSTickerAtom) {
+    public func configure(with model: DSTickerAtom, eventHandler: ((ConstructorItemEvent) -> Void)? = nil) {
+        self.model = model
+        self.eventsHandler = eventHandler
         accessibilityIdentifier = model.componentId
+        accessibilityLabel = model.value
+
         withHeight(model.usage.height)
         
         backgroundView.image = model.type.backgroundImage
         label.textColor = model.type.textColor
         text = model.value
-        
-        accessibilityLabel = model.value
+
+        guard model.action != nil && eventHandler != nil else { return }
+        let tapGesture = UITapGestureRecognizer.init(target: self, action: #selector(tickerAction))
+        addGestureRecognizer(tapGesture)
     }
     
     public func startAnimation() {
@@ -101,7 +108,12 @@ public class DSTickerView: BaseCodeView, AnimatedViewProtocol {
             width: label.intrinsicContentSize.width,
             height: frame.size.height)
     }
-    
+
+    @objc private func tickerAction() {
+        guard let action = model?.action, let eventsHandler else { return }
+        eventsHandler(.action(action))
+    }
+
     // MARK: - Accessibility
     private func setupAccessibility() {
         isAccessibilityElement = true

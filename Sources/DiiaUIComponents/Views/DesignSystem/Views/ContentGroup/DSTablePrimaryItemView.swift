@@ -9,8 +9,8 @@ public class DSTablePrimaryItemView: BaseCodeView {
     private let iconView: UIImageView = .init(image: UIImage(named: Constants.iconName)?
         .withRenderingMode(.alwaysTemplate))
         .withSize(Constants.iconSize)
-    private let verticalStackView = UIStackView.create(views: [], spacing: Constants.spacing)
-    private let horizontalStackView = UIStackView.create(.horizontal, views: [], spacing: Constants.spacing, alignment: .bottom)
+    private let verticalStackView = UIStackView.create(spacing: Constants.spacing)
+    private let horizontalStackView = UIStackView.create(.horizontal, spacing: Constants.spacing, alignment: .bottom)
     
     // MARK: Life cycle
     public override func setupSubviews() {

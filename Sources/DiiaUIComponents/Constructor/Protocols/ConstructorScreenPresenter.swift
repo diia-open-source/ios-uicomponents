@@ -12,6 +12,7 @@ public protocol ConstructorScreenPresenter: BasePresenter {
 }
 
 public extension ConstructorScreenPresenter {
+    func openContextMenu() { }
     func screenCode() -> String { return .empty }
     func resourceId() -> String? { return nil }
     func onViewAppear() { }
