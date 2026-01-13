@@ -23,7 +23,7 @@ struct DSCheckboxCascadeOrgContainer: Codable {
     public let checkboxCascadeOrg: DSCheckboxCascadeOrg
 }
 
-public class DSCheckboxCascadeGroupOrgViewModel {
+public final class DSCheckboxCascadeGroupOrgViewModel {
     public let componentId: String
     public let inputCode: String
     public let mandatory: Bool
@@ -66,7 +66,7 @@ public class DSCheckboxCascadeGroupOrgViewModel {
     }
 }
 
-class DSCheckboxCascadeGroupView: BaseCodeView {
+final class DSCheckboxCascadeGroupView: BaseCodeView {
     private let stackView = UIStackView.create(spacing: Constants.spacing)
     private var viewModel: DSCheckboxCascadeGroupOrgViewModel?
     

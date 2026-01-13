@@ -46,6 +46,7 @@ final public class DSPaginationMessageMlcView: BaseCodeView {
         button.contentEdgeInsets = Constants.buttonEdgeInsets
         titleLabel.textAlignment = .center
         descriptionLabel.numberOfLines = 0
+        descriptionLabel.textAlignment = .center
         backgroundColor = .clear
     }
     
@@ -69,6 +70,10 @@ final public class DSPaginationMessageMlcView: BaseCodeView {
     
     public func setEventHandler(_ eventHandler: @escaping (ConstructorItemEvent) -> Void) {
         self.eventHandler = eventHandler
+    }
+
+    public func setDescriptionAlignment(_ alignment: NSTextAlignment) {
+        descriptionLabel.textAlignment = alignment
     }
 }
 

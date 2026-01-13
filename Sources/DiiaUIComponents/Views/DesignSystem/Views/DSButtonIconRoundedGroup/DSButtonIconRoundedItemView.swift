@@ -3,7 +3,7 @@ import UIKit
 import DiiaCommonTypes
 
 /// design_system_code: btnIconRoundedMlc
-public class DSButtonIconRoundedItemView: BaseCodeView {
+public final class DSButtonIconRoundedItemView: BaseCodeView {
     private let imageView: UIImageView = UIImageView().withSize(Constants.imageSize)
     private let titleLabel = UILabel().withParameters(font: FontBook.usualFont)
     
@@ -28,7 +28,7 @@ public class DSButtonIconRoundedItemView: BaseCodeView {
     
     // MARK: - Public Methods
     public func configure(with model: DSButtonIconRoundedItemModel, touchAction: Callback?) {
-        imageView.image = UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: model.icon)
+        imageView.image = UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: model.icon)
         titleLabel.text = model.label
         accessibilityLabel = model.label
         self.touchAction = touchAction

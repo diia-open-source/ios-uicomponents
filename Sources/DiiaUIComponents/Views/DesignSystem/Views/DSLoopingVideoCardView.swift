@@ -78,7 +78,7 @@ final public class DSLoopingVideoCardView: BaseCodeView {
         self.accessibilityIdentifier = model.componentId
         self.touchAction = touchAction
         detailsLabel.text = model.label
-        arrowIconView.image = UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: model.iconRight)
+        arrowIconView.image = UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: model.iconRight)
         
         guard let videoURL = URL(string: model.video) else { return }
         setupVideo(from: videoURL)

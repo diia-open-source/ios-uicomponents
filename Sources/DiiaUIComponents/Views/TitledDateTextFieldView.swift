@@ -1,7 +1,7 @@
 
 import UIKit
 
-public class TitledDateTextFieldView: UIView {
+public final class TitledDateTextFieldView: UIView {
     // MARK: - Outlets
     @IBOutlet private weak var titleLabel: UILabel!
     @IBOutlet private weak var dateTextField: UITextField!

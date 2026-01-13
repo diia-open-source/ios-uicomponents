@@ -2,7 +2,7 @@
 import UIKit
 import DiiaCommonTypes
 
-public class DSButtonToggleGroupViewModel {
+public final class DSButtonToggleGroupViewModel {
     public let componentId: String?
     public var items: [DSToggleButtonViewModel] = []
     public let toggleAction: (String) -> Void
@@ -33,7 +33,7 @@ public class DSButtonToggleGroupViewModel {
 }
 
 /// design_system_code: toggleButtonGroupOrg
-public class DSButtonToggleGroupView: BaseCodeView {
+public final class DSButtonToggleGroupView: BaseCodeView {
     private lazy var itemsStackView = UIStackView.create(
         .horizontal,
         spacing: Constants.spacing,

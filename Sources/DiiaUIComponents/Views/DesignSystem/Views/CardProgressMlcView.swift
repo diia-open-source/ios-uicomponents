@@ -36,6 +36,7 @@ final class CardProgressMlcView: BaseCodeView {
         descriptionLabel.text = model.description
         titleLabel.isHidden = model.label == nil
         titleLabel.text = model.label
+        titleLabel.accessibilityLabel = model.label
         rightSubtitle.isHidden = model.rightLabel == nil
         rightSubtitle.text = model.rightLabel
         
@@ -46,7 +47,7 @@ final class CardProgressMlcView: BaseCodeView {
         if let iconUrlAtm = model.leftBigImage {
             leftImageView.configure(with: iconUrlAtm)
         }
-        rightImageView.subview.image = UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: model.iconRight?.code)
+        rightImageView.subview.image = UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: model.iconRight?.code)
         
         self.eventHandler = eventHandler
         
@@ -117,6 +118,9 @@ final class CardProgressMlcView: BaseCodeView {
     }
     
     private func setupAccessibility() {
+        titleLabel.isAccessibilityElement = true
+        titleLabel.accessibilityTraits = .header
+        
         leftImageView.isAccessibilityElement = true
         leftImageView.accessibilityTraits = .image
     }

@@ -14,7 +14,7 @@ public struct DSChipBlackGroupModel: Codable {
     public let preselectedCodes: [String]?
 }
 
-public class DSChipBlackGroupViewModel {
+public final class DSChipBlackGroupViewModel {
     public let componentId: String?
     public let id: String?
     public let inputCode: String?
@@ -84,7 +84,7 @@ public class DSChipBlackGroupViewModel {
 }
 
 ///DS code chipBlackGroupOrg
-public class DSChipBlackGroupOrgView: BaseCodeView, DSResetStateComponentProtocol {
+public final class DSChipBlackGroupOrgView: BaseCodeView, DSResetStateComponentProtocol {
     private let mainStack = UIStackView.create(.vertical)
     private let separatorView = UIView()
     private let chipTitleLabelContainer = UIView()

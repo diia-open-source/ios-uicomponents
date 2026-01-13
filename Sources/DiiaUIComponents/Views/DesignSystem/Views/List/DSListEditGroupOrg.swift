@@ -27,7 +27,7 @@ public struct DSListEditGroupModel: Codable {
     }
 }
 
-public class DSListEditGroupViewModel {
+public final class DSListEditGroupViewModel {
     public let componentId: String?
     public let inputCode: String
     public let title: String?
@@ -64,7 +64,7 @@ public class DSListEditGroupViewModel {
 }
 
 /// design_system_code: listItemEditGroupOrg
-public class DSListEditGroupView: BaseCodeView, DSInputComponentProtocol {
+public final class DSListEditGroupView: BaseCodeView, DSInputComponentProtocol {
     
     // MARK: - Subviews
     private let contentStack = UIStackView.create()
@@ -124,7 +124,7 @@ public class DSListEditGroupView: BaseCodeView, DSInputComponentProtocol {
         if let buttonPlainIcon = viewModel.buttonAction, let actionParameters = buttonPlainIcon.action {
             addButton.action = Action(
                 title: buttonPlainIcon.label,
-                iconName: UIComponentsConfiguration.shared.imageProvider?.imageNameForCode(imageCode: buttonPlainIcon.icon)
+                iconName: UIComponentsConfiguration.shared.imageProvider.imageNameForCode(imageCode: buttonPlainIcon.icon)
             ) { [weak self] in
                 self?.viewModel?.eventHandler(.action(actionParameters))
             }

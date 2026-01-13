@@ -35,7 +35,7 @@ public struct DSConstructorModel: Codable {
     }
 }
 
-public class DSViewFabric {
+public final class DSViewFabric {
     public static let instance = DSViewFabric()
     
     private var viewBuilders: [String: DSViewBuilderProtocol]
@@ -151,7 +151,7 @@ public extension DSViewFabric {
         DSTextLabelBuilder(),
         DSTextViewBuilder(),
         DSButtonIconGroupBuilder(),
-        DSCheckboxGroupBuilder(),
+        DSCheckboxRoundGroupBuilder(),
         DSRadioButtonGroupBuilder(),
         DSRadioBtnWithAltOrgBuilder(),
         DSCheckboxButtonOrgBuilder(),
@@ -281,9 +281,19 @@ public extension DSViewFabric {
         DSInputBlockViewBuilder(),
         DSDetailsTextValueViewBuilder(),
         DSEditAutomaticallyDeterminedValueBuilder(),
+        DSAttachmentCardBuilder(),
         PhotoCardCarouselBuilder(),
         PhotoCardMlcBuidler(),
         DSSelectorOrgV2Builder(),
+        DSCalendarOrgV2Builder(),
+        DSLinkSettingsBuilder(),
+        DSBtnPrimaryPlainIconBuilder(),
+        DSPBtnAddOptionAtmBuilder(),
+        CardImageMlcBuilder(),
+        CardImageCarouselBuilder(),
+        DSCheckboxGroupOrgBuilder(),
+        DSCheckboxMlcBuilder(),
+        DSStaticTickerAtmViewBuilder(),
         CardProgressMlcBuilder()
     ]
 }

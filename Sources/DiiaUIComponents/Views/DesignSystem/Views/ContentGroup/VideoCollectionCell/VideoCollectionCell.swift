@@ -3,7 +3,7 @@ import UIKit
 import Foundation
 import DiiaCommonTypes
 
-public class VideoCollectionCell: UICollectionViewCell, Reusable {
+public final class VideoCollectionCell: UICollectionViewCell, Reusable {
     
     private var imageView = UIImageView()
     private var playImage = UIImageView()
@@ -46,12 +46,15 @@ public class VideoCollectionCell: UICollectionViewCell, Reusable {
         playImage.isUserInteractionEnabled = false
     }
     
-    public func configure(with imageURL: String, showLoading: Bool = false) {
+    public func configure(with imageURL: String, accessibilityDescription: String? = nil, showLoading: Bool = false) {
         setupStaticViews()
+        setupAccessibility()
         
         let completion = showImageLoading(isActive: showLoading)
         imageView.loadImage(imageURL: imageURL, completion: completion)
         imageView.contentMode = .scaleAspectFill
+        
+        imageView.accessibilityLabel = accessibilityDescription
     }
 }
 
@@ -98,6 +101,18 @@ private extension VideoCollectionCell {
         UIView.animate(withDuration: Constants.progressAnimationDuration, delay: 0, options: [.repeat], animations: { [unowned self] in
             self.loadingIndicator.layoutIfNeeded()
         })
+    }
+    
+    func setupAccessibility() {
+        loadingIndicator.isAccessibilityElement = false
+        
+        loadingTitle.isAccessibilityElement = true
+        loadingTitle.accessibilityTraits = .staticText
+        loadingTitle.accessibilityLabel = R.Strings.general_loading.localized()
+        
+        imageView.isAccessibilityElement = true
+        imageView.accessibilityValue = R.Strings.pdr_penalty_accessibility_video.localized()
+        imageView.accessibilityTraits = .button
     }
 }
 

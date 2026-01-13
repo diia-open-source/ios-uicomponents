@@ -42,7 +42,7 @@ public struct DSFixedCardModel: Codable {
 }
 
 /// design_system_code: cardFixedMlc
-public class DSFixedCardView: UIView {
+public final class DSFixedCardView: UIView {
     
     // MARK: Outlets
     @IBOutlet private weak var container: UIView!

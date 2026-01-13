@@ -18,13 +18,12 @@ public struct DSSelectorOrgBuilder: DSViewBuilderProtocol {
         let state: DropContentState = (data.valueId != nil) ? .selected(text: value ?? "") : .enabled
         
         let viewModel = DSSelectorViewModel(
-            code: data.inputCode ?? data.id ?? self.modelKey,
+            inputCode: data.inputCode ?? data.id ?? self.modelKey,
             state: state,
             title: data.label,
             placeholder: data.placeholder,
             hint: data.hint,
             searchList: data.selectorListWidgetOrg.items,
-            searchComponentId: data.selectorListWidgetOrg.componentId,
             selectedCode: data.valueId,
             componentId: data.componentId)
         viewModel.onClick = { [weak viewModel] in

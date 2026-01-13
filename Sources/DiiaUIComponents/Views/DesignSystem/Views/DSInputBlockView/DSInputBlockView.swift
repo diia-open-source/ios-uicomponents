@@ -4,13 +4,13 @@ import Lottie
 import DiiaCommonTypes
 
 /// design_system_code: inputBlockOrg
-public class DSInputBlockView: BaseCodeView {
+public final class DSInputBlockView: BaseCodeView {
     
     // MARK: - Subviews
     private let mainStack =  UIStackView.create(spacing: Constants.mainStackSpacing)
     private let itemsStack = UIStackView.create(spacing: Constants.itemsSpacing)
     private lazy var tableMainHeadingView = DSTableMainHeadingView()
-    private lazy var tableSecondaryHeadingView = DSTableMainHeadingView()
+    private lazy var tableSecondaryHeadingView = TableSecondaryHeadingView()
     private lazy var attentionIconMessageView = DSAttentionIconMessageView()
     
     // MARK: - Properties

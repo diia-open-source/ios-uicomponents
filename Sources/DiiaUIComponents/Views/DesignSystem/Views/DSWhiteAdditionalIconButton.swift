@@ -2,7 +2,7 @@
 import UIKit
 import DiiaCommonTypes
 
-public class DSWhiteAdditionalIconButtonViewModel: NSObject {
+public final class DSWhiteAdditionalIconButtonViewModel: NSObject {
     public let name: String?
     public let image: UIImage?
     public let componentId: String?
@@ -28,7 +28,7 @@ public class DSWhiteAdditionalIconButtonViewModel: NSObject {
     }
 }
 
-public class DSWhiteAdditionalIconButton: BaseCodeView {
+public final class DSWhiteAdditionalIconButton: BaseCodeView {
     private let badgeCounter = DSBadgeCounterView()
     private let label = UILabel().withParameters(font: FontBook.usualFont)
     private let iconView = UIImageView()

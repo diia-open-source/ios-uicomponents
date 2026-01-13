@@ -1,7 +1,7 @@
 
 import UIKit
 
-public class ExtendedTableView: UITableView {
+public final class ExtendedTableView: UITableView {
     // MARK: - UI Elements
     private let bottomSeparator = UIView()
     private let gradientView = GradientView()

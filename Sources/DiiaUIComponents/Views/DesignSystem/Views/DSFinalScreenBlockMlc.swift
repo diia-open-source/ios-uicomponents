@@ -16,7 +16,7 @@ public struct DSFinalScreenBlockMlc: Codable {
     }
 }
 
-public class DSFinalScreenBlockView: BaseCodeView {
+public final class DSFinalScreenBlockView: BaseCodeView {
     // MARK: - UI Elements
     private let emojiImage = UIImageView()
     private let titleLabel = UILabel().withParameters(font: FontBook.mainFont.regular.size(21))
@@ -42,7 +42,7 @@ public class DSFinalScreenBlockView: BaseCodeView {
         descriptionTextView.text = model.subtitle
         descriptionTextView.isHidden = model.subtitle?.count ?? 0 == 0
         
-        emojiImage.image = UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: model.extraLargeIconAtm?.code)
+        emojiImage.image = UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: model.extraLargeIconAtm?.code)
     }
     
     // MARK: - Private Methods

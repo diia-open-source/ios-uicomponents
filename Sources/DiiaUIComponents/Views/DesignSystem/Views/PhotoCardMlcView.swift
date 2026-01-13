@@ -68,7 +68,7 @@ public final class PhotoCardMlcView: BaseCodeView {
     }
     
     public func configure(viewModel: PhotoCardMlcViewModel) {
-        topIcon.image = UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: viewModel.iconRight?.code)
+        topIcon.image = UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: viewModel.iconRight?.code)
         photoImage.configure(with: viewModel.photo)
         
         if let tableItemCheckboxViewModel = viewModel.tableItemCheckboxViewModel {
@@ -76,8 +76,9 @@ public final class PhotoCardMlcView: BaseCodeView {
             tableItemCheckbox.setupUI(titleFont: FontBook.bigText)
             
             tableItemCheckboxViewModel.isSelected.observe(observer: self) { [weak self] selected in
-                self?.viewModel?.eventHandler?(.inputChanged(.init(inputCode: self?.viewModel?.componentId ?? "photoCardMlc",
-                                                                   inputData: .bool(selected))))
+                self?.viewModel?.eventHandler?(.inputChanged(.init(
+                    inputCode: self?.viewModel?.componentId ?? "photoCardMlc",
+                    inputData: .bool(selected))))
             }
         }
         

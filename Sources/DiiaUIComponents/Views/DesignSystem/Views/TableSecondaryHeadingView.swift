@@ -2,12 +2,17 @@
 import UIKit
 import DiiaCommonTypes
 
-struct TableSecondaryHeadingViewModel {
-    let headingModel: DSTableHeadingItemModel
-    var onClickAction: Callback?
+public struct TableSecondaryHeadingViewModel {
+    public let headingModel: DSTableHeadingItemModel
+    public let onClickAction: Callback?
+
+    public init(headingModel: DSTableHeadingItemModel, onClickAction: Callback? = nil) {
+        self.headingModel = headingModel
+        self.onClickAction = onClickAction
+    }
 }
 
-class TableSecondaryHeadingView: BaseCodeView {
+final class TableSecondaryHeadingView: BaseCodeView {
     private let label = UILabel().withParameters(font: FontBook.bigText, textColor: .black)
     private let headingButton = ActionButton(type: .icon)
     private var viewModel: TableSecondaryHeadingViewModel?
@@ -24,19 +29,31 @@ class TableSecondaryHeadingView: BaseCodeView {
         
         addSubview(stackView)
         stackView.fillSuperview()
+        
+        setupAccessibility()
     }
     
-    func configure(with viewModel: TableSecondaryHeadingViewModel, onClickAction: Callback? = nil) {
+    func configure(with viewModel: TableSecondaryHeadingViewModel) {
         self.viewModel = viewModel
-        self.viewModel?.onClickAction = onClickAction
-        
+
         label.text = viewModel.headingModel.label
-        if let iconModel = viewModel.headingModel.icon, let callback = onClickAction {
+        label.accessibilityLabel = viewModel.headingModel.label
+        
+        if let iconModel = viewModel.headingModel.icon, let callback = viewModel.onClickAction {
             let imageProvider = UIComponentsConfiguration.shared.imageProvider
-            headingButton.action = Action(iconName: imageProvider?.imageNameForCode(imageCode: iconModel.code),
+            headingButton.accessibilityLabel = iconModel.accessibilityDescription
+            headingButton.action = Action(iconName: imageProvider.imageNameForCode(imageCode: iconModel.code),
                                           callback: callback)
         }
         headingButton.isHidden = viewModel.headingModel.icon == nil
+    }
+    
+    private func setupAccessibility() {
+        label.isAccessibilityElement = true
+        label.accessibilityTraits = .staticText
+        
+        headingButton.isAccessibilityElement = true
+        headingButton.accessibilityTraits = .button
     }
 }
 

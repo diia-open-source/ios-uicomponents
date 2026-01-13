@@ -14,7 +14,7 @@ public struct DSSubtitleLabelMlc: Codable {
 }
 
 /// design_system_code: subtitleLabelMlc
-public class DSSubtitleLabelMlcView: BaseCodeView {
+public final class DSSubtitleLabelMlcView: BaseCodeView {
     private let iconView = UIImageView()
     private let label = UILabel().withParameters(font: FontBook.smallHeadingFont)
     
@@ -25,7 +25,7 @@ public class DSSubtitleLabelMlcView: BaseCodeView {
     
     public func configure(model: DSSubtitleLabelMlc) {
         label.text = model.label
-        let icon = UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: model.icon)
+        let icon = UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: model.icon)
         iconView.isHidden = icon == nil
         iconView.image = icon
     }

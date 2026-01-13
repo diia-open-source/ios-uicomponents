@@ -51,7 +51,8 @@ extension DSAttentionIconMessageBuilder: DSViewMockableBuilderProtocol {
                 expandedText: "This is the expanded version of the attention message with additional detailed information that becomes visible when the user taps to expand the content.",
                 collapsedText: "This is a mock attention message...",
                 isExpanded: false
-            )
+            ),
+            btnStrokeAdditionalAtm: .mock
         )
         return .dictionary([
             modelKey: .fromEncodable(encodable: model)

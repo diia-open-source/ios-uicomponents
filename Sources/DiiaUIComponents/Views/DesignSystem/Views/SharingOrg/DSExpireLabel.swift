@@ -3,12 +3,30 @@ import Foundation
 import UIKit
 
 public final class DSExpireLabel: BaseCodeView {
-    
+    public struct Configuration {
+        let font: UIFont
+        let textAlpha: CGFloat
+        let timerLabelWidth: CGFloat
+    }
+
     private let firstLabel = UILabel()
     private let timerLabel = UILabel()
     private let lastLabel = UILabel()
     private let stack = UIStackView.create(.horizontal, alignment: .leading)
+
+    private let configuration: Configuration
+
+    // MARK: - Init
+    public init(configuration: Configuration? = nil) {
+        self.configuration = configuration ?? .default
+        super.init(frame: .zero)
+    }
     
+    required public init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    // MARK: - Public
     public override func setupSubviews() {
         super.setupSubviews()
         
@@ -18,12 +36,12 @@ public final class DSExpireLabel: BaseCodeView {
         
         let labelArray = [firstLabel, timerLabel, lastLabel]
         labelArray.forEach({
-            $0.font = FontBook.statusFont
-            $0.textColor = UIColor.black.withAlphaComponent(Constants.alphaColor)
+            $0.font = configuration.font
+            $0.textColor = UIColor.black.withAlphaComponent(configuration.textAlpha)
         })
         stack.addArrangedSubviews(labelArray)
         
-        timerLabel.anchor(size: .init(width: Constants.timerWidth,
+        timerLabel.anchor(size: .init(width: configuration.timerLabelWidth,
                                       height: .zero))
         
         addSubview(stack)
@@ -51,16 +69,24 @@ public final class DSExpireLabel: BaseCodeView {
         accessibilityValue = text + (lastLabel.text ?? "")
     }
     
+    // MARK: - Private
     private func setupAccessibility() {
         isAccessibilityElement = true
         accessibilityTraits = [.staticText, .updatesFrequently]
     }
 }
 
-extension DSExpireLabel {
+private extension DSExpireLabel {
     enum Constants {
         static let timerWidth: CGFloat = 32
         static let timerHeight: CGFloat = 16
         static let alphaColor: CGFloat = 0.5
     }
+}
+
+public extension DSExpireLabel.Configuration {
+    static let `default` = DSExpireLabel.Configuration(
+        font: FontBook.statusFont,
+        textAlpha: DSExpireLabel.Constants.alphaColor,
+        timerLabelWidth: DSExpireLabel.Constants.timerWidth)
 }

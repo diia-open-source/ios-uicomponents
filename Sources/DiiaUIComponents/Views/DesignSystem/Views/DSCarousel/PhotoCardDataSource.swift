@@ -3,7 +3,7 @@ import UIKit
 import DiiaCommonTypes
 
 // MARK: - Data Source
-class PhotoCardDataSource: NSObject, UICollectionViewDataSource {
+final class PhotoCardDataSource: NSObject, UICollectionViewDataSource {
     private let sourceModel: DSImageCardCarouselModel
     private let eventHandler: (ConstructorItemEvent) -> Void
     private let fabric: DSViewFabric

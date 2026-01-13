@@ -8,7 +8,7 @@ public struct DSTitleLabelIconMlc: Codable {
 }
 
 /// design_system_code: titleLabelIconMlc
-public class DSTitleLabelIconView: BaseCodeView {
+public final class DSTitleLabelIconView: BaseCodeView {
     private let logoView = DSLogoLinkView().withSize(Constants.logoSize)
     private let titleLabel = UILabel().withParameters(font: FontBook.documentNumberHeadingFont)
     

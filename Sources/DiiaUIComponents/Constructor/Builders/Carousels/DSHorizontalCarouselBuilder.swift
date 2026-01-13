@@ -31,7 +31,7 @@ public struct DSHorizontalCarouselBuilder: DSViewBuilderProtocol {
 }
 
 // MARK: - Carousel Configurator
-class DSHorizontalCarouselConfigurator: NSObject, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+final class DSHorizontalCarouselConfigurator: NSObject, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     private let model: DSVerticalCardCarouselModel
     private let eventHandler: (ConstructorItemEvent) -> Void
     

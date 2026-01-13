@@ -23,7 +23,7 @@ public final class HorizontalActionSheetModule: BaseModule {
     }
 }
 
-class HorizontalActionSheetController: UIViewController, BaseView, ChildSubcontroller {
+final class HorizontalActionSheetController: UIViewController, BaseView, ChildSubcontroller {
     
     weak var container: ContainerProtocol?    
     

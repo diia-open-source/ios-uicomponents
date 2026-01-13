@@ -102,6 +102,17 @@ public final class ConstructorModalViewController: UIViewController {
         presenter.onViewAppear()
     }
     
+    // MARK: - Accessibility
+    public override func updateAccessibilityElements() {
+        if children.isEmpty {
+            constructorView?.updateAccessibilityElements()
+        }
+    }
+    
+    public override func removeAccessibilityElements() {
+        view.accessibilityElements = nil
+    }
+    
     // MARK: - Private
     @objc private func hideKeyboard() {
         view.endEditing(true)
@@ -117,7 +128,9 @@ extension ConstructorModalViewController: ConstructorModalScreenViewProtocol {
     public func setInnerTridentLoading(_ state: LoadingState) {
         constructorView?.bodyStack.isHidden = state == .loading
         constructorView?.bottomStack.isHidden = state == .loading
-        constructorView?.loadingView.setLoadingState(state)
+        constructorView?.loadingView.setLoadingState(state) { [weak self] in
+            UIAccessibility.post(notification: .layoutChanged, argument: self?.constructorView?.topGroupStack)
+        }
     }
     
     public func setLocalLoading(isLoading: Bool) {

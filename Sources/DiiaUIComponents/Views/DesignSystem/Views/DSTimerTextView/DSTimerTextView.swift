@@ -2,7 +2,7 @@
 import UIKit
 
 /// design_system_code: timerMlc
-public class DSTimerTextView: BaseCodeView {
+public final class DSTimerTextView: BaseCodeView {
     // MARK: - Subviews
     private let expireLabel = DSExpireLabel()
     private let linkButton = DSLinkButton()

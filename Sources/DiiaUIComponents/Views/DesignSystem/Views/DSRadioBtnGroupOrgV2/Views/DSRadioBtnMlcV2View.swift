@@ -2,7 +2,7 @@
 import UIKit
 import DiiaCommonTypes
 
-public class DSRadioBtnMlcV2ViewModel: NSObject {
+public final class DSRadioBtnMlcV2ViewModel: NSObject {
     public let componentId: String
     public let code: String
     public let iconRight: DSIconModel?
@@ -40,7 +40,7 @@ public class DSRadioBtnMlcV2ViewModel: NSObject {
 final public class DSRadioBtnMlcV2View: BaseCodeView {
     private let mainHStack = UIStackView.create(.horizontal,spacing: Constants.bigSpacing, alignment: .top)
     private let contentHStack = UIStackView.create(.horizontal, spacing: Constants.smallSpacing, alignment: .top)
-    private let iconLabelStack = UIStackView.create(.horizontal, spacing: Constants.smallSpacing)
+    private let iconLabelStack = UIStackView.create(.horizontal, spacing: Constants.smallSpacing, alignment: .top)
     private let contentLabelStack = UIStackView.create(.vertical, spacing: Constants.vStackSpacing)
     private let iconStatusStack = UIStackView.create(.horizontal, spacing: Constants.smallSpacing)
     private let titleLabel = UILabel().withParameters(font: FontBook.bigText, textColor: .black)
@@ -86,15 +86,21 @@ final public class DSRadioBtnMlcV2View: BaseCodeView {
             selectionIcon,
             contentHStack
         ])
+        
+        statusLabel.setContentHuggingPriority(.required, for: .horizontal)
+        statusLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
+        
         layer.cornerRadius = Constants.cornerRadius
         titleLabel.numberOfLines = 0
         descriptionLabel.numberOfLines = 0
+        
+        setupAccessibility()
     }
     
     public func configure(with viewModel: DSRadioBtnMlcV2ViewModel) {
         self.viewModel = viewModel
         accessibilityIdentifier = viewModel.componentId
-        accessibilityLabel = viewModel.label
+        accessibilityLabel = [viewModel.label, viewModel.details, viewModel.status].compactMap({ $0 }).joined(separator: ",")
         
         titleLabel.text = viewModel.label
         descriptionLabel.isHidden = viewModel.details == nil
@@ -130,6 +136,11 @@ final public class DSRadioBtnMlcV2View: BaseCodeView {
         alpha = viewModel.isAvailable ? 1.0 : 0.4
         isUserInteractionEnabled = viewModel.isAvailable
         backgroundColor = isSelected ? Constants.selectedColor : Constants.defaultColor
+        accessibilityTraits = isSelected ? [.selected, .button] : [.button]
+    }
+    
+    private func setupAccessibility() {
+        isAccessibilityElement = true
     }
 }
 

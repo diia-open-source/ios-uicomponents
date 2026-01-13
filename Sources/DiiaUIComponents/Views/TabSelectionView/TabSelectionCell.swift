@@ -1,7 +1,7 @@
 
 import UIKit
 
-public class TabSelectionCell: BaseCollectionNibCell, NibLoadable {
+public final class TabSelectionCell: BaseCollectionNibCell, NibLoadable {
     
     public static let nib = UINib(nibName: reuseID, bundle: Bundle.module)
 

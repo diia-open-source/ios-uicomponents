@@ -9,7 +9,7 @@ public struct DSSearchModel: Codable {
     public let iconRight: DSIconModel?
 }
 
-public class DSSearchInputView: BaseCodeView {
+public final class DSSearchInputView: BaseCodeView {
     
     private var searchTextField = UITextField()
     private var clearSearchButton = UIButton()

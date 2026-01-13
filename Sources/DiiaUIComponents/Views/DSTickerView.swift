@@ -3,7 +3,7 @@ import UIKit
 import DiiaCommonTypes
 
 /// design_system_code: tickerAtm
-public class DSTickerView: BaseCodeView, AnimatedViewProtocol {
+public final class DSTickerView: BaseCodeView, AnimatedViewProtocol {
     private let scrollView = UIScrollView()
     private let backgroundView = UIImageView()
     private let label = UILabel().withParameters(font: FontBook.usualFont)

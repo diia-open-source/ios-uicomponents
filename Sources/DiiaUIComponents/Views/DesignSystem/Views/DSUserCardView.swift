@@ -2,7 +2,7 @@
 import UIKit
 import DiiaCommonTypes
 
-public class DSUserCardViewModel {
+public final class DSUserCardViewModel {
     public let componentId: String?
     public let label: String
     public let description: String?
@@ -23,7 +23,7 @@ public class DSUserCardViewModel {
 }
 
 /// design_system_code: userCardMlc
-public class DSUserCardView: BaseCodeView {
+public final class DSUserCardView: BaseCodeView {
     private let userImageView: UIImageView = UIImageView().withSize(Constants.imageSize)
     private let nameLabel = UILabel().withParameters(font: FontBook.cardsHeadingFont)
     private let detailsLabel = UILabel().withParameters(font: FontBook.usualFont, textColor: Constants.detailsColor)

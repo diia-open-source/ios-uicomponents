@@ -43,17 +43,17 @@ final public class DSBlackCardView: BaseCodeView {
         
         doubleIconView.isHidden = model.doubleIconAtm == nil
         if let doubleIcon = model.doubleIconAtm {
-            doubleIconView.image = UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: doubleIcon.code)
+            doubleIconView.image = UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: doubleIcon.code)
         }
         
         singleIconView.isHidden = model.iconAtm == nil
         if let singleIcon = model.iconAtm {
-            singleIconView.image = UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: singleIcon.code)
+            singleIconView.image = UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: singleIcon.code)
         }
         
         arrowIconView.isHidden = model.smallIconAtm == nil
         if let smallIcon = model.smallIconAtm {
-            arrowIconView.image = UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: smallIcon.code)
+            arrowIconView.image = UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: smallIcon.code)
         }
         
         self.touchAction = touchAction

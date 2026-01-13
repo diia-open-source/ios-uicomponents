@@ -2,7 +2,7 @@
 import UIKit
 import DiiaCommonTypes
 
-public class DSToggleButtonViewModel: NSObject {
+public final class DSToggleButtonViewModel: NSObject {
     private let model: DSBtnToggleModel
     public let code: String
     public let label: String
@@ -18,13 +18,12 @@ public class DSToggleButtonViewModel: NSObject {
     
     public var icon: UIImage? {
         let selectionStyle = isSelected ? model.selected : model.notSelected
-        // TODO: - Use DSImageNameResolver (UIComponentsConfiguration)
-        return UIImage(named: "DS_" + selectionStyle.icon)
+        return UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: selectionStyle.icon)
     }
 }
 
 /// design_system_code: btnToggleMlc
-public class DSButtonToggleView: BaseCodeView {
+public final class DSButtonToggleView: BaseCodeView {
     private let iconViewContainer = UIView().withSize(Constants.iconContainerSize)
     private let iconView = UIImageView()
     private let textLabel = UILabel().withParameters(font: FontBook.bigText)

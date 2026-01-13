@@ -2,7 +2,7 @@
 import UIKit
 
 /// design_system_code: inputPhoneMlc
-public class PhoneCodeSelectorViewV2: BaseCodeView {
+public final class PhoneCodeSelectorViewV2: BaseCodeView {
     
     // MARK: - Subviews
     private let flagLabel = UILabel().withParameters(font: FontBook.bigText)

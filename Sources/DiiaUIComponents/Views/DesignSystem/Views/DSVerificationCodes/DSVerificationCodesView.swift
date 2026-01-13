@@ -4,7 +4,7 @@ import Lottie
 import DiiaCommonTypes
 
 /// design_system_code: verificationCodesOrg
-public class DSVerificationCodesView: BaseCodeView {
+public final class DSVerificationCodesView: BaseCodeView {
     private var contentStackView = UIStackView()
     private let stubMessageView = StubMessageViewV2()
     private let expireLabel = DSExpireLabel()

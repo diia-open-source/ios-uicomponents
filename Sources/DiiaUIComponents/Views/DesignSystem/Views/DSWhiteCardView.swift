@@ -3,7 +3,7 @@ import UIKit
 import Lottie
 import DiiaCommonTypes
 
-public class DSWhiteCardViewModel {
+public final class DSWhiteCardViewModel {
     public let image: String?
     public let title: String?
     public let label: String

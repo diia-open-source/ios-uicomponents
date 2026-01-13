@@ -21,19 +21,19 @@ public struct DSInputBlockViewBuilder: DSViewBuilderProtocol {
         }
         let viewModel = DSInputBlockViewModel(
             componentId: model.componentId,
-            tableMainHeadingViewModel: model.tableMainHeadingMlc.map {
-                DSTableMainHeadingViewModel(
-                    componentId: $0.componentId,
-                    label: $0.label,
-                    description: $0.description
-                )
+            tableMainHeadingViewModel: model.tableMainHeadingMlc.map { model in
+                return DSTableMainHeadingViewModel(headingModel: model) {
+                    if let iconAction = model.icon?.action {
+                        eventHandler(.action(iconAction))
+                    }
+                }
             },
-            tableSecondaryHeadingViewModel: model.tableSecondaryHeadingMlc.map {
-                DSTableMainHeadingViewModel(
-                    componentId: $0.componentId,
-                    label: $0.label,
-                    description: $0.description
-                )
+            tableSecondaryHeadingViewModel: model.tableSecondaryHeadingMlc.map { model in
+                return TableSecondaryHeadingViewModel(headingModel: model) {
+                    if let iconAction = model.icon?.action {
+                        eventHandler(.action(iconAction))
+                    }
+                }
             },
             attentionIconMessageModel: model.attentionIconMessageMlc,
             items: model.items,

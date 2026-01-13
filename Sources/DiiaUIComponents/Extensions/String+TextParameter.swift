@@ -7,18 +7,32 @@ public extension String {
     func asTextParameter() -> String {
         "{" + self + "}"
     }
-    
-	func attributedTextWithParameters(font: UIFont = FontBook.usualFont, lineHeightMultiple: CGFloat = 1.25, paragraphSpacing: CGFloat? = nil, parameters: [TextParameter]?) -> NSAttributedString? {
+
+    func attributedTextWithParameters(
+        font: UIFont = FontBook.usualFont,
+        lineHeightMultiple: CGFloat = 1.25,
+        lineHeight: CGFloat? = nil,
+        paragraphSpacing: CGFloat? = nil,
+        parameters: [TextParameter]?
+    ) -> NSAttributedString? {
         let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineHeightMultiple = lineHeightMultiple
-		if let paragraphSpacing = paragraphSpacing {
+
+        if let lineHeight {
+            let heightMultiple = lineHeight / font.lineHeight
+            paragraphStyle.lineHeightMultiple = heightMultiple
+        } else {
+            paragraphStyle.lineHeightMultiple = lineHeightMultiple
+        }
+
+		if let paragraphSpacing {
 			paragraphStyle.paragraphSpacing = paragraphSpacing
 		}
+
         let attributedText = NSMutableAttributedString(
             string: self,
             attributes: [
                 .font: font,
-                .paragraphStyle: paragraphStyle
+                .paragraphStyle: paragraphStyle,
             ])
         
         for parameter in parameters ?? [] {

@@ -19,6 +19,12 @@ public struct DSTopGroupViewBuilder: DSViewBuilderProtocol {
         }
         if let titleGroupMlc = data.titleGroupMlc {
             let view = TopNavigationBigView()
+            let action: Action? = titleGroupMlc.mediumIconRight?.action.flatMap { iconAction in
+                Action(iconName: UIComponentsConfiguration.shared.imageProvider.imageNameForCode(imageCode: titleGroupMlc.mediumIconRight?.code ?? "")) {
+                    eventHandler(.action(iconAction))
+                }
+            }
+            
             view.configure(
                 viewModel: TopNavigationBigViewModel(
                     title: titleGroupMlc.heroText,
@@ -27,10 +33,7 @@ public struct DSTopGroupViewBuilder: DSViewBuilderProtocol {
                     backAction: titleGroupMlc.hideBackButton == true ? nil : {
                         eventHandler(.action(DSActionParameter(type: "back")))
                     },
-                    action: Action(iconName: UIComponentsConfiguration.shared.imageProvider?.imageNameForCode(imageCode: titleGroupMlc.mediumIconRight?.code ?? "")) {
-                        guard let action = titleGroupMlc.mediumIconRight?.action else { return }
-                        eventHandler(.action(action))
-                    }
+                    action: action
                 )
             )
             stack.addArrangedSubview(view)

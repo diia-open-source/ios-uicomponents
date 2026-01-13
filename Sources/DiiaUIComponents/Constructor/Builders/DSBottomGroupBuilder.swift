@@ -143,7 +143,7 @@ public struct DSBottomGroupBuilder: DSViewBuilderProtocol {
         let iconVMs = model.items.map { item in
             let viewModel = IconedLoadingStateViewModel(
                 name: item.btnLoadPlainIconAtm.label,
-                image: UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: item.btnLoadPlainIconAtm.icon) ?? UIImage())
+                image: UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: item.btnLoadPlainIconAtm.icon) ?? UIImage())
             viewModel.clickHandler = { [weak viewModel] in
                 guard let viewModel = viewModel else { return }
                 if let action = item.btnLoadPlainIconAtm.action {

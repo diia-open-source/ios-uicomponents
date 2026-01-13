@@ -1,7 +1,7 @@
 
 import UIKit
 
-public class LoadingContainerView: BaseCodeView, AnimatedViewProtocol {
+public final class LoadingContainerView: BaseCodeView, AnimatedViewProtocol {
     private let imageView = UIImageView()
     private var size: CGSize = Constants.imageSize
     private var loadingImage: UIImage? = Constants.defaultImage

@@ -33,7 +33,7 @@ public struct DSListWidgetItemModel: Codable {
     }
 }
 
-public class DSListWidgetItemViewModel {
+public final class DSListWidgetItemViewModel {
     let model: DSListWidgetItemModel
     var onClick: Callback?
     
@@ -44,7 +44,7 @@ public class DSListWidgetItemViewModel {
 }
 
 /// design_system_code: listWidgetItemMlc
-public class DSListWidgetItemView: BaseCodeView {
+public final class DSListWidgetItemView: BaseCodeView {
     
     // MARK: - Subviews
     private let leftIconView: UIImageView = .init().withSize(Constants.imageSize)
@@ -87,7 +87,7 @@ public class DSListWidgetItemView: BaseCodeView {
         
         leftIconView.isHidden = viewModel.model.iconLeft == nil
         if let iconLeft = viewModel.model.iconLeft {
-            leftIconView.image = UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: iconLeft)
+            leftIconView.image = UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: iconLeft)
         }
         
         titleLabel.text = viewModel.model.label
@@ -99,7 +99,7 @@ public class DSListWidgetItemView: BaseCodeView {
         
         rightIconView.isHidden = viewModel.model.iconRight == nil
         if let iconRight = viewModel.model.iconRight {
-            rightIconView.image = UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: iconRight)
+            rightIconView.image = UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: iconRight)
         }
     }
     

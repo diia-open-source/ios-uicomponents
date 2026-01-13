@@ -14,7 +14,7 @@ public enum VidoControlsHandlerVisibility: String {
     case hidden
 }
 
-class DSFullScreenVideoControlsView: UIView {
+final class DSFullScreenVideoControlsView: UIView {
     private let playPauseImageView = UIImageView()
     private let playPauseBackgroundImageView = UIImageView()
     private var btnState: PlayPauseButtonState = .loading

@@ -3,7 +3,7 @@ import UIKit
 import DiiaCommonTypes
 
 /// design_system_code: inputNumberLargeAtm
-public class DSInputNumberLargeItemView: BaseCodeView {
+public final class DSInputNumberLargeItemView: BaseCodeView {
     // MARK: - Subviews
     public let textField = DSInputNumberLargeTextField()
     

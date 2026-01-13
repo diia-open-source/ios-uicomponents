@@ -1,0 +1,15 @@
+{
+  "images" : [
+    {
+      "filename" : "card-type--maestro.svg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  },
+  "properties" : {
+    "preserves-vector-representation" : true
+  }
+}

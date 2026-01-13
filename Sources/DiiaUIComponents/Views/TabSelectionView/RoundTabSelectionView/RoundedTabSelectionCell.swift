@@ -1,7 +1,7 @@
 
 import UIKit
 
-public class TabSelectionViewModel {
+public final class TabSelectionViewModel {
     let title: String
     let count: Int?
     var isSelected: Bool
@@ -13,7 +13,7 @@ public class TabSelectionViewModel {
     }
 }
 
-public class RoundedTabSelectionCell: BaseCollectionNibCell, NibLoadable {
+public final class RoundedTabSelectionCell: BaseCollectionNibCell, NibLoadable {
     // MARK: - Static
     public static let nib = UINib(nibName: reuseID, bundle: Bundle.module)
 

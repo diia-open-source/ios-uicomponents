@@ -38,6 +38,7 @@ public struct BaseConstructorConditionHandlerImpl: ConstructorConditionHandler {
     
     public func handleConditions(conditionBlocks: [DSConditionComponentProtocol],
                           inputBlocks: [DSInputComponentProtocol]) {
+        if inputBlocks.isEmpty { return }
         conditionBlocks.forEach { $0.updateConditions(inputFields: inputBlocks) }
     }
 }
@@ -171,6 +172,10 @@ extension ConstructorViewController: ConstructorScreenViewProtocol, RatingFormHo
     public func setInnerTridentLoading(_ state: LoadingState) {
         constructorView?.bodyStack.isHidden = state == .loading
         constructorView?.bottomStack.isHidden = state == .loading
+        if state == .loading {
+            constructorView?.bodyScrollView.separatorShouldAlwaysBeVisible = false
+            constructorView?.bodyScrollView.updateSeparatorVisibility()
+        }
         constructorView?.loadingView.setLoadingState(state) { [weak self] in
             UIAccessibility.post(notification: .layoutChanged, argument: self?.constructorView?.topGroupStack)
         }

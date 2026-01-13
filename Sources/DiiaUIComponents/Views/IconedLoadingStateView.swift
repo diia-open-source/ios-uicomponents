@@ -2,7 +2,7 @@
 import UIKit
 import DiiaCommonTypes
 
-public class IconedLoadingStateViewModel: NSObject {
+public final class IconedLoadingStateViewModel: NSObject {
     public let name: String
     public let image: UIImage?
     public let componentId: String?
@@ -25,7 +25,7 @@ public class IconedLoadingStateViewModel: NSObject {
     }
 }
 
-public class IconedLoadingStateView: BaseCodeView {
+public final class IconedLoadingStateView: BaseCodeView {
     private var mainStack: UIStackView?
     private let imageView: UIImageView = UIImageView().withSize(Constants.iconSize)
     private let label: UILabel = UILabel().withParameters(font: FontBook.usualFont)

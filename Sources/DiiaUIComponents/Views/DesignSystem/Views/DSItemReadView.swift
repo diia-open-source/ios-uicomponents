@@ -18,7 +18,7 @@ public struct DSItemReadViewModel {
 }
 
 /// design_system_code: itemReadMlc
-public class DSItemReadView: BaseCodeView {
+public final class DSItemReadView: BaseCodeView {
     private let titleLabel = UILabel().withParameters(font: FontBook.usualFont)
     private let detailsLabel = UILabel().withParameters(font: FontBook.bigText)
     private let iconRightView: UIImageView = UIImageView().withSize(Constants.iconRightSize)

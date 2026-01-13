@@ -4,7 +4,7 @@ import Lottie
 import DiiaCommonTypes
 
 // MARK: - View Model
-public class DSVerticalCardViewModel {
+public final class DSVerticalCardViewModel {
     public let title: String
     public let badgeCount: String
     public let imageUrl: String?

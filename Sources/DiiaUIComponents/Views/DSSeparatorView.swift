@@ -1,7 +1,7 @@
 
 import UIKit
 
-public class DSSeparatorView: BaseCodeView {
+public final class DSSeparatorView: BaseCodeView {
 
     public override func setupSubviews() {
         self.withHeight(Constants.height)

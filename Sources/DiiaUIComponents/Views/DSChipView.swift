@@ -1,7 +1,7 @@
 
 import UIKit
 
-public class DSChipView: BaseCodeView {
+public final class DSChipView: BaseCodeView {
     private let textLabel = UILabel().withParameters(font: FontBook.statusFont, numberOfLines: 1)
     
     // MARK: - Init

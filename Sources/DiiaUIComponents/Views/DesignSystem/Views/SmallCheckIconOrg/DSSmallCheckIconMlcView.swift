@@ -3,7 +3,7 @@ import UIKit
 import DiiaCommonTypes
 
 
-public class DSSmallCheckIconMlcViewModel: NSObject {
+public final class DSSmallCheckIconMlcViewModel: NSObject {
     public let componentId: String?
     public let id: String?
     public let code: String
@@ -27,7 +27,7 @@ public class DSSmallCheckIconMlcViewModel: NSObject {
 }
 
 //ds code: smallCheckIconMlc
-public class DSSmallCheckIconMlcView: BaseCodeView {
+public final class DSSmallCheckIconMlcView: BaseCodeView {
     private let iconView = UIImageView()
     private let checkmarkIconView = UIImageView()
     private weak var viewModel: DSSmallCheckIconMlcViewModel?

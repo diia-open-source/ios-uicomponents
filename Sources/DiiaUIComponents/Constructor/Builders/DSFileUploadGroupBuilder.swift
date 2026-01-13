@@ -16,7 +16,7 @@ public struct DSFileUploadGroupBuilder: DSViewBuilderProtocol {
         let vm = DSFileUploadViewModel(title: data.title, descriptionText: data.description, maxCount: data.maxCount ?? 5)
         vm.action = .init(
             title: data.btnPlainIconAtm.label,
-            iconName: UIComponentsConfiguration.shared.imageProvider?.imageNameForCode(imageCode: data.btnPlainIconAtm.icon),
+            iconName: UIComponentsConfiguration.shared.imageProvider.imageNameForCode(imageCode: data.btnPlainIconAtm.icon),
             callback: { [weak vm] in
                 guard let vm = vm else { return }
                 eventHandler(.fileUploaderAction(viewModel: vm))

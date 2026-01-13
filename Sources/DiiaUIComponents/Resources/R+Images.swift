@@ -46,9 +46,9 @@ extension R {
         case arrowRight = "arrow_right"
         case deleteIcon
         case retry
+        case ds_placeholder = "DS_placeholder"
         case ds_ellipseCross = "DS_ellipseCross"
         case ds_white_retry = "DS_white_retry"
-        case logoUaEu = "DS_logoUaEu"
         case defaultLoadingIcon = "DS_defaultLoadingIcon"
         case defaultImagePlaceholder = "DS_defaultImagePlaceholder"
         case defaultIconLarge = "DS_defaultIconLarge"

@@ -8,7 +8,7 @@ public struct DSUserCardModel: Codable {
     public let description: String?
 }
 
-public class DSUserPictureModel: Codable {
+public final class DSUserPictureModel: Codable {
     public let componentId: String?
     public var useDocPhoto: Bool?
     public let defaultImageCode: DSUserPictureCode?

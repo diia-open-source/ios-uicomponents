@@ -41,7 +41,7 @@ public struct DSInputPhoneCodeModelV2: Codable {
 }
 
 /// design_system_code: inputPhoneCodeOrgV2
-public class InputPhoneCodeViewV2: BaseCodeView, DSInputComponentProtocol {
+public final class InputPhoneCodeViewV2: BaseCodeView, DSInputComponentProtocol {
     
     // MARK: - Subviews
     private let titleLabel = UILabel().withParameters(font: FontBook.statusFont)
@@ -164,8 +164,9 @@ public class InputPhoneCodeViewV2: BaseCodeView, DSInputComponentProtocol {
                 self?.onChange(text: text)
             }
         )
-        
-        textField.text = mainViewModel.value?.formattedPhoneNumber(mask: mask ?? .empty)
+
+        let value = mainViewModel.value?.formattedPhoneNumber(mask: mask ?? .empty)
+        textField.text = value
         textField.keyboardType = .decimalPad
         textField.placeholder = currentPhoneCode.placeholder
         textField.accessibilityIdentifier = viewModel?.inputPhoneComponentId
@@ -174,7 +175,7 @@ public class InputPhoneCodeViewV2: BaseCodeView, DSInputComponentProtocol {
                                                              isEditable: mainViewModel.codeValueIsEditable)
         phoneCodeSelectorView.configure(with: selectorViewModel)
         
-        onEndEditing(text: .empty)
+        onEndEditing(text: value ?? .empty)
     }
     
     @objc private func textFieldDidTapValue() {
@@ -183,7 +184,6 @@ public class InputPhoneCodeViewV2: BaseCodeView, DSInputComponentProtocol {
     
     @objc private func textFieldDidChangeValue(_ textField: UITextField) {
         let inputText = textField.text ?? .empty
-        viewModel?.currentPhoneCode.value?.value = inputText
         viewModel?.onChangeText?(inputText)
         if !errorLabel.isHidden {
             updateInstructionsState()
@@ -192,6 +192,8 @@ public class InputPhoneCodeViewV2: BaseCodeView, DSInputComponentProtocol {
     
     @objc private func clearText() {
         textField.text = .empty
+        onChange(text: .empty)
+        textField.sendActions(for: .editingChanged)
         viewModel?.fieldState.value = .focused
     }
     

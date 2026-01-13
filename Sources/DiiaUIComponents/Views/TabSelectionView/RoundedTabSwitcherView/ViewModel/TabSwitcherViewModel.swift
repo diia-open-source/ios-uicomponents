@@ -1,7 +1,7 @@
 
 import UIKit
 
-public class TabSwitcherModel {
+public final class TabSwitcherModel {
     public let id: String
     public let title: String
     public var isSelected: Bool

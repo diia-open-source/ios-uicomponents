@@ -1,5 +1,6 @@
 
 import Foundation
+import DiiaCommonTypes
 
 public struct DSCheckboxSquareMlc: Codable {
     public let id: String?
@@ -9,14 +10,16 @@ public struct DSCheckboxSquareMlc: Codable {
     public let componentId: String?
     public let blocker: Bool?
     public let options: [DSCheckboxOption]?
-    
+    public let parameters: [TextParameter]?
+
     public init(id: String? = nil,
                 label: String,
                 isSelected: Bool? = nil,
                 isEnabled: Bool? = nil,
                 componentId: String? = nil,
                 blocker: Bool? = nil,
-                options: [DSCheckboxOption]? = nil) {
+                options: [DSCheckboxOption]? = nil,
+                parameters: [TextParameter]? = nil) {
         self.id = id
         self.label = label
         self.isSelected = isSelected
@@ -24,6 +27,7 @@ public struct DSCheckboxSquareMlc: Codable {
         self.componentId = componentId
         self.blocker = blocker
         self.options = options
+        self.parameters = parameters
     }
 }
 

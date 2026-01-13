@@ -99,15 +99,99 @@ extension DSRecursiveContainerOrgBuilder: DSViewMockableBuilderProtocol {
                       }
                     }
             """
+
+        let itemsStr = """
+                [
+                                {
+                                  "inputTextMlcV2": {
+                                    "componentId": "last_name_before_2",
+                                    "paddingMode": {
+                                      "side": "none",
+                                      "top": "none"
+                                    },
+                                    "inputCode": "fullNamesBefore",
+                                    "label": "Прізвище",
+                                    "value": "Дієва",
+                                    "mandatory": true,
+                                    "validation": [
+                                      {
+                                        "regexp": "^[А-ЩЬЮЯҐЄІЇа-щьюяґєії' -]+$",
+                                        "flags": [
+                                          "g",
+                                          "u"
+                                        ],
+                                        "errorMessage": "Допускаються лише літери українського алфавіту, апостроф, дефіс та пробіл"
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "inputTextMlcV2": {
+                                    "componentId": "first_name_before_2",
+                                    "paddingMode": {
+                                      "side": "none",
+                                      "top": "none"
+                                    },
+                                    "inputCode": "firstNameBefore",
+                                    "label": "Ім'я",
+                                    "value": "Надія",
+                                    "mandatory": true,
+                                    "validation": [
+                                      {
+                                        "regexp": "^[А-ЩЬЮЯҐЄІЇа-щьюяґєії' -]+$",
+                                        "flags": [
+                                          "g",
+                                          "u"
+                                        ],
+                                        "errorMessage": "Допускаються лише літери українського алфавіту, апостроф, дефіс та пробіл"
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "inputTextMlcV2": {
+                                    "componentId": "middle_name_before_2",
+                                    "paddingMode": {
+                                      "side": "none",
+                                      "top": "none"
+                                    },
+                                    "inputCode": "middleNameBefore",
+                                    "label": "По батькові",
+                                    "value": "Володимирівна",
+                                    "hint": "Це поле є необов'язковим",
+                                    "mandatory": false,
+                                    "validation": [
+                                      {
+                                        "regexp": "^[А-ЩЬЮЯҐЄІЇа-щьюяґєії' -]+$",
+                                        "flags": [
+                                          "g",
+                                          "u"
+                                        ],
+                                        "errorMessage": "Допускаються лише літери українського алфавіту, апостроф, дефіс та пробіл"
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+            """
         let whiteContainer: AnyCodable? = whiteContainerStr.parseDecodable()
+        let items: [AnyCodable]? = itemsStr.parseDecodable()
+        let mockBtnWhiteLargeIconAtm = DSBtnPlainIconModel(id: "id", state: .enabled, label: "Додати попереднє ПІБ", icon: "add", action: .init(type: "add_new_template"), componentId: "btn_add_name")
         let model = DSRecursiveContainerOrgModel(
             componentId: "componentId",
             inputCode: "inputCode",
             mandatory: true,
             template: whiteContainer ?? .dictionary([:]),
-            items: [],
+            items: items ?? [],
             maxNumber: 10,
-            btnWhiteLargeIconAtm: DSBtnPlainIconModel(id: "id", state: .enabled, label: "Додати попереднє ПІБ", icon: "add", action: .init(type: "add_new_template"), componentId: "btn_add_name")
+            btnWhiteLargeIconAtm: mockBtnWhiteLargeIconAtm,
+            btnAddOptionAtm: DSBtnAddOptionAtm(
+                componentId: "addOption",
+                label: "Add Document",
+                description: "Upload Document",
+                iconLeft: .mock,
+                state: .enabled,
+                action: nil)
         )
         return .dictionary([
             modelKey: .fromEncodable(encodable: model)

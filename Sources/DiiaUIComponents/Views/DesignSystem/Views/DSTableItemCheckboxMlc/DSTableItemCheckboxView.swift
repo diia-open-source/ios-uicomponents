@@ -34,6 +34,12 @@ public final class DSTableItemCheckboxView: BaseCodeView {
     
     private var viewModel: DSTableItemCheckboxItemViewModel?
     
+    private var accessibilityTraitsSet: Set<UIAccessibilityTraits> = [.button] {
+        didSet {
+            accessibilityTraits = UIAccessibilityTraits(accessibilityTraitsSet)
+        }
+    }
+    
     public override func setupSubviews() {
         checkmarkImageView.contentMode = .scaleAspectFit
         
@@ -42,6 +48,7 @@ public final class DSTableItemCheckboxView: BaseCodeView {
         mainStack.fillSuperview()
         
         addTapGestureRecognizer()
+        setupAccessibility()
     }
     
     // MARK: - Public Methods
@@ -50,6 +57,7 @@ public final class DSTableItemCheckboxView: BaseCodeView {
         
         rowsStack.safelyRemoveArrangedSubviews()
         viewModel.rows.forEach(addRowView)
+        accessibilityLabel = viewModel.rows.compactMap({ $0.textLabelAtm.label }).joined(separator: ",")
         
         viewModel.isSelected.observe(observer: self) { [weak self] _ in
             self?.updateSelectionState()
@@ -89,6 +97,10 @@ public final class DSTableItemCheckboxView: BaseCodeView {
         rowsStack.addArrangedSubview(rowView)
     }
     
+    private func setupAccessibility() {
+        isAccessibilityElement = true
+    }
+    
     private func addTapGestureRecognizer() {
         let gesture = UITapGestureRecognizer(target: self, action: #selector(onTapped))
         self.addGestureRecognizer(gesture)
@@ -102,11 +114,23 @@ public final class DSTableItemCheckboxView: BaseCodeView {
             return
         }
         checkmarkImageView.image = viewModel.isSelected.value ? R.image.checkbox_enabled.image : R.image.checkbox_disabled.image
+        
+        if viewModel.isSelected.value {
+            accessibilityTraitsSet.insert(.selected)
+        } else {
+            accessibilityTraitsSet.remove(.selected)
+        }
     }
     
     private func updateAvailabilityState(isEnabled: Bool) {
         isUserInteractionEnabled = isEnabled
         checkmarkImageView.alpha = isEnabled ? 1 : 0.3
+        
+        if isEnabled {
+            accessibilityTraitsSet.remove(.notEnabled)
+        } else {
+            accessibilityTraitsSet.insert(.notEnabled)
+        }
     }
     
     @objc private func onTapped() {

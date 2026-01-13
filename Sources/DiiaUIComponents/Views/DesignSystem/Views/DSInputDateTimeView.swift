@@ -22,7 +22,7 @@ public struct DSInputDateTimeModel: Codable {
     }
 }
 
-public class DSInputDateTimeViewModel {
+public final class DSInputDateTimeViewModel {
     public let componentId: String?
     public let id: String?
     public let maxDate: String?
@@ -60,7 +60,7 @@ public class DSInputDateTimeViewModel {
 }
 
 /// design_system_code: inputDateTimeOrg
-public class DSInputDateTimeView: BaseCodeView, DSInputComponentProtocol {
+public final class DSInputDateTimeView: BaseCodeView, DSInputComponentProtocol {
     private let stack = UIStackView.create(spacing: Constants.stackSpacing)
     private var viewModel: DSInputDateTimeViewModel?
     private var dateString: String?

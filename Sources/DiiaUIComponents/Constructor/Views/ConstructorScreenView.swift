@@ -1,7 +1,7 @@
 
 import UIKit
 
-public class ConstructorScreenView: BaseCodeView {
+public final class ConstructorScreenView: BaseCodeView {
     
     public let backgroundImageView = UIImageView()
     public let loadingView = ContentLoadingView()

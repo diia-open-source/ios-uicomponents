@@ -2,7 +2,7 @@
 import UIKit
 
 /// design_system_code: cardsListOrg
-public class DSCardListView: BaseCodeView {
+public final class DSCardListView: BaseCodeView {
     
     private let stackView = UIStackView.create(.vertical, spacing: Constants.stackSpacing)
    

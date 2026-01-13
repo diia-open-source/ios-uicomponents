@@ -2,7 +2,7 @@
 import XCTest
 @testable import DiiaUIComponents
 
-class RoundedTabSwitcherViewTests: XCTestCase {
+final class RoundedTabSwitcherViewTests: XCTestCase {
     private var viewModel: TabSwitcherViewModelMock!
     
     override func setUp() {

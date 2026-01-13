@@ -3,7 +3,7 @@ import UIKit
 import Lottie
 import DiiaCommonTypes
 
-public class DSHalvedCardViewModel {
+public final class DSHalvedCardViewModel {
     public let id: String
     public let imageURL: String
     public let label: String

@@ -6,7 +6,7 @@ public enum TextFieldState {
     case unfocused, focused, error(focused: Bool), disabled
 }
 
-public class TitledTextFieldViewModel {
+public final class TitledTextFieldViewModel {
     public let componentId: String?
     public let id: String?
     public let inputCode: String?
@@ -65,7 +65,7 @@ public class TitledTextFieldViewModel {
 }
 
 /// design_system_code: inputTextMlc
-public class TitledTextFieldView: BaseCodeView, DSInputComponentProtocol {
+public final class TitledTextFieldView: BaseCodeView, DSInputComponentProtocol {
     public let textField = UITextField()
     
     private let textStack = UIStackView()

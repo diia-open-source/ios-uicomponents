@@ -2,7 +2,7 @@
 import UIKit
 
 /// design_system_code: topGroupOrg
-public class DSTopGroupView: BaseCodeView {
+public final class DSTopGroupView: BaseCodeView {
     private var navigation = TopNavigationView()
     private var tabChipView = DSChipTabsView()
     

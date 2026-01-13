@@ -17,7 +17,7 @@ public struct DocumentItem {
     }
 }
 
-public class PairVerticalView: BaseCodeView {
+public final class PairVerticalView: BaseCodeView {
     
     // MARK: - Outlets
     private var stackView: UIStackView?

@@ -17,7 +17,7 @@ public struct ParameterizedStatusMessage: Codable {
 }
 
 /// design_system_code: statusMessageMlc
-public class ParameterizedStatusInfoView: BaseCodeView {
+public final class ParameterizedStatusInfoView: BaseCodeView {
     
     // MARK: - Views
     private let titleLabel = UILabel().withParameters(font: FontBook.bigText)

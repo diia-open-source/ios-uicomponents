@@ -69,7 +69,7 @@ extension DSSmallNotificationCarouselBuilder: DSViewMockableBuilderProtocol {
 }
 
 // MARK: - Data Source
-class DSSmallNotificationCarouselDataSource: NSObject, UICollectionViewDataSource {
+final class DSSmallNotificationCarouselDataSource: NSObject, UICollectionViewDataSource {
     private let sourceModel: DSSmallNotificationCarouselModel
     private let eventHandler: (ConstructorItemEvent) -> Void
     

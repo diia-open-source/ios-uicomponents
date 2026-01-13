@@ -3,7 +3,7 @@ import UIKit
 import AVKit
 import DiiaCommonTypes
 
-class MediaGalleryVideoCell: UICollectionViewCell, Reusable {
+final class MediaGalleryVideoCell: UICollectionViewCell, Reusable {
     private let container = UIView()
     private let avPlayerVC = AVPlayerViewController()
     private let loadingImageView = UIImageView()

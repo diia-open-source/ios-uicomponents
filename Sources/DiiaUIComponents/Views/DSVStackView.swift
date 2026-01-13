@@ -1,7 +1,7 @@
 
 import UIKit
 
-public class DSVStackView: BaseCodeView {
+public final class DSVStackView: BaseCodeView {
     // MARK: - Properties
     private var arrangedSubviews: [UIView] = []
     

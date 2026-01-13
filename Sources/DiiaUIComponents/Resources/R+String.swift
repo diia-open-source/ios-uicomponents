@@ -16,6 +16,7 @@ enum R {
         case accessibility_photo_url
         case general_accessibility_filters_applied
         case general_accessibility_text_field_clear_button
+        case pdr_penalty_accessibility_video
         
         // MARK: - General
         case general_ok

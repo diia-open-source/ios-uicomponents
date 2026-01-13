@@ -15,7 +15,7 @@ public struct DSTextItemVerticalMlc: Codable {
     }
 }
 
-public class TextItemVerticalMlcView: BaseCodeView {
+public final class TextItemVerticalMlcView: BaseCodeView {
 
     private let stackView = UIStackView.create(spacing: Constants.smallSpacing)
     private let titleLabel = UILabel().withParameters(font: FontBook.usualFont, numberOfLines: 1)
@@ -43,7 +43,7 @@ public class TextItemVerticalMlcView: BaseCodeView {
         valueLabel.text = model.value
         iconView.isHidden = model.iconRight == nil
         if let icon = model.iconRight {
-            iconView.image = UIComponentsConfiguration.shared.imageProvider?.imageForCode(
+            iconView.image = UIComponentsConfiguration.shared.imageProvider.imageForCode(
                 imageCode: icon.code)
             iconView.accessibilityIdentifier = icon.componentId
         }

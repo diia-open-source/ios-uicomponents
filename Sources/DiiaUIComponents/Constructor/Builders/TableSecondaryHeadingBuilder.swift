@@ -13,13 +13,12 @@ public struct TableSecondaryHeadingBuilder: DSViewBuilderProtocol {
         guard let data: DSTableHeadingItemModel = object.parseValue(forKey: self.modelKey) else { return nil }
         
         let headingView = TableSecondaryHeadingView()
-        let viewModel = TableSecondaryHeadingViewModel(headingModel: data)
-        headingView.configure(with: viewModel) {
+        let viewModel = TableSecondaryHeadingViewModel(headingModel: data) {
             if let iconAction = data.icon?.action {
                 eventHandler(.action(iconAction))
             }
         }
-        
+        headingView.configure(with: viewModel)
         return BoxView(subview: headingView).withConstraints(insets: paddingType.defaultPadding(object: object, modelKey: modelKey))
     }
 }

@@ -104,7 +104,7 @@ final public class DSAccordionOrgView: BaseCodeView {
 
         accordionIcon.image = UIComponentsConfiguration
             .shared
-            .imageProvider?
+            .imageProvider
             .imageForCode(imageCode: code)
 
         let closure = { [weak self] in

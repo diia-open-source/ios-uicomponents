@@ -3,7 +3,7 @@ import UIKit
 import DiiaCommonTypes
 
 // MARK: - DSCheckboxButtonView
-public class DSCheckboxButtonViewModel {
+public final class DSCheckboxButtonViewModel {
     public let checkboxVMs: [CheckmarkViewModel]
     public let mainButtonVM: DSLoadingButtonViewModel?
     public let strokeButtonVM: DSLoadingButtonViewModel?
@@ -33,7 +33,7 @@ public class DSCheckboxButtonViewModel {
     }
 }
 
-public class DSCheckboxButtonView: BaseCodeView, DSInputComponentProtocol {
+public final class DSCheckboxButtonView: BaseCodeView, DSInputComponentProtocol {
     
     private let checkboxStackView = UIStackView.create(spacing: Constants.spacing)
     private let primaryButton = DSPrimaryDefaultButton()
@@ -98,7 +98,8 @@ public class DSCheckboxButtonView: BaseCodeView, DSInputComponentProtocol {
             let checkboxView = CheckmarkView()
             checkboxView.configure(
                 text: checkboxVM.text,
-                isChecked: checkboxVM.isChecked
+                isChecked: checkboxVM.isChecked,
+                parameters: checkboxVM.parameters
             ) { [weak self] isSelected in
                 self?.viewModel?.updateState(
                     selectedCheckbox: checkboxVM,

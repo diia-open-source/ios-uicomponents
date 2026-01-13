@@ -2,7 +2,7 @@
 import UIKit
 import DiiaCommonTypes
 
-public class TitledMultilineTextView: BaseCodeView, DSInputComponentProtocol {
+public final class TitledMultilineTextView: BaseCodeView, DSInputComponentProtocol {
     
     public let textView = UITextView()
     

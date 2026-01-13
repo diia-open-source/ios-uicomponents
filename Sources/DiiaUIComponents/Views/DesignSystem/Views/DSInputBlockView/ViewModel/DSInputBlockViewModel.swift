@@ -2,10 +2,10 @@
 import UIKit
 import DiiaCommonTypes
 
-public class DSInputBlockViewModel {
+public final class DSInputBlockViewModel {
     public let componentId: String?
     public let tableMainHeadingViewModel: DSTableMainHeadingViewModel?
-    public let tableSecondaryHeadingViewModel: DSTableMainHeadingViewModel?
+    public let tableSecondaryHeadingViewModel: TableSecondaryHeadingViewModel?
     public let attentionIconMessageModel: DSAttentionIconMessageMlc?
     public let items: [AnyCodable]
     public let urlOpener: URLOpenerProtocol?
@@ -14,7 +14,7 @@ public class DSInputBlockViewModel {
     public init(
         componentId: String?,
         tableMainHeadingViewModel: DSTableMainHeadingViewModel?,
-        tableSecondaryHeadingViewModel: DSTableMainHeadingViewModel?,
+        tableSecondaryHeadingViewModel: TableSecondaryHeadingViewModel?,
         attentionIconMessageModel: DSAttentionIconMessageMlc?,
         items: [AnyCodable],
         urlOpener: URLOpenerProtocol?,

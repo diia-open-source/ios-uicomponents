@@ -10,15 +10,18 @@ public struct DSTableMainHeadingBuilder: DSViewBuilderProtocol {
                          withPadding paddingType: DSViewPaddingType,
                          viewFabric: DSViewFabric?,
                          eventHandler: @escaping (ConstructorItemEvent) -> Void) -> UIView? {
-        guard let data: DSTableHeadingItemModel = object.parseValue(forKey: self.modelKey) else { return nil }
-        
+        guard let model: DSTableHeadingItemModel = object.parseValue(forKey: self.modelKey) else { return nil }
+
         let headingView = DSTableMainHeadingView()
-        headingView.configure(with: DSTableMainHeadingViewModel(
-            componentId: data.componentId,
-            label: data.label,
-            description: data.description
-        ))
-        
+
+        let viewModel = DSTableMainHeadingViewModel(headingModel: model) {
+            if let iconAction = model.icon?.action {
+                eventHandler(.action(iconAction))
+            }
+        }
+
+        headingView.configure(with: viewModel)
+
         let box = BoxView(subview: headingView).withConstraints(insets: paddingType.insets(for: object, modelKey: modelKey, defaultInsets: .zero))
         return box
     }

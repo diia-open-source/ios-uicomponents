@@ -20,7 +20,7 @@ public struct DSGroupFilesAddBuilder: DSViewBuilderProtocol {
                 id: item.listItemMlc.id,
                 title: item.listItemMlc.label,
                 details: item.listItemMlc.description,
-                rightIcon: UIComponentsConfiguration.shared.imageProvider?.imageForCode(
+                rightIcon: UIComponentsConfiguration.shared.imageProvider.imageForCode(
                     imageCode: item.listItemMlc.iconRight?.code),
                 isEnabled: true) {
                     guard let action = item.listItemMlc.action else { return }
@@ -32,7 +32,7 @@ public struct DSGroupFilesAddBuilder: DSViewBuilderProtocol {
             items: items,
             buttonAction: Action(
                 title: model.btnPlainIconAtm.label,
-                iconName: UIComponentsConfiguration.shared.imageProvider?.imageNameForCode(imageCode: model.btnPlainIconAtm.icon)) {
+                iconName: UIComponentsConfiguration.shared.imageProvider.imageNameForCode(imageCode: model.btnPlainIconAtm.icon)) {
                     guard let action = model.btnPlainIconAtm.action else { return }
                     eventHandler(.action(action))
                 }))

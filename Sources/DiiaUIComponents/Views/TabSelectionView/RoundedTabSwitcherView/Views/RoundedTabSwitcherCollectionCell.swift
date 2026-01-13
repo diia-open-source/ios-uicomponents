@@ -1,7 +1,7 @@
 
 import UIKit
 
-public class RoundedTabSwitcherCollectionCell: BaseCollectionNibCell {
+public final class RoundedTabSwitcherCollectionCell: BaseCollectionNibCell {
     
     @IBOutlet weak private var containerView: UIView!
     @IBOutlet weak private var titleLabel: UILabel!

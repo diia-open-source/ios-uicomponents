@@ -17,8 +17,8 @@ public struct DSLinkQrShareViewBuilder: DSViewBuilderProtocol {
         let view = DSLinkQrShareView()
         let viewModel = DSLinkQrShareViewModel(model: model, eventHandler: eventHandler)
         eventHandler(.onComponentConfigured(with: .linkQrShareView(viewModel: viewModel)))
-        view.configure(with: viewModel)
-        
+        view.configure(with: viewModel, eventHandler: eventHandler)
+
         let paddings = paddingType.insets(for: object, modelKey: modelKey, defaultInsets: Constants.defaultInsets)
         let paddingBox = BoxView(subview: view).withConstraints(insets: paddings)
         return paddingBox
@@ -42,35 +42,52 @@ extension DSLinkQrShareViewBuilder: DSViewMockableBuilderProtocol {
                     DSChipBlackMlcItemModel(
                         chipBlackMlc: DSChipBlackMlcModel(
                             componentId: "componentId",
-                            label: "label",
-                            code: "code",
+                            label: "Option 1",
+                            code: "code1",
+                            active: true,
+                            action: .mock
+                        )
+                    ),
+                    DSChipBlackMlcItemModel(
+                        chipBlackMlc: DSChipBlackMlcModel(
+                            componentId: "componentId",
+                            label: "Option 2",
+                            code: "code2",
                             active: true,
                             action: .mock
                         )
                     )
                 ],
-                preselectedCode: "preselectedCode"
+                preselectedCode: "code2"
             ),
             linkSharingOrg: DSLinkSharingOrgModel(
                 componentId: "componentId",
-                text: "text",
-                linkSharingMlc: DSLinkSharingMlcModel(componentId: "componentId", label: "label"),
+                text: "Top textTop textTop textTop textTop textTop textTop textTop textTop textTop textTop textTop textTop textTop textTop text Top textTop textTop textTop textTop textTop textTop textTop textTop textTop textTop textTop textTop textTop textTop text ",
+                linkSharingMlc: DSLinkSharingMlcModel(componentId: "componentId", label: "Central label", iconRight: .mock),
                 description: "description",
                 btnIconPlainGroupMlc: DSBtnIconPlainGroupMlc(
                     items: [DSBtnPlainIconAtm(btnPlainIconAtm: .mock)],
                     componentId: "componentId"
-                )
+                ),
+                paginationMessageMlc: nil
             ),
             qrCodeOrg: DSQrCodeOrgModel(
                 componentId: "componentId",
-                text: "text",
+                text: "Top textTop textTop textTop textTop textTop textTop textTop textTop textTop textTop textTop textTop textTop textTop text Top textTop textTop textTop textTop textTop textTop textTop textTop textTop textTop textTop textTop textTop textTop text ",
                 qrCodeMlc: QRCodeMlc(qrLink: "https://mock.com", componentId: "componentId"),
-                expireLabel: DSExpireLabelBox(expireLabelFirst: "expireLabelFirst", expireLabelLast: "expireLabelLast", timer: 180),
+                expireLabel: DSExpireLabelBox(expireLabelFirst: "expireLabelFirst", expireLabelLast: "expireLabelLast", timer: 5),
+                expireLabelWithoutTimer: nil,
                 stateAfterExpiration: DSQrCodeOrgModelExpirationModel(
-                    paginationMessageMlc: .mock
-                )
-            ),
-            paginationMessageMlc: .mock
+                    paginationMessageMlc: DSPaginationMessageMlcModel(
+                        componentId: "componentId",
+                        title: "State after expiration title",
+                        description: "State after expiration description",
+                        btnStrokeAdditionalAtm: .mock
+                    )
+                ),
+                paginationMessageMlc: nil,
+                btnPlainIconAtm: nil
+            )
         )
         
         return .dictionary([

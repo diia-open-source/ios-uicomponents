@@ -26,7 +26,7 @@ public enum DSAmountAtmColorType: String, Codable {
 }
 
 /// design_system_code: amountAtm
-public class DSAmountAtm: BaseCodeView {
+public final class DSAmountAtm: BaseCodeView {
     private let valueLabel = UILabel().withParameters(font: FontBook.bigText)
     
     override public func setupSubviews() {

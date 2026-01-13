@@ -2,7 +2,7 @@
 import UIKit
 
 /// design_system_code: btnLoadIconPlainGroupMlc
-public class BorderedActionsView: BaseCodeView {
+public final class BorderedActionsView: BaseCodeView {
     private lazy var contentStackView = UIStackView.create(spacing: Constants.stackSpacing, in: self, padding: Constants.stackPadding)
     private var viewModels = [IconedLoadingStateViewModel]()
     
@@ -23,8 +23,11 @@ public class BorderedActionsView: BaseCodeView {
         }
     }
     
-    public func setupUI(stackSpacing: CGFloat) {
-        contentStackView.spacing = stackSpacing
+    public func setupUI(stackSpacing: CGFloat? = nil, alignment: UIStackView.Alignment = .fill) {
+        if let stackSpacing {
+            contentStackView.spacing = stackSpacing
+        }
+        contentStackView.alignment = alignment
     }
 }
 

@@ -27,7 +27,7 @@ public struct DSArticlePicCarouselBuilder: DSViewBuilderProtocol {
 }
 
 // MARK: - Data Source
-class DSArticlePicCarouselDataSource: NSObject, UICollectionViewDataSource {
+final class DSArticlePicCarouselDataSource: NSObject, UICollectionViewDataSource {
     private let sourceModel: DSArticlePicCarouselModel
 
     init(sourceModel: DSArticlePicCarouselModel) {

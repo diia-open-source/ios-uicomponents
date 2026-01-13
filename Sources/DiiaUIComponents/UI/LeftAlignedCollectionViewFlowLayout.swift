@@ -1,7 +1,7 @@
 
 import UIKit
 
-public class LeftAlignedCollectionViewFlowLayout: UICollectionViewFlowLayout {
+public final class LeftAlignedCollectionViewFlowLayout: UICollectionViewFlowLayout {
     public override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
         let attributes = super.layoutAttributesForElements(in: rect)
         var leftMargin = sectionInset.left

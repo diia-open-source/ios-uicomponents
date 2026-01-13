@@ -1,7 +1,7 @@
 
 import UIKit
 
-public class BaseNavigationController: UINavigationController {
+public final class BaseNavigationController: UINavigationController {
 
     private lazy var fullScreenPanGestureRecognizer: UIPanGestureRecognizer = {
         let gestureRecognizer = UIPanGestureRecognizer()

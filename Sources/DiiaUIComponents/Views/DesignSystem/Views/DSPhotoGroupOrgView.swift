@@ -14,7 +14,7 @@ public struct DSPhotoGroupOrg: Codable {
 }
 
 //ds_code: photoGroupOrg
-public class DSPhotoGroupOrgView: BaseCodeView {
+public final class DSPhotoGroupOrgView: BaseCodeView {
     private let mainStack = UIStackView.create()
     private let picturesHStack = UIStackView.create(.horizontal, spacing: Constants.spacing, alignment: .center, distribution: .fill)
     

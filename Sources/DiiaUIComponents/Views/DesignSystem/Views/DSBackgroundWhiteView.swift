@@ -2,7 +2,7 @@
 import DiiaCommonTypes
 import UIKit
 
-public class DSBackgroundWhiteViewModel {
+public final class DSBackgroundWhiteViewModel {
     public let title: String?
     public let items: [AnyCodable]
     public let componentId: String?
@@ -20,7 +20,7 @@ public class DSBackgroundWhiteViewModel {
 }
 
 /// design_system_code: questionFormsOrg
-public class DSBackgroundWhiteView: BaseCodeView {
+public final class DSBackgroundWhiteView: BaseCodeView {
     
     private let inputFieldsStack = UIStackView.create(spacing: Constants.stackSpacing)
     

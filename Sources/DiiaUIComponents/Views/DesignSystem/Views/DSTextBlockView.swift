@@ -9,15 +9,38 @@ public struct DSTextBlockModel: Codable {
     public let text: String?
     public let items: [AnyCodable]
     public let listItems: [AnyCodable]?
+    public let parameters: [TextParameter]?
+    public let attentionIconMessageMlc: DSAttentionIconMessageMlc?
+    
+    public init(
+        componentId: String? = nil,
+        squareChipStatusAtm: DSSquareChipStatusModel? = nil,
+        title: String? = nil,
+        text: String? = nil,
+        items: [AnyCodable],
+        listItems: [AnyCodable]? = nil,
+        parameters: [TextParameter]? = nil,
+        attentionIconMessageMlc: DSAttentionIconMessageMlc? = nil) {
+        self.componentId = componentId
+        self.squareChipStatusAtm = squareChipStatusAtm
+        self.title = title
+        self.text = text
+        self.items = items
+        self.listItems = listItems
+        self.parameters = parameters
+        self.attentionIconMessageMlc = attentionIconMessageMlc
+    }
 }
 
-public class DSTextBlockViewModel {
+public final class DSTextBlockViewModel {
     public let componentId: String?
     public let squareChipStatusAtm: DSSquareChipStatusModel?
     public let title: String?
     public let text: String?
     public let items: [AnyCodable]
     public let listItems: [AnyCodable]?
+    public let parameters: [TextParameter]?
+    public let attentionIconMessageMlc: DSAttentionIconMessageMlc?
     public let eventHandler: (ConstructorItemEvent) -> Void
     
     public init(
@@ -27,6 +50,8 @@ public class DSTextBlockViewModel {
         text: String?,
         items: [AnyCodable],
         listItems: [AnyCodable]?,
+        parameters: [TextParameter]? = nil,
+        attentionIconMessageMlc: DSAttentionIconMessageMlc? = nil,
         eventHandler: @escaping (ConstructorItemEvent) -> Void
     ) {
         self.componentId = componentId
@@ -35,20 +60,35 @@ public class DSTextBlockViewModel {
         self.text = text
         self.items = items
         self.listItems = listItems
+        self.parameters = parameters
         self.eventHandler = eventHandler
+        self.attentionIconMessageMlc = attentionIconMessageMlc
+    }
+    
+    public init(model: DSTextBlockModel, eventHandler: @escaping (ConstructorItemEvent) -> Void) {
+        self.componentId = model.componentId
+        self.squareChipStatusAtm = model.squareChipStatusAtm
+        self.title = model.title
+        self.text = model.text
+        self.items = model.items
+        self.listItems = model.listItems
+        self.parameters = model.parameters
+        self.eventHandler = eventHandler
+        self.attentionIconMessageMlc = model.attentionIconMessageMlc
     }
 }
 
 /// design_system_code: textBlockOrg
-public class DSTextBlockView: BaseCodeView {
+public final class DSTextBlockView: BaseCodeView {
     // MARK: - Properties
     private lazy var mainStack = UIStackView.create(
         views: [
             squareChipStatusContainer,
             titleLabel,
-            textLabel,
+            textView,
             bottomItemsListStackContainer,
-            bottomItemsStackContainer
+            bottomItemsStackContainer,
+            attentionIconMessageView
         ],
         spacing: Constants.mainStackSpacing
     )
@@ -57,13 +97,15 @@ public class DSTextBlockView: BaseCodeView {
     private lazy var squareChipStatusContainer = UIStackView.create(.horizontal, views: [squareChipStatusView, UIView()])
 
     private let titleLabel = UILabel().withParameters(font: FontBook.smallHeadingFont)
-    private let textLabel = UILabel().withParameters(font: FontBook.usualFont)
+    private let textView = UITextView()
 
     private let bottomItemsStackContainer = UIView()
     private let bottomItemsStack = UIStackView.create(spacing: Constants.itemsSpacing)
 
     private let bottomItemsListStackContainer = UIView()
     private let bottomItemsListStack = UIStackView.create(spacing: Constants.itemsSpacing)
+    
+    private let attentionIconMessageView = DSAttentionIconMessageView()
 
     // MARK: - Properties
     private var viewFabric = DSViewFabric.instance
@@ -71,6 +113,7 @@ public class DSTextBlockView: BaseCodeView {
     // MARK: - Lifecycle
     public override func setupSubviews() {
         super.setupSubviews()
+        setupTextView()
         
         backgroundColor = .white
         layer.cornerRadius = Constants.cornerRadius
@@ -100,9 +143,13 @@ public class DSTextBlockView: BaseCodeView {
             titleLabel.attributedText = attributedText
         }
         
-        textLabel.isHidden = viewModel.text == nil
+        textView.isHidden = viewModel.text == nil
         if let text = viewModel.text {
-            textLabel.text = text
+            if let parameters = viewModel.parameters {
+                textView.attributedText = text.attributedTextWithParameters(font: FontBook.usualFont, parameters: parameters)
+            } else {
+                textView.text = text
+            }
         }
 
         bottomItemsListStack.safelyRemoveArrangedSubviews()
@@ -123,20 +170,54 @@ public class DSTextBlockView: BaseCodeView {
         bottomItemsStackContainer.isHidden = viewModel.items.isEmpty
 
         if !viewModel.items.isEmpty {
+            let withElementsBefore = viewModel.squareChipStatusAtm != nil ||
+                viewModel.title != nil ||
+                viewModel.text != nil ||
+                !(viewModel.listItems ?? []).isEmpty
+            
             let subviews = viewModel.items.compactMap {
                 viewFabric.makeView(
                     from: $0,
-                    withPadding: .fixed(paddings: .zero),
+                    withPadding: withElementsBefore ?
+                        .fixed(paddings: Constants.itemsListPaddings) :
+                        .fixed(paddings: .zero),
                     eventHandler: viewModel.eventHandler
                 )
             }
             bottomItemsStack.addArrangedSubviews(subviews)
-            mainStack.setCustomSpacing(Constants.itemsListSpacing, after: bottomItemsListStackContainer)
+        }
+        
+        attentionIconMessageView.isHidden = viewModel.attentionIconMessageMlc == nil
+        if let attentionIcon = viewModel.attentionIconMessageMlc {
+            attentionIconMessageView.configure(with: attentionIcon)
         }
     }
     
     public func setFabric(_ fabric: DSViewFabric) {
         self.viewFabric = fabric
+    }
+    
+    // MARK: - Private methods
+    private func setupTextView() {
+        textView.linkTextAttributes = [
+            .foregroundColor: UIColor.black,
+            .underlineStyle: NSUnderlineStyle.single.rawValue
+        ]
+        textView.font = FontBook.usualFont
+        textView.isEditable = false
+        textView.isSelectable = true
+        textView.isScrollEnabled = false
+        textView.backgroundColor = .clear
+        textView.isUserInteractionEnabled = true
+        textView.textContainerInset = .zero
+        textView.textContainer.lineFragmentPadding = .zero
+        textView.delegate = self
+    }
+}
+
+extension DSTextBlockView: UITextViewDelegate {
+    public func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+        return !(UIComponentsConfiguration.shared.urlOpener?.url(urlString: URL.absoluteString, linkType: nil) ?? false)
     }
 }
 
@@ -149,5 +230,6 @@ private extension DSTextBlockView {
         static let mainStackSpacing: CGFloat = 16
         static let lineHeight: CGFloat = 24
         static let contentPaddings = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
+        static let itemsListPaddings = UIEdgeInsets(top: 8, left: 0, bottom: 0, right: 0)
     }
 }

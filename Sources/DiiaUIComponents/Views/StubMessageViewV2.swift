@@ -2,7 +2,7 @@
 import UIKit
 import DiiaCommonTypes
 
-public class StubMessageViewModel {
+public final class StubMessageViewModel {
     public let icon: String
     public let title: String?
     public let descriptionText: String?
@@ -44,7 +44,7 @@ public class StubMessageViewModel {
 }
 
 /// design_system_code: stubMessageMlc
-public class StubMessageViewV2: BaseCodeView {
+public final class StubMessageViewV2: BaseCodeView {
     // MARK: - UI Elements
     private let emojiLabel = UILabel().withParameters(font: FontBook.stubEmoji)
     private let titleLabel = UILabel().withParameters(font: FontBook.emptyStateTitleFont)

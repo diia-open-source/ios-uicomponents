@@ -3,7 +3,7 @@ import UIKit
 import DiiaCommonTypes
 
 /// design_system_code: centerChipBlackTabsOrg
-public class DSCenterChipBlackTabsOrgView: BaseCodeView {
+public final class DSCenterChipBlackTabsOrgView: BaseCodeView {
     // MARK: - Properties
     private let mainStack = UIStackView.create(.horizontal, spacing: Constants.chipSpacing, distribution: .fillEqually)
     private var viewModel: DSCenterChipBlackTabsOrgViewModel?
@@ -42,6 +42,5 @@ public class DSCenterChipBlackTabsOrgView: BaseCodeView {
 extension DSCenterChipBlackTabsOrgView {
     private enum Constants {
         static let chipSpacing: CGFloat = 8.0
-        static let chipHeight: CGFloat = 38.0
     }
 }

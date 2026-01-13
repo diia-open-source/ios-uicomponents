@@ -13,7 +13,7 @@ public struct DSDividerLineModel: Codable {
 }
 
 /// design_system_code: dividerLineMlc
-public class DSDividerLineView: BaseCodeView {
+public final class DSDividerLineView: BaseCodeView {
     private var heightConstraint: NSLayoutConstraint?
 
     public override func setupSubviews() {

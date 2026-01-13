@@ -147,29 +147,50 @@ extension ChildContainerViewController: ContainerProtocol {
     }
 }
 
-public class CustomIntensityVisualEffectView: UIVisualEffectView {
-
+public final class CustomIntensityVisualEffectView: UIVisualEffectView {
+    // MARK: Private props
+    private var animator: UIViewPropertyAnimator?
+    private var intensity: CGFloat
+    private var customEffect: UIVisualEffect?
+    
     /// Create visual effect view with given effect and its intensity
     ///
     /// - Parameters:
     ///   - effect: visual effect, eg UIBlurEffect(style: .dark)
     ///   - intensity: custom intensity from 0.0 (no effect) to 1.0 (full effect) using linear scale
     public init(effect: UIVisualEffect, intensity: CGFloat) {
-        var visualEffectsOff = UIAccessibility.isReduceTransparencyEnabled
-        if visualEffectsOff {
-            super.init(effect: nil)
-            return
-        }
+        self.intensity = intensity
+        self.customEffect = effect
+        
         super.init(effect: nil)
-
-        animator = UIViewPropertyAnimator(duration: 1, curve: .linear) { [unowned self] in self.effect = effect }
-        animator.fractionComplete = intensity
     }
-
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError()
     }
-
-    // MARK: Private
-    private var animator: UIViewPropertyAnimator!
+    
+    private func setupBlur() {
+        let visualEffectsOff = UIAccessibility.isReduceTransparencyEnabled
+        guard let customEffect, !visualEffectsOff else { return }
+        
+        animator?.stopAnimation(true)
+        
+        effect = nil
+        animator = UIViewPropertyAnimator(duration: 1, curve: .linear) { [weak self] in
+            self?.effect = customEffect
+        }
+        animator?.fractionComplete = intensity
+    }
+    
+    public override func didMoveToWindow() {
+        super.didMoveToWindow()
+        
+        if window != nil {
+            setupBlur()
+        }
+    }
+    
+    deinit {
+        animator?.stopAnimation(true)
+    }
 }

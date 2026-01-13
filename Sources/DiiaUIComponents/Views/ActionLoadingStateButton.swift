@@ -2,7 +2,7 @@
 import UIKit
 import DiiaCommonTypes
 
-public class ActionLoadingStateButton: LoadingStateButton {
+public final class ActionLoadingStateButton: LoadingStateButton {
     public var onClick: Callback?
     
     override init(frame: CGRect) {

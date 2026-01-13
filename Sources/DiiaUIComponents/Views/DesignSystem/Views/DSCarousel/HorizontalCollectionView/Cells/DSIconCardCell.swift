@@ -2,7 +2,7 @@
 import UIKit
 import DiiaCommonTypes
 
-public class DSIconCardViewModel {
+public final class DSIconCardViewModel {
     public let iconLeft: String
     public let text: String
     public let touchAction: Callback?
@@ -40,7 +40,7 @@ final public class DSIconCardCell: UICollectionViewCell, Reusable {
     // MARK: - Public Methods
     public func configure(with viewModel: DSIconCardViewModel) {
         self.viewModel = viewModel
-        iconView.image = UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: viewModel.iconLeft)
+        iconView.image = UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: viewModel.iconLeft)
         titleLabel.text = viewModel.text
     }
     

@@ -27,7 +27,7 @@ struct DSSharingCodesBuilder: DSViewBuilderProtocol{
             let btnPlainIconAtm = button.btnLoadPlainIconAtm
             return IconedLoadingStateViewModel(
                 name: btnPlainIconAtm.label,
-                image: UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: btnPlainIconAtm.icon) ?? UIImage(),
+                image: UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: btnPlainIconAtm.icon) ?? UIImage(),
                 clickHandler: {
                     if let parameters = btnPlainIconAtm.action {
                         eventHandler(.action(parameters))

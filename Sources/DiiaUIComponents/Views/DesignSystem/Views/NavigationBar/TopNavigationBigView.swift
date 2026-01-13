@@ -25,7 +25,7 @@ public struct TopNavigationBigViewModel {
 }
 
 /// design_system_code: titleGroupMlc
-public class TopNavigationBigView: BaseCodeView {
+public final class TopNavigationBigView: BaseCodeView {
     private let backButtonContainer = BoxView(subview: UIView()).withConstraints(insets: Constants.boxInsets)
     private let backButton = ActionButton()
     private let progressView = BaseProgressView()
@@ -95,6 +95,8 @@ public class TopNavigationBigView: BaseCodeView {
         if let action = viewModel.action {
             actionButton.action = action
         }
+        
+        actionButton.accessibilityLabel = viewModel.action?.accessibilityDescription
     }
     
     public func setLoadingState(_ state: LoadingState) {
@@ -120,6 +122,9 @@ public class TopNavigationBigView: BaseCodeView {
         backButtonContainer.isAccessibilityElement = false
         backButton.isAccessibilityElement = true
         backButton.accessibilityLabel = R.Strings.general_accessibility_back_button_hint.localized()
+        
+        actionButton.isAccessibilityElement = true
+        actionButton.accessibilityTraits = .button
     }
 }
 

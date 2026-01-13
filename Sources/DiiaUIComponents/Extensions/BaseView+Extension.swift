@@ -86,6 +86,7 @@ public extension DiiaMVPModule.BaseView where Self: UIViewController {
     }
     
     func closeModule(animated: Bool) {
+        view.endEditing(true)
         if let presented = topNonNavigationModalController() {
             presented.close(animated: animated)
         } else if let navigationController = navigationController,

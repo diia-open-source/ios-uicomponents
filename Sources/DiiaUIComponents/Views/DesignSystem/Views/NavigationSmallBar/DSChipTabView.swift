@@ -29,7 +29,7 @@ public struct DSChipItem {
     }
 }
 
-public class DSChipItemView: BaseCodeView {
+public final class DSChipItemView: BaseCodeView {
     private var itemLabel = UILabel()
     private var itemNumContainer = UIView()
     private var itemCounterLabel = UILabel()
@@ -81,12 +81,14 @@ public class DSChipItemView: BaseCodeView {
         itemNumContainer.isHidden = viewModel.numCount == nil || viewModel.numCount == 0
         
         if let numCount = viewModel.numCount, numCount != 0 {
-            itemCounterLabel.text = numCount < 100 ? numCount.description : "99+"
+            let itemsCount = numCount < 100 ? numCount.description : "99+"
+            itemCounterLabel.text = itemsCount
+            accessibilityValue = itemsCount
         }
 
         leftIconView.isHidden = viewModel.iconLeft == nil
         if let iconLeft = viewModel.iconLeft {
-            leftIconView.image = UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: iconLeft.code)
+            leftIconView.image = UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: iconLeft.code)
         }
 
         backgroundColor = viewModel.isSelected ? .white : Constants.uncheckedColor
@@ -126,7 +128,7 @@ public struct DSChipTabViewModel {
 }
 
 /// design_system_code: chipTabsOrg
-public class DSChipTabsView: BaseCodeView {
+public final class DSChipTabsView: BaseCodeView {
     
     private var itemsScroll = UIScrollView()
     private var itemStack = UIStackView()
@@ -183,6 +185,14 @@ public class DSChipTabsView: BaseCodeView {
             selectedItem.isSelected = true
         }
         onSelect?(viewModel)
+    }
+}
+
+extension DSChipTabsView: DSPaddingModeDependedViewProtocol {
+    func setupPaddingMode(_ padding: DSPaddingsModel) {
+        if let horizontalSize = padding.side?.horizontalSize {
+            itemsScroll.contentInset = .init(top: 0, left: horizontalSize, bottom: 0, right: horizontalSize)
+        }
     }
 }
 

@@ -1,7 +1,7 @@
 
 import UIKit
 
-public class TabSelectionView: UIView {
+public final class TabSelectionView: UIView {
     
     // MARK: - Outlets
     @IBOutlet weak private var containerView: UIView!

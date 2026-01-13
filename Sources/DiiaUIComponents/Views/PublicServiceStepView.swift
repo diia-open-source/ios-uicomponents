@@ -1,7 +1,7 @@
 
 import UIKit
 
-public class PublicServiceStepView: UIView {
+public final class PublicServiceStepView: UIView {
     
     // MARK: - Outlets
     @IBOutlet weak private var progressView: UIProgressView!

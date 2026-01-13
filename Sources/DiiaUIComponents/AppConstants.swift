@@ -11,7 +11,7 @@ public struct AppConstants {
         public static let separatorColor = "#CADDEB"
         public static let yellowErrorColor = "#FAEB64"
         public static let sendCopiesSuccess = "#65C680"
-        public static let persianRed = "#CA2F28"
+        public static let persianRed = "#EC0312"
         static let imagePlaceholder = "#EFF7FE"
         static let disabledText = "#71767A"
         static let statusGreen = "#19BE6F"

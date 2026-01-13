@@ -56,7 +56,8 @@ public struct DSCheckboxButtonOrgBuilder: DSViewBuilderProtocol {
             checkboxVMs: model.items.map { item in
                 CheckmarkViewModel(
                     text: item.checkboxSquareMlc.label,
-                    isChecked: item.checkboxSquareMlc.isSelected ?? false)
+                    isChecked: item.checkboxSquareMlc.isSelected ?? false,
+                    parameters: item.checkboxSquareMlc.parameters)
             },
             buttonVM: buttomVM,
             strokeButtonVM: strokeButtonVM,

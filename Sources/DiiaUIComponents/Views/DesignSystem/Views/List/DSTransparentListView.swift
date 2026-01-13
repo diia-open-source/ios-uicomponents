@@ -1,7 +1,7 @@
 
 import UIKit
 
-public class DSTransparentListView: BaseCodeView {
+public final class DSTransparentListView: BaseCodeView {
     private let stackView = UIStackView.create()
     
     override public func setupSubviews() {

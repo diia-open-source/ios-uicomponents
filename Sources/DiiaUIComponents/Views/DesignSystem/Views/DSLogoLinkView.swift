@@ -11,7 +11,7 @@ public struct DSLogoAtm: Codable {
 }
 
 /// design_system_code: logoAtm
-class DSLogoLinkView: BaseCodeView {
+final class DSLogoLinkView: BaseCodeView {
     private let imageView = UIImageView()
     private lazy var loadingView: AnimationView = {
         let loadingContainer = LoadingContainerView()

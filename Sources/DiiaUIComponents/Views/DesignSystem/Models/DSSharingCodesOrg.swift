@@ -22,11 +22,11 @@ public struct DSSharingCodesOrg: Codable {
 }
 
 public struct DSExpireLabelBox: Codable {
-    public let expireLabelFirst: String
+    public let expireLabelFirst: String?
     public let expireLabelLast: String?
     public let timer: Int
     
-    public init(expireLabelFirst: String,
+    public init(expireLabelFirst: String?,
                 expireLabelLast: String?,
                 timer: Int) {
         self.expireLabelFirst = expireLabelFirst

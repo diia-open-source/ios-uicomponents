@@ -17,18 +17,20 @@ public struct DSListItemMlcBuilder: DSViewBuilderProtocol {
             listItemState = state
         }
         let parameter = item.action
+        let imageProvider = UIComponentsConfiguration.shared.imageProvider
         
         let viewModel = DSListItemViewModel(
-            leftBigIcon: UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: item.bigIconLeft?.code),
+            leftBigIcon: imageProvider.imageForCode(imageCode: item.bigIconLeft?.code),
             leftLogoLink: item.leftLogoLink,
             leftBase64Icon: .createWithBase64String(item.logoLeft),
-            leftSmallIcon: UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: item.iconLeft?.code),
+            leftSmallIcon: imageProvider.imageForCode(imageCode: item.iconLeft?.code),
             title: item.label,
             details: item.description,
-            rightIcon: UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: item.iconRight?.code),
+            rightIcon: imageProvider.imageForCode(imageCode: item.iconRight?.code),
             isEnabled: listItemState == .enabled,
             chipStatusAtm: item.chipStatusAtm,
-            amountAtm: item.amountAtm)
+            amountAtm: item.amountAtm,
+            detailsParameters: item.parameters)
                 
         viewModel.onClick = {
             guard let parameter = parameter else { return }

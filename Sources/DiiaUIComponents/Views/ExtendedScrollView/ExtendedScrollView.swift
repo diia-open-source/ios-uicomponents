@@ -1,7 +1,7 @@
 
 import UIKit
 
-public class ExtendedScrollView: UIScrollView {
+public final class ExtendedScrollView: UIScrollView {
     // MARK: - UI Elements
     private var topSeparator: UIView?
     private var topGradientView: GradientView?

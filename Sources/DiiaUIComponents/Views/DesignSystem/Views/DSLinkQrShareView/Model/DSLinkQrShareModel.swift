@@ -6,19 +6,16 @@ public struct DSLinkQrShareModel: Codable {
     public let centerChipBlackTabsOrg: DSCenterChipBlackTabsOrgModel?
     public let linkSharingOrg: DSLinkSharingOrgModel?
     public let qrCodeOrg: DSQrCodeOrgModel?
-    public let paginationMessageMlc: DSPaginationMessageMlcModel?
-    
+
     public init(
         componentId: String,
         centerChipBlackTabsOrg: DSCenterChipBlackTabsOrgModel?,
         linkSharingOrg: DSLinkSharingOrgModel?,
-        qrCodeOrg: DSQrCodeOrgModel?,
-        paginationMessageMlc: DSPaginationMessageMlcModel?
+        qrCodeOrg: DSQrCodeOrgModel?
     ) {
         self.componentId = componentId
         self.centerChipBlackTabsOrg = centerChipBlackTabsOrg
         self.linkSharingOrg = linkSharingOrg
         self.qrCodeOrg = qrCodeOrg
-        self.paginationMessageMlc = paginationMessageMlc
     }
 }

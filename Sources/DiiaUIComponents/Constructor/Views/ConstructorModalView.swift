@@ -2,7 +2,7 @@
 import UIKit
 import DiiaCommonTypes
 
-public class ConstructorModalView: BaseCodeView {
+public final class ConstructorModalView: BaseCodeView {
     
     public let topGroupStack: UIStackView = .create()
     public let bodyStack: UIStackView = .create()
@@ -16,6 +16,8 @@ public class ConstructorModalView: BaseCodeView {
     
     public var bottomGroupBottomConstraint: NSLayoutConstraint?
     private var bottomGroupHeightConstraint: NSLayoutConstraint?
+    
+    private var customAccessibilityElements: [Any]?
     
     public override func setupSubviews() {
         addSubview(loadingView)
@@ -149,11 +151,25 @@ public class ConstructorModalView: BaseCodeView {
         )
     }
     
+    public func updateAccessibilityElements() {
+        if customAccessibilityElements != nil {
+            accessibilityElements = customAccessibilityElements.flatMap({ $0 })
+        }
+        
+        UIAccessibility.post(notification: .layoutChanged, argument: self.topGroupStack.subviews.first)
+    }
+    
     // MARK: - Accessibility
     private func setupAccessibility() {
+        isAccessibilityElement = false
+        
         closeButton.isAccessibilityElement = true
         closeButton.accessibilityTraits = .button
         closeButton.accessibilityLabel = R.Strings.general_close.localized()
+        
+        let array = [topGroupStack, bodyScrollView, bottomStack]
+        customAccessibilityElements = array
+        accessibilityElements = array.compactMap({ $0 })
     }
 }
 

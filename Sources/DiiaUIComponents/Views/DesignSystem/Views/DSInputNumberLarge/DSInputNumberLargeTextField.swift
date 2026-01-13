@@ -1,7 +1,7 @@
 
 import UIKit
 
-public class DSInputNumberLargeTextField: UITextField {
+public final class DSInputNumberLargeTextField: UITextField {
     public var focusPlaceholder: String? {
         didSet {
             self.placeholder = focusPlaceholder

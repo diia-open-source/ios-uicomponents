@@ -35,7 +35,7 @@ public struct DSOutlineButtonItem: Codable {
     }
 }
 
-public class DSOutlineBtnOrgView: BaseCodeView {
+public final class DSOutlineBtnOrgView: BaseCodeView {
     private let stackView = UIStackView.create()
     private var eventHandler: ((ConstructorItemEvent) -> Void)?
     
@@ -67,7 +67,7 @@ public class DSOutlineBtnOrgView: BaseCodeView {
     private func createOutlineButton(model: DSOutlineButtonMlc) -> IconedLoadingStateView {
         let viewModel = IconedLoadingStateViewModel(
             name: model.title ?? .empty,
-            image: UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: model.iconLeft?.code) ?? UIImage(),
+            image: UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: model.iconLeft?.code) ?? UIImage(),
             componentId: model.componentId,
             loadingImage: R.image.blackGradientSpinner.image)
         viewModel.clickHandler = { [weak self, weak viewModel] in

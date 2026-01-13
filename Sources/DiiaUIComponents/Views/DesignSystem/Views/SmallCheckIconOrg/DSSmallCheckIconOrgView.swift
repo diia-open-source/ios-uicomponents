@@ -2,7 +2,7 @@
 import UIKit
 import DiiaCommonTypes
 
-public class DSSmallCheckIconOrgViewModel {
+public final class DSSmallCheckIconOrgViewModel {
     public let componentId: String?
     public let inputCode: String?
     public let id: String?
@@ -34,7 +34,7 @@ public class DSSmallCheckIconOrgViewModel {
 }
 
 //ds code: smallCheckIconOrg
-public class DSSmallCheckIconOrgView: BaseCodeView {
+public final class DSSmallCheckIconOrgView: BaseCodeView {
     private let mainStack = UIStackView.create()
     private let iconsVStack = UIStackView.create(spacing: Constants.spacing, alignment: .leading, distribution: .equalSpacing).withMargins(Constants.paddings)
     private let titleLabelContainer = UIView()

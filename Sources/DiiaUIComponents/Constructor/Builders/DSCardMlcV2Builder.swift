@@ -151,7 +151,8 @@ extension DSCardMlcV2Builder: DSViewMockableBuilderProtocol {
                     expandedText: "Expanded attention message with more details",
                     collapsedText: "This is an attention message...",
                     isExpanded: false
-                )
+                ),
+                btnStrokeAdditionalAtm: .mock
             ),
             action: DSActionParameter(
                 type: "card",

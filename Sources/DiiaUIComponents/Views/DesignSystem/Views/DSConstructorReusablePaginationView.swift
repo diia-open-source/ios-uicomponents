@@ -20,7 +20,7 @@ public extension FixSizedViewProtocol where Self: UIView {
 
 public protocol FullSizedViewProtocol: FixSizedViewProtocol {}
 
-public class DSConstructorReusablePaginationView: BaseCodeView, DSConstructorPaginationViewDelegate, FullSizedViewProtocol, ScrollDependentComponentProtocol {
+public final class DSConstructorReusablePaginationView: BaseCodeView, DSConstructorPaginationViewDelegate, FullSizedViewProtocol, ScrollDependentComponentProtocol {
     private let tableView: UITableView = .init()
     private lazy var loadingView = {
         let loadingContainer = LoadingContainerView()

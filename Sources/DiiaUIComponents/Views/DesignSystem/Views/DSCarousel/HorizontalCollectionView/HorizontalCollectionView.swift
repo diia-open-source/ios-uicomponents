@@ -1,7 +1,7 @@
 
 import UIKit
 
-public class HorizontalCollectionView: UIView {
+public final class HorizontalCollectionView: UIView {
 
     @IBOutlet weak private var titleLabelContainer: UIView!
     @IBOutlet weak private var titleLabel: UILabel!

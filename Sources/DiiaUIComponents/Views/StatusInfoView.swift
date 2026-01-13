@@ -2,7 +2,7 @@
 import UIKit
 import DiiaCommonTypes
 
-public class StatusInfoView: BaseCodeView {
+public final class StatusInfoView: BaseCodeView {
     
     // MARK: - Outlets
     private let descriptionLabel: UILabel = UILabel()
@@ -72,7 +72,7 @@ public class StatusInfoView: BaseCodeView {
         titleLabel.isHidden = title?.count ?? 0 == 0
         descriptionLabel.isHidden = description?.count ?? 0 == 0
         
-        accessibilityLabel = [emoji, title, description].compactMap({ $0 }).joined()
+        accessibilityLabel = [emoji, title, description].compactMap({ $0 }).joined(separator: ",")
     }
     
     public func configureFonts(title: UIFont = FontBook.usualFont, description: UIFont = FontBook.bigText, emoji: UIFont = FontBook.smallHeadingFont) {

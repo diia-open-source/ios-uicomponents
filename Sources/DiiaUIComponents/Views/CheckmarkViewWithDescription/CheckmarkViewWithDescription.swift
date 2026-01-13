@@ -9,7 +9,7 @@ import UIKit
     func didSelect(index: String, status: Bool)
 }
 
-public class CheckmarkViewWithDescription: UIView {
+public final class CheckmarkViewWithDescription: UIView {
     @IBOutlet weak private var titleLabel: UILabel!
     @IBOutlet weak private var descriptionLabel: UILabel!
     @IBOutlet weak private var checkedImageView: UIImageView!

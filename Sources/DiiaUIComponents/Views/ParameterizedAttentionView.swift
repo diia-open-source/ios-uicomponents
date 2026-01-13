@@ -17,7 +17,7 @@ public struct ParameterizedAttentionMessage: Codable {
 }
 
 /// design_system_code: attentionMessageMlc
-public class ParameterizedAttentionView: BaseCodeView {
+public final class ParameterizedAttentionView: BaseCodeView {
     
     private var descriptionTextView: UITextView = UITextView()
     private var titleLabel: UILabel = UILabel().withParameters(font: FontBook.bigText)

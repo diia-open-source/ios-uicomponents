@@ -10,7 +10,7 @@ public enum DropContentState {
     case error(errorText: String)
 }
 
-public class DropContentViewModel: NSObject {
+public final class DropContentViewModel: NSObject {
     let title: String
     let placeholder: String
     
@@ -51,7 +51,7 @@ public class DropContentViewModel: NSObject {
     }
 }
 
-public class DropContentView: UIView {
+public final class DropContentView: UIView {
     @IBOutlet private weak var titleLabel: UILabel!
     @IBOutlet private weak var textLabel: UILabel!
     @IBOutlet private weak var errorLabel: UILabel!
@@ -164,6 +164,7 @@ public class DropContentView: UIView {
             iconView.isHidden = true
             errorLabel.isHidden = true
             isUserInteractionEnabled = false
+            textLabel.accessibilityTraits = [.notEnabled, .button]
         case .error(let errorText):
             textLabel.alpha = 1
             bottomLineView.backgroundColor = errorLabel.textColor

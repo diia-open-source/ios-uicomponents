@@ -2,7 +2,7 @@
 import UIKit
 import DiiaCommonTypes
 
-public class StartServiceView: UIView {
+public final class StartServiceView: UIView {
     // MARK: - Outlets
     @IBOutlet private weak var greetingsLabel: UILabel!
     @IBOutlet private weak var attentionView: ParameterizedAttentionView!

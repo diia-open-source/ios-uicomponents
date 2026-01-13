@@ -2,7 +2,7 @@
 import UIKit
 import DiiaCommonTypes
 
-public class DSSwitchModeViewModel {
+public final class DSSwitchModeViewModel {
     public let componentId: String?
     public let primaryIcon: DSIconModel
     public let secondaryIcon: DSIconModel
@@ -25,7 +25,7 @@ public class DSSwitchModeViewModel {
 }
 
 /// design_system_code: switchModeMlc
-public class DSSwitchModeView: BaseCodeView {
+public final class DSSwitchModeView: BaseCodeView {
     
     // MARK: - Subviews
     private let switchContainer = UIView()
@@ -89,7 +89,7 @@ public class DSSwitchModeView: BaseCodeView {
     }
     
     private func image(for code: String) -> UIImage? {
-        UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: code)
+        UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: code)
     }
     
     // MARK: - Actions

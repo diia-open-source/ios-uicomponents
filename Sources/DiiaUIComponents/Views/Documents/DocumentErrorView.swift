@@ -16,7 +16,7 @@ public struct DocumentErrorViewModel {
 
 /// design_system_code: docCoverOrg
 
-public class DocumentErrorView: UIView {
+public final class DocumentErrorView: UIView {
     
     // MARK: - Outlets
     @IBOutlet weak private var titleLabel: UILabel!

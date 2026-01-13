@@ -38,7 +38,7 @@ public struct DSInputDateViewModel {
 }
 
 /// design_system_code: inputDateMlc
-public class DSInputDateView: BaseCodeView, DSInputComponentProtocol {
+public final class DSInputDateView: BaseCodeView, DSInputComponentProtocol {
     
     // MARK: - Subviews
     private let titleLabel = UILabel().withParameters(font: FontBook.smallTitle)

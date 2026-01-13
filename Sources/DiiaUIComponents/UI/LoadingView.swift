@@ -2,7 +2,7 @@
 import UIKit
 import Lottie
 
-public class LoadingView: BaseCodeView {
+public final class LoadingView: BaseCodeView {
     
     // MARK: - Static
     public static weak var globalLoadingView: LoadingView?

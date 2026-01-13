@@ -4,7 +4,7 @@ import Foundation
 import Lottie
 
 /// design_system_code: bankingCardMlc
-public class BankingCardView: BaseCodeView {
+public final class BankingCardView: BaseCodeView {
     
     private let titleLabel = UILabel().withParameters(font: FontBook.cardsHeadingFont)
     private let cardNumMaskLabel = UILabel().withParameters(font: FontBook.lightSmallHeadingFont,

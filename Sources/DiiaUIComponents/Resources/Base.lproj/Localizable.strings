@@ -20,6 +20,8 @@
 "general_accessibility_filters_applied" = "Застосовано %d";
 "general_accessibility_text_field_clear_button" = "Очистити поле";
 
+"pdr_penalty_accessibility_video" = "Відео";
+
 // MARK: - General
 "general_ok" = "Добре";
 "general_back" = "Назад";

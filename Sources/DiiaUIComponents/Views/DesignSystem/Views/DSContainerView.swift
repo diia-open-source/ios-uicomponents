@@ -2,7 +2,7 @@
 import DiiaCommonTypes
 import UIKit
 
-public class DSContainerViewModel {
+public final class DSContainerViewModel {
     public let items: Observable<[AnyCodable]> = .init(value: [])
     public let componentId: String?
     public let eventHandler: (ConstructorItemEvent) -> Void
@@ -18,7 +18,7 @@ public class DSContainerViewModel {
 }
 
 /// design_system_code: updatedContainerOrg
-public class DSContainerView: BaseCodeView {
+public final class DSContainerView: BaseCodeView {
     
     private let inputFieldsStack = UIStackView.create(spacing: Constants.stackSpacing)
     

@@ -18,7 +18,7 @@ public struct DSPaginationItemsModel: Codable {
     public let total: Int?
     public let nextToken: String?
     public let stubMessageMlc: DSStubMessageMlc?
-    public let paginationMessageMlc: DSPaginationMessageMlcModel?
+    public let paginationMessageMlc: AnyCodable?
     public let items: [AnyCodable]
     public let template: AlertTemplate?
     
@@ -26,7 +26,7 @@ public struct DSPaginationItemsModel: Codable {
                 total: Int?,
                 nextToken: String?,
                 stubMessageMlc: DSStubMessageMlc?,
-                paginationMessageMlc: DSPaginationMessageMlcModel?,
+                paginationMessageMlc: AnyCodable?,
                 template: AlertTemplate? = nil) {
         self.items = items ?? []
         self.total = total
@@ -42,7 +42,7 @@ public struct DSPaginationItemsModel: Codable {
         self.total = try container.decodeIfPresent(Int.self, forKey: .total)
         self.nextToken = try container.decodeIfPresent(String.self, forKey: .nextToken)
         self.stubMessageMlc = try container.decodeIfPresent(DSStubMessageMlc.self, forKey: .stubMessageMlc)
-        self.paginationMessageMlc = try container.decodeIfPresent(DSPaginationMessageMlcModel.self, forKey: .paginationMessageMlc)
+        self.paginationMessageMlc = try container.decodeIfPresent(AnyCodable.self, forKey: .paginationMessageMlc)
         self.items = try container.decodeIfPresent([AnyCodable].self, forKey: .items) ?? []
         self.template = try container.decodeIfPresent(AlertTemplate.self, forKey: .template)
     }
@@ -76,7 +76,7 @@ extension DSConstructorPaginationViewDelegate {
     public func setStubMessage(_ items: [AnyCodable]) {}
 }
 
-public class DSConstructorPaginationViewModel {
+public final class DSConstructorPaginationViewModel {
     public let componentId: String?
     public var items: [AnyCodable] = []
     public var limit: Int = 0
@@ -117,7 +117,7 @@ public class DSConstructorPaginationViewModel {
     }
 }
 
-public class DSConstructorPaginationView: BaseCodeView, DSConstructorPaginationViewDelegate, ScrollDependentComponentProtocol {
+public final class DSConstructorPaginationView: BaseCodeView, DSConstructorPaginationViewDelegate, ScrollDependentComponentProtocol {
     
     private let mainStack = UIStackView.create()
     private let itemsStack = DSVStackView()
@@ -195,6 +195,7 @@ public class DSConstructorPaginationView: BaseCodeView, DSConstructorPaginationV
             }
         }
         itemsStack.addArrangedSubviews(views)
+        itemsStack.setNeedsLayout()
     }
     
     public func clearItems() {

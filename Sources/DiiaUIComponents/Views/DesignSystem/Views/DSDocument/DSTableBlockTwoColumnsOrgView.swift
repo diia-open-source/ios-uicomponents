@@ -3,7 +3,7 @@ import UIKit
 
 /// design_system_code: tableBlockTwoColumnsOrg
 
-public class DSTableBlockTwoColumnsOrgView: BaseCodeView {
+public final class DSTableBlockTwoColumnsOrgView: BaseCodeView {
     
     private let tableBlockTwoColumnsOrgView = DSTableBlockTwoColumnsPlaneOrgView()
     

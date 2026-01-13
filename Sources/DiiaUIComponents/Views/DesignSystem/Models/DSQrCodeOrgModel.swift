@@ -5,22 +5,31 @@ import Foundation
 public struct DSQrCodeOrgModel: Codable {
     public let componentId: String
     public let text: String?
-    public let qrCodeMlc: QRCodeMlc
+    public let qrCodeMlc: QRCodeMlc?
     public let expireLabel: DSExpireLabelBox?
+    public let expireLabelWithoutTimer: String?
     public let stateAfterExpiration: DSQrCodeOrgModelExpirationModel?
+    public let paginationMessageMlc: DSPaginationMessageMlcModel?
+    public let btnPlainIconAtm: DSBtnPlainIconModel?
 
     public init(
         componentId: String,
         text: String? = nil,
-        qrCodeMlc: QRCodeMlc,
+        qrCodeMlc: QRCodeMlc? = nil,
         expireLabel: DSExpireLabelBox? = nil,
-        stateAfterExpiration: DSQrCodeOrgModelExpirationModel? = nil
+        expireLabelWithoutTimer: String? = nil,
+        stateAfterExpiration: DSQrCodeOrgModelExpirationModel? = nil,
+        paginationMessageMlc: DSPaginationMessageMlcModel? = nil,
+        btnPlainIconAtm: DSBtnPlainIconModel? = nil
     ) {
         self.componentId = componentId
         self.text = text
         self.qrCodeMlc = qrCodeMlc
         self.expireLabel = expireLabel
+        self.expireLabelWithoutTimer = expireLabelWithoutTimer
         self.stateAfterExpiration = stateAfterExpiration
+        self.paginationMessageMlc = paginationMessageMlc
+        self.btnPlainIconAtm = btnPlainIconAtm
     }
 }
 
@@ -32,27 +41,29 @@ public struct DSQrCodeOrgModelExpirationModel: Codable {
     }
 }
 
-public class DSQrCodeOrgViewModel {
-    public let componentId: String
-    public let text: String?
-    public let qrCodeMlc: QRCodeMlc
-    public let expireLabel: DSExpireLabelBox?
-    public let stateAfterExpiration: DSQrCodeOrgModelExpirationModel?
+public final class DSQrCodeOrgViewModel {
+    public enum State {
+        case code(DSQrCodeOrgModel)
+        case loading
+        case error(DSPaginationMessageMlcModel)
+    }
+
+    public let state: Observable<State>
 
     private var timer: Timer?
     private var runTimer: Int = 0
     private var timerLength: TimeInterval = Constants.defaultTimerTime
 
-    public var timerText: Observable<String?> = .init(value: .empty)
-    public var isExpired: Observable<Bool> = .init(value: false)
+    public let timerText: Observable<String?> = .init(value: .empty)
+    public let isExpired: Observable<Bool> = .init(value: false)
 
     // MARK: - Init
-    public init(model: DSQrCodeOrgModel) {
-        self.componentId = model.componentId
-        self.text = model.text
-        self.qrCodeMlc = model.qrCodeMlc
-        self.expireLabel = model.expireLabel
-        self.stateAfterExpiration = model.stateAfterExpiration
+    public init(model: DSQrCodeOrgModel?) {
+        if let model {
+            self.state = .init(value: .code(model))
+        } else {
+            self.state = .init(value: .loading)
+        }
     }
 
     // MARK: - Timer

@@ -3,7 +3,7 @@ import UIKit
 
 /// design_system_code: headingWithSubtitlesMlc
 
-public class DSHeadingWithSubtitleView: BaseCodeView {
+public final class DSHeadingWithSubtitleView: BaseCodeView {
     private lazy var headingLabel: UILabel = {
         let label = UILabel().withParameters(
             font: Constants.headingFont,

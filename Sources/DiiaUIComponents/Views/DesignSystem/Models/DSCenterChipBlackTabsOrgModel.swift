@@ -14,10 +14,12 @@ public struct DSCenterChipBlackTabsOrgModel: Codable {
     }
 }
 
-public class DSCenterChipBlackTabsOrgViewModel {
+public final class DSCenterChipBlackTabsOrgViewModel {
     public let componentId: String?
     public let preselectedCode: String
     public let itemsViewModels: [DSChipBlackMlcViewModel]
+
+    var onSelectedChanged: ((DSChipBlackMlcViewModel?) -> Void)?
 
     public init(componentId: String?,
                 preselectedCode: String,
@@ -34,6 +36,7 @@ public class DSCenterChipBlackTabsOrgViewModel {
             chipViewModel.state.value = .unselected
         } else if chipViewModel.state.value == .unselected {
             chipViewModel.state.value = .selected
+            onSelectedChanged?(chipViewModel)
         }
     }
 }

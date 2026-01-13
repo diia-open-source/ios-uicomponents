@@ -1,7 +1,7 @@
 
 import UIKit
 
-public class RoundedTabSwitcherView: UIView {
+public final class RoundedTabSwitcherView: UIView {
     
     // MARK: - Outlets
     @IBOutlet private weak var collectionView: UICollectionView!

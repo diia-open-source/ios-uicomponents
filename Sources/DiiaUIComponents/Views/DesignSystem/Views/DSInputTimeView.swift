@@ -61,7 +61,7 @@ public struct DSInputTimeViewModel {
 }
 
 /// design_system_code: inputTimeMlc
-public class DSInputTimeView: BaseCodeView, DSInputComponentProtocol {
+public final class DSInputTimeView: BaseCodeView, DSInputComponentProtocol {
     
     // MARK: - Subviews
     private let titleLabel = UILabel().withParameters(font: FontBook.smallTitle)

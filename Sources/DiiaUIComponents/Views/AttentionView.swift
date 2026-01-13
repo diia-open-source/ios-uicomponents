@@ -2,7 +2,7 @@
 import UIKit
 import DiiaCommonTypes
 
-public class AttentionView: BaseCodeView {
+public final class AttentionView: BaseCodeView {
     
     private var descriptionLabel: UILabel = UILabel().withParameters(font: FontBook.usualFont)
     private var titleLabel: UILabel = UILabel().withParameters(font: FontBook.bigText)

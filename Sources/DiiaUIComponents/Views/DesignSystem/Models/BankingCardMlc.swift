@@ -47,7 +47,7 @@ public enum BankingCardType {
 
 import DiiaCommonTypes
 
-public class BankingCardViewModel {
+public final class BankingCardViewModel {
     public let title: String
     public let image: String?
     public let gradient: String?

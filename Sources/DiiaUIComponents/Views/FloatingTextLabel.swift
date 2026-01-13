@@ -2,7 +2,7 @@
 import UIKit
 
 /// design_system_code: tickerAtm
-public class FloatingTextLabel: BaseCodeView {
+public final class FloatingTextLabel: BaseCodeView {
 
     public var labelText: String? {
         didSet {

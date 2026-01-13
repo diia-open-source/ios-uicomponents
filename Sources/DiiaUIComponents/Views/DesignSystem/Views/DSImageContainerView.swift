@@ -3,7 +3,7 @@ import UIKit
 import Lottie
 
 /// design_system_code: articlePicAtm
-public class DSImageContainerView: BaseCodeView {
+public final class DSImageContainerView: BaseCodeView {
     private lazy var imagePlaceholder: LottieAnimationView = {
         let animation = LottieAnimation.named(Constants.animationName)
         let lottieView = LottieAnimationView(animation: animation)

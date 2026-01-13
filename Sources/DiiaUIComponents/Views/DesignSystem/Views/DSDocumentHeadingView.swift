@@ -3,7 +3,7 @@ import UIKit
 import DiiaCommonTypes
 
 /// design_system_code: docHeadingOrg
-public class DSDocumentHeadingView: BaseCodeView {
+public final class DSDocumentHeadingView: BaseCodeView {
     
     private var stackView = UIStackView.create(spacing: Constants.spacing)
     
@@ -55,7 +55,7 @@ public class DSDocumentHeadingView: BaseCodeView {
         }
         if let iconAtm = model.iconAtm {
             let imageProvider = UIComponentsConfiguration.shared.imageProvider
-            ellipseButton.setImage(imageProvider?.imageForCode(imageCode: iconAtm.code), for: .normal)
+            ellipseButton.setImage(imageProvider.imageForCode(imageCode: iconAtm.code), for: .normal)
             ellipseButton.accessibilityLabel = iconAtm.accessibilityDescription
         }
         ellipseButton.isHidden = model.iconAtm == nil

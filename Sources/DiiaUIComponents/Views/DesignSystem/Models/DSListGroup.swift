@@ -1,5 +1,6 @@
 
 import Foundation
+import DiiaCommonTypes
 
 /// design_system_code: listItemGroupOrg
 public struct DSListGroup: Codable {
@@ -36,6 +37,7 @@ public struct DSListGroupItem: Codable {
     public let action: DSActionParameter?
     public let dataJson: String?
     public let accessibilityDescription: String?
+    public let parameters: [TextParameter]?
     
     public init(
         id: String? = nil,
@@ -51,7 +53,8 @@ public struct DSListGroupItem: Codable {
         chipStatusAtm: DSCardStatusChipModel? = nil,
         action: DSActionParameter? = nil,
         dataJson: String? = nil,
-        accessibilityDescription: String? = nil
+        accessibilityDescription: String? = nil,
+        parameters: [TextParameter]? = nil
     ) {
         self.id = id
         self.logoLeft = logoLeft
@@ -67,6 +70,7 @@ public struct DSListGroupItem: Codable {
         self.chipStatusAtm = chipStatusAtm
         self.dataJson = dataJson
         self.accessibilityDescription = accessibilityDescription
+        self.parameters = parameters
     }
 }
 

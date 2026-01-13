@@ -1,7 +1,7 @@
 
 import UIKit
 
-public class PairView: BaseCodeView {
+public final class PairView: BaseCodeView {
     private let stack = UIStackView()
     private let titleLabel = UILabel().withParameters(font: FontBook.usualFont)
     private let detailsLabel = UILabel().withParameters(font: FontBook.usualFont)

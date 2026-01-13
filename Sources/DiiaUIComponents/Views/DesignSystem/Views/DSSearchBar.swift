@@ -9,7 +9,7 @@ public struct DSSearchBarModel: Codable {
 }
 
 //ds code: - searchBarOrg
-public class DSSearchBarView: BaseCodeView {
+public final class DSSearchBarView: BaseCodeView {
     private let searchView = DSSearchInputView()
     private let filterButton = DSWhiteAdditionalIconButton()
     private let mainStack = UIStackView.create(.horizontal, spacing: Constants.spacing)
@@ -37,7 +37,7 @@ public class DSSearchBarView: BaseCodeView {
         if let filterButtonModel = model.btnWhiteAdditionalIconAtm {
             filterButtonViewModel = .init(
                 name: filterButtonModel.label,
-                image: UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: filterButtonModel.icon) ?? UIImage(),
+                image: UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: filterButtonModel.icon) ?? UIImage(),
                 badgeCount: .init(value: filterButtonModel.badgeCounterAtm?.count ?? 0),
                 accessibilityDescription: filterButtonModel.accessibilityDescription)
             filterButtonViewModel?.clickHandler = { [weak self] in

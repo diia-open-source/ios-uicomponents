@@ -47,7 +47,7 @@ public struct DSRadioButtonGroupBuilder: DSViewBuilderProtocol {
         if let btnPlainIcon = data.btnPlainIconAtm {
             plainButtonAction = Action(
                 title: btnPlainIcon.label,
-                iconName: UIComponentsConfiguration.shared.imageProvider?.imageNameForCode(imageCode: btnPlainIcon.icon)) {
+                iconName: UIComponentsConfiguration.shared.imageProvider.imageNameForCode(imageCode: btnPlainIcon.icon)) {
                     if let action = btnPlainIcon.action {
                         eventHandler(.action(action))
                     }

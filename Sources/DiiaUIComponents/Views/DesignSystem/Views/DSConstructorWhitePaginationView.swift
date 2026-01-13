@@ -2,7 +2,7 @@
 import UIKit
 import DiiaCommonTypes
 
-public class DSConstructorWhitePaginationView: BaseCodeView, DSConstructorPaginationViewDelegate, ScrollDependentComponentProtocol {
+public final class DSConstructorWhitePaginationView: BaseCodeView, DSConstructorPaginationViewDelegate, ScrollDependentComponentProtocol {
    
     private let paginationView = DSConstructorPaginationView()
     

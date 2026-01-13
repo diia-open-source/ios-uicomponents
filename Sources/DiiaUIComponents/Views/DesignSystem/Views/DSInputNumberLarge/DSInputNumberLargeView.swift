@@ -2,7 +2,7 @@
 import UIKit
 import DiiaCommonTypes
 
-public class DSInputNumberLargeViewModel {
+public final class DSInputNumberLargeViewModel {
     public let id: String
     public let items: [DSInputNumberLargeItemData]
     public let mandatory: Bool?
@@ -54,7 +54,7 @@ public class DSInputNumberLargeViewModel {
 }
 
 /// design_system_code: inputNumberLargeMlc
-public class DSInputNumberLargeView: BaseCodeView, DSInputComponentProtocol {
+public final class DSInputNumberLargeView: BaseCodeView, DSInputComponentProtocol {
     // MARK: - Subviews
     private lazy var numberStackView = UIStackView.create(
         .horizontal,

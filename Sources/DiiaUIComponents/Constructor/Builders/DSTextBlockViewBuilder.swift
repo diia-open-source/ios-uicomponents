@@ -18,15 +18,7 @@ public struct DSTextBlockViewBuilder: DSViewBuilderProtocol {
         if let viewFabric {
             textView.setFabric(viewFabric)
         }
-        textView.configure(with: DSTextBlockViewModel(
-            componentId: data.componentId,
-            squareChipStatusAtm: data.squareChipStatusAtm,
-            title: data.title,
-            text: data.text,
-            items: data.items,
-            listItems: data.listItems,
-            eventHandler: eventHandler
-        ))
+        textView.configure(with: DSTextBlockViewModel(model: data, eventHandler: eventHandler))
         let padding = paddingType.defaultPaddingV2(object: object, modelKey: modelKey)
         
         let paddingBox = BoxView(subview: textView).withConstraints(insets: padding)
@@ -94,9 +86,11 @@ extension DSTextBlockViewBuilder: DSViewMockableBuilderProtocol {
                 type: .blue
             ),
             title: "title",
-            text: "text",
+            text: "text link",
             items: items,
-            listItems: listItems
+            listItems: listItems,
+            parameters: [.init(type: .link, data: .init(name: "link", alt: "link", resource: "https://example.com"))],
+            attentionIconMessageMlc: .mock
         )
         return .dictionary([
             modelKey: .fromEncodable(encodable: model)

@@ -5,7 +5,7 @@ import DiiaCommonTypes
 
 /// design_system_code: tableItemHorizontalMlc
 
-public class DSTableItemHorizontalView: BaseCodeView {
+public final class DSTableItemHorizontalView: BaseCodeView {
     
     private let iconView = UIButton()
     private let supportLabel = UILabel().withParameters(font: FontBook.usualFont)
@@ -57,7 +57,7 @@ public class DSTableItemHorizontalView: BaseCodeView {
         iconView.isHidden = item.icon == nil
 
         if let icon = item.icon {
-            iconView.setImage(UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: icon.code)?.withRenderingMode(.alwaysTemplate),
+            iconView.setImage(UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: icon.code)?.withRenderingMode(.alwaysTemplate),
                               for: .normal)
             iconView.addTarget(self, action: #selector(copyValue), for: .touchUpInside)
             iconView.accessibilityTraits = .button

@@ -30,15 +30,16 @@ public struct DSListViewBuilder: DSViewBuilderProtocol {
             if let state = item.state {
                 listItemState = state
             }
+            let imageProvider = UIComponentsConfiguration.shared.imageProvider
             let viewModel = DSListItemViewModel(
                 id: item.id,
-                leftBigIcon: UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: item.bigIconLeft?.code),
+                leftBigIcon: imageProvider.imageForCode(imageCode: item.bigIconLeft?.code),
                 leftLogoLink: item.leftLogoLink,
                 leftBase64Icon: .createWithBase64String(item.logoLeft),
-                leftSmallIcon: UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: item.iconLeft?.code),
+                leftSmallIcon: imageProvider.imageForCode(imageCode: item.iconLeft?.code),
                 title: item.label,
                 details: item.description,
-                rightIcon: UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: item.iconRight?.code),
+                rightIcon: imageProvider.imageForCode(imageCode: item.iconRight?.code),
                 isEnabled: listItemState == .enabled,
                 componentId: item.id,
                 accessibilityDescription: item.accessibilityDescription,

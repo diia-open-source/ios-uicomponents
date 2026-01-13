@@ -2,7 +2,7 @@
 import UIKit
 import DiiaCommonTypes
 
-public class DSRadioBtnWithAltViewModel {
+public final class DSRadioBtnWithAltViewModel {
     public let eventHandler: ((ConstructorItemEvent) -> Void)
     public let items: [DSRadioBtnGroupItem]
     public var itemViewModels = [ChecklistViewModel]()
@@ -13,7 +13,7 @@ public class DSRadioBtnWithAltViewModel {
     }
 }
 
-public class DSRadioBtnWithAltView: BaseCodeView, DSInputComponentProtocol {
+public final class DSRadioBtnWithAltView: BaseCodeView, DSInputComponentProtocol {
     
     private var radioBtnStack = UIStackView.create(spacing: Constants.altGroupSpacing)
     private var viewModel: DSRadioBtnWithAltViewModel?

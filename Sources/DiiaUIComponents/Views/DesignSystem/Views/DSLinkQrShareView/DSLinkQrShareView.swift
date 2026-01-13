@@ -1,24 +1,14 @@
 
 import UIKit
-import Lottie
 import DiiaCommonTypes
 
 /// design_system_code: linkQrShareOrg
-public class DSLinkQrShareView: BaseCodeView {
+public final class DSLinkQrShareView: BaseCodeView {
     
     // MARK: - Subviews
     private let chipBlackTabsView = DSCenterChipBlackTabsOrgView()
     private let linkSharingView = DSLinkSharingOrgView()
     private let qrCodeOrgView = DSQrCodeOrgView()
-    private let paginationMessageView = DSPaginationMessageMlcView()
-    
-    private let loadingContainerView = UIView()
-    private lazy var loadingView: LottieAnimationView = {
-        let lottieView = LottieAnimationView(animation: .named("loader"))
-        lottieView.loopMode = .loop
-        lottieView.backgroundBehavior = .pauseAndRestore
-        return lottieView
-    }()
     
     // MARK: - Properties
     private var viewModel: DSLinkQrShareViewModel?
@@ -26,7 +16,6 @@ public class DSLinkQrShareView: BaseCodeView {
     // MARK: - Init
     public override func setupSubviews() {
         backgroundColor = .white
-        loadingContainerView.backgroundColor = .white
         layer.cornerRadius = Constants.cornerRadius
         layer.masksToBounds = true
         
@@ -34,77 +23,49 @@ public class DSLinkQrShareView: BaseCodeView {
         sharingContainerView.addSubviews([
             linkSharingView,
             qrCodeOrgView,
-            paginationMessageView
         ])
         linkSharingView.fillSuperview()
         qrCodeOrgView.fillSuperview()
-        paginationMessageView.fillSuperview()
-        
+
         UIStackView.create(
             views: [chipBlackTabsView, sharingContainerView],
             spacing: Constants.stackSpacing,
             in: self,
             padding: Constants.contentPaddings
         )
-        
-        loadingContainerView.addSubview(loadingView)
-        addSubview(loadingContainerView)
-        loadingContainerView.fillSuperview()
-        loadingView.withSize(Constants.loadingSize)
-        loadingView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        loadingView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
     }
-    
+
+    private func updateVisibility(chipBlackTabsViewModel: DSCenterChipBlackTabsOrgViewModel) {
+        let isFirstItemSelected = chipBlackTabsViewModel.itemsViewModels.first?.state.value == .selected
+        self.linkSharingView.isHidden = !isFirstItemSelected
+        self.qrCodeOrgView.isHidden = isFirstItemSelected
+    }
+
     // MARK: - Public Methods
-    public func configure(with viewModel: DSLinkQrShareViewModel) {
-        self.viewModel?.model.removeObserver(observer: self)
-        self.viewModel?.loadingState.removeObserver(observer: self)
-        
+    public func configure(with viewModel: DSLinkQrShareViewModel, eventHandler: @escaping (ConstructorItemEvent) -> Void) {
         self.viewModel = viewModel
-        
-        viewModel.model.observe(observer: self) { [weak self] model in
-            guard let self else { return }
-            
-            self.chipBlackTabsView.isHidden = model.centerChipBlackTabsOrg == nil
-            if let chipBlackTabsViewModel = self.viewModel?.centerChipBlackTabsViewModel {
-                self.chipBlackTabsView.configure(with: chipBlackTabsViewModel, eventHandler: viewModel.eventHandler)
+
+        self.chipBlackTabsView.isHidden = viewModel.centerChipBlackTabsViewModel == nil
+        if let chipBlackTabsViewModel = viewModel.centerChipBlackTabsViewModel {
+            chipBlackTabsView.configure(with: chipBlackTabsViewModel, eventHandler: eventHandler)
+            updateVisibility(chipBlackTabsViewModel: chipBlackTabsViewModel)
+
+            chipBlackTabsViewModel.onSelectedChanged = { [weak self] _ in
+                self?.updateVisibility(chipBlackTabsViewModel: chipBlackTabsViewModel)
             }
-            
-            self.linkSharingView.isHidden = model.linkSharingOrg == nil
-            if let linkSharingViewModel = self.viewModel?.linkSharingViewModel {
-                self.linkSharingView.configure(with: linkSharingViewModel)
-            }
-            
-            self.qrCodeOrgView.isHidden = model.qrCodeOrg == nil
-            if let qrCodeViewModel = self.viewModel?.qrCodeViewModel {
-                self.qrCodeOrgView.configure(viewModel: qrCodeViewModel, eventHandler: viewModel.eventHandler)
-            }
-            
-            self.paginationMessageView.isHidden = model.paginationMessageMlc == nil
-            if let paginationMessage = self.viewModel?.paginationMessage {
-                self.paginationMessageView.configure(with: paginationMessage)
-            }
+        } else {
+            qrCodeOrgView.isHidden = viewModel.model.qrCodeOrg == nil
+            linkSharingView.isHidden = viewModel.model.linkSharingOrg == nil
         }
-        
-        viewModel.loadingState.observe(observer: self) { [weak self] loadingState in
-            guard let self else { return }
-            
-            switch loadingState {
-            case .loading:
-                self.loadingContainerView.isHidden = false
-                self.loadingView.play()
-            case .ready:
-                self.loadingContainerView.isHidden = true
-                self.loadingView.pause()
-            }
-        }
+
+        qrCodeOrgView.configure(viewModel: viewModel.qrViewModel, eventHandler: eventHandler)
+        linkSharingView.configure(with: viewModel.linkViewModel, eventHandler: eventHandler)
     }
 }
 
 // MARK: - Constants
 private extension DSLinkQrShareView {
     enum Constants {
-        static let loadingSize = CGSize(width: 80, height: 80)
         static let cornerRadius: CGFloat = 24
         static let contentPaddings = UIEdgeInsets(top: 24, left: 24, bottom: 24, right: 24)
         static let stackSpacing: CGFloat = 16

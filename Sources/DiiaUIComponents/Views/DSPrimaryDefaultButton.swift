@@ -1,7 +1,7 @@
 
 import Foundation
 
-public class DSPrimaryDefaultButton: LoadingStateButton, DSConditionComponentProtocol {
+public final class DSPrimaryDefaultButton: LoadingStateButton, DSConditionComponentProtocol {
     private var viewModel: DSLoadingButtonViewModel?
     
     override init(frame: CGRect) {

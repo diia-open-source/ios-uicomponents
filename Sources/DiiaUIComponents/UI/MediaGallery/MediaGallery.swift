@@ -12,7 +12,7 @@ public protocol MediaGalleryDelegate: NSObjectProtocol {
 
 // swiftlint:disable all
 // MARK: - SwiftPhotoGallery
-public class MediaGallery: UIViewController, Rotatable {
+public final class MediaGallery: UIViewController, Rotatable {
 
     fileprivate var animateImageTransition = false
 

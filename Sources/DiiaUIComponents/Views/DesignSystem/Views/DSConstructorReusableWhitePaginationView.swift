@@ -2,7 +2,7 @@
 import UIKit
 import DiiaCommonTypes
 
-public class DSConstructorReusableWhitePaginationView: BaseCodeView, DSConstructorPaginationViewDelegate, FullSizedViewProtocol, ScrollDependentComponentProtocol {
+public final class DSConstructorReusableWhitePaginationView: BaseCodeView, DSConstructorPaginationViewDelegate, FullSizedViewProtocol, ScrollDependentComponentProtocol {
     
     private let tableView = UITableView()
    

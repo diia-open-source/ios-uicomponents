@@ -2,7 +2,7 @@
 import UIKit
 import DiiaCommonTypes
 
-public class DSSingleMediaUploadBuilder: DSViewBuilderProtocol {
+public final class DSSingleMediaUploadBuilder: DSViewBuilderProtocol {
     public let modelKey = "singleMediaUploadGroupOrg"
     
     public func makeView(from object: AnyCodable,
@@ -15,7 +15,7 @@ public class DSSingleMediaUploadBuilder: DSViewBuilderProtocol {
 
         viewModel.action = .init(
             title: data.btnPlainIconAtm.label,
-            iconName: UIComponentsConfiguration.shared.imageProvider?.imageNameForCode(imageCode: data.btnPlainIconAtm.icon),
+            iconName: UIComponentsConfiguration.shared.imageProvider.imageNameForCode(imageCode: data.btnPlainIconAtm.icon),
             callback: { 
                 guard let action = data.btnPlainIconAtm.action else { return }
                 eventHandler(.action(action))

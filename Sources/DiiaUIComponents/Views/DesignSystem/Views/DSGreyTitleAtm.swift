@@ -8,7 +8,7 @@ public struct DSGreyTitleAtmModel: Codable {
 }
 
 /// design_system_code: greyTitleAtm
-public class DSGreyTitleAtm: BaseCodeView {
+public final class DSGreyTitleAtm: BaseCodeView {
     private let textLabel = UILabel().withParameters(
         font: FontBook.usualFont,
         textColor: .black.withAlphaComponent(Constants.labelOpacity))

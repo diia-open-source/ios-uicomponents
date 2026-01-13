@@ -1,7 +1,7 @@
 
 import UIKit
 
-public class ActionCollectionCell: BaseCollectionNibCell, NibLoadable {
+public final class ActionCollectionCell: BaseCollectionNibCell, NibLoadable {
     @IBOutlet weak private var nameLbl: UILabel!
     @IBOutlet weak private var imageView: UIImageView!
 

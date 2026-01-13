@@ -16,7 +16,7 @@ public struct DSAlertCardMlc: Codable {
     }
 }
 
-public class DSAlertCardMlcView: BaseCodeView {
+public final class DSAlertCardMlcView: BaseCodeView {
     private let iconLabel: UILabel = UILabel().withParameters(font: FontBook.detailsTitleHeadFont)
     private let topLabel: UILabel = UILabel().withParameters(font: FontBook.smallHeadingFont)
     private let secondaryLabel: UILabel = UILabel().withParameters(font: FontBook.usualFont)
@@ -60,7 +60,7 @@ private extension DSAlertCardMlcView {
         static let stackSpacing: CGFloat = 8
         static let stackPadding: UIEdgeInsets = .init(top: 16, left: 16, bottom: 24, right: 16)
         static let buttonInsets: UIEdgeInsets = .init(top: 10, left: 20, bottom: 10, right: 20)
-        static let backgroundColor: String = "#CA2F28"
+        static let backgroundColor: String = "#EC0312"
         static let buttonCornerRadius: CGFloat = 18
         static let buttonHeight: CGFloat = 36
         static let buttonSpacing: CGFloat = 16

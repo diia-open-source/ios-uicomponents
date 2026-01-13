@@ -2,40 +2,37 @@
 import UIKit
 import DiiaCommonTypes
 
-public class DSSelectorViewModel {
-    public let code: String
+public final class DSSelectorViewModel {
+    public let inputCode: String
     public var state: Observable<DropContentState>
     public let title: String
     public let mandatory: Bool?
     public let placeholder: String
     public let hint: String?
     public let searchList: [DSListWidgetItemsContainer]
-    public let searchComponentId: String?
     public var selectedCode: String?
     public var onClick: Callback?
     public var componentId: String?
     
     public init(
-        code: String,
+        inputCode: String,
         state: DropContentState,
         title: String,
         mandatory: Bool? = nil,
         placeholder: String,
         hint: String? = nil,
         searchList: [DSListWidgetItemsContainer],
-        searchComponentId: String? = nil,
         selectedCode: String? = nil,
         componentId: String? = nil,
         onChange: Callback? = nil
     ) {
-        self.code = code
+        self.inputCode = inputCode
         self.state = .init(value: state)
         self.title = title
         self.mandatory = mandatory
         self.placeholder = placeholder
         self.hint = hint
         self.searchList = searchList
-        self.searchComponentId = searchComponentId
         self.selectedCode = selectedCode
         self.componentId = componentId
         self.onClick = onChange
@@ -43,7 +40,7 @@ public class DSSelectorViewModel {
 }
 
 /// design_system_code: selectorOrg
-public class DSSelectorView: BaseCodeView, DSInputComponentProtocol {
+public final class DSSelectorView: BaseCodeView, DSInputComponentProtocol {
     private let titleLabel = UILabel().withParameters(font: FontBook.statusFont)
     private let textLabel = UILabel().withParameters(font: FontBook.bigText)
     private let dividerLine = DSDividerLineView()
@@ -153,7 +150,7 @@ public class DSSelectorView: BaseCodeView, DSInputComponentProtocol {
     }
     
     public func inputCode() -> String {
-        return viewModel?.code ?? Constants.inputCode
+        return viewModel?.inputCode ?? Constants.inputCode
     }
     
     public func inputData() -> AnyCodable? {

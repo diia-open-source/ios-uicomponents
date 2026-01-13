@@ -26,7 +26,7 @@ public struct DSInputTextViewBuilder: DSViewBuilderProtocol {
         var rightAction: Action? = nil
         if let rightIcon = data.iconRight, let action = rightIcon.action {
             rightAction = .init(
-                image: UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: rightIcon.code) ?? UIImage(),
+                image: UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: rightIcon.code) ?? UIImage(),
                 callback: {
                 eventHandler(.action(action))
             })

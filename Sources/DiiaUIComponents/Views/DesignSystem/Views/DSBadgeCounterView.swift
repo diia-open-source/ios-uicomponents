@@ -2,7 +2,7 @@
 import UIKit
 
 /// design_system_code: badgeCounterAtm
-public class DSBadgeCounterView: BaseCodeView {
+public final class DSBadgeCounterView: BaseCodeView {
     private let counterLabel = UILabel()
     
     override public func setupSubviews() {

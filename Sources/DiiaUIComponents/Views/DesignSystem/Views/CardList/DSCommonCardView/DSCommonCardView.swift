@@ -128,7 +128,7 @@ public struct DSCommonCardViewModel {
 }
 
 /// design_system_code: cardMlc
-public class DSCommonCardView: UIView {
+public final class DSCommonCardView: UIView {
     // MARK: Outlets
     @IBOutlet private weak var container: UIView!
     @IBOutlet private weak var statusView: VerticalRoundView!
@@ -273,7 +273,8 @@ public class DSCommonCardView: UIView {
         statusLabel.font = FontBook.statusFont
         label.font = FontBook.usualFont
         titleLabel.font = FontBook.bigText
-        descriptionLabel.withParameters(font: FontBook.usualFont, textColor: .black.withAlphaComponent(Constants.inactiveAlpha))
+        descriptionLabel.withParameters(font: FontBook.usualFont, textColor: .black.withAlphaComponent(Constants.descriptionAlpha))
+        descriptionLabel.numberOfLines = 0
         botLabel.font = FontBook.bigText
         primaryButton.titleLabel?.font = FontBook.usualFont
         strokeButton.titleLabel?.font = FontBook.usualFont
@@ -337,6 +338,7 @@ extension DSCommonCardView {
         static let shadowColor: UIColor = .shadowColor
         static let shadowYOffset: CGFloat = 20
         static let inactiveAlpha: CGFloat = 0.3
+        static let descriptionAlpha: CGFloat = 0.54
         static let stackSpacing: CGFloat = 8
 
         static let shadowBlur: CGFloat = 16

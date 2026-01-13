@@ -9,14 +9,24 @@ public struct DSAttentionIconMessageMlc: Codable {
     public let parameters: [TextParameter]?
     public let backgroundMode: DSAttentionIconBackgroundMode
     public let expanded: DSAttentionIconMessageMlcExpanded?
+    public let btnStrokeAdditionalAtm: DSButtonModel?
     
-   public init(componentId: String?, smallIconAtm: DSIconModel, text: String, parameters: [TextParameter]?, backgroundMode: DSAttentionIconBackgroundMode, expanded: DSAttentionIconMessageMlcExpanded?) {
+    public init(
+        componentId: String?,
+        smallIconAtm: DSIconModel,
+        text: String,
+        parameters: [TextParameter]?,
+        backgroundMode: DSAttentionIconBackgroundMode,
+        expanded: DSAttentionIconMessageMlcExpanded?,
+        btnStrokeAdditionalAtm: DSButtonModel? = nil
+    ) {
         self.componentId = componentId
         self.smallIconAtm = smallIconAtm
         self.text = text
         self.parameters = parameters
         self.backgroundMode = backgroundMode
         self.expanded = expanded
+        self.btnStrokeAdditionalAtm = btnStrokeAdditionalAtm
     }
     
     static let mock = DSAttentionIconMessageMlc(
@@ -34,7 +44,8 @@ public struct DSAttentionIconMessageMlc: Codable {
             expandedText: "expandedText",
             collapsedText: "collapsedText",
             isExpanded: true
-        )
+        ),
+        btnStrokeAdditionalAtm: .mock
     )
 }
 

@@ -29,7 +29,7 @@ public struct DSDocActivateCardViewModel {
 }
 
 /// design_system_code: docActivateCardOrg
-public class DSDocActivateCardView: BaseCodeView {
+public final class DSDocActivateCardView: BaseCodeView {
     
     // MARK: - Subviews
     private let imageView = UIImageView()

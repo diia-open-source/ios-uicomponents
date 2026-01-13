@@ -96,7 +96,7 @@ final public class DSBtnSlideMlcView: BaseCodeView {
 
         self.imageContainer.isHidden = model.icon == nil
         if let iconModel = model.icon {
-            self.imageView.image = UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: iconModel.code)
+            self.imageView.image = UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: iconModel.code)
         }
 
         if model.state == .disabled {

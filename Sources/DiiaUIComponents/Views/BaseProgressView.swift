@@ -1,7 +1,7 @@
 
 import UIKit
 
-public class BaseProgressView: UIProgressView {
+public final class BaseProgressView: UIProgressView {
     
     // MARK: - Life Cycle
     override init(frame: CGRect) {

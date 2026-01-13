@@ -1,7 +1,7 @@
 
 import UIKit
 
-public class DSSingleMediaUploadPhotoView: BaseCodeView {
+public final class DSSingleMediaUploadPhotoView: BaseCodeView {
     private let imageView = UIImageView()
     private let overlayView = UIView()
     private let deleteButton = ActionButton(type: .icon)

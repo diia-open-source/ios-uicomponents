@@ -2,7 +2,7 @@
 import UIKit
 import DiiaCommonTypes
 
-public class PhotoCollectionCell: BaseCollectionNibCell, NibLoadable {
+public final class PhotoCollectionCell: BaseCollectionNibCell, NibLoadable {
     @IBOutlet weak private var imageView: UIImageView!
     @IBOutlet weak private var loadingTitle: UILabel!
     @IBOutlet weak private var loadingIndicator: UIProgressView!

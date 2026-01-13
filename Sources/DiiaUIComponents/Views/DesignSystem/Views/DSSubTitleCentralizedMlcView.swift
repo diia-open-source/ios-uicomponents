@@ -12,7 +12,7 @@ public final class DSTitleMlcViewModel {
 }
 
 /// design_system_code: subTitleCentralizedMlc
-public class DSSubTitleCentralizedMlcView: BaseCodeView {
+public final class DSSubTitleCentralizedMlcView: BaseCodeView {
     private let titleLabel = UILabel().withParameters(font: FontBook.bigText, textAlignment: .center, lineBreakMode: .byTruncatingTail)
 
     override public func setupSubviews() {

@@ -4,7 +4,7 @@ import UIKit
 
 /// design_system_code: dashboardCardTileOrg
 
-public class DSDashboardCardTileViewModel {
+public final class DSDashboardCardTileViewModel {
     public let dashboardItems: [DSDashboardCardItem]
     public let eventHandler: ((ConstructorItemEvent) -> ())?
     
@@ -15,7 +15,7 @@ public class DSDashboardCardTileViewModel {
     }
 }
 
-public class DSDashboardCardTileOrgView: BaseCodeView {
+public final class DSDashboardCardTileOrgView: BaseCodeView {
     
     private let widgetStack = UIStackView()
     

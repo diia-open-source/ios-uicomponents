@@ -1,7 +1,7 @@
 
 import UIKit
 
-public class DSTableBlockPlaneOrgView: BaseCodeView {
+public final class DSTableBlockPlaneOrgView: BaseCodeView {
     
     let mainStack = UIStackView.create(.vertical, spacing: Constants.stackSpacing)
     let headingStack = UIStackView.create(.vertical, spacing: Constants.headingSpacing)

@@ -31,9 +31,12 @@ extension DSQrCodeOrgBuilder: DSViewMockableBuilderProtocol {
             text: "text",
             qrCodeMlc: QRCodeMlc(qrLink: "https://mockUrl/qrLink", componentId: "componentId"),
             expireLabel: DSExpireLabelBox(expireLabelFirst: "expireLabelFirst", expireLabelLast: "expireLabelLast", timer: 180),
+            expireLabelWithoutTimer: "expireLabelWithoutTimer",
             stateAfterExpiration: DSQrCodeOrgModelExpirationModel(
                 paginationMessageMlc: .mock
-            )
+            ),
+            paginationMessageMlc: .mock,
+            btnPlainIconAtm: .mock
         )
         
         return .dictionary([

@@ -12,7 +12,7 @@ public struct DSButtonIconRoundedGroupViewModel {
 }
 
 /// design_system_code: btnIconRoundedGroupOrg
-public class DSButtonIconRoundedGroupView: BaseCodeView {
+public final class DSButtonIconRoundedGroupView: BaseCodeView {
     private let buttonsStackView = UIStackView.create(.horizontal, alignment: .top, distribution: .fillEqually)
     
     private var viewModel: DSButtonIconRoundedGroupViewModel?

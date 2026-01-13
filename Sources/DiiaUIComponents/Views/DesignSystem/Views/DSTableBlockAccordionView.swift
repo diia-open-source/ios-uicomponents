@@ -11,7 +11,7 @@ public struct DSTableBlockAccordionModel: Codable {
 }
 
 /// design_system_code: tableBlockAccordionOrg
-public class DSTableBlockAccordionView: BaseCodeView {
+public final class DSTableBlockAccordionView: BaseCodeView {
     private enum DSTableBlockAccordeonViewState {
         case opened
         case closed

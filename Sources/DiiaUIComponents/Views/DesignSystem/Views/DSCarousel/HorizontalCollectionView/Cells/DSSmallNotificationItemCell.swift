@@ -2,7 +2,7 @@
 import UIKit
 import DiiaCommonTypes
 
-public class DSSmallNotificationItemViewModel {
+public final class DSSmallNotificationItemViewModel {
     public let label: String
     public let text: String
     public let chipStatusAtm: DSCardStatusChipModel?

@@ -7,7 +7,7 @@ protocol VideoControlsDelegate: NSObjectProtocol {
     func progressChanged(progress: Float)
 }
 
-class VideoControlsView: UIView {
+final class VideoControlsView: UIView {
     private let playButton = UIButton()
     private let progressView = UISlider()
     private let durationLabel = UILabel()

@@ -3,7 +3,7 @@ import UIKit
 import DiiaCommonTypes
 
 /// design_system_code: selectorOrgV2
-public class DSSelectorOrgV2View: BaseCodeView, DSInputComponentProtocol {
+public final class DSSelectorOrgV2View: BaseCodeView, DSInputComponentProtocol {
     private let borderedView = UIView()
 
     private let titleLabel = UILabel().withParameters(font: FontBook.statusFont, numberOfLines: Constants.titleNumberOfLines)
@@ -111,6 +111,7 @@ public class DSSelectorOrgV2View: BaseCodeView, DSInputComponentProtocol {
                 trailing: trailingAnchor,
                 padding: .init(right: Constants.insets.right, top: Constants.hintTopSpacing))
         } else {
+            borderedView.anchor(bottom: bottomAnchor)
             hintLabel.removeFromSuperview()
         }
     }
@@ -137,7 +138,7 @@ public class DSSelectorOrgV2View: BaseCodeView, DSInputComponentProtocol {
     }
 
     public func inputCode() -> String {
-        return viewModel?.code ?? Constants.inputCode
+        return viewModel?.inputCode ?? Constants.inputCode
     }
 
     public func inputData() -> AnyCodable? {

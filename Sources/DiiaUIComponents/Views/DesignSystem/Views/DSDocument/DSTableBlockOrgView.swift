@@ -1,7 +1,7 @@
 
 import Foundation
 
-public class DSTableBlockOrgView: BaseCodeView {
+public final class DSTableBlockOrgView: BaseCodeView {
     
     let planeTableBlock = DSTableBlockPlaneOrgView()
     

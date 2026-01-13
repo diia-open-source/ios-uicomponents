@@ -1,7 +1,7 @@
 
 import UIKit
 
-class EqualTabCollectionCell: BaseCollectionNibCell, NibLoadable {
+final class EqualTabCollectionCell: BaseCollectionNibCell, NibLoadable {
     
     // MARK: - Outlets
     @IBOutlet weak private var titleLabel: UILabel!

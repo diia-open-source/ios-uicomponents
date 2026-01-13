@@ -2,9 +2,8 @@
 import Foundation
 import DiiaCommonTypes
 import UIKit
-import DiiaCommonTypes
 
-public class DSCalendarChipViewModel: NSObject {
+public final class DSCalendarChipViewModel: NSObject {
     let chipsViewModels: [DSChipTimeViewModel]?
     let chipSelectedCallback: ((AnyCodable) -> Void)?
     
@@ -103,7 +102,6 @@ public final class DSCalendarChipsView: BaseCodeView {
         self.chipsViewModels = DSCalendarChipViewModel(chipsViewModels: viewModels,
                                                        chipSelectedCallback: chipSelectedCallback)
     }
-    
 }
 
 extension DSCalendarChipsView {

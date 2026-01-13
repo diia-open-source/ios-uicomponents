@@ -7,7 +7,7 @@ public protocol AnimatedViewProtocol where Self: UIView {
     func stopAnimation()
 }
 
-public class AnimationView<T: AnimatedViewProtocol>: UIView {
+public final class AnimationView<T: AnimatedViewProtocol>: UIView {
     private let subview: T
     
     // MARK: - Init

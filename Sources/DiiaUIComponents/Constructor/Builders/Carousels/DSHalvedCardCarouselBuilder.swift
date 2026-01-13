@@ -41,7 +41,7 @@ public struct DSHalvedCardCarouselBuilder: DSViewBuilderProtocol {
 }
 
 // MARK: - Data Source
-class DSHalvedCardCarouselDataSource: NSObject, UICollectionViewDataSource {
+final class DSHalvedCardCarouselDataSource: NSObject, UICollectionViewDataSource {
     private let sourceModel: DSHalvedCardCarouselModel
     private let eventHandler: ((ConstructorItemEvent) -> Void)?
     

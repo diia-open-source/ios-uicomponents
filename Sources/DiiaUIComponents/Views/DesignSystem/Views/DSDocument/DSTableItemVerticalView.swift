@@ -4,7 +4,7 @@ import SwiftMessages
 import DiiaCommonTypes
 
 /// design_system_code: tableItemVerticalMlc
-public class DSTableItemVerticalView: DSTableItemView {
+public final class DSTableItemVerticalView: DSTableItemView {
     private var eventHandler: ((ConstructorItemEvent) -> Void)?
     
     private let mainStack = UIStackView.create(.horizontal, spacing: Constants.spacing, alignment: .top)
@@ -90,7 +90,7 @@ public class DSTableItemVerticalView: DSTableItemView {
         actionButton.isHidden = model.icon == nil || value.isHidden
         
         if let icon = model.icon, let action = icon.action {
-            actionButton.action = .init(image: UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: icon.code),
+            actionButton.action = .init(image: UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: icon.code),
                                         callback: { [weak self] in
                 self?.handleClick(action: action)
             })

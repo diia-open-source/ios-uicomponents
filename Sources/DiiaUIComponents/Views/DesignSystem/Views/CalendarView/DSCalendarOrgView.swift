@@ -7,14 +7,18 @@ import Lottie
 /// design_system_code: DSCalendarOrg
 
 public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
-    
+    private let legendView = DSLegendMlcView()
     private let currentTimeMlcView = DSCurrentTimeMlcView()
     private let backBtn = ActionButton(type: .icon)
     private let forwardBtn = ActionButton(type: .icon)
     private let stubMsgBoxView = BoxView(subview: StubMessageViewV2()).withConstraints(insets: Constants.stubPadding)
-    private let calendarStack = UIStackView.create(spacing: Constants.calendarSpacing)
-    private var chipsView = DSCalendarChipsView()
-    
+    private let pagginationMsgView = BoxView(subview: DSPaginationMessageMlcView()).withConstraints(centeredX: true, centeredY: true)
+    private let calendarStack = UIStackView.create(spacing: Constants.calendarSpacing, distribution: .fillEqually)
+    private let chipsView = DSCalendarChipsView()
+    private let chipsViewV2 = DSChipGroupOrgV2View()
+    private lazy var globalStackView = UIStackView.create(views: [chipsView, chipsViewV2])
+    private var fullCalendarStackCornerView: UIView?
+
     private lazy var animation: LottieAnimationView = {
         let animation = LottieAnimation.named("loader")
         let lottieView = LottieAnimationView(animation: animation)
@@ -27,17 +31,14 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
         let box = BoxView(subview: animation)
         box.backgroundColor = .white
         box.layer.cornerRadius = Constants.loadingRadius
-        box.withConstraints(size: Constants.loadingSize,
-                            centeredX: true,
-                            centeredY: true)
+        box.withConstraints(size: Constants.loadingSize, centeredX: true, centeredY: true)
         return box
     }()
     
-    private var imageProvider: DSImageNameProvider? = UIComponentsConfiguration.shared.imageProvider
+    private var imageProvider = UIComponentsConfiguration.shared.imageProvider
     private var viewModel: DSCalendarOrgViewModel?
     private var selectedCalendarItem: DSCalendarItemViewModel?
     private var calendarMode: Calendar.Component = .month
-    private lazy var weekdays: [String] = { return calendar.shortWeekdaySymbols.map { $0 } }()
     
     public override func setupSubviews() {
         let topCalendarHeaderStack = UIStackView.create(.horizontal, views: [backBtn, currentTimeMlcView, forwardBtn])
@@ -53,15 +54,20 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
         calendarBoxView.withConstraints(insets: Constants.offset)
         
         let fullCalendarStack = UIStackView.create(views: [topCalendarHeaderStack, separatorView, calendarBoxView])
-        
-        let cornerBoxView = BoxView(subview: fullCalendarStack)
-        cornerBoxView.backgroundColor = .white
-        cornerBoxView.layer.cornerRadius = Constants.cornerRadius
-        
-        let globalStackView = UIStackView.create(views: [cornerBoxView, chipsView], spacing: Constants.viewPadding)
+        let fullCalendarStackCornerView = BoxView(subview: fullCalendarStack)
+        fullCalendarStackCornerView.backgroundColor = .white
+        self.fullCalendarStackCornerView = fullCalendarStackCornerView
+
+        addSubview(legendView)
+        legendView.anchor(top: topAnchor, leading: leadingAnchor, trailing: trailingAnchor)
+        globalStackView.insertArrangedSubview(fullCalendarStackCornerView, at: 0)
         addSubview(globalStackView)
         
-        globalStackView.fillSuperview()
+        globalStackView.anchor(top: legendView.bottomAnchor,
+                               leading: leadingAnchor,
+                               bottom: bottomAnchor,
+                               trailing: trailingAnchor,
+                               padding: Constants.legendOffset)
         
         addSubview(stubMsgBoxView)
         stubMsgBoxView.anchor(top: calendarBoxView.topAnchor,
@@ -69,8 +75,15 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
                            bottom: calendarBoxView.bottomAnchor,
                            trailing: globalStackView.trailingAnchor)
         stubMsgBoxView.backgroundColor = .white
-        stubMsgBoxView.layer.cornerRadius = Constants.cornerRadius
         stubMsgBoxView.isHidden = true
+        
+        addSubview(pagginationMsgView)
+        pagginationMsgView.anchor(top: calendarBoxView.topAnchor,
+                           leading: globalStackView.leadingAnchor,
+                           bottom: calendarBoxView.bottomAnchor,
+                           trailing: globalStackView.trailingAnchor)
+        pagginationMsgView.backgroundColor = .white
+        pagginationMsgView.isHidden = true
         
         addSubview(animationView)
         
@@ -78,9 +91,9 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
                              leading: fullCalendarStack.leadingAnchor,
                              bottom: fullCalendarStack.bottomAnchor,
                              trailing: fullCalendarStack.trailingAnchor)
-        let animationViewHeight = animationView.heightAnchor.constraint(greaterThanOrEqualToConstant: Constants.defaultCalendarHeight)
-        animationViewHeight.priority = .defaultHigh
-        animationViewHeight.isActive = true
+        let animationHeight = animationView.heightAnchor.constraint(greaterThanOrEqualToConstant: Constants.defaultCalendarHeight)
+        animationHeight.priority = .defaultHigh
+        animationHeight.isActive = true
         
         animationView.isHidden = true
         
@@ -92,16 +105,30 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
     }
     
     public func configure(for viewModel: DSCalendarOrgViewModel) {
-        if let currentTimeMlc = viewModel.currentTimeMlc {
+        let spacing = viewModel.isOldVersion ? Constants.viewPadding : Constants.viewPaddingV2
+        globalStackView.spacing = spacing
+
+        let cornerRadius = viewModel.isOldVersion ? Constants.cornerRadius : Constants.cornerRadiusV2
+        stubMsgBoxView.layer.cornerRadius = cornerRadius
+        pagginationMsgView.layer.cornerRadius = cornerRadius
+        fullCalendarStackCornerView?.layer.cornerRadius = cornerRadius
+
+        legendView.isHidden = viewModel.legends == nil
+        if let legend = viewModel.legends?.first(where: {$0.type == .initial}) {
+            legendView.configure(with: .init(componentId: legend.componentId, label: legend.label))
+        } else {
+            legendView.isHidden = true
+        }
+        self.viewModel = viewModel
+        if let currentTimeMlc = viewModel.calendarOrg.value.currentTimeMlc {
             currentTimeMlcView.configure(for: currentTimeMlc)
         }
-        if let backBtnModel = viewModel.backBtn {
+        if let backBtnModel = viewModel.calendarOrg.value.iconForMovingBackwards {
             configureForwardButton(with: backBtnModel)
         }
-        if let forwardBtnModel = viewModel.forwardBtn {
+        if let forwardBtnModel = viewModel.calendarOrg.value.iconForMovingForward {
             configureForwardButton(with: forwardBtnModel)
         }
-        
         let currentDateTap = UITapGestureRecognizer(target: self, action: #selector(monthsConfigure))
         currentTimeMlcView.addGestureRecognizer(currentDateTap)
         
@@ -111,43 +138,49 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
         configureCalendar()
         
         configureObservers(for: viewModel)
-        self.viewModel = viewModel
     }
     
-    fileprivate func configureObservers(for viewModel: DSCalendarOrgViewModel) {
+    private func configureObservers(for viewModel: DSCalendarOrgViewModel) {
         self.viewModel?.isLoading.removeObserver(observer: self)
         viewModel.isLoading.observe(observer: self) { [weak self] isLoading in
-            guard let self = self else { return }
+            guard let self else { return }
             self.updateLoading(to: isLoading)
         }
         
         self.viewModel?.calendarOrg.removeObserver(observer: self)
-        viewModel.calendarOrg.observe(observer: self) { [weak self] calendarOrg in
-            guard let self = self else { return }
-            self.viewModel?.items = calendarOrg.items
+        viewModel.calendarOrg.observe(observer: self) { [weak self] calendarModel in
+            guard let self else { return }
             self.stubMsgBoxView.isHidden = true
-            if calendarOrg.currentTimeMlc != nil {
-                self.viewModel?.currentTimeMlc = calendarOrg.currentTimeMlc
+            self.pagginationMsgView.isHidden = true
+            if let backBtnModel = calendarModel.iconForMovingBackwards {
+                self.configureBackwardButton(with: backBtnModel)
             }
-            if calendarOrg.iconForMovingBackwards?.iconAtm != nil {
-                self.viewModel?.backBtn = calendarOrg.iconForMovingBackwards?.iconAtm
-            }
-            if calendarOrg.iconForMovingForward?.iconAtm != nil {
-                self.viewModel?.forwardBtn = calendarOrg.iconForMovingForward?.iconAtm
-            }
-            if let backBtnModel = self.viewModel?.backBtn {
-                configureBackwardButton(with: backBtnModel)
-            }
-            if let forwardBtnModel = self.viewModel?.forwardBtn {
-                configureForwardButton(with: forwardBtnModel)
-            }
-            if let stubMessage = calendarOrg.stubMessageMlc {
-                let viewModel = StubMessageViewModel(model: stubMessage)
-                stubMsgBoxView.subview.configure(with: viewModel)
-                stubMsgBoxView.isHidden = false
+            if let forwardBtnModel = calendarModel.iconForMovingForward {
+                self.configureForwardButton(with: forwardBtnModel)
             }
             self.configureCalendar()
         }
+        self.viewModel?.stubMessage.removeObserver(observer: self)
+        viewModel.stubMessage.observe(observer: self) { [weak self] stubMessageMlc in
+            guard let self else { return }
+            if let stubMessageMlc {
+                let viewModel = StubMessageViewModel(model: stubMessageMlc)
+                self.stubMsgBoxView.subview.configure(with: viewModel)
+            }
+            self.stubMsgBoxView.isHidden = stubMessageMlc == nil
+        }
+        self.viewModel?.paginationMessage.removeObserver(observer: self)
+        viewModel.paginationMessage.observe(observer: self) { [weak self] paginationMessageMlc in
+            guard let self else { return }
+            if let paginationMessageMlc {
+                self.pagginationMsgView.subview.configure(with: paginationMessageMlc)
+                if let eventHandler = self.viewModel?.eventHandler {
+                    self.pagginationMsgView.subview.setEventHandler(eventHandler)
+                }
+            }
+            self.pagginationMsgView.isHidden = paginationMessageMlc == nil
+        }
+        
         self.viewModel?.selectedPeriod.removeObserver(observer: self)
         viewModel.selectedPeriod.observe(observer: self) { [weak self] selectedPeriod in
             guard let self else { return }
@@ -164,18 +197,29 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
         viewModel.selectedDate.observe(observer: self) { [weak self] selectedDate in
             guard let self else { return }
             self.viewModel?.selectedChipData.value = nil
-            if let date = selectedDate,
-               let calendarItem = self.viewModel?.items?.first(where: {
-                   $0.calendarItemOrg.date == self.fullDateFormatter.string(from: date)})?.calendarItemOrg,
-               let chipsGroupOrg = calendarItem.chipGroupOrg {
-                self.chipsView.configure(for: chipsGroupOrg, chipSelectedCallback: { [weak self] selectedData in
-                    self?.viewModel?.selectedChipData.value = selectedData
-                })
+            if let selectedDate,
+               let calendarItem = self.viewModel?.calendarOrg.value.items.first(where: {
+                   $0.calendarItemOrg.date == self.fullDateFormatter.string(from: selectedDate)
+               })?.calendarItemOrg {
+                if let chipsGroupOrg = calendarItem.chipGroupOrg {
+                    self.chipsView.isHidden = false
+                    self.chipsView.configure(for: chipsGroupOrg,
+                                             chipSelectedCallback: { [weak self] selectedData in
+                        self?.viewModel?.selectedChipData.value = selectedData
+                    })
+                } else if let chipBlackOrg = calendarItem.chipGroupOrgV2 {
+                    self.chipsViewV2.isHidden = false
+                    self.chipsViewV2.configure(for: chipBlackOrg,
+                                               chipSelectedCallback: { [weak self] selectedData in
+                        self?.viewModel?.selectedChipData.value = selectedData
+                    })
+                }
             } else {
                 self.chipsView.configure()
+                self.chipsView.isHidden = self.viewModel?.isOldVersion == false
+                self.chipsViewV2.isHidden = true
             }
         }
-        
         self.viewModel?.selectedChipData.removeObserver(observer: self)
         viewModel.selectedChipData.observe(observer: self) { [weak self] selectedChipData in
             guard let viewModel = self?.viewModel else { return }
@@ -185,7 +229,7 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
     }
     
     private func configureForwardButton(with model: DSIconModel) {
-        forwardBtn.action = Action(iconName: imageProvider?.imageNameForCode(imageCode: model.code),
+        forwardBtn.action = Action(image: imageProvider.imageForCode(imageCode: model.code),
                                    callback: {[weak self] in
             self?.changePeriod(reduce: true, for: model.action?.resource)
         })
@@ -194,8 +238,8 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
     }
     
     private func configureBackwardButton(with model: DSIconModel) {
-        backBtn.action = Action(iconName: imageProvider?.imageNameForCode(imageCode: model.code),
-                                   callback: {[weak self] in
+        backBtn.action = Action(image: imageProvider.imageForCode(imageCode: model.code),
+                                callback: {[weak self] in
             self?.changePeriod(reduce: false, for: model.action?.resource)
         })
         backBtn.isEnabled = model.isEnable ?? true
@@ -204,8 +248,14 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
     
     private func configureCalendar() {
         guard let viewModel = viewModel else { return }
-        let selectedPeriod = viewModel.selectedPeriod.value ?? Date()
-        let availableItems = self.viewModel?.items
+        var selectedPeriod = Date()
+        if let date = viewModel.selectedPeriod.value {
+            selectedPeriod = date
+        } else if let displayMonthStr = viewModel.calendarOrg.value.currentTimeMlc?.displayMonth,
+                  let displayMonth = Constants.monthYearFormatter.date(from: displayMonthStr) {
+            selectedPeriod = displayMonth
+        }
+        let availableItems = self.viewModel?.calendarOrg.value.items
         
         calendarStack.safelyRemoveArrangedSubviews()
         setupHeader()
@@ -215,18 +265,27 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
         let firstWeekDay = calendar.component(.weekday, from: dateIteration)
         
         repeat {
-            let weekStackView = UIStackView.create(.horizontal, spacing: Constants.horizontalSpacing, distribution: .fillEqually)
+            let weekStackView = UIStackView.create(.horizontal,
+                                                   spacing: Constants.horizontalSpacing,
+                                                   distribution: .fillEqually)
             if calendarStack.arrangedSubviews.count == 1 {
                 (1..<firstWeekDay).forEach({_ in weekStackView.addArrangedSubview(UIView())})
             }
             repeat {
                 dateIteration = calendar.date(byAdding: .day, value: 1, to: dateIteration)!
-                let isAvailable = availableItems?.contains(where: {$0.calendarItemOrg.date == fullDateFormatter.string(from: dateIteration)}) == true
-                let dayItem = createDayItem(date: dateIteration, isAvailable: isAvailable)
+                let calendarItem = availableItems?.first(where: {
+                    $0.calendarItemOrg.date == fullDateFormatter.string(from: dateIteration)
+                })
+                let isAvailable = calendarItem != nil
+                let dayItem = createDayItem(
+                    date: dateIteration,
+                    isAvailable: isAvailable,
+                    legendType: calendarItem?.calendarItemOrg.legendType)
                 weekStackView.addArrangedSubview(dayItem)
             } while calendar.isDate(dateIteration,
                                     equalTo: calendar.date(byAdding: .day, value: 1, to: dateIteration)!,
                                     toGranularity: .weekOfMonth)
+            let weekdays = calendar.shortWeekdaySymbols
             if weekStackView.arrangedSubviews.count < weekdays.count {
                 let daysAfter = weekdays.count - weekStackView.arrangedSubviews.count
                 (0..<daysAfter).forEach({_ in weekStackView.addArrangedSubview(UIView())})
@@ -237,17 +296,26 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
                                                        to: dateIteration)!, toGranularity: .month)
     }
     
-    private func createDayItem(date: Date, isAvailable: Bool) -> UIView {
+    private func createDayItem(date: Date, isAvailable: Bool, legendType: DSLegendType? = nil) -> UIView {
         let calendarItem = DSCalendarItemOrgView()
-        let viewModel = DSCalendarItemViewModel(itemOrg: .init(date: fullDateFormatter.string(from: date),
-                                                               calendarItemAtm: .init(label: dateFormatter.string(from: date),
-                                                                                      isActive: isAvailable,
-                                                                                      isToday: calendar.isDateInToday(date))))
+        let viewModel = DSCalendarItemViewModel(
+            itemOrg: .init(date: fullDateFormatter.string(from: date),
+                           calendarItemAtm: .init(label: dateFormatter.string(from: date),
+                                                  isActive: isAvailable,
+                                                  isToday: calendar.isDateInToday(date)),
+                           legendType: legendType))
         viewModel.onChange = { [weak self] isSelected in
             guard isSelected, self?.selectedCalendarItem != viewModel else { return }
             self?.selectedCalendarItem?.isSelected = false
             self?.selectedCalendarItem = viewModel
             self?.viewModel?.selectedDate.value = self?.fullDateFormatter.date(from: viewModel.itemOrg?.date ?? "")
+            if let legendType = viewModel.itemOrg?.legendType,
+               let legendMlc = self?.viewModel?.legends?.first(where: {$0.type == legendType}) {
+                self?.legendView.configure(
+                    with: .init(componentId: legendMlc.componentId,
+                                label: legendMlc.label)
+                )
+            }
         }
         calendarItem.configure(for: viewModel)
         return calendarItem
@@ -258,6 +326,10 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
         let selectedPeriod = viewModel.selectedPeriod.value ?? Date()
         
         calendarStack.safelyRemoveArrangedSubviews()
+        
+        chipsView.isHidden = true
+        chipsViewV2.isHidden = true
+        
         setupYearHeader()
         
         calendarMode = .year
@@ -278,7 +350,8 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
     
     private func createMonthLabel(date: Date) -> UIView {
         var isActive = calendar.isDate(date, equalTo: Date(), toGranularity: .month) || date > Date()
-        if let maxDateStr = viewModel?.currentTimeMlc?.maxDate, let maxDate = Constants.monthYearFormatter.date(from: maxDateStr) {
+        if let maxDateStr = viewModel?.calendarOrg.value.currentTimeMlc?.maxDate,
+           let maxDate = Constants.monthYearFormatter.date(from: maxDateStr) {
             isActive = isActive && (date.compare(maxDate) == .orderedAscending || date.compare(maxDate) == .orderedSame)
         }
         let item = DSCalendarItemOrg(date: fullDateFormatter.string(from: date),
@@ -306,7 +379,7 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
         
         let selectedPeriod = viewModel.selectedPeriod.value ?? Date()
         
-        if let currentTimeMlc = viewModel.currentTimeMlc {
+        if let currentTimeMlc = viewModel.calendarOrg.value.currentTimeMlc {
             currentTimeMlcView.configure(for: currentTimeMlc)
         } else {
             let currentTime = selectedPeriod.monthStr.capitalized + " \(calendar.component(.year, from: selectedPeriod))"
@@ -333,10 +406,13 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
         let currentTime = "\(calendar.component(.year, from: selectedPeriod))"
         currentTimeMlcView.configure(for: DSCurrentTimeMlc(label: currentTime))
         
-        let maxDateStr = viewModel.currentTimeMlc?.maxDate ?? ""
+        let maxDateStr = viewModel.calendarOrg.value.currentTimeMlc?.maxDate ?? ""
         let maxDateYear = Constants.monthYearFormatter.date(from: maxDateStr)?.year ?? (Date().year + 1)
         
-        let isBackAvailable = selectedPeriod.year > Date().year
+        let minDateStr = viewModel.calendarOrg.value.currentTimeMlc?.minDate ?? ""
+        let minDateYear = Constants.monthYearFormatter.date(from: minDateStr)?.year ?? Date().year
+        
+        let isBackAvailable = selectedPeriod.year > minDateYear
         backBtn.isEnabled = isBackAvailable
         
         let isNextAvailable = selectedPeriod.year < maxDateYear
@@ -345,7 +421,8 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
     
     private func updateLoading(to state: Bool) {
         animationView.isHidden = !state
-        chipsView.isHidden = state
+        chipsView.isHidden = state || viewModel?.isOldVersion == false
+        chipsViewV2.isHidden = true
         if state {
             animationView.subview.play()
         } else {
@@ -390,13 +467,16 @@ extension DSCalendarOrgView {
         static let topViewHeight: CGFloat = 56
         static let lineHeight: CGFloat = 1
         static let cornerRadius: CGFloat = 8
+        static let cornerRadiusV2: CGFloat = 16
         static let stubPadding = UIEdgeInsets(top: 64, left: 24, bottom: 64, right: 24)
         static let offset = UIEdgeInsets(top: 8, left: 16, bottom: 16, right: 16)
+        static let legendOffset = UIEdgeInsets(top: 8, left: 0, bottom: 0, right: 0)
         static let calendarSpacing: CGFloat = 4
         static let horizontalSpacing: CGFloat = 2
         static let monthHorizontal = 3
         static let monthVertical = 4
         static let viewPadding: CGFloat = 24
+        static let viewPaddingV2: CGFloat = 8
         static var monthYearFormatter: DateFormatter = {
             let formatter = DateFormatter()
             formatter.locale = Locale(identifier: "uk_UA")

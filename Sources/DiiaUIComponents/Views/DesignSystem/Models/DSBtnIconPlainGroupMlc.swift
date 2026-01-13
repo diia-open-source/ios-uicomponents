@@ -65,7 +65,7 @@ public struct DSBtnPlainIconModel: Codable {
         id: "id",
         state: .enabled,
         label: "label",
-        icon: "icon",
+        icon: "home",
         action: .mock,
         componentId: "componentId"
     )

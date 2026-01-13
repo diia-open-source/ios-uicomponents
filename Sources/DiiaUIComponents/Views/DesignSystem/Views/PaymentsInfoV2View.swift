@@ -4,7 +4,7 @@ import DiiaCommonTypes
 
 /// design_system_code: paymentInfoOrgV2
 
-class PaymentsInfoV2View: BaseCodeView {
+final class PaymentsInfoV2View: BaseCodeView {
     private let titleLabel = UILabel().withParameters(font: FontBook.smallHeadingFont, textColor: .black, textAlignment: .center)
     private let subTitleLabel = UILabel().withParameters(font: FontBook.usualFont, textColor: .gray, textAlignment: .center)
     private let itemsStackView = UIStackView.create(spacing: Constants.stackSpacing)

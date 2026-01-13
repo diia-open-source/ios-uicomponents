@@ -3,7 +3,7 @@ import UIKit
 import DiiaCommonTypes
 
 //ds code: singleMediaUploadGroupOrg
-public class DSSingleMediaUploadGroupOrgView: BaseCodeView {
+public final class DSSingleMediaUploadGroupOrgView: BaseCodeView {
     private let mainStack = UIStackView.create()
     private let itemsStack = UIStackView.create(alignment: .center).withMargins(Constants.paddings)
     private let titleStack = UIStackView.create(spacing: Constants.titleStackSpacing).withMargins(Constants.paddings)

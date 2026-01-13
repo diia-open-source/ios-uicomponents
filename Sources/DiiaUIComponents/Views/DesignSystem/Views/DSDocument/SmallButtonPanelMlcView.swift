@@ -3,7 +3,7 @@ import UIKit
 
 /// design_system_code: smallEmojiPanelPlaneMlc
 
-public class SmallButtonPanelMlcView: BaseCodeView {
+public final class SmallButtonPanelMlcView: BaseCodeView {
     
     private let panelLabel = UILabel().withParameters(font: FontBook.usualFont,
                                                       numberOfLines: 0)

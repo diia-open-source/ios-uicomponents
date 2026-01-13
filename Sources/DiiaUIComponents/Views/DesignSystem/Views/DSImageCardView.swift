@@ -66,7 +66,7 @@ final public class DSImageCardView: BaseCodeView {
         detailsLabel.text = model.label
         detailsLabel.accessibilityLabel = model.label
         
-        arrowIconView.image = UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: model.iconRight)
+        arrowIconView.image = UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: model.iconRight)
         backgroundImageView.loadImage(imageURL: model.image, completion: { [weak self] in
             self?.imagePlaceholder.stop()
             self?.imagePlaceholder.isHidden = true

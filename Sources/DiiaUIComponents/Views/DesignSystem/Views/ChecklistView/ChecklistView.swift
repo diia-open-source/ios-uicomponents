@@ -3,7 +3,7 @@ import UIKit
 import DiiaCommonTypes
 
 // MARK: - ViewModel
-public class ChecklistViewModel {
+public final class ChecklistViewModel {
     public let id: String?
     public let title: String?
     public let items: [ChecklistItemViewModel]
@@ -61,7 +61,7 @@ public class ChecklistViewModel {
 
 /// design_system_code: checkboxRoundGroupOrg, radioBtnGroupOrg
 ///
-public class ChecklistView: BaseCodeView, DSInputComponentProtocol, DSResetStateComponentProtocol {
+public final class ChecklistView: BaseCodeView, DSInputComponentProtocol, DSResetStateComponentProtocol {
     private lazy var stackView = UIStackView.create(in: self)
     private var itemViews: [ChecklistItemView] = []
     

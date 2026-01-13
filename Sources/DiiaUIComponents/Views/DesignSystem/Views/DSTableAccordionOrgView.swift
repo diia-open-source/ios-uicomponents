@@ -3,7 +3,7 @@ import UIKit
 import DiiaCommonTypes
 
 /// design_system_code: tableAccordionOrg
-public class DSTableAccordionOrgView: BaseCodeView {
+public final class DSTableAccordionOrgView: BaseCodeView {
     // MARK: - Properties
     private let mainStack =  UIStackView.create(
         .vertical
@@ -36,11 +36,12 @@ public class DSTableAccordionOrgView: BaseCodeView {
         mainStack.safelyRemoveArrangedSubviews()
 
         if let headingModel = model.tableMainHeadingMlc {
-            let viewModel = DSTableMainHeadingViewModel(
-                componentId: headingModel.componentId,
-                label: headingModel.label,
-                description: headingModel.description
-            )
+            let viewModel = DSTableMainHeadingViewModel(headingModel: headingModel) {
+                if let iconAction = headingModel.icon?.action {
+                    eventHandler(.action(iconAction))
+                }
+            }
+
             headingView.configure(with: viewModel)
             mainStack.addArrangedSubview(headingView)
         }

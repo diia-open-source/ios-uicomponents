@@ -22,7 +22,7 @@ public struct DSListItemMlcModel: Codable {
     public let type: String?
 }
 
-public class DSGroupFilesAddViewModel {
+public final class DSGroupFilesAddViewModel {
     public let componentId: String?
     public let items: [DSListItemViewModel]
     public let buttonAction: Action
@@ -34,7 +34,7 @@ public class DSGroupFilesAddViewModel {
     }
 }
 
-public class DSGroupFilesAddView: BaseCodeView {
+public final class DSGroupFilesAddView: BaseCodeView {
     private let mainStack =  UIStackView.create()
     private let buttonStack = UIStackView.create()
     private let filesStack = UIStackView.create()

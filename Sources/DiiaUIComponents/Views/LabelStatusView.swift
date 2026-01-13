@@ -1,7 +1,7 @@
 
 import UIKit
 
-public class LabelStatusView: BaseCodeView {
+public final class LabelStatusView: BaseCodeView {
     private let container = UIView()
     private let statusLabel = UILabel().withParameters(font: FontBook.usualFont)
 

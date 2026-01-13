@@ -2,7 +2,7 @@
 import UIKit
 import SwiftMessages
 
-public class DSTablePrimaryItemView: BaseCodeView {
+public final class DSTablePrimaryItemView: BaseCodeView {
     
     private let titleLabel = UILabel().withParameters(font: FontBook.usualFont, numberOfLines: 0)
     private let subtitleLabel = UILabel().withParameters(font: FontBook.mediumHeadingFont, numberOfLines: 0)
@@ -36,7 +36,7 @@ public class DSTablePrimaryItemView: BaseCodeView {
         titleLabel.text = model.label
         iconView.isHidden = model.icon == nil
         if let icon = model.icon {
-            iconView.image = UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: icon.code)
+            iconView.image = UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: icon.code)
         }
         subtitleLabel.text = model.value
     }

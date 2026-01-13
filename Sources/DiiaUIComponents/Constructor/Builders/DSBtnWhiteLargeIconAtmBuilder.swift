@@ -18,7 +18,7 @@ public struct DSBtnWhiteLargeIconAtmBuilder: DSViewBuilderProtocol {
         button.titleEdgeInsets = Constants.buttonTitlePaddings
         button.action = Action(
             title: model.label,
-            image: UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: model.icon) ?? UIImage()) {
+            image: UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: model.icon) ?? UIImage()) {
                 guard let action = model.action else { return }
                 eventHandler(.action(action))
             }

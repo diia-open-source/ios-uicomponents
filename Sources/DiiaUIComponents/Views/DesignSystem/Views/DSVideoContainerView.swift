@@ -3,7 +3,7 @@ import UIKit
 import Lottie
 import AVKit
 
-public class DSVideoContainerViewModel {
+public final class DSVideoContainerViewModel {
     public let componentId: String?
     public let source: String
     public let playerBtnAtm: DSPlayerBtnModel?
@@ -33,7 +33,7 @@ public class DSVideoContainerViewModel {
     }
 }
 
-public class DSVideoContainerView: BaseCodeView {
+public final class DSVideoContainerView: BaseCodeView {
     private let container = UIView()
     private let thumbnailImageView = UIImageView()
     private let playerController = AVPlayerViewController()

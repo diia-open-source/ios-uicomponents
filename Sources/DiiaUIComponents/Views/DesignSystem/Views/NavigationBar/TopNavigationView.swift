@@ -3,7 +3,7 @@ import UIKit
 import DiiaCommonTypes
 
 /// design_system_code: navigationPanelMlc
-public class TopNavigationView: UIView {
+public final class TopNavigationView: UIView {
 
     // MARK: - Outlets
     @IBOutlet weak private var titleLabel: UILabel!

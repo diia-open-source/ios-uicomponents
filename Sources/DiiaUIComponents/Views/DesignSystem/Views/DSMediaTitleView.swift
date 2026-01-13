@@ -2,7 +2,7 @@
 import UIKit
 import DiiaCommonTypes
 
-public class DSMediaTitleViewModel {
+public final class DSMediaTitleViewModel {
     public let title: String
     public let secondaryLabel: String
     public let button: IconedLoadingStateViewModel
@@ -12,7 +12,7 @@ public class DSMediaTitleViewModel {
         self.secondaryLabel = model.secondaryLabel
         self.button = IconedLoadingStateViewModel(
             name: model.btnPlainIconAtm.label,
-            image: UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: model.btnPlainIconAtm.icon) ?? UIImage(),
+            image: UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: model.btnPlainIconAtm.icon) ?? UIImage(),
             clickHandler: action,
             componentId: model.btnPlainIconAtm.componentId)
     }

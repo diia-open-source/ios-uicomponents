@@ -56,7 +56,7 @@ extension DSImageCardCarouselBuilder: DSViewMockableBuilderProtocol {
 }
 
 // MARK: - Data Source
-class DSImageCardCarouselDataSource: NSObject, UICollectionViewDataSource {
+final class DSImageCardCarouselDataSource: NSObject, UICollectionViewDataSource {
     private let sourceModel: DSImageCardCarouselModel
     private let eventHandler: (ConstructorItemEvent) -> Void
     private let fabric: DSViewFabric

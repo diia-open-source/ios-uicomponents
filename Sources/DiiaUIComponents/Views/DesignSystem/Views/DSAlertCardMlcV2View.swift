@@ -1,7 +1,7 @@
 
 import UIKit
 
-public class DSAlertCardMlcV2View: BaseCodeView {
+public final class DSAlertCardMlcV2View: BaseCodeView {
     // MARK: - Properties
     private let icon = UIImageView().withSize(Constants.iconSize)
     private let topLabel = UILabel().withParameters(font: FontBook.smallHeadingFont)
@@ -30,7 +30,7 @@ public class DSAlertCardMlcV2View: BaseCodeView {
     // MARK: - Public
     public func configure(model: DSAlertCardMlcV2Model, eventHandler: ((ConstructorItemEvent) -> Void)?) {
         icon.isHidden = model.iconAtm == nil
-        icon.image = UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: model.iconAtm?.code)
+        icon.image = UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: model.iconAtm?.code)
 
         topLabel.text = model.label
 

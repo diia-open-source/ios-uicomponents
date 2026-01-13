@@ -1,7 +1,7 @@
 
 import UIKit
 
-public class TabSwitcherCollectionCell: BaseCollectionNibCell {
+public final class TabSwitcherCollectionCell: BaseCollectionNibCell {
     
     private var titleLabel = UILabel().withParameters(font: FontBook.usualFont)
     private var additionalLabel = UILabel().withParameters(font: FontBook.tabBarTitle,
@@ -13,6 +13,7 @@ public class TabSwitcherCollectionCell: BaseCollectionNibCell {
     var isSelectedState: Bool = false {
         didSet {
             contentView.backgroundColor = isSelectedState ? .white : Constants.unselectedItem
+            accessibilityTraits = isSelectedState ? [.selected, .button] : [.button]
         }
     }
     
@@ -23,11 +24,13 @@ public class TabSwitcherCollectionCell: BaseCollectionNibCell {
     public override init(frame: CGRect) {
         super.init(frame: frame)
         setupSubviews()
+        setupAccessibility()
     }
     
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         setupSubviews()
+        setupAccessibility()
     }
     
     private func setupSubviews() {
@@ -66,6 +69,12 @@ public class TabSwitcherCollectionCell: BaseCollectionNibCell {
         additionalLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
     }
     
+    private func setupAccessibility() {
+        isAccessibilityElement = true
+        accessibilityTraits = .button
+    }
+    
+    // MARK: - Public methods
     public func configure(tabItem: TabSwitcherModel, additionalText: String? = nil) {
         titleLabel.text = tabItem.title
         isSelectedState = tabItem.isSelected
@@ -74,6 +83,10 @@ public class TabSwitcherCollectionCell: BaseCollectionNibCell {
         additionalLabel.text = additionalText
         titleConstraint?.isActive = !hasAdditionalText
         additionConstraint?.isActive = hasAdditionalText
+        
+        accessibilityLabel = tabItem.title
+        accessibilityValue = additionalText
+        
         setNeedsLayout()
     }
     

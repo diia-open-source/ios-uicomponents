@@ -2,7 +2,7 @@
 import UIKit
 import DiiaCommonTypes
 
-public class DSInputPhoneCodeViewModel {
+public final class DSInputPhoneCodeViewModel {
     public let componentId: String?
     public let inputPhoneComponentId: String
     public let label: String
@@ -80,7 +80,7 @@ public class DSInputPhoneCodeViewModel {
 }
 
 /// design_system_code: inputPhoneCodeOrg
-public class DSInputPhoneCodeView: BaseCodeView, DSInputComponentProtocol {
+public final class DSInputPhoneCodeView: BaseCodeView, DSInputComponentProtocol {
     
     // MARK: - Subviews
     private let titleLabel = UILabel().withParameters(font: FontBook.statusFont)
@@ -129,6 +129,7 @@ public class DSInputPhoneCodeView: BaseCodeView, DSInputComponentProtocol {
         self.addGestureRecognizer(tapRecognizer)
         
         addSelectorGestureRecognizer()
+        setupAccessibility()
     }
     
     // MARK: - Public Methods
@@ -188,8 +189,9 @@ public class DSInputPhoneCodeView: BaseCodeView, DSInputComponentProtocol {
                 self?.onChange(text: text)
             }
         )
-        
-        textField.text = mainViewModel.value?.formattedPhoneNumber(mask: mask ?? .empty)
+
+        let value = mainViewModel.value?.formattedPhoneNumber(mask: mask ?? .empty)
+        textField.text = value
         textField.keyboardType = .decimalPad
         textField.placeholder = currentPhoneCode.placeholder
         textField.accessibilityIdentifier = viewModel?.inputPhoneComponentId
@@ -198,7 +200,24 @@ public class DSInputPhoneCodeView: BaseCodeView, DSInputComponentProtocol {
                                                              isEditable: mainViewModel.codeValueIsEditable)
         phoneCodeSelectorView.configure(with: selectorViewModel)
         
-        onEndEditing(text: .empty)
+        onEndEditing(text: value ?? .empty)
+    }
+    
+    private func setupAccessibility() {
+        isAccessibilityElement = false
+        
+        titleLabel.isAccessibilityElement = true
+        titleLabel.accessibilityTraits = .staticText
+        
+        textField.isAccessibilityElement = true
+        
+        hintLabel.isAccessibilityElement = true
+        hintLabel.accessibilityTraits = .staticText
+        
+        errorLabel.isAccessibilityElement = true
+        errorLabel.accessibilityTraits = .staticText
+        
+        accessibilityElements = [titleLabel] + (phoneCodeSelectorView.accessibilityElements ?? []) + [textField, hintLabel, errorLabel].compactMap({ $0 as Any })
     }
     
     @objc private func textFieldDidTapValue() {
@@ -207,7 +226,6 @@ public class DSInputPhoneCodeView: BaseCodeView, DSInputComponentProtocol {
     
     @objc private func textFieldDidChangeValue(_ textField: UITextField) {
         let inputText = textField.text ?? .empty
-        viewModel?.currentPhoneCode.value?.value = inputText
         viewModel?.onChangeText?(inputText)
         if !errorLabel.isHidden {
             updateInstructionsState()

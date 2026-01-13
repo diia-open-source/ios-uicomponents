@@ -4,7 +4,7 @@ import SwiftMessages
 
 /// design_system_code: tableItemPrimaryMlc
 
-public class DSTableItemPrimaryView: BaseCodeView {
+public final class DSTableItemPrimaryView: BaseCodeView {
     private let titleLabel = UILabel()
     private let valueLabel = UILabel()
     private let iconButtonView = UIButton()
@@ -32,7 +32,7 @@ public class DSTableItemPrimaryView: BaseCodeView {
         
         iconButtonView.isHidden = !withIcon
         if withIcon {
-            iconButtonView.setImage(UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: Constants.copyImage),
+            iconButtonView.setImage(UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: Constants.copyImage),
                                     for: .normal)
         }
     }
@@ -44,7 +44,7 @@ public class DSTableItemPrimaryView: BaseCodeView {
         iconButtonView.isHidden = model.icon == nil
         
         if let iconName = model.icon?.code {
-            iconButtonView.setImage(UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: iconName), for: .normal)
+            iconButtonView.setImage(UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: iconName), for: .normal)
         }
     }
     

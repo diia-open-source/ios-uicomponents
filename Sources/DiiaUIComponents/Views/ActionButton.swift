@@ -2,7 +2,7 @@
 import UIKit
 import DiiaCommonTypes
 
-public class ActionButton: UIButton {
+public final class ActionButton: UIButton {
     public enum ActionButtonType {
         case icon
         case text

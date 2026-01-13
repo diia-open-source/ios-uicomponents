@@ -3,7 +3,7 @@ import UIKit
 
 /// design_system_code: tableBlockTwoColumnsPlaneOrg
 
-public class DSTableBlockTwoColumnsPlaneOrgView: BaseCodeView {
+public final class DSTableBlockTwoColumnsPlaneOrgView: BaseCodeView {
     
     private lazy var mainStackView: UIStackView = {
         let stackView = UIStackView()

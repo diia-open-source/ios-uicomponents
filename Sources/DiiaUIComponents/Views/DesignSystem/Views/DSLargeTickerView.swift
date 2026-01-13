@@ -2,7 +2,7 @@
 import UIKit
 import DiiaCommonTypes
 
-public class DSLargeTickerViewModel {
+public final class DSLargeTickerViewModel {
     public let usage: DSTickerUsage
     public var type: Observable<DSTickerType>
     public var text: Observable<String>
@@ -159,9 +159,5 @@ extension DSLargeTickerView {
         static let animationDelay: CGFloat = 0.5
         static let animationSpeed = 50
         static let leadingPadding: CGFloat = 16
-        static let tickerSize = CGSize(width: 300, height: 32)
-        static let gradientBlueColors = [UIColor("#A9CEE7"),UIColor("#4BB3FE")]
-        static let gradientPinkColors = [UIColor("#FF3974"),UIColor("#FF6262")]
-        static let gradientRainbowColors = [UIColor("#FC2C78"),UIColor("#FFD15C"), UIColor("#4EE89E"), UIColor("#993FC3")]
     }
 }

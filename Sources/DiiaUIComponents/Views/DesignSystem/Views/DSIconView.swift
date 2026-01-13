@@ -3,7 +3,7 @@ import UIKit
 import DiiaCommonTypes
 
 /// design_system_code: iconAtm
-public class DSIconView: BaseCodeView {
+public final class DSIconView: BaseCodeView {
     private let imageView = UIImageView()
     private var model: DSIconModel?
 
@@ -43,11 +43,16 @@ public class DSIconView: BaseCodeView {
         accessibilityIdentifier = icon.componentId
         accessibilityLabel = icon.accessibilityDescription
         
-        imageView.image = UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: icon.code)
+        imageView.image = UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: icon.code)
     }
     
     public func setIcon(_ iconCode: String) {
-        imageView.image = UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: iconCode)
+        imageView.image = UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: iconCode)
+        self.isUserInteractionEnabled = false
+    }
+    
+    public func setIcon(_ image: UIImage) {
+        imageView.image = image
         self.isUserInteractionEnabled = false
     }
     

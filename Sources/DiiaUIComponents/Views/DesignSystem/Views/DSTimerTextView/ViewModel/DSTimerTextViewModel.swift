@@ -2,7 +2,7 @@
 import Foundation
 import DiiaCommonTypes
 
-public class DSTimerTextViewModel {
+public final class DSTimerTextViewModel {
     private let model: DSTimerTextModel
     public var onClick: Callback?
     

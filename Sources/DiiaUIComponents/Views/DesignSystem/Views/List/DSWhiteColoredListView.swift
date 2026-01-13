@@ -2,7 +2,7 @@
 import UIKit
 import DiiaCommonTypes
 
-public class DSListViewModel: NSObject{
+public final class DSListViewModel: NSObject{
     public let componentId: String?
     public let title: String?
     public let buttonModel: DSBtnPlainIconModel?
@@ -24,7 +24,7 @@ public class DSListViewModel: NSObject{
 }
 
 /// design_system_code: listItemGroupOrg
-public class DSWhiteColoredListView: BaseCodeView {
+public final class DSWhiteColoredListView: BaseCodeView {
     private lazy var stackView = UIStackView.create()
     private var viewModel: DSListViewModel?
 
@@ -88,7 +88,7 @@ public class DSWhiteColoredListView: BaseCodeView {
         if let actionParameters = buttonPlainIcon.action {
             let action = Action(
                 title: buttonPlainIcon.label,
-                iconName: UIComponentsConfiguration.shared.imageProvider?.imageNameForCode(imageCode: buttonPlainIcon.icon)
+                iconName: UIComponentsConfiguration.shared.imageProvider.imageNameForCode(imageCode: buttonPlainIcon.icon)
             ) { [weak self] in
                 self?.viewModel?.eventHandler?(.action(actionParameters))
             }

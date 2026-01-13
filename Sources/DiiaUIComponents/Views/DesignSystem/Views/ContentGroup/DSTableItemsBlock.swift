@@ -2,7 +2,7 @@
 import UIKit
 
 // TODO: Do we need this? Is this same as DSTableBlocksView?
-public class DSTableItemsBlock: BaseCodeView {
+public final class DSTableItemsBlock: BaseCodeView {
     
     private let tableHeadingLabel = UILabel().withParameters(font: FontBook.smallHeadingFont)
     private let blockStack = UIStackView.create(spacing: Constants.stackSpacing)

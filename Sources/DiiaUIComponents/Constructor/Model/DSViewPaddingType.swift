@@ -8,12 +8,7 @@ public enum DSViewPaddingType: Equatable {
     case fixed(paddings: UIEdgeInsets)
     
     public func defaultPadding(object: AnyCodable? = nil, modelKey: String? = nil) -> UIEdgeInsets {
-        let model: DSPaddingsModel?
-        if let modelKey {
-            model = object?.getValue(forKey: modelKey)?.parseValue(forKey: Constants.paddingsKey)
-        } else {
-            model = object?.parseValue(forKey: Constants.paddingsKey)
-        }
+        let model = DSPaddingsModel.createFromJSON(object, modelKey: modelKey)
         return defaultPadding(paddingsModel: model)
     }
     
@@ -29,12 +24,7 @@ public enum DSViewPaddingType: Equatable {
     }
     
     public func shortPadding(object: AnyCodable? = nil, modelKey: String?) -> UIEdgeInsets {
-        let model: DSPaddingsModel?
-        if let modelKey {
-            model = object?.getValue(forKey: modelKey)?.parseValue(forKey: Constants.paddingsKey)
-        } else {
-            model = object?.parseValue(forKey: Constants.paddingsKey)
-        }
+        let model = DSPaddingsModel.createFromJSON(object, modelKey: modelKey)
         return shortPadding(paddingsModel: model)
     }
     
@@ -50,12 +40,7 @@ public enum DSViewPaddingType: Equatable {
     }
     
     public func defaultPaddingV2(object: AnyCodable? = nil, modelKey: String? = nil) -> UIEdgeInsets {
-        let model: DSPaddingsModel?
-        if let modelKey {
-            model = object?.getValue(forKey: modelKey)?.parseValue(forKey: Constants.paddingsKey)
-        } else {
-            model = object?.parseValue(forKey: Constants.paddingsKey)
-        }
+        let model = DSPaddingsModel.createFromJSON(object, modelKey: modelKey)
         return defaultPaddingV2(paddingsModel: model)
     }
     
@@ -69,24 +54,26 @@ public enum DSViewPaddingType: Equatable {
     }
     
     public func defaultCollectionPadding(object: AnyCodable? = nil, modelKey: String?) -> UIEdgeInsets {
-        let model: DSPaddingsModel?
-        if let modelKey {
-            model = object?.getValue(forKey: modelKey)?.parseValue(forKey: Constants.paddingsKey)
-        } else {
-            model = object?.parseValue(forKey: Constants.paddingsKey)
-        }
+        let model = DSPaddingsModel.createFromJSON(object, modelKey: modelKey)
         return defaultCollectionPadding(paddingsModel: model)
     }
     
     public func defaultCollectionPadding(paddingsModel: DSPaddingsModel?) -> UIEdgeInsets {
+        var insets = UIEdgeInsets.zero
         switch self {
         case .default:
-            return calculatedInsets(for: paddingsModel, defaultInsets: .init(top: 24, left: 0, bottom: 0, right: 0))
+            insets = .init(top: 24, left: 0, bottom: 0, right: 0)
         case .firstComponent:
-            return calculatedInsets(for: paddingsModel, defaultInsets: .init(top: 8, left: 0, bottom: 0, right: 0))
+            insets = .init(top: 8, left: 0, bottom: 0, right: 0)
         case .fixed(let paddings):
             return paddings
         }
+        
+        if let topPaddingSize: DSSizingType = paddingsModel?.top {
+            insets.top = topPaddingSize.verticalSize
+        }
+        
+        return insets
     }
     
     public func insets(for object: AnyCodable?, modelKey: String?, defaultInsets: UIEdgeInsets) -> UIEdgeInsets {
@@ -122,7 +109,7 @@ public enum DSViewPaddingType: Equatable {
     }
 }
 
-enum DSSizingType: String, Codable {
+public enum DSSizingType: String, Codable {
     case none, medium, large
     
     var horizontalSize: CGFloat {
@@ -149,6 +136,29 @@ enum DSSizingType: String, Codable {
 }
 
 public struct DSPaddingsModel: Codable {
-    let top: DSSizingType?
-    let side: DSSizingType?
+    public let top: DSSizingType?
+    public let side: DSSizingType?
+    
+    public init(top: DSSizingType?, side: DSSizingType?) {
+        self.top = top
+        self.side = side
+    }
+    
+    static func createFromJSON(_ json: AnyCodable?, modelKey: String? = nil) -> DSPaddingsModel? {
+        let model: DSPaddingsModel?
+        if let modelKey {
+            model = json?.getValue(forKey: modelKey)?.parseValue(forKey: Constants.paddingsKey)
+        } else {
+            model = json?.parseValue(forKey: Constants.paddingsKey)
+        }
+        return model
+    }
+    
+    private enum Constants {
+        static let paddingsKey = "paddingMode"
+    }
+}
+
+protocol DSPaddingModeDependedViewProtocol {
+    func setupPaddingMode(_ padding: DSPaddingsModel)
 }

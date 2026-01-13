@@ -1,7 +1,7 @@
 
 import Foundation
 
-public class DSLoadingButtonViewModel {
+public final class DSLoadingButtonViewModel {
     public let title: Observable<String> = .init(value: "")
     public let state: Observable<LoadingStateButton.LoadingState> = .init(value: .disabled)
     public var callback: (() -> Void)?
@@ -12,7 +12,7 @@ public class DSLoadingButtonViewModel {
     }
 }
 
-public class DSLoadingButton: LoadingStateButton {
+public final class DSLoadingButton: LoadingStateButton {
     public private(set) var viewModel: DSLoadingButtonViewModel?
     
     override init(frame: CGRect) {

@@ -1,7 +1,7 @@
 
 import Foundation
 
-public class DSCardMlcV2ViewModel {
+public final class DSCardMlcV2ViewModel {
     public let componentId: String?
     public let chipStatusAtm: DSCardStatusChipModel?
     public let label: String

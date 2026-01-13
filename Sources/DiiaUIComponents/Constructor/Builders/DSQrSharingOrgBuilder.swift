@@ -26,7 +26,7 @@ public struct DSQRSharingOrgBuilder: DSViewBuilderProtocol {
             let btnPlainIconAtm = button.btnPlainIconAtm
             return IconedLoadingStateViewModel(
                 name: btnPlainIconAtm.label,
-                image: UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: btnPlainIconAtm.icon) ?? UIImage(),
+                image: UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: btnPlainIconAtm.icon) ?? UIImage(),
                 clickHandler: {
                     if let action = btnPlainIconAtm.action {
                         eventHandler(.action(action))

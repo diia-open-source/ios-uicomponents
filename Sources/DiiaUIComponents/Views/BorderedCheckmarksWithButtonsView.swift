@@ -3,7 +3,7 @@ import UIKit
 import DiiaCommonTypes
 
 /// design_system_code: checkboxBtnOrg
-public class BorderedCheckmarksWithButtonsViewModel: NSObject {
+public final class BorderedCheckmarksWithButtonsViewModel: NSObject {
     public let checkmarkItems: [DSCheckboxSquareMlc]
     public let buttonActions: [Action]
     public let componentId: String?
@@ -29,7 +29,7 @@ public class BorderedCheckmarksWithButtonsViewModel: NSObject {
     }
 }
 
-public class BorderedCheckmarksWithButtonsView: UIView {
+public final class BorderedCheckmarksWithButtonsView: UIView {
     // MARK: - Outlets
     @IBOutlet private weak var borderedView: UIView!
     @IBOutlet private weak var checkmarkStack: UIStackView!
@@ -100,6 +100,7 @@ public class BorderedCheckmarksWithButtonsView: UIView {
             checkmark.subview.configure(text: item.label,
                                         isChecked: item.isSelected ?? false,
                                         componentId: item.componentId,
+                                        parameters: item.parameters,
                                         onChange: { [weak self] isChecked in
                 self?.checkMarksState[index] = isChecked
             })

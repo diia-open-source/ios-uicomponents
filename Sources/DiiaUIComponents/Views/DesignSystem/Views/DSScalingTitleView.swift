@@ -13,7 +13,7 @@ public struct DSScalingTitleMlc: Codable {
 }
 
 /// design_system_code: scalingTitleMlc
-public class DSScalingTitleView: BaseCodeView {
+public final class DSScalingTitleView: BaseCodeView {
     
     private let smallTitle = UILabel().withParameters(font: FontBook.mainFont.regular.size(18), numberOfLines: Constants.smallTitleNumberOfLines)
     private let titleLabel = UILabel().withParameters(font: FontBook.mainFont.regular.size(21))

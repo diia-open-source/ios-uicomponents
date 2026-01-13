@@ -1,7 +1,7 @@
 
 import UIKit
 
-public class DSTableBlocksView: BaseCodeView {
+public final class DSTableBlocksView: BaseCodeView {
     
     private let tableBlocks = UIStackView.create(.vertical, spacing: Constants.stackSpacing)
     

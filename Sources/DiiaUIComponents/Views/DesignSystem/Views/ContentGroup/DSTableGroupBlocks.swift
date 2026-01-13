@@ -40,7 +40,7 @@ public struct DSTableItemModel: Codable {
     }
 }
 
-public class DSTableGroupBlocks: BaseCodeView {
+public final class DSTableGroupBlocks: BaseCodeView {
     private let groupBlocksStack = UIStackView.create(spacing: Constants.stackSpacing)
     
     override public func setupSubviews() {

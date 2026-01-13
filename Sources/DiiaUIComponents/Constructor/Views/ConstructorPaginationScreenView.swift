@@ -1,7 +1,7 @@
 
 import UIKit
 
-class ConstructorPaginationScreenView: BaseCodeView {
+final class ConstructorPaginationScreenView: BaseCodeView {
     
     public let backgroundImageView = UIImageView()
     public let loadingView = ContentLoadingView()

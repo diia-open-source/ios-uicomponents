@@ -2,7 +2,7 @@
 import UIKit
 import DiiaCommonTypes
 
-public class DSCheckboxBtnWhiteOrgBuilder: DSViewBuilderProtocol {
+public final class DSCheckboxBtnWhiteOrgBuilder: DSViewBuilderProtocol {
     public let modelKey = "checkboxBtnWhiteOrg"
     private let checkboxBuilder = DSCheckboxButtonOrgBuilder()
     

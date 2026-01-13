@@ -4,7 +4,7 @@ import UIKit
 
 /// design_system_code: dashboardCardMlc
 
-public class DSDashboardCardMlcViewModel {
+public final class DSDashboardCardMlcViewModel {
     public let dashboardCardMlc: DSDashboardCardMlc
     public let eventHandler: ((ConstructorItemEvent) -> ())?
     
@@ -15,7 +15,7 @@ public class DSDashboardCardMlcViewModel {
     }
 }
 
-public class DSDashboardCardMlcView: BaseCodeView {
+public final class DSDashboardCardMlcView: BaseCodeView {
     private var icon = UIImageView()
     private let label = UILabel().withParameters(font: FontBook.statusFont)
     private let amountLabel = UILabel().withParameters(font: FontBook.cardsHeadingFont)
@@ -31,7 +31,7 @@ public class DSDashboardCardMlcView: BaseCodeView {
     private let fullViewStack = UIStackView.create(spacing: Constants.smallPadding, alignment: .top, distribution: .equalSpacing)
     private let emptyStack = UIStackView.create(spacing: Constants.padding, alignment: .center)
     
-    private var imageProvider: DSImageNameProvider? = UIComponentsConfiguration.shared.imageProvider
+    private let imageProvider = UIComponentsConfiguration.shared.imageProvider
     private var viewModel: DSDashboardCardMlcViewModel?
     
     public override func setupSubviews() {
@@ -81,8 +81,8 @@ public class DSDashboardCardMlcView: BaseCodeView {
     public func configure(with viewModel: DSDashboardCardMlcViewModel) {
         self.viewModel = viewModel
         accessibilityIdentifier = viewModel.dashboardCardMlc.componentId
-        icon.image = imageProvider?.imageForCode(imageCode: viewModel.dashboardCardMlc.icon) ?? UIImage()
-        emptyIcon.image = imageProvider?.imageForCode(imageCode: viewModel.dashboardCardMlc.iconCenter) ?? UIImage()
+        icon.image = imageProvider.imageForCode(imageCode: viewModel.dashboardCardMlc.icon) ?? UIImage()
+        emptyIcon.image = imageProvider.imageForCode(imageCode: viewModel.dashboardCardMlc.iconCenter) ?? UIImage()
         emptyDescription.text = viewModel.dashboardCardMlc.descriptionCenter
         label.text = viewModel.dashboardCardMlc.label
         descriptionLabel.text = viewModel.dashboardCardMlc.description

@@ -47,6 +47,7 @@ public enum ConstructorItemEvent {
 public enum ConstructorEventViewType {
     case checkmark(viewModel: ChecklistViewModel)
     case ticker(viewModel: DSLargeTickerViewModel)
+    case staticTicker(viewModel: DSStaticTickerViewModel)
     case smallCheckIcon(viewModel: DSSmallCheckIconOrgViewModel)
     case phoneCodeView(viewModel: DSInputPhoneCodeViewModel)
     case verificationOrg(viewModel: DSVerificationCodesViewModel)

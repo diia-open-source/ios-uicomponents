@@ -16,7 +16,7 @@ public struct DSSmallButtonPanelMlc: Codable {
     }
 }
 
-public class DSSmallButtonPanelMlcView: BaseCodeView {
+public final class DSSmallButtonPanelMlcView: BaseCodeView {
     private let topLabel: UILabel = UILabel().withParameters(font: FontBook.smallHeadingFont)
     private let secondaryLabel: UILabel = UILabel().withParameters(font: FontBook.statusFont)
     private let button = ActionLoadingStateButton()

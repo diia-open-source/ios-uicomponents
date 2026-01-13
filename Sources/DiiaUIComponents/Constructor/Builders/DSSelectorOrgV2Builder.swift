@@ -10,34 +10,24 @@ public struct DSSelectorOrgV2Builder: DSViewBuilderProtocol {
                          withPadding padding: DSViewPaddingType,
                          viewFabric: DSViewFabric?,
                          eventHandler: @escaping (ConstructorItemEvent) -> Void) -> UIView? {
-        guard let data: DSSelectorOrgV2Model = object.parseValue(forKey: self.modelKey) else { return nil }
+        guard let model: DSSelectorOrgV2Model = object.parseValue(forKey: self.modelKey) else { return nil }
 
-        var state: DropContentState {
-            guard data.isEnabled ?? true else { return .disabled }
-
-            let searchModels = data.searchScreenData?.items.compactMap { $0.searchModel() }
-
-            if let searchModels, let valueId = data.valueId, let item = searchModels.first(where: { $0.code == valueId }) {
-                return .selected(text: item.title)
-            } else {
-                return .selected(text: data.value ?? "")
-            }
-        }
+        let label = label(model: model)
+        let state = state(isEnabled: model.isEnabled ?? true, label: label)
 
         let viewModel = DSSelectorViewModel(
-            code: data.inputCode ?? self.modelKey,
+            inputCode: model.inputCode ?? self.modelKey,
             state: state,
-            title: data.label,
-            mandatory: data.mandatory,
-            placeholder: data.placeholder,
-            hint: data.hint,
-            searchList: data.searchScreenData?.items ?? [],
-            searchComponentId: data.valueId,
-            selectedCode: data.valueId,
-            componentId: data.componentId)
+            title: model.label,
+            mandatory: model.mandatory,
+            placeholder: model.placeholder,
+            hint: model.hint,
+            searchList: model.searchScreenData?.items ?? [],
+            selectedCode: model.valueId,
+            componentId: model.componentId)
 
         viewModel.onClick = { [weak viewModel] in
-            if let action = data.action {
+            if let action = model.action {
                 eventHandler(.action(action))
             } else if let viewModel {
                 eventHandler(.dropContentAction(viewModel: viewModel))
@@ -50,6 +40,21 @@ public struct DSSelectorOrgV2Builder: DSViewBuilderProtocol {
         let paddingBox = BoxView(subview: view).withConstraints(insets: padding.defaultPadding(object: object, modelKey: modelKey))
         return paddingBox
     }
+
+    // MARK: - Private
+    private func label(model: DSSelectorOrgV2Model) -> String? {
+        return model.value ?? model.searchScreenData?.items
+            .compactMap { $0.searchModel() }
+            .first(where: { $0.code == model.valueId })?.title
+    }
+
+    private func state(isEnabled: Bool, label: String?) -> DropContentState {
+        if let label {
+            return isEnabled ? .selected(text: label) : .single(text: label)
+        } else {
+            return isEnabled ? .enabled : .disabled
+        }
+    }
 }
 
 extension DSSelectorOrgV2Builder: DSViewMockableBuilderProtocol {
@@ -61,7 +66,7 @@ extension DSSelectorOrgV2Builder: DSViewMockableBuilderProtocol {
             label: "label",
             placeholder: "placeholder",
             hint: "hint",
-            valueId: "id1",
+            valueId: "valueId",
             value: "value",
             isEnabled: true,
             searchScreenData: DSSearchScreenDataModel(

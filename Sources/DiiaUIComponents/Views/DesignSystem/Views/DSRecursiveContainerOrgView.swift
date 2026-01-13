@@ -8,9 +8,10 @@ public struct DSRecursiveContainerOrgModel: Codable {
     public let template: AnyCodable
     public let items: [AnyCodable]
     public let maxNumber: Int?
-    public let btnWhiteLargeIconAtm: DSBtnPlainIconModel
-    
-    public init(componentId: String?, inputCode: String?, mandatory: Bool?, template: AnyCodable, items: [AnyCodable], maxNumber: Int?, btnWhiteLargeIconAtm: DSBtnPlainIconModel) {
+    public let btnWhiteLargeIconAtm: DSBtnPlainIconModel?
+    public let btnAddOptionAtm: DSBtnAddOptionAtm?
+
+    public init(componentId: String?, inputCode: String?, mandatory: Bool?, template: AnyCodable, items: [AnyCodable], maxNumber: Int?, btnWhiteLargeIconAtm: DSBtnPlainIconModel?, btnAddOptionAtm: DSBtnAddOptionAtm?) {
         self.componentId = componentId
         self.inputCode = inputCode
         self.mandatory = mandatory
@@ -18,14 +19,16 @@ public struct DSRecursiveContainerOrgModel: Codable {
         self.items = items
         self.maxNumber = maxNumber
         self.btnWhiteLargeIconAtm = btnWhiteLargeIconAtm
+        self.btnAddOptionAtm = btnAddOptionAtm
     }
 }
 
 /// design_system_code: recursiveContainerOrg
-public class DSRecursiveContainerOrgView: BaseCodeView {
-
+public final class DSRecursiveContainerOrgView: BaseCodeView {
+    private let mainStack = UIStackView.create(spacing: Constants.stackSpacing)
     private let itemsStack = UIStackView.create(spacing: Constants.stackSpacing)
-    private let addButton = ActionButton()
+
+    private var addButton: ActionButton?
 
     private var viewFabric = DSViewFabric.instance
     private var eventHandler: ((ConstructorItemEvent) -> Void)?
@@ -34,35 +37,47 @@ public class DSRecursiveContainerOrgView: BaseCodeView {
     private var templateViewsDict: [UUID: DSTemplateContainerOrgView] = [:]
     private var templateViews: [DSTemplateContainerOrgView] = []
 
+    // MARK: - Lifecycle
     public override func setupSubviews() {
         super.setupSubviews()
-        
-        addSubview(itemsStack)
-        addSubview(addButton)
-        itemsStack.anchor(top: topAnchor, leading: leadingAnchor, bottom: nil, trailing: trailingAnchor)
-        addButton.anchor(top: itemsStack.bottomAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor, padding: .init(top: Constants.stackSpacing, left: .zero, bottom: .zero, right: .zero))
-        addButton.type = .full
-        addButton.setupUI(font: FontBook.usualFont, cornerRadius: Constants.cornerRadius)
-        addButton.withHeight(Constants.buttonHeight)
-        addButton.titleEdgeInsets = Constants.buttonTitlePaddings
+
+        mainStack.addArrangedSubview(itemsStack)
+
+        addSubview(mainStack)
+        mainStack.fillSuperview()
     }
-    
+
+    // MARK: - Public
     public func configure(for model: DSRecursiveContainerOrgModel) {
         accessibilityIdentifier = model.componentId
         self.model = model
-        itemsStack.safelyRemoveArrangedSubviews()
-        
-        model.items.forEach { addItem($0) }
-        let buttonId = UUID()
-        addButton.action = Action(
-            title: model.btnWhiteLargeIconAtm.label,
-            iconName: UIComponentsConfiguration.shared.imageProvider?.imageNameForCode(imageCode: model.btnWhiteLargeIconAtm.icon)
-        ) { [weak self] in
-            self?.handleEvent(.action(model.btnWhiteLargeIconAtm.action ?? .init(type: Constants.addAction)), id: buttonId)
+
+        if let addButton {
+            mainStack.safelyRemoveArrangedSubview(subview: addButton)
+            self.addButton = nil
         }
-        updateButtonState()
+
+        itemsStack.safelyRemoveArrangedSubviews()
+        model.items.forEach { addItem($0) }
+        updateItemsStackVisibility()
+
+        if let addButtonModel = model.btnWhiteLargeIconAtm {
+            addAddButton(
+                label: addButtonModel.label,
+                action: .action(addButtonModel.action ?? .init(type: Constants.addAction)),
+                iconCode: addButtonModel.icon,
+                contentHorizontalAlignment: .center
+            )
+        } else if let addButtonOptionModel = model.btnAddOptionAtm {
+            addAddButton(
+                label: addButtonOptionModel.label,
+                action: .action(addButtonOptionModel.action ?? .init(type: Constants.addAction)),
+                iconCode: addButtonOptionModel.iconLeft?.code,
+                contentHorizontalAlignment: .leading
+            )
+        }
     }
-    
+
     public func setFabric(_ fabric: DSViewFabric) {
         self.viewFabric = fabric
     }
@@ -70,7 +85,49 @@ public class DSRecursiveContainerOrgView: BaseCodeView {
     public func setEventHandler(_ eventHandler: @escaping ((ConstructorItemEvent) -> Void)) {
         self.eventHandler = eventHandler
     }
-    
+
+    // MARK: - Private
+    private func setLocalActionIfNeeded(forModel model: DSBtnAddOptionAtm) -> DSBtnAddOptionAtm {
+        return DSBtnAddOptionAtm(
+            componentId: model.componentId,
+            label: model.label,
+            description: model.description,
+            iconLeft: model.iconLeft,
+            state: model.state,
+            action: model.action ?? .init(type: Constants.addAction)
+        )
+    }
+
+    private func addAddButton(
+        label: String,
+        action: ConstructorItemEvent,
+        iconCode: String?,
+        contentHorizontalAlignment: UIControl.ContentHorizontalAlignment
+    ) {
+        let buttonId = UUID()
+        let addButton = ActionButton()
+
+        self.addButton = addButton
+
+        mainStack.addArrangedSubview(addButton)
+        addButton.withHeight(Constants.buttonHeight)
+        addButton.type = .full
+        addButton.setupUI(font: FontBook.usualFont, cornerRadius: Constants.cornerRadius, contentHorizontalAlignment: contentHorizontalAlignment)
+
+        // imageEdgeInsets was deprecated and does't work
+        if iconCode != nil {
+            addButton.titleEdgeInsets = Constants.buttonTitlePaddings
+        }
+        addButton.contentEdgeInsets = Constants.buttonContentPaddings
+        let image = DSImageNameResolver.instance.imageForCode(imageCode: iconCode)
+        addButton.action = Action(title: label, image: image) { [weak self] in
+            self?.handleEvent(action, id: buttonId)
+        }
+
+        updateButtonState()
+        updateItemsStackVisibility()
+    }
+
     private func handleEvent(_ event: ConstructorItemEvent, id: UUID) {
         if let actionParameters = event.actionParameters() {
             switch actionParameters.type {
@@ -83,12 +140,13 @@ public class DSRecursiveContainerOrgView: BaseCodeView {
             default:
                 eventHandler?(event)
             }
-            return
+
+            updateItemsStackVisibility()
+        } else {
+            eventHandler?(event)
         }
-        eventHandler?(event)
-        if case .inputChanged = event {
-            updateButtonState()
-        }
+
+        updateButtonState()
     }
     
     private func removeItem(_ id: UUID) {
@@ -97,7 +155,9 @@ public class DSRecursiveContainerOrgView: BaseCodeView {
             templateViewsDict[id] = nil
             if let arrIndex = templateViews.firstIndex(where: { $0 === removingView }) {
                 templateViews.remove(at: arrIndex)
-                if isValid() { UIAccessibility.post(notification: .layoutChanged, argument: addButton) }
+                if isValid()  {
+                    UIAccessibility.post(notification: .layoutChanged, argument: addButton)
+                }
             }
             eventHandler?(.inputChanged(.init(inputCode: inputCode(), inputData: inputData())))
             updateButtonState()
@@ -118,16 +178,21 @@ public class DSRecursiveContainerOrgView: BaseCodeView {
         
         UIAccessibility.post(notification: .layoutChanged, argument: templateViews.last)
     }
-    
+
+    private func updateItemsStackVisibility() {
+        itemsStack.isHidden = itemsStack.arrangedSubviews.isEmpty
+    }
+
     private func updateButtonState() {
-        let isValidAdd = (model?.maxNumber ?? .max) > templateViewsDict.values.count && isValidTemplate()
-        
-        addButton.isEnabled = isValidAdd
-        addButton.alpha = isValidAdd ? 1 : 0.3
+        let lessThanMax = (model?.maxNumber ?? .max) > templateViewsDict.values.count
+        let isAddButtonEnabled = lessThanMax && areTemplatesValid()
+
+        addButton?.isEnabled = isAddButtonEnabled
+        addButton?.alpha = isAddButtonEnabled ? 1 : 0.3
     }
     
-    fileprivate func isValidTemplate() -> Bool {
-        return model?.mandatory == false || templateViews.allSatisfy { $0.isValid() }
+    private func areTemplatesValid() -> Bool {
+        return templateViews.allSatisfy { $0.isValid() }
     }
 }
 
@@ -141,8 +206,11 @@ extension DSRecursiveContainerOrgView: DSInputComponentProtocol {
     }
     
     public func isValid() -> Bool {
-        updateButtonState()
-        return isValidTemplate()
+        if model?.mandatory == true {
+            return !templateViews.isEmpty && areTemplatesValid()
+        } else {
+            return areTemplatesValid()
+        }
     }
 }
 
@@ -151,13 +219,14 @@ extension DSRecursiveContainerOrgView {
         static let buttonHeight: CGFloat = 56
         static let stackSpacing: CGFloat = 16
         static let cornerRadius: CGFloat = 16
-        static let buttonTitlePaddings: UIEdgeInsets = .init(top: 0, left: 16, bottom: 0, right: 0)
+        static let buttonTitlePaddings: UIEdgeInsets = .init(left: 16.0)
+        static let buttonContentPaddings: UIEdgeInsets = .init(left: 20.0, right: 20.0)
         static let deleteAction = "delete_block_item"
         static let addAction = "add_new_template"
     }
 }
 
-public class DSTemplateContainerOrgView: BaseCodeView {
+public final class DSTemplateContainerOrgView: BaseCodeView {
 
     private let templateContainer = UIView()
     

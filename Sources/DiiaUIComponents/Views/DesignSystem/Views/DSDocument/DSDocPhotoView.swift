@@ -1,7 +1,7 @@
 
 import UIKit
 
-public class DSDocPhotoView: BaseCodeView {
+public final class DSDocPhotoView: BaseCodeView {
     
     private var photoView = DSIconUrlAtmView()
     

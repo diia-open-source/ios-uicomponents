@@ -2,7 +2,7 @@
 import UIKit
 import DiiaCommonTypes
 
-public class DSVerificationCodesViewModel: NSObject {
+public final class DSVerificationCodesViewModel: NSObject {
     public var componentId: String?
     public var model: Observable<DSVerificationCodesData?> = .init(value: nil)
     public var sharingCode: Observable<String?> = .init(value: nil)

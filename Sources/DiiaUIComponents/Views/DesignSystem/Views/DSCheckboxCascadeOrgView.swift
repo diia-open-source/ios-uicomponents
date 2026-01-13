@@ -15,7 +15,7 @@ public struct DSCheckboxCascadeOrg: Codable {
     public let minMandatorySelectedItems: Int?
 }
 
-public class DSCheckboxCascadeViewModel {
+public final class DSCheckboxCascadeViewModel {
     public let componentId: String
     public let inputCode: String
     public let mandatory: Bool?

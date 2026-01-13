@@ -1,7 +1,7 @@
 
 import UIKit
 
-public class BoxView<T: UIView>: UIView {
+public final class BoxView<T: UIView>: UIView {
     public let subview: T
     private var subviewConstraints: AnchoredConstraints?
     

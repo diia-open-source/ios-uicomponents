@@ -29,9 +29,9 @@ public final class DSCardMlcV2View: BaseCodeView {
         layout.scrollDirection = .vertical
         layout.sectionInset = .zero
         layout.minimumLineSpacing = Constants.minimumLineSpacing
-        layout.minimumInteritemSpacing = Constants.minimumLineSpacing
-        layout.estimatedItemSize = .zero
-
+        layout.minimumInteritemSpacing = Constants.minimumInteritemSpacing
+        layout.estimatedItemSize = CGSize(width: Constants.estimatedWidth, height: Constants.chipsHeight)
+        
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.isScrollEnabled = false
         collectionView.backgroundColor = .clear
@@ -41,14 +41,14 @@ public final class DSCardMlcV2View: BaseCodeView {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.setContentHuggingPriority(.defaultLow, for: .horizontal)
         collectionView.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
-
+        
         collectionView.showsVerticalScrollIndicator = false
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.contentInset = .zero
         collectionView.scrollIndicatorInsets = .zero
         collectionView.contentInsetAdjustmentBehavior = .never
         collectionView.alwaysBounceVertical = false
-
+        
         return collectionView
     }()
     
@@ -185,15 +185,20 @@ public final class DSCardMlcV2View: BaseCodeView {
         bottomRightIcon.withSize(Constants.bottomIconUrlSize)
         
         chipsCollectionViewHeightConstraint = chipsCollectionView.heightAnchor.constraint(equalToConstant: 0)
+        chipsCollectionViewHeightConstraint?.priority = Constants.layoutPriority
         chipsCollectionViewHeightConstraint?.isActive = true
         
-        bottomIconContainer.anchor(bottom: contentHStack.bottomAnchor)
-        bottomRightIcon.anchor(bottom: bottomIconContainer.bottomAnchor,trailing: bottomIconContainer.trailingAnchor)
+        bottomIconContainer.anchor(bottom: contentVStack.bottomAnchor)
+        bottomRightIcon.anchor(bottom: bottomIconContainer.bottomAnchor, trailing: bottomIconContainer.trailingAnchor)
         bottomIconContainer.widthAnchor.constraint(equalToConstant: Constants.widthAnchor).isActive = true
         
         bottomIconContainer.setContentHuggingPriority(.required, for: .horizontal)
         bottomIconContainer.setContentCompressionResistancePriority(.required, for: .horizontal)
         bottomRightIcon.tapArea = .superviewBounds
+        
+        self.translatesAutoresizingMaskIntoConstraints = false
+        self.widthAnchor.constraint(greaterThanOrEqualToConstant: Constants.iconUrlSize.width + Constants.contentHStackSpacing + Constants.estimatedWidth).isActive = true
+        self.heightAnchor.constraint(greaterThanOrEqualToConstant: Constants.iconUrlSize.height + Constants.mediumSpacing).isActive = true
     }
     
     private func updateCollectionViewHeight() {
@@ -208,17 +213,27 @@ public final class DSCardMlcV2View: BaseCodeView {
         chipsCollectionView.collectionViewLayout.invalidateLayout()
         chipsCollectionView.layoutIfNeeded()
         
-        let inset = chipsCollectionView.adjustedContentInset
-        let contentH = chipsCollectionView.collectionViewLayout.collectionViewContentSize.height
-        let verticalInset = inset.top + inset.bottom
+        let collectionWidth = chipsCollectionView.bounds.width
+        var totalWidth: CGFloat = 0
+        var rowCount = 1
         
-        let newHeight = contentH - verticalInset
-   
+        for chip in chips {
+            let textWidth = DSChipStatusAtmView.widthForText(text: chip.chipStatusAtm.name)
+            let width = textWidth + Constants.chipHorizontalPadding * 2 + Constants.chipBorderWidth * 2
+            
+            totalWidth += width + Constants.minimumInteritemSpacing
+            
+            if totalWidth > collectionWidth {
+                rowCount += 1
+                totalWidth = width
+            }
+        }
+        
+        let newHeight = CGFloat(rowCount) * Constants.chipsHeight + CGFloat(rowCount - 1) * Constants.minimumLineSpacing
+        
         if lastAppliedChipsHeight != newHeight {
             lastAppliedChipsHeight = newHeight
-            if chipsCollectionViewHeightConstraint?.constant != newHeight {
-                chipsCollectionViewHeightConstraint?.constant = newHeight
-            }
+            chipsCollectionViewHeightConstraint?.constant = newHeight
         }
     }
     
@@ -275,5 +290,9 @@ private extension DSCardMlcV2View {
         static let minimumLineSpacing: CGFloat = 8
         static let minimumInteritemSpacing: CGFloat = 8
         static let widthAnchor: CGFloat = 44
+        static let estimatedWidth: CGFloat = 50
+        static let chipHorizontalPadding: CGFloat = 8
+        static let chipBorderWidth: CGFloat = 1
+        static let layoutPriority = UILayoutPriority(999)
     }
 }

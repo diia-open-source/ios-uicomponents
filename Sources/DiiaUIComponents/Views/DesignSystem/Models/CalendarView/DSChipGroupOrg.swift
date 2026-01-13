@@ -17,6 +17,23 @@ public struct DSChipGroupOrg: Codable {
     }
 }
 
+/// design_system_code: chipGroupOrgV2
+public struct DSChipGroupOrgV2: Codable {
+    public let componentId: String?
+    public let tableMainHeadingMlc: DSTableHeadingItemModel?
+    public let tableSecondaryHeadingMlc: DSTableHeadingItemModel?
+    public let preselectedCode: String?
+    public let items: [DSChipBlackMlcItemModel]
+    
+    public init(componentId: String?, tableMainHeadingMlc: DSTableHeadingItemModel?, tableSecondaryHeadingMlc: DSTableHeadingItemModel?, preselectedCode: String?, items: [DSChipBlackMlcItemModel]) {
+        self.componentId = componentId
+        self.tableMainHeadingMlc = tableMainHeadingMlc
+        self.tableSecondaryHeadingMlc = tableSecondaryHeadingMlc
+        self.preselectedCode = preselectedCode
+        self.items = items
+    }
+}
+
 public struct DSChipItemMlc: Codable {
     public let chipMlc: DSChipMlc?
     public let chipTimeMlc: DSChipTimeMlc?

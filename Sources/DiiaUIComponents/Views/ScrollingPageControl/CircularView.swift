@@ -1,7 +1,7 @@
 
 import UIKit
 
-class CircularView: UIView {
+final class CircularView: UIView {
     override func tintColorDidChange() {
         self.backgroundColor = tintColor
     }

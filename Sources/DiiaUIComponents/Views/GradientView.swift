@@ -1,7 +1,7 @@
 
 import UIKit
 
-public class GradientView: BaseCodeView {
+public final class GradientView: BaseCodeView {
     private var gradientLayer = CAGradientLayer.create()
     
     public override func setupSubviews() {

@@ -3,7 +3,7 @@ import Foundation
 import UIKit
 import DiiaCommonTypes
 
-public class DSDetailsTextValueView: BaseCodeView {
+public final class DSDetailsTextValueView: BaseCodeView {
     // MARK: - Outlets
     private let itemTitle = UILabel().withParameters(font: FontBook.usualFont)
     private let itemValue = UILabel().withParameters(font: FontBook.usualFont)
@@ -50,7 +50,7 @@ public class DSDetailsTextValueView: BaseCodeView {
             itemLogo.isHidden = false
         }
         if let actionImageName = actionCode {
-            itemAction.setImage(UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: actionImageName), for: .normal)
+            itemAction.setImage(UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: actionImageName), for: .normal)
             itemAction.isHidden = false
         }
         

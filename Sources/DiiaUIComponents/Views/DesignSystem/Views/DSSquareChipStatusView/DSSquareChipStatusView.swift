@@ -2,7 +2,7 @@
 import UIKit
 
 /// design_system_code: squareChipStatusAtm
-public class DSSquareChipStatusView: BaseCodeView {
+public final class DSSquareChipStatusView: BaseCodeView {
     private let textLabel = UILabel().withParameters(font: FontBook.statusFont)
     
     // MARK: - Init

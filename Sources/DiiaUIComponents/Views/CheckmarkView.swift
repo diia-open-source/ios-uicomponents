@@ -1,26 +1,29 @@
 
 import UIKit
+import DiiaCommonTypes
 
-public class CheckmarkViewModel {
+public final class CheckmarkViewModel {
     public let text: String
     public var isChecked: Bool
     public let componentId: String?
+    public let parameters: [TextParameter]?
 
     public init(
         text: String,
         isChecked: Bool,
-        componentId: String? = nil) {
+        componentId: String? = nil,
+        parameters: [TextParameter]? = nil) {
             self.text = text
             self.isChecked = isChecked
             self.componentId = componentId
+            self.parameters = parameters
     }
 }
 
-public class CheckmarkView: BaseCodeView {
-    
+public final class CheckmarkView: BaseCodeView {
     // MARK: - Properties
     private let checkmarkImageView = UIImageView()
-    private let textLabel = UILabel().withParameters(font: FontBook.usualFont)
+    private let textView = UITextView()
     private var isActive = true
     private var onChange: ((Bool) -> Void)?
     
@@ -36,25 +39,30 @@ public class CheckmarkView: BaseCodeView {
     // MARK: - LifeCycle
     public override func setupSubviews() {
         addSubview(checkmarkImageView)
-        addSubview(textLabel)
-        
-        checkmarkImageView.anchor(top: topAnchor,
-                                  leading: leadingAnchor,
-                                  bottom: nil,
-                                  trailing: nil,
-                                  size: Constants.checkMarkSize)
-        textLabel.anchor(top: topAnchor,
-                         leading: checkmarkImageView.trailingAnchor,
-                         bottom: bottomAnchor,
-                         trailing: trailingAnchor,
-                         padding: .init(top: 0, left: Constants.leftTextPadding, bottom: 0, right: 0))
+        checkmarkImageView.anchor(
+            top: topAnchor,
+            leading: leadingAnchor,
+            size: Constants.checkMarkSize
+        )
+
+        addSubview(textView)
+        textView.anchor(
+            top: topAnchor,
+            leading: checkmarkImageView.trailingAnchor,
+            bottom: bottomAnchor,
+            trailing: trailingAnchor,
+            padding: .init(left: Constants.leftTextPadding)
+        )
 
         let tap = UITapGestureRecognizer(target: self, action: #selector(onTap))
         addGestureRecognizer(tap)
         isUserInteractionEnabled = true
-        
+
         isChecked = false
-        
+
+        textView.delegate = self
+        textView.configureForParametrizedText()
+
         setupAccessibility()
     }
     
@@ -62,18 +70,22 @@ public class CheckmarkView: BaseCodeView {
     public func configure(text: String,
                           isChecked: Bool,
                           componentId: String? = nil,
+                          parameters: [TextParameter]? = nil,
                           onChange: ((Bool) -> Void)?) {
         accessibilityIdentifier = componentId
         accessibilityLabel = text
         
         self.isChecked = isChecked
         self.onChange = onChange
-        
-        if let attributed: NSAttributedString = text.attributed(font: FontBook.usualFont,
-                                                                lineHeight: Constants.lineHeight) {
-            self.textLabel.attributedText = attributed
+
+        if let attributed = text.attributedTextWithParameters(
+                font: FontBook.usualFont,
+                lineHeight: Constants.lineHeight,
+                parameters: parameters
+        ) {
+            self.textView.attributedText = attributed
         } else {
-            self.textLabel.text = text
+            self.textView.text = text
         }
     }
     
@@ -95,6 +107,13 @@ public class CheckmarkView: BaseCodeView {
     // MARK: - Accessibility
     private func setupAccessibility() {
         isAccessibilityElement = true
+    }
+}
+
+// MARK: - UITextViewDelegate
+extension CheckmarkView: UITextViewDelegate {
+    public func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+        return !(UIComponentsConfiguration.shared.urlOpener?.url(urlString: URL.absoluteString, linkType: nil) ?? false)
     }
 }
 

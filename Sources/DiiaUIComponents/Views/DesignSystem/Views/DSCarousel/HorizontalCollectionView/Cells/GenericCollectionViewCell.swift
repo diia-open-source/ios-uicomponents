@@ -1,7 +1,7 @@
 
 import UIKit
 
-public class GenericCollectionViewCell: BaseCollectionNibCell {
+public final class GenericCollectionViewCell: BaseCollectionNibCell {
     
     private var hostedView: UIView?
     private(set) var viewId: String?

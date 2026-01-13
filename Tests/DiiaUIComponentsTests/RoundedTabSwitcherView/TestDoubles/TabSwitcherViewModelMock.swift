@@ -2,7 +2,7 @@
 import XCTest
 @testable import DiiaUIComponents
 
-class TabSwitcherViewModelMock: TabSwitcherViewModel {
+final class TabSwitcherViewModelMock: TabSwitcherViewModel {
     private(set) var isTabSelected = false
     
     override func itemAt(index: Int) -> TabSwitcherModel? {

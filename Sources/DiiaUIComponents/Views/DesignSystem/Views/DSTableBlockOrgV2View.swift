@@ -3,7 +3,7 @@ import UIKit
 import DiiaCommonTypes
 
 /// design_system_code: tableBlockOrgV2
-public class DSTableBlockOrgV2View: BaseCodeView {
+public final class DSTableBlockOrgV2View: BaseCodeView {
     // MARK: - Properties
     private lazy var mainStack = UIStackView.create(
         views: [
@@ -55,22 +55,22 @@ public class DSTableBlockOrgV2View: BaseCodeView {
 
         mainHeadingView.isHidden = model.tableMainHeadingMlc == nil
         if let mainHeadingModel = model.tableMainHeadingMlc {
-            let vm = DSTableMainHeadingViewModel(
-                componentId: mainHeadingModel.componentId,
-                label: mainHeadingModel.label,
-                description: mainHeadingModel.description
-            )
-            mainHeadingView.configure(with: vm)
+            let viewModel = DSTableMainHeadingViewModel(headingModel: mainHeadingModel) {
+                if let iconAction = mainHeadingModel.icon?.action {
+                    eventHandler(.action(iconAction))
+                }
+            }
+            mainHeadingView.configure(with: viewModel)
         }
 
         tableSecondaryHeadingView.isHidden = model.tableSecondaryHeadingMlc == nil
         if let secondaryHeadingModel = model.tableSecondaryHeadingMlc {
-            let vm = DSTableMainHeadingViewModel(
-                componentId: secondaryHeadingModel.componentId,
-                label: secondaryHeadingModel.label,
-                description: secondaryHeadingModel.description
-            )
-            tableSecondaryHeadingView.configure(with: vm)
+            let viewModel = DSTableMainHeadingViewModel(headingModel: secondaryHeadingModel) {
+                if let iconAction = secondaryHeadingModel.icon?.action {
+                    eventHandler(.action(iconAction))
+                }
+            }
+            tableSecondaryHeadingView.configure(with: viewModel)
         }
 
         itemsStack.safelyRemoveArrangedSubviews()
@@ -96,6 +96,7 @@ public class DSTableBlockOrgV2View: BaseCodeView {
 
         attentionIconMessageView.isHidden = model.attentionIconMessageMlc == nil
         if let attentionIconMessageModel = model.attentionIconMessageMlc {
+            attentionIconMessageView.setEventHandler(eventHandler)
             attentionIconMessageView.configure(with: attentionIconMessageModel)
         }
     }

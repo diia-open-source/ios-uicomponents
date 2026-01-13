@@ -13,7 +13,7 @@ public struct PaymentPair {
 
 /// design_system_code: paymentInfoOrg (DSTableBlockItemModel)
 
-public class PaymentsInfoView: BaseCodeView {
+public final class PaymentsInfoView: BaseCodeView {
 
     private let stackView = UIStackView.create(spacing: Constants.spacing)
     

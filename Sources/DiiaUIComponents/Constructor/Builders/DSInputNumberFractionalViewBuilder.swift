@@ -58,7 +58,9 @@ extension DSInputNumberFractionalViewBuilder: DSViewMockableBuilderProtocol {
             maxValue: 100,
             minValue: 0,
             mandatory: true,
-            errorMessage: "errorMessage"
+            errorMessage: "errorMessage",
+            mask: "mask",
+            iconRight: .mock
         )
         
         return .dictionary([

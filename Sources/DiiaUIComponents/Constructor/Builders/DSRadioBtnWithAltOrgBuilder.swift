@@ -2,7 +2,7 @@
 import UIKit
 import DiiaCommonTypes
 
-public class DSRadioBtnWithAltOrgBuilder: DSViewBuilderProtocol {
+public final class DSRadioBtnWithAltOrgBuilder: DSViewBuilderProtocol {
     
     public let modelKey = "radioBtnWithAltOrg"
     

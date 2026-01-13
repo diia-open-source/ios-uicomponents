@@ -15,6 +15,8 @@ final public class DSAttentionIconMessageView: BaseCodeView {
     private var expandModel: DSAttentionIconMessageMlcExpanded?
     private let textLabel = UILabel().withParameters(font: FontBook.usualFont,
                                                               lineBreakMode: .byTruncatingTail)
+    private let strokeButton = ActionLoadingStateButton()
+    private let strokeButtonContainer = UIView()
     
     private var eventHandler: ((ConstructorItemEvent) -> Void)?
     
@@ -34,7 +36,14 @@ final public class DSAttentionIconMessageView: BaseCodeView {
                           trailing: trailingAnchor,
                           padding: Constants.mainStackPadding)
         
-        mainHStack.addArrangedSubviews([textLabel, textView, expandButtonStack])
+        strokeButtonContainer.addSubview(strokeButton)
+        strokeButton.fillSuperview(padding: Constants.strokeButtonContainerInsets)
+        strokeButton.titleLabel?.font = FontBook.usualFont
+        strokeButton.withHeight(Constants.strokeButtonHeight)
+        strokeButton.setStyle(style: .light)
+        strokeButton.contentEdgeInsets = Constants.strokeButtonInsets
+        
+        mainHStack.addArrangedSubviews([textLabel, textView, expandButtonStack, strokeButtonContainer])
         expandButtonStack.addArrangedSubviews([expandButtonTitle, expandIcon])
         
         textView.linkTextAttributes = [
@@ -58,10 +67,20 @@ final public class DSAttentionIconMessageView: BaseCodeView {
     public func configure(with model: DSAttentionIconMessageMlc, urlOpener: URLOpenerProtocol? = nil) {
         self.urlOpener = urlOpener
         let imageProvider = UIComponentsConfiguration.shared.imageProvider
-        iconImage.image = imageProvider?.imageForCode(imageCode: model.smallIconAtm.code)
+        iconImage.image = imageProvider.imageForCode(imageCode: model.smallIconAtm.code)
         
         self.expandModel = model.expanded
         expandButtonStack.isHidden = model.expanded == nil
+        
+        strokeButtonContainer.isHidden = model.btnStrokeAdditionalAtm == nil
+        if let button = model.btnStrokeAdditionalAtm {
+            strokeButton.setLoadingState(.enabled, withTitle: button.label)
+            
+            guard let action = button.action else { return }
+            strokeButton.onClick = { [weak self] in
+                self?.eventHandler?(.action(action))
+            }
+        }
         
         if let expanded = model.expanded {
             self.isExpanded = expanded.isExpanded ?? false
@@ -92,10 +111,8 @@ final public class DSAttentionIconMessageView: BaseCodeView {
         self.expandButtonTitle.text = isExpanded ? model.collapsedText : model.expandedText
         self.expandIcon.image = isExpanded ? R.image.arrowUp.image : R.image.arrowDown.image
         let updateContent = { [weak self] in
-            self?.textLabel.alpha = 0.0
             self?.textLabel.numberOfLines = isExpanded ? 0 : Constants.textNumberOfLines
             self?.layoutIfNeeded()
-            self?.textLabel.alpha = 1.0
             self?.eventHandler?(.componentSizeDidChange)
         }
         if animated {
@@ -114,7 +131,7 @@ extension DSAttentionIconMessageView: UITextViewDelegate {
 
 extension DSAttentionIconMessageView {
     enum Constants {
-        static let mainStackPadding = UIEdgeInsets(top: 16, left: 8, bottom: 18, right: 16)
+        static let mainStackPadding = UIEdgeInsets(top: 16, left: 8, bottom: 16, right: 16)
         static let iconPaddings = UIEdgeInsets(top: 16, left: 16, bottom: 0, right: 0)
         static let padding: CGFloat = 16
         static let spacing: CGFloat = 8
@@ -124,5 +141,8 @@ extension DSAttentionIconMessageView {
         static let expandIconSize = CGSize(width: 16, height: 16)
         static let animationDuration: TimeInterval = 0.3
         static let textNumberOfLines: Int = 3
+        static let strokeButtonContainerInsets: UIEdgeInsets = UIEdgeInsets(top: 8)
+        static let strokeButtonHeight: CGFloat = 36
+        static let strokeButtonInsets: UIEdgeInsets = UIEdgeInsets(top: 10, left: 32, bottom: 10, right: 32)
     }
 }

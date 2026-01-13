@@ -1,9 +1,9 @@
 
 import UIKit
 
-public class DSIconValueStackView: BaseCodeView {
+public final class DSIconValueStackView: BaseCodeView {
     private let stack = UIStackView.create(spacing: 24)
-    private var imageProvider: DSImageNameProvider? = UIComponentsConfiguration.shared.imageProvider
+    private let imageProvider = UIComponentsConfiguration.shared.imageProvider
     
     public override func setupSubviews() {
         addSubview(stack)
@@ -34,14 +34,14 @@ public class DSIconValueStackView: BaseCodeView {
         if values.indices.contains(index) {
             let view = DSVerticalIconLabelView()
             view.configure(label: values[index].description,
-                           icon: imageProvider?.imageForCode(imageCode: values[index].code))
+                           icon: imageProvider.imageForCode(imageCode: values[index].code))
             return view
         }
         return UIView()
     }
 }
 
-public class DSVerticalIconLabelView: BaseCodeView {
+public final class DSVerticalIconLabelView: BaseCodeView {
     private let imageView = UIImageView()
     private let textLabel = UILabel().withParameters(font: FontBook.mainFont.regular.size(11))
     

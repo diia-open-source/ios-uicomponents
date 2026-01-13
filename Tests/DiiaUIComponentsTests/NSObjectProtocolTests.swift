@@ -2,7 +2,7 @@
 import XCTest
 @testable import DiiaUIComponents
 
-private class MockObject: NSObject {
+private final class MockObject: NSObject {
     @objc dynamic var isSelected: Bool
     
     init(isSelected: Bool = false) {

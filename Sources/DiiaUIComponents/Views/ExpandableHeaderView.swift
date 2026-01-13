@@ -8,7 +8,7 @@ public enum ExpandableHeaderViewState {
     case loading
 }
 
-public class ExpandableHeaderView: BaseCodeView {
+public final class ExpandableHeaderView: BaseCodeView {
     private let expandIcon = UIImageView()
     private let titleLabel = UILabel()
     private var onChange: Callback?

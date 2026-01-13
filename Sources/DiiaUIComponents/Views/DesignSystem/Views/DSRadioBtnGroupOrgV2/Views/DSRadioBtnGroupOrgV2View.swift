@@ -75,7 +75,7 @@ final public class DSRadioBtnGroupOrgV2View: BaseCodeView {
         
         centredButtonStack.isHidden = model.btnPlainIconAtm == nil
         if let plainBtn = model.btnPlainIconAtm {
-            let viewModel = IconedLoadingStateViewModel(name: plainBtn.label, image: UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: plainBtn.icon) ?? UIImage())
+            let viewModel = IconedLoadingStateViewModel(name: plainBtn.label, image: UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: plainBtn.icon) ?? UIImage())
             viewModel.clickHandler = { [weak self] in
                 guard let action = plainBtn.action else { return }
                 self?.eventHandler?(.buttonLoadIconAction(parameters: action, viewModel: viewModel))

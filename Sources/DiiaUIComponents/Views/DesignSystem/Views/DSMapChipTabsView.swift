@@ -13,7 +13,7 @@ public struct DSMapChipTabViewModel {
 }
 
 /// design_system_code: mapChipTabsOrg
-public class DSMapChipTabsView: BaseCodeView {
+public final class DSMapChipTabsView: BaseCodeView {
     private var itemsScroll = UIScrollView()
     private var itemStack = UIStackView()
     
@@ -71,7 +71,7 @@ private extension DSMapChipTabsView {
     }
 }
 
-public class DSMapChipItemView: BaseCodeView {
+public final class DSMapChipItemView: BaseCodeView {
     private var titleLabel: UILabel = {
         let label = UILabel()
         label.withParameters(font: FontBook.usualFont)
@@ -115,7 +115,7 @@ public class DSMapChipItemView: BaseCodeView {
         accessibilityLabel = viewModel.accessibilityDescription
         titleLabel.text = viewModel.label
         imageView.isHidden = viewModel.icon == nil
-        let image = UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: viewModel.icon)
+        let image = UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: viewModel.icon)
         imageView.image = image
     }
 }

@@ -1,9 +1,9 @@
 
 import Foundation
 
-public class Observable<T> {
+public final class Observable<T> {
     public typealias GenericClosure = (T) -> Void
-    private class Observation {
+    private final class Observation {
         let closure: GenericClosure
         weak var observer: NSObjectProtocol?
         

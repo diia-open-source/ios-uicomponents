@@ -1,7 +1,7 @@
 
 import UIKit
 
-public class VerticalRoundView: UIView {
+public final class VerticalRoundView: UIView {
 
     override public func layoutSubviews() {
         super.layoutSubviews()

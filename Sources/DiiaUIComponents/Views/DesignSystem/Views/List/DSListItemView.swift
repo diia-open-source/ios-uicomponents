@@ -2,7 +2,7 @@
 import UIKit
 import DiiaCommonTypes
 
-public class DSListItemViewModel: NSObject {
+public final class DSListItemViewModel: NSObject {
     public let id: String?
     public let leftBase64Icon: UIImage?
     public let leftBigIcon: UIImage?
@@ -17,6 +17,7 @@ public class DSListItemViewModel: NSObject {
     public let componentId: String?
     @objc public dynamic var accessibilityDescription: String?
     @objc public dynamic var isEnabled: Bool
+    public let detailsParameters: [TextParameter]?
     public var onClick: Callback?
     
     public init(id: String? = nil,
@@ -32,6 +33,7 @@ public class DSListItemViewModel: NSObject {
                 accessibilityDescription: String? = nil,
                 chipStatusAtm: DSCardStatusChipModel? = nil,
                 amountAtm: DSAmountAtmModel? = nil,
+                detailsParameters: [TextParameter]? = nil,
                 onClick: Callback? = nil
     ) {
         self.id = id
@@ -49,6 +51,7 @@ public class DSListItemViewModel: NSObject {
         self.chipStatusAtm = chipStatusAtm
         self.amountAtm = amountAtm
         self.isLoading = false
+        self.detailsParameters = detailsParameters
     }
     
     public override var hash: Int {
@@ -64,15 +67,13 @@ public class DSListItemViewModel: NSObject {
     }
 }
 
-public class DSListItemView: BaseCodeView {
+public final class DSListItemView: BaseCodeView {
     private let leftBase64IconView: UIImageView = UIImageView().withSize(Constants.bigIconSize)
     private let leftBigIconView: UIImageView = UIImageView().withSize(Constants.bigIconSize)
     private let leftSmallIconView: UIImageView = UIImageView().withSize(Constants.smallIconSize)
     private let titleLabel = UILabel().withParameters(font: FontBook.bigText,
                                                       lineBreakMode: .byTruncatingTail)
-    private let detailsLabel = UILabel().withParameters(font: FontBook.usualFont,
-                                                        textColor: .black540,
-                                                        lineBreakMode: .byTruncatingTail)
+    private let detailsTextView = UITextView()
     private let rightIconView: UIImageView = UIImageView().withSize(Constants.smallIconSize)
     private lazy var chipStatusView = DSChipStatusAtmView()
     private lazy var amountView = DSAmountAtm()
@@ -102,7 +103,7 @@ public class DSListItemView: BaseCodeView {
                 UIStackView.create(
                     views: [
                         titleLabel,
-                        detailsLabel,
+                        detailsTextView,
                         chipStatusView
                     ],
                     spacing: Constants.textsSpacing),
@@ -115,7 +116,11 @@ public class DSListItemView: BaseCodeView {
         addSubview(mainStackView)
         stackAnchors = mainStackView.fillSuperview(padding: Constants.defaultStackPadding)
         
-        detailsLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
+        detailsTextView.font = FontBook.usualFont
+        detailsTextView.textColor = .black540
+        detailsTextView.textContainer.lineBreakMode = .byTruncatingTail
+        detailsTextView.configureForParametrizedText()
+        detailsTextView.setContentCompressionResistancePriority(.required, for: .horizontal)
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(onClick))
         addGestureRecognizer(tapGesture)
         isUserInteractionEnabled = true
@@ -133,11 +138,12 @@ public class DSListItemView: BaseCodeView {
     public func configureUI(
         titleLines: Int = 3,
         detailsLines: Int = 2,
-        stackAlign: UIStackView.Alignment = .center) {
-            titleLabel.numberOfLines = titleLines
-            detailsLabel.numberOfLines = detailsLines
-            mainStackView.alignment = stackAlign
-        }
+        stackAlign: UIStackView.Alignment = .center
+    ) {
+        titleLabel.numberOfLines = titleLines
+        detailsTextView.textContainer.maximumNumberOfLines = detailsLines
+        mainStackView.alignment = stackAlign
+    }
     
     public func configure(viewModel: DSListItemViewModel) {
         self.viewModel = viewModel
@@ -149,8 +155,10 @@ public class DSListItemView: BaseCodeView {
         leftBigIconView.isHidden = viewModel.leftBigIcon == nil
  
         titleLabel.text = viewModel.title
-        detailsLabel.text = viewModel.details
-        detailsLabel.isHidden = viewModel.details == nil
+        
+        detailsTextView.attributedText = viewModel.details?.attributedTextWithParameters(parameters: viewModel.detailsParameters)
+        detailsTextView.isHidden = viewModel.details == nil
+        
         rightIconView.image = viewModel.rightIcon
         rightIconView.isHidden = viewModel.rightIcon == nil
         onClickHandler = viewModel.onClick

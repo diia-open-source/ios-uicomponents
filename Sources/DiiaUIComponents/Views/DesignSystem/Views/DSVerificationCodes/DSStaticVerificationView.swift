@@ -8,7 +8,7 @@ public struct DSStaticVerificationViewModel {
     public let barCode: BarCodeMlc?
 }
 
-public class DSStaticVerificationView: BaseCodeView {
+public final class DSStaticVerificationView: BaseCodeView {
     private let qrCodeView = DSQRCodeMlcView()
     private let barCodeView = DSBarCodeMlcView()
     

@@ -1,7 +1,7 @@
 
 import UIKit
 
-public class DSPhoneCodeSelectorViewModel {
+public final class DSPhoneCodeSelectorViewModel {
     public let icon: String
     public let value: String
     public let isEditable: Bool
@@ -14,7 +14,7 @@ public class DSPhoneCodeSelectorViewModel {
 }
 
 /// design_system_code: inputPhoneMlc
-public class DSPhoneCodeSelectorView: BaseCodeView {
+public final class DSPhoneCodeSelectorView: BaseCodeView {
     
     // MARK: - Subviews
     private let flagLabel = UILabel().withParameters(font: FontBook.bigText)
@@ -36,18 +36,34 @@ public class DSPhoneCodeSelectorView: BaseCodeView {
               spacing: Constants.dividerSpacing)
         
         setupUI()
+        setupAccessibility()
     }
     
     // MARK: - Public Methods
     public func configure(with viewModel: DSPhoneCodeSelectorViewModel) {
         flagLabel.text = viewModel.icon
+        flagLabel.accessibilityLabel = viewModel.icon
         phoneCodeLabel.text = viewModel.value
+        phoneCodeLabel.accessibilityLabel = viewModel.value
         arrowImageView.tintColor = viewModel.isEditable ? .black : .lightGray
         bottomDivider.backgroundColor = viewModel.isEditable ? .black : .lightGray
     }
     
     public func setupUI(dividerColor: UIColor = .statusGray) {
         bottomDivider.setupUI(color: dividerColor)
+    }
+    
+    // MARK: - Private methods
+    private func setupAccessibility() {
+        isAccessibilityElement = false
+        
+        flagLabel.isAccessibilityElement = true
+        flagLabel.accessibilityTraits = .staticText
+        
+        phoneCodeLabel.isAccessibilityElement = true
+        phoneCodeLabel.accessibilityTraits = .staticText
+        
+        accessibilityElements = [flagLabel, phoneCodeLabel]
     }
 }
 

@@ -3,7 +3,7 @@ import UIKit
 import DiiaCommonTypes
 
 /// design_system_code: inputTextMlcV2
-public class TitledTextFieldViewV2: BaseCodeView, DSInputComponentProtocol {
+public final class TitledTextFieldViewV2: BaseCodeView, DSInputComponentProtocol {
     
     public let textField = UITextField()
     
@@ -92,9 +92,8 @@ public class TitledTextFieldViewV2: BaseCodeView, DSInputComponentProtocol {
         errorLabel.text = nil
         errorLabel.isHidden = true
         
-        updateInstructionsState()
-        
         setupObserver()
+        updateInstructionsState()
     }
     
     public func validate() {
@@ -124,6 +123,7 @@ public class TitledTextFieldViewV2: BaseCodeView, DSInputComponentProtocol {
     
     @objc private func clearText() {
         textField.text = .empty
+        textField.sendActions(for: .editingChanged)
         viewModel?.fieldState.value = .focused
     }
     

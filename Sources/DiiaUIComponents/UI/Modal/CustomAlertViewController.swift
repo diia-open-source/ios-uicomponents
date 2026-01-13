@@ -58,7 +58,7 @@ public final class CustomAlertModule: BaseModule {
     }
 }
 
-class CustomAlertViewController: UIViewController, ChildSubcontroller {
+final class CustomAlertViewController: UIViewController, ChildSubcontroller {
     weak var container: ContainerProtocol?
     private let alertView = UIView()
     private let titleLabel = UILabel()

@@ -24,7 +24,7 @@ public struct DetailedCodedPairModel {
     }
 }
 
-public class DetailedCodedPairView: BaseCodeView {
+public final class DetailedCodedPairView: BaseCodeView {
     private let stack = UIStackView()
     private let codeLabel = UILabel().withParameters(font: FontBook.usualFont)
     private let titleLabel = UILabel().withParameters(font: FontBook.usualFont)

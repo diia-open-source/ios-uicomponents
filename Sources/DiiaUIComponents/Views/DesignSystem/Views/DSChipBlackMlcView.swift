@@ -12,19 +12,36 @@ public struct DSChipBlackMlcModel: Codable {
     public let code: String
     public let active: Bool?
     public let action: DSActionParameter?
+    public let dataJson: AnyCodable?
+    
+    public init(componentId: String?,
+                label: String,
+                code: String,
+                active: Bool?,
+                action: DSActionParameter?,
+                dataJson: AnyCodable? = nil) {
+        self.componentId = componentId
+        self.label = label
+        self.code = code
+        self.active = active
+        self.action = action
+        self.dataJson = dataJson
+    }
 }
 
-public class DSChipBlackMlcViewModel {
+public final class DSChipBlackMlcViewModel: NSObject {
     public let componentId: String?
     public let label: String
     public let code: String
     public var state: Observable<ChipState>
     public var onClick: ((ConstructorItemEvent?) -> Void)?
     public var action: DSActionParameter?
+    public var dataJson: AnyCodable?
 
     public init(componentId: String?,
                 label: String,
                 code: String,
+                dataJson: AnyCodable? = nil,
                 state: Observable<ChipState> = .init(value: .unselected),
                 onClick: ((ConstructorItemEvent?) -> Void)? = nil,
                 action: DSActionParameter?) {
@@ -34,6 +51,16 @@ public class DSChipBlackMlcViewModel {
         self.state = state
         self.onClick = onClick
         self.action = action
+        self.dataJson = dataJson
+    }
+    
+    public init(model: DSChipBlackMlcModel) {
+        self.componentId = model.componentId
+        self.label = model.label
+        self.code = model.code
+        self.state = .init(value: .unselected)
+        self.action = model.action
+        self.dataJson = model.dataJson
     }
 }
 
@@ -44,7 +71,7 @@ public enum ChipState {
 }
 
 //DS code chipBlackMlc
-public class DSChipBlackMlcView: BaseCodeView {
+public final class DSChipBlackMlcView: BaseCodeView {
     private let containerView = UIView()
     private let textLabel = UILabel().withParameters(font: FontBook.usualFont)
     private weak var viewModel: DSChipBlackMlcViewModel?

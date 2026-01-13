@@ -1,7 +1,7 @@
 
 import Foundation
 
-public class DSSharingCodesOrgViewModel: NSObject {
+public final class DSSharingCodesOrgViewModel: NSObject {
     
     public let sharingCodes: DSSharingCodesOrg
     public let stubViewModel: StubMessageViewModel

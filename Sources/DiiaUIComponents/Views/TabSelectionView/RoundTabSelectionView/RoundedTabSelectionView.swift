@@ -1,7 +1,7 @@
 
 import UIKit
 
-public class RoundedTabSelectionView: UIView {
+public final class RoundedTabSelectionView: UIView {
     
     // MARK: - Outlets
     @IBOutlet weak private var containerView: UIView!

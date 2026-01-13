@@ -17,7 +17,7 @@ public struct DSTextContainerData: Codable {
 }
 
 /// design_system_code: textLabelContainerMlc
-public class DSTextContainerView: BaseCodeView {
+public final class DSTextContainerView: BaseCodeView {
     private let textView = UITextView()
     private let titleLabel = UILabel().withParameters(font: FontBook.detailsTitleFont)
     

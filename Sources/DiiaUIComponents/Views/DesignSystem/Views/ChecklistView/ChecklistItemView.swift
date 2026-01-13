@@ -2,7 +2,7 @@
 import UIKit
 import DiiaCommonTypes
 
-public class ChecklistItemViewModel: NSObject {
+public final class ChecklistItemViewModel: NSObject {
     public let code: String?
     public let inputData: AnyCodable?
     public let largeLogoRight: String?
@@ -50,7 +50,7 @@ public class ChecklistItemViewModel: NSObject {
     }
 }
 
-public class ChecklistItemView: BaseCodeView {
+public final class ChecklistItemView: BaseCodeView {
     private let selectionIcon = UIImageView()
     private let titleLabel = UILabel()
     private let detailsLabel = UILabel()
@@ -69,7 +69,7 @@ public class ChecklistItemView: BaseCodeView {
         setupUI(titleFont: FontBook.usualFont,
                 titleColor: .black,
                 detailsFont: FontBook.usualFont,
-                detailsTextColor: Constants.grayTextColor,
+                detailsTextColor: .black540,
                 rightInfoFont: FontBook.usualFont,
                 rightInfoColor: Constants.grayTextColor)
         
@@ -120,15 +120,15 @@ public class ChecklistItemView: BaseCodeView {
         rightInfoLabel.isHidden = viewModel.rightInfo == nil
         rightInfoLabel.text = viewModel.rightInfo
         
+        let imageProvider = UIComponentsConfiguration.shared.imageProvider
+        
         if let largeLogoRight = viewModel.largeLogoRight {
-            let imageProvider = UIComponentsConfiguration.shared.imageProvider
-            rightLargeImage.image = imageProvider?.imageForCode(imageCode: largeLogoRight)
+            rightLargeImage.image = imageProvider.imageForCode(imageCode: largeLogoRight)
             rightLargeImage.isHidden = false
         }
         
         if let logoRight = viewModel.logoRight {
-            let imageProvider = UIComponentsConfiguration.shared.imageProvider
-            rightImage.image = imageProvider?.imageForCode(imageCode: logoRight)
+            rightImage.image = imageProvider.imageForCode(imageCode: logoRight)
             rightImage.contentMode = .scaleAspectFit
             rightImage.isHidden = false
         }

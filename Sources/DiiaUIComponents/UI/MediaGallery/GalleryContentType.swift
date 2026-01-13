@@ -7,7 +7,7 @@ public enum GalleryContentType {
     case video(viewModel: GalleryVideoViewModel)
 }
 
-public class GalleryVideoViewModel {
+public final class GalleryVideoViewModel {
     let streamLink: String?
     let downloadLink: String
     let localFilename: String
@@ -32,7 +32,7 @@ public enum VideoPlayingState {
     case readyForPlaying(url: URL)
 }
 
-public class GalleryImageViewModel {
+public final class GalleryImageViewModel {
     var image: UIImage?
     let imageLink: String?
     var actions: [Action] = []

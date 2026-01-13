@@ -5,7 +5,7 @@ public protocol ZoomAndSnapFlowLayoutDelegate: AnyObject {
     func didChangeIndexPathInTheMiddle(_ indexPath: IndexPath?)
 }
 
-public class ZoomAndSnapFlowLayout: UICollectionViewFlowLayout {
+public final class ZoomAndSnapFlowLayout: UICollectionViewFlowLayout {
     public var startCenterX: CGFloat?
     public var isCalculatedInsets = false
     public var cachedAttributes: [UICollectionViewLayoutAttributes] = []

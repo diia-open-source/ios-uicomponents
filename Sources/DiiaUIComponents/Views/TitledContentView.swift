@@ -79,7 +79,7 @@ public struct TitledContentViewConfig {
     }
 }
 
-public class TitledContentView: BaseCodeView {
+public final class TitledContentView: BaseCodeView {
     private let titledContenViewConfig: TitledContentViewConfig
     let titleLabel = UILabel().withParameters(font: FontBook.smallHeadingFont)
     let contentStack = UIStackView.create()

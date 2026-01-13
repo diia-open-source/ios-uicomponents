@@ -3,10 +3,10 @@ import UIKit
 
 public enum HorizontalPhotoCollectionItem {
     case image(url: String, accessibilityDescription: String? = nil)
-    case video(url: String, previewUrl: String)
+    case video(url: String, previewUrl: String, accessibilityDescription: String? = nil)
 }
 
-public class HorizontalPhotoCollectionView: BaseCodeView {
+public final class HorizontalPhotoCollectionView: BaseCodeView {
     private let titleLabel: UILabel = UILabel().withParameters(font: FontBook.smallHeadingFont)
     private let descriptionLabel: UILabel = UILabel().withParameters(font: FontBook.statusFont, textColor: .gray)
     
@@ -89,9 +89,9 @@ extension HorizontalPhotoCollectionView: UICollectionViewDelegate, UICollectionV
             let cell: PhotoCollectionCell = collectionView.dequeueReusableCell(for: indexPath)
             cell.configure(with: url, accessibilityDescription: accessibilityDescription)
             return cell
-        case .video(_, let previewUrl):
+        case .video(_, let previewUrl, let accessibilityDescription):
             let cell: VideoCollectionCell = collectionView.dequeueReusableCell(for: indexPath)
-            cell.configure(with: previewUrl)
+            cell.configure(with: previewUrl, accessibilityDescription: accessibilityDescription)
             return cell
         }
     }
@@ -117,7 +117,7 @@ extension HorizontalPhotoCollectionView: MediaGalleryDataSource, MediaGalleryDel
                 })
             ]
             return .image(viewModel: vm)
-        case .video(let url, _):
+        case .video(let url, _, _):
             let vm = GalleryVideoViewModel(streamLink: nil, downloadLink: url)
             vm.actions = [
                 .init(title: nil, image: R.image.close.image, callback: { [weak self] in

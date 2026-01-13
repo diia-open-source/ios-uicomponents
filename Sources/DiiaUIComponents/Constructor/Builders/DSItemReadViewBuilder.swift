@@ -19,7 +19,7 @@ public struct DSItemReadViewBuilder: DSViewBuilderProtocol {
             componentId: data.componentId,
             label: data.label,
             value: data.value,
-            icon: UIComponentsConfiguration.shared.imageProvider?.imageForCode(imageCode: data.iconRight?.code)
+            icon: UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: data.iconRight?.code)
         ))
         let padding = paddingType.defaultPadding(object: object, modelKey: modelKey)
         

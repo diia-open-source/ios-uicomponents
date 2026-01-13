@@ -3,7 +3,7 @@ import UIKit
 import Lottie
 import DiiaCommonTypes
 
-public class ContentLoadingView: BaseCodeView {
+public final class ContentLoadingView: BaseCodeView {
     private lazy var animationView: LottieAnimationView = {
         let animation = LottieAnimation.named(Constants.animationName)
         let lottieView = LottieAnimationView(animation: animation)

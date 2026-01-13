@@ -13,8 +13,8 @@ public struct DSLinkSharingMlcBuilder: DSViewBuilderProtocol {
         guard let model: DSLinkSharingMlcModel = object.parseValue(forKey: self.modelKey) else { return nil }
 
         let view = DSLinkSharingMlcView()
-        view.configure(with: model)
-        let box = BoxView(subview: view).withConstraints(insets: paddingType.insets(for: object, modelKey: modelKey, defaultInsets: .zero))
+        view.configure(with: model, eventHandler: eventHandler)
+        let box = BoxView(subview: view).withConstraints(insets: paddingType.defaultPaddingV2(object: object, modelKey: self.modelKey))
         return box
     }
 }

@@ -15,7 +15,9 @@ public struct DSChipTabsViewBuilder: DSViewBuilderProtocol {
         guard let data: DSChipGroupOrg = object.parseValue(forKey: self.modelKey) else { return nil }
         
         let view = makeView(data: data, eventHandler: eventHandler)
-        
+        if let paddingMode = DSPaddingsModel.createFromJSON(object, modelKey: modelKey) {
+            (view as? DSPaddingModeDependedViewProtocol)?.setupPaddingMode(paddingMode)
+        }
         let insets = padding.defaultCollectionPadding(object: object, modelKey: modelKey)
         let paddingBox = BoxView(subview: view).withConstraints(insets: insets)
         return paddingBox
