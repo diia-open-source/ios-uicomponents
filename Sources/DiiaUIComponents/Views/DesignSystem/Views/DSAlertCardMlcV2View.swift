@@ -41,7 +41,8 @@ public final class DSAlertCardMlcV2View: BaseCodeView {
         if let buttonModel = model.btnPrimaryAdditionalAtm {
             let buttonViewModel = DSLoadingButtonViewModel(
                 title: buttonModel.label,
-                state: .enabled
+                state: .enabled,
+                componentId: buttonModel.componentId
             )
             button.configure(viewModel: buttonViewModel)
 

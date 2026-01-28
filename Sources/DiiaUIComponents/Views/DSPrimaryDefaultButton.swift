@@ -19,6 +19,8 @@ public final class DSPrimaryDefaultButton: LoadingStateButton, DSConditionCompon
     }
     
     public func configure(viewModel: DSLoadingButtonViewModel) {
+        self.accessibilityIdentifier = viewModel.componentId
+        
         self.viewModel?.title.removeObserver(observer: self)
         self.viewModel?.state.removeObserver(observer: self)
         self.viewModel = viewModel

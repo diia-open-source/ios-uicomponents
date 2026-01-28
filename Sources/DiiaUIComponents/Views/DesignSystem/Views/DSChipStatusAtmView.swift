@@ -26,6 +26,7 @@ final public class DSChipStatusAtmView: BaseCodeView {
     }
     
     public func configure(for model: DSCardStatusChipModel) {
+        self.accessibilityIdentifier = model.componentId
         statusLabel.text = model.name
         statusLabel.textColor = UIColor(model.statusTextColor)
         roundView.backgroundColor = UIColor(model.statusViewColor)

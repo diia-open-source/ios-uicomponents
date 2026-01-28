@@ -28,11 +28,13 @@ extension DSDocHeadingBuilder: DSViewMockableBuilderProtocol {
         let model = DSDocumentHeading(
             headingWithSubtitlesMlc: DSHeadingWithSubtitlesModel(
                 value: "value",
-                subtitles: ["subtitle1", "subtitle2"]
+                subtitles: ["subtitle1", "subtitle2"],
+                componentId: "componentId"
             ),
             headingWithSubtitleWhiteMlc: DSHeadingWithSubtitlesModel(
                 value: "value",
-                subtitles: ["subtitle1", "subtitle2"]
+                subtitles: ["subtitle1", "subtitle2"],
+                componentId: "componentId"
             ),
             docNumberCopyMlc: DSTableItemPrimaryMlc(
                 label: "label",

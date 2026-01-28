@@ -15,7 +15,7 @@ public struct DSPBtnAddOptionAtmBuilder: DSViewBuilderProtocol {
         let view = DSBtnAddOptionAtmView()
         view.configure(with: model, eventHandler: eventHandler)
 
-        let padding = paddingType.defaultPadding(object: object, modelKey: modelKey)
+        let padding = paddingType.defaultPaddingV2(object: object, modelKey: modelKey)
         let paddingBox = BoxView(subview: view).withConstraints(insets: padding)
         return paddingBox
     }

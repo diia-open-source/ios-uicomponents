@@ -34,6 +34,7 @@ extension DSTableBlockAccordionViewBuilder: DSViewMockableBuilderProtocol {
         let model = DSTableBlockAccordionModel(
             componentId: "componentId",
             heading: "heading",
+            description: "description",
             isOpen: true,
             items: [
                 .fromEncodable(encodable: DSTableItem(tableItemHorizontalMlc: .mock)),

@@ -6,6 +6,7 @@ import DiiaCommonTypes
 public struct DSTableBlockAccordionModel: Codable {
     public let componentId: String?
     public let heading: String
+    public let description: String?
     public let isOpen: Bool
     public let items: [AnyCodable]
 }
@@ -19,9 +20,10 @@ public final class DSTableBlockAccordionView: BaseCodeView {
     
     private let accordionIcon = UIImageView()
     private let headingLabel = UILabel().withParameters(font: FontBook.smallHeadingFont)
-    private let mainStack =  UIStackView.create(.vertical, spacing: Constants.stackSpacing).withMargins(Constants.mainStackInsets)
-    private let itemsStack = UIStackView.create(.vertical, spacing: Constants.stackSpacing)
-    private let headingStack = UIStackView.create(.horizontal, spacing: Constants.stackSpacing, alignment: .center)
+    private let descriptionLabel = UILabel().withParameters(font: FontBook.usualFont, textColor: .black540)
+    private let mainStack =  UIStackView.create(spacing: Constants.stackSpacing).withMargins(Constants.mainStackInsets)
+    private let itemsStack = UIStackView.create(spacing: Constants.stackSpacing)
+    private let headingTopStack = UIStackView.create(spacing: Constants.topHeadingSpacing)
     private var isOpened = false
 
     private var viewFabric = DSViewFabric.instance
@@ -33,6 +35,8 @@ public final class DSTableBlockAccordionView: BaseCodeView {
         addSubview(mainStack)
         mainStack.fillSuperview()
         
+        let headingStack = UIStackView.create(.horizontal, spacing: Constants.stackSpacing, alignment: .center)
+        
         headingLabel.setContentHuggingPriority(.defaultLow, for: .horizontal)
         headingLabel.numberOfLines = 0
         headingStack.addArrangedSubview(headingLabel)
@@ -40,12 +44,16 @@ public final class DSTableBlockAccordionView: BaseCodeView {
         accordionIcon.contentMode = .scaleAspectFit
         accordionIcon.withSize(Constants.accordeonIconSize)
         headingStack.addArrangedSubview(accordionIcon)
-        mainStack.addArrangedSubview(headingStack)
+        
+        headingTopStack.addArrangedSubview(headingStack)
+        headingTopStack.addArrangedSubview(descriptionLabel)
+        
+        mainStack.addArrangedSubview(headingTopStack)
         mainStack.addArrangedSubview(itemsStack)
         
         let gesture = UITapGestureRecognizer(target: self, action: #selector(onTapped))
-        headingStack.addGestureRecognizer(gesture)
-        headingStack.isUserInteractionEnabled = true
+        headingTopStack.addGestureRecognizer(gesture)
+        headingTopStack.isUserInteractionEnabled = true
         
         setupAccessibility()
     }
@@ -54,7 +62,13 @@ public final class DSTableBlockAccordionView: BaseCodeView {
         itemsStack.safelyRemoveArrangedSubviews()
         
         headingLabel.text = model.heading
-        headingStack.accessibilityLabel = model.heading
+        headingTopStack.accessibilityLabel = [model.heading, model.description]
+            .compactMap({$0})
+            .joined(separator: ",")
+        
+        descriptionLabel.text = model.description
+        descriptionLabel.isHidden = model.description == nil
+        
         self.isOpened = model.isOpen
         setState(isOpened ? .opened : .closed, animated: false)
         
@@ -69,10 +83,10 @@ public final class DSTableBlockAccordionView: BaseCodeView {
         switch state {
         case .opened:
             accordionIcon.image = R.image.expand_minus.image
-            headingStack.accessibilityValue = R.Strings.general_accessibility_accordion_opened.localized()
+            headingTopStack.accessibilityValue = R.Strings.general_accessibility_accordion_opened.localized()
         case .closed:
             accordionIcon.image = R.image.expand_plus.image
-            headingStack.accessibilityValue = R.Strings.general_accessibility_accordion_closed.localized()
+            headingTopStack.accessibilityValue = R.Strings.general_accessibility_accordion_closed.localized()
         }
         
         let closure = { [weak self] in
@@ -101,8 +115,8 @@ public final class DSTableBlockAccordionView: BaseCodeView {
     
     // MARK: - Accessibility
     private func setupAccessibility() {
-        headingStack.isAccessibilityElement = true
-        headingStack.accessibilityTraits = .button
+        headingTopStack.isAccessibilityElement = true
+        headingTopStack.accessibilityTraits = .button
     }
 }
 
@@ -112,6 +126,7 @@ extension DSTableBlockAccordionView {
         static let mainStackInsets = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
         static let accordeonIconSize = CGSize(width: 24, height: 24)
         static let stackSpacing = CGFloat(16)
+        static let topHeadingSpacing = CGFloat(8)
         static let animationDuration: TimeInterval = 0.3
     }
 }

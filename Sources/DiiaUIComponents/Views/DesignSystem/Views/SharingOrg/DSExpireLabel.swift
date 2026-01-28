@@ -4,9 +4,15 @@ import UIKit
 
 public final class DSExpireLabel: BaseCodeView {
     public struct Configuration {
-        let font: UIFont
-        let textAlpha: CGFloat
-        let timerLabelWidth: CGFloat
+        public init(font: UIFont? = nil, textAlpha: CGFloat? = nil, timerLabelWidth: CGFloat? = nil) {
+            self.font = font ?? FontBook.statusFont
+            self.textAlpha = textAlpha ?? DSExpireLabel.Constants.alphaColor
+            self.timerLabelWidth = timerLabelWidth ?? DSExpireLabel.Constants.timerWidth
+        }
+        
+        public let font: UIFont
+        public let textAlpha: CGFloat
+        public let timerLabelWidth: CGFloat
     }
 
     private let firstLabel = UILabel()
@@ -85,8 +91,5 @@ private extension DSExpireLabel {
 }
 
 public extension DSExpireLabel.Configuration {
-    static let `default` = DSExpireLabel.Configuration(
-        font: FontBook.statusFont,
-        textAlpha: DSExpireLabel.Constants.alphaColor,
-        timerLabelWidth: DSExpireLabel.Constants.timerWidth)
+    static let `default` = DSExpireLabel.Configuration()
 }

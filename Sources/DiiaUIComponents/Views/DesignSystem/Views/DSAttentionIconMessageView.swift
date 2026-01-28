@@ -66,6 +66,8 @@ final public class DSAttentionIconMessageView: BaseCodeView {
     
     public func configure(with model: DSAttentionIconMessageMlc, urlOpener: URLOpenerProtocol? = nil) {
         self.urlOpener = urlOpener
+        self.accessibilityIdentifier = model.componentId
+        
         let imageProvider = UIComponentsConfiguration.shared.imageProvider
         iconImage.image = imageProvider.imageForCode(imageCode: model.smallIconAtm.code)
         

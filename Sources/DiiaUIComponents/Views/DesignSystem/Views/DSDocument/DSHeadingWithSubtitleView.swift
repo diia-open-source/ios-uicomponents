@@ -28,6 +28,8 @@ public final class DSHeadingWithSubtitleView: BaseCodeView {
     }
     
     public func configure(model: DSHeadingWithSubtitlesModel) {
+        self.accessibilityIdentifier = model.componentId
+        
         headingLabel.text = model.value
         headingLabel.accessibilityAttributedLabel = accessibilityLabel(for: model.value)
         subLabels = []

@@ -112,7 +112,8 @@ public final class DSWhiteColoredListView: BaseCodeView {
     private func addSeparator() {
         let separator = UIView().withHeight(Constants.separatorHeight)
         separator.backgroundColor = UIColor(AppConstants.Colors.emptyDocuments)
-        stackView.addArrangedSubview(separator)
+        let boxView = BoxView(subview: separator).withConstraints(insets: Constants.separatorInsets)
+        stackView.addArrangedSubview(boxView)
     }
 }
 
@@ -123,6 +124,7 @@ extension DSWhiteColoredListView {
         static let buttonHeight: CGFloat = 56
         static let cornerRadius: CGFloat = 16
         static let titleInsets: UIEdgeInsets = .init(top: 16, left: 16, bottom: 16, right: 16)
+        static let separatorInsets: UIEdgeInsets = .init(top: .zero, left: 16, bottom: .zero, right: 16)
         static let separatorHeight: CGFloat = 1
     }
 }

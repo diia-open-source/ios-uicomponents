@@ -62,4 +62,5 @@ public enum ConstructorEventViewType {
     case cascadeView(viewModel: DSCheckboxCascadeViewModel)
     case linkQrShareView(viewModel: DSLinkQrShareViewModel)
     case titledView(viewModel: DSTitleMlcViewModel)
+    case inputNumber(viewModel: DSInputNumberMlcViewModel)
 }

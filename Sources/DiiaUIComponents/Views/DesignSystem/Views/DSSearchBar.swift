@@ -56,7 +56,7 @@ public final class DSSearchBarView: BaseCodeView {
 extension DSSearchBarView {
     private enum Constants {
         static let inputCode = "searchInputMlc"
-        static let spacing: CGFloat = 24
+        static let spacing: CGFloat = 8
         static let insets: UIEdgeInsets = .init(top: 0, left: 0, bottom: 8, right: 0)
     }
 }

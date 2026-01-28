@@ -52,4 +52,17 @@ extension AnyCodable {
             return nil
         }
     }
+    
+    public func getView(forKey key: String) -> AnyCodable? {
+        if keys().contains(key) {
+            return self
+        }
+        
+        for value in values() {
+            if let found = value.getView(forKey: key) {
+                return found
+            }
+        }
+        return nil
+    }
 }

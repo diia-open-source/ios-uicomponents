@@ -20,10 +20,15 @@ public struct DSTableItemVerticalMlcBuilder: DSViewBuilderProtocol {
             view.configure(valueIcons: values)
             return BoxView(subview: view).withConstraints(insets: paddingType.defaultPadding(object: object, modelKey: modelKey))
         } else {
-            let view = DSTableItemVerticalView()
-            view.configure(model: data, eventHandler: eventHandler, urlOpener: UIComponentsConfiguration.shared.urlOpener)
+            let view = makeVerticalView(model: data, eventHandler: eventHandler)
             return BoxView(subview: view).withConstraints(insets: paddingType.defaultPadding(object: object, modelKey: modelKey))
         }
+    }
+    
+    func makeVerticalView(model: DSTableItemVerticalMlc, eventHandler: ((ConstructorItemEvent) -> Void)?) -> DSTableItemVerticalView {
+        let view = DSTableItemVerticalView()
+        view.configure(model: model, eventHandler: eventHandler, urlOpener: UIComponentsConfiguration.shared.urlOpener)
+        return view
     }
     
     private enum Constants {

@@ -13,7 +13,7 @@ public struct DSPrimaryButtonBuilder: DSViewBuilderProtocol {
         
         let button = DSPrimaryDefaultButton()
         button.titleLabel?.font = FontBook.bigText
-        let vm = DSLoadingButtonViewModel(title: data.label, state: state)
+        let vm = DSLoadingButtonViewModel(title: data.label, state: state, componentId: data.componentId)
         vm.callback = { [weak vm] in
             guard let action = data.action, let vm = vm else { return }
             eventHandler(.buttonAction(parameters: action, viewModel: vm))
@@ -56,7 +56,7 @@ public struct DSPrimaryWideButtonBuilder: DSViewBuilderProtocol {
         let button = DSPrimaryDefaultButton()
         button.titleLabel?.font = FontBook.bigText
         button.contentEdgeInsets = Constants.buttonEdgeInsets
-        let vm = DSLoadingButtonViewModel(title: data.label, state: state)
+        let vm = DSLoadingButtonViewModel(title: data.label, state: state, componentId: data.componentId)
         vm.callback = { [weak vm] in
             guard let action = data.action, let vm = vm else { return }
             eventHandler(.buttonAction(parameters: action, viewModel: vm))
@@ -99,7 +99,7 @@ public struct DSPrimaryLargeButtonBuilder: DSViewBuilderProtocol {
         let button = DSPrimaryDefaultButton()
         button.accessibilityIdentifier = data.componentId
         button.titleLabel?.font = FontBook.smallHeadingFont
-        let vm = DSLoadingButtonViewModel(title: data.label, state: state)
+        let vm = DSLoadingButtonViewModel(title: data.label, state: state, componentId: data.componentId)
         vm.callback = { [weak vm] in
             guard let action = data.action, let vm = vm else { return }
             eventHandler(.buttonAction(parameters: action, viewModel: vm))
@@ -275,22 +275,26 @@ public struct DSWhiteLargeButtonBuilder: DSViewBuilderProtocol {
                          withPadding paddingType: DSViewPaddingType,
                          viewFabric: DSViewFabric?,
                          eventHandler: @escaping (ConstructorItemEvent) -> Void) -> UIView? {
-        guard let data: DSButtonModel = object.parseValue(forKey: self.modelKey), let state = loadingState(for: data.state) else { return nil }
-        
+        guard let data: DSButtonModel = object.parseValue(forKey: self.modelKey) else { return nil }
         let button = DSPrimaryDefaultButton()
+        configure(button: button, for: data, eventHandler: eventHandler)
+        let buttonPadding = padding ?? paddingType.defaultPadding(object: object, modelKey: modelKey)
+        let paddingBox = BoxView(subview: button).withConstraints(insets: buttonPadding)
+        return paddingBox
+    }
+    
+    public func configure(button: DSPrimaryDefaultButton, for data: DSButtonModel, eventHandler: ((ConstructorItemEvent) -> Void)?) {
         button.titleLabel?.font = FontBook.smallHeadingFont
-        let vm = DSLoadingButtonViewModel(title: data.label, state: state)
+        let state = loadingState(for: data.state)
+        let vm = DSLoadingButtonViewModel(title: data.label, state: state ?? .disabled, componentId: data.componentId)
         vm.callback = { [weak vm] in
             guard let action = data.action, let vm = vm else { return }
-            eventHandler(.buttonAction(parameters: action, viewModel: vm))
+            eventHandler?(.buttonAction(parameters: action, viewModel: vm))
         }
         button.configure(viewModel: vm)
         button.setStyle(style: .white)
         button.contentEdgeInsets = Constants.buttonEdgeInsets
         button.withHeight(Constants.buttonLargeHeight)
-        let buttonPadding = padding ?? paddingType.defaultPadding(object: object, modelKey: modelKey)
-        let paddingBox = BoxView(subview: button).withConstraints(insets: buttonPadding)
-        return paddingBox
     }
 }
 

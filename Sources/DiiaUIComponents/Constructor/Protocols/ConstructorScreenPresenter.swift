@@ -8,6 +8,7 @@ public protocol ConstructorScreenPresenter: BasePresenter {
     func screenCode() -> String
     func resourceId() -> String?
     func onViewAppear()
+    func onViewDidAppear()
     func canNavigateBack() -> Bool
 }
 
@@ -16,5 +17,6 @@ public extension ConstructorScreenPresenter {
     func screenCode() -> String { return .empty }
     func resourceId() -> String? { return nil }
     func onViewAppear() { }
+    func onViewDidAppear() { }
     func canNavigateBack() -> Bool { return true }
 }

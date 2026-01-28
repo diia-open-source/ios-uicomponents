@@ -76,7 +76,7 @@ public struct DSBottomGroupBuilder: DSViewBuilderProtocol {
         button.accessibilityIdentifier = model.componentId
         configureEdgeInset(in: button, for: model.label)
         button.withHeight(Constants.buttonHeight)
-        let vm = DSLoadingButtonViewModel(title: model.label, state: .enabled)
+        let vm = DSLoadingButtonViewModel(title: model.label, state: .enabled, componentId: model.componentId)
         vm.callback = { [weak vm] in
             guard let action = model.action, let vm = vm else { return }
             eventHandler(.buttonAction(parameters: action, viewModel: vm))
@@ -94,7 +94,7 @@ public struct DSBottomGroupBuilder: DSViewBuilderProtocol {
                                          bottom: .zero,
                                          right: Constants.buttonEdgeInsets.right)
         button.withHeight(Constants.buttonHeight)
-        let vm = DSLoadingButtonViewModel(title: model.label, state: .enabled)
+        let vm = DSLoadingButtonViewModel(title: model.label, state: .enabled, componentId: model.componentId)
         vm.callback = { [weak vm] in
             guard let action = model.action, let vm = vm else { return }
             eventHandler(.buttonAction(parameters: action, viewModel: vm))
@@ -113,7 +113,7 @@ public struct DSBottomGroupBuilder: DSViewBuilderProtocol {
         button.contentEdgeInsets = Constants.buttonEdgeInsets
         button.withHeight(Constants.plainButtonHeight)
         button.setStyle(style: .plain)
-        let vm = DSLoadingButtonViewModel(title: model.label, state: .enabled)
+        let vm = DSLoadingButtonViewModel(title: model.label, state: .enabled, componentId: model.componentId)
         vm.callback = { [weak vm] in
             guard let vm = vm else { return }
             guard let action = model.action else { return }
@@ -162,7 +162,7 @@ public struct DSBottomGroupBuilder: DSViewBuilderProtocol {
         button.titleLabel?.font = FontBook.smallHeadingFont
         configureEdgeInset(in: button, for: model.label, with: FontBook.smallHeadingFont)
         button.withHeight(Constants.buttonLargeHeight)
-        let vm = DSLoadingButtonViewModel(title: model.label, state: .enabled)
+        let vm = DSLoadingButtonViewModel(title: model.label, state: .enabled, componentId: model.componentId)
         vm.callback = { [weak vm] in
             guard let action = model.action, let vm = vm else { return }
             eventHandler(.buttonAction(parameters: action, viewModel: vm))

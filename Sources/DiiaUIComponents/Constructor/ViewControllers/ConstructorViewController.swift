@@ -101,6 +101,14 @@ final public class ConstructorViewController: UIViewController {
             presenter.onViewAppear()
         }
     }
+    
+    override public func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        if children.isEmpty {
+            presenter.onViewDidAppear()
+        }
+    }
 
     private func initialSetup() {
         setupBackground(.color(.blackSqueeze))

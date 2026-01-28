@@ -37,6 +37,7 @@ public final class DSTableItemVerticalView: DSTableItemView {
                           urlOpener: URLOpenerProtocol? = nil) {
         self.urlOpener = urlOpener
         self.eventHandler = eventHandler
+        self.accessibilityIdentifier = model.componentId
         
         label.accessibilityAttributedLabel = accessibilityLabel(for: model.label ?? "")
         label.attributedText = model.label?.attributed(font: FontBook.usualFont,

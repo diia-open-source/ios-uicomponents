@@ -29,7 +29,8 @@ extension DSTableBlockTwoColumnsBuilder: DSViewMockableBuilderProtocol {
             ],
             headingWithSubtitlesMlc: DSHeadingWithSubtitlesModel(
                 value: "value",
-                subtitles: ["subtitle1", "subtitle2"]
+                subtitles: ["subtitle1", "subtitle2"],
+                componentId: "componentId"
             )
         )
         return .dictionary([

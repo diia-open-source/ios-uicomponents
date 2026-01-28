@@ -16,7 +16,7 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
     private let calendarStack = UIStackView.create(spacing: Constants.calendarSpacing, distribution: .fillEqually)
     private let chipsView = DSCalendarChipsView()
     private let chipsViewV2 = DSChipGroupOrgV2View()
-    private lazy var globalStackView = UIStackView.create(views: [chipsView, chipsViewV2])
+    private lazy var globalStackView = UIStackView.create(views: [legendView, chipsView, chipsViewV2])
     private var fullCalendarStackCornerView: UIView?
 
     private lazy var animation: LottieAnimationView = {
@@ -58,17 +58,11 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
         fullCalendarStackCornerView.backgroundColor = .white
         self.fullCalendarStackCornerView = fullCalendarStackCornerView
 
-        addSubview(legendView)
-        legendView.anchor(top: topAnchor, leading: leadingAnchor, trailing: trailingAnchor)
-        globalStackView.insertArrangedSubview(fullCalendarStackCornerView, at: 0)
+        globalStackView.insertArrangedSubview(fullCalendarStackCornerView, at: 1)
+
         addSubview(globalStackView)
-        
-        globalStackView.anchor(top: legendView.bottomAnchor,
-                               leading: leadingAnchor,
-                               bottom: bottomAnchor,
-                               trailing: trailingAnchor,
-                               padding: Constants.legendOffset)
-        
+        globalStackView.fillSuperview()
+
         addSubview(stubMsgBoxView)
         stubMsgBoxView.anchor(top: calendarBoxView.topAnchor,
                            leading: globalStackView.leadingAnchor,
@@ -386,6 +380,8 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
             currentTimeMlcView.configure(for: DSCurrentTimeMlc(label: currentTime))
         }
         
+        configureMonthButtons(viewModel, selectedPeriod)
+        
         let horizontalStack = UIStackView.create(.horizontal, spacing: Constants.horizontalSpacing, distribution: .fillEqually)
         var weekSymbols = calendar.shortWeekdaySymbols
         weekSymbols.append(weekSymbols.remove(at: weekSymbols.startIndex))
@@ -406,6 +402,10 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
         let currentTime = "\(calendar.component(.year, from: selectedPeriod))"
         currentTimeMlcView.configure(for: DSCurrentTimeMlc(label: currentTime))
         
+        configureYearButtons(viewModel, selectedPeriod)
+    }
+    
+    private func configureYearButtons(_ viewModel: DSCalendarOrgViewModel, _ selectedPeriod: Date) {
         let maxDateStr = viewModel.calendarOrg.value.currentTimeMlc?.maxDate ?? ""
         let maxDateYear = Constants.monthYearFormatter.date(from: maxDateStr)?.year ?? (Date().year + 1)
         
@@ -418,6 +418,21 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
         let isNextAvailable = selectedPeriod.year < maxDateYear
         forwardBtn.isEnabled = isNextAvailable
     }
+    
+    private func configureMonthButtons(_ viewModel: DSCalendarOrgViewModel, _ selectedPeriod: Date) {
+        let maxDateStr = viewModel.calendarOrg.value.currentTimeMlc?.maxDate ?? ""
+        let maxDateMonth = Constants.monthYearFormatter.date(from: maxDateStr) ?? Date()
+        
+        let minDateStr = viewModel.calendarOrg.value.currentTimeMlc?.minDate ?? ""
+        let minDateMonth = Constants.monthYearFormatter.date(from: minDateStr) ?? Date()
+        
+        let isBackAvailable = selectedPeriod > minDateMonth
+        backBtn.isEnabled = isBackAvailable
+        
+        let isNextAvailable = selectedPeriod < maxDateMonth
+        forwardBtn.isEnabled = isNextAvailable
+    }
+    
     
     private func updateLoading(to state: Bool) {
         animationView.isHidden = !state
@@ -468,9 +483,8 @@ extension DSCalendarOrgView {
         static let lineHeight: CGFloat = 1
         static let cornerRadius: CGFloat = 8
         static let cornerRadiusV2: CGFloat = 16
-        static let stubPadding = UIEdgeInsets(top: 64, left: 24, bottom: 64, right: 24)
+        static let stubPadding = UIEdgeInsets(top: 64, left: 24, bottom: 0, right: 24)
         static let offset = UIEdgeInsets(top: 8, left: 16, bottom: 16, right: 16)
-        static let legendOffset = UIEdgeInsets(top: 8, left: 0, bottom: 0, right: 0)
         static let calendarSpacing: CGFloat = 4
         static let horizontalSpacing: CGFloat = 2
         static let monthHorizontal = 3

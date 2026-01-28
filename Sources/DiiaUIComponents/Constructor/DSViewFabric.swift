@@ -294,6 +294,10 @@ public extension DSViewFabric {
         DSCheckboxGroupOrgBuilder(),
         DSCheckboxMlcBuilder(),
         DSStaticTickerAtmViewBuilder(),
+        DSScanModalMessageBuilder(),
+        ScanModalCardBuilder(),
+        ActionSheetOrgBuilder(),
+        PermissionMessageMlcBuilder(),
         CardProgressMlcBuilder()
     ]
 }

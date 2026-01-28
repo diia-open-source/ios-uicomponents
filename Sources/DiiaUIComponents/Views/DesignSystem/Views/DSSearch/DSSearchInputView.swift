@@ -132,7 +132,7 @@ extension DSSearchInputView {
         static let animationDuration: CGFloat = 0.1
         static let placeholderActiveEdge: CGFloat = 16
         static let placeholderDefaultEdge: CGFloat = 0
-        static let viewPadding = UIEdgeInsets.init(top: 8, left: 12, bottom: 8, right: 8)
+        static let viewPadding = UIEdgeInsets.init(top: 10, left: 12, bottom: 10, right: 8)
         static let viewSpacing: CGFloat = 8
         static let viewHeight: CGFloat = 24
         static let cornerRadius: CGFloat = 16

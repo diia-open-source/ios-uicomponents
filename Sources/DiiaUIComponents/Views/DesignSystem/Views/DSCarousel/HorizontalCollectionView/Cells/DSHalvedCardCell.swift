@@ -8,17 +8,22 @@ public final class DSHalvedCardViewModel {
     public let imageURL: String
     public let label: String
     public let title: String
+    public let accessibilityDescription: String?
     public var clickAction: Callback?
     
-    public init(id: String,
-         imageURL: String,
-         label: String,
-         title: String,
-         clickAction: (Callback)? = nil) {
+    public init(
+        id: String,
+        imageURL: String,
+        label: String,
+        title: String,
+        accessibilityDescription: String? = nil,
+        clickAction: (Callback)? = nil
+    ) {
         self.id = id
         self.imageURL = imageURL
         self.label = label
         self.title = title
+        self.accessibilityDescription = accessibilityDescription
         self.clickAction = clickAction
     }
 }
@@ -59,6 +64,7 @@ final public class DSHalvedCardCell: UICollectionViewCell, Reusable {
     // MARK: - Public Methods
     public func configure(with viewModel: DSHalvedCardViewModel) {
         self.viewModel = viewModel
+        self.accessibilityLabel = viewModel.accessibilityDescription
         detailsLabel.text = viewModel.label
         titleLabel.text = viewModel.title
         imageView.loadImage(imageURL: viewModel.imageURL, completion: { [weak self] in
@@ -109,6 +115,8 @@ final public class DSHalvedCardCell: UICollectionViewCell, Reusable {
     
     // MARK: - Accessibility
     private func setupAccessibility() {
+        isAccessibilityElement = true
+        accessibilityTraits = .button
         titleLabel.isAccessibilityElement = false
         detailsLabel.isAccessibilityElement = false
     }

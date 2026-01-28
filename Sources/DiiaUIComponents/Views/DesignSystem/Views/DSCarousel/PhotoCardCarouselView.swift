@@ -34,6 +34,7 @@ public final class PhotoCardCarouselView: BaseCodeView {
     }
     
     public override func setupSubviews() {
+        translatesAutoresizingMaskIntoConstraints = false
         backgroundColor = .clear
         collectionView.backgroundColor = .clear
         
@@ -93,8 +94,17 @@ public final class PhotoCardCarouselView: BaseCodeView {
             setupPageControl()
             
             collectionView.reloadData()
-            collectionView.performBatchUpdates(nil) { _ in
-                self.scrollToFirstPage()
+            
+            layoutIfNeeded()
+            collectionView.layoutIfNeeded()
+            
+            DispatchQueue.main.async {
+                self.collectionView.performBatchUpdates(nil) { _ in
+                    self.scrollToFirstPage()
+                    DispatchQueue.main.async {
+                        self.updateCellVisibility()
+                    }
+                }
             }
         }
     
@@ -240,6 +250,8 @@ public final class PhotoCardCarouselView: BaseCodeView {
     // MARK: - Cell Visibility Management
     private func updateCellVisibility() {
         guard !isUserScrolling || !isScrollingProgrammatically else { return }
+        guard collectionView.frame.width > 0 && collectionView.frame.height > 0 else { return }
+        guard cellSize.width > 0 && cellSize.height > 0 else { return }
         
         let itemWidth = cellSize.width + Constants.interItemInset
         let currentOffset = collectionView.contentOffset.x

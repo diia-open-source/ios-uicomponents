@@ -31,8 +31,7 @@ public final class TitledTextFieldViewV2: BaseCodeView, DSInputComponentProtocol
         
         textBlock.anchor(top: topAnchor,
                          leading: leadingAnchor,
-                         trailing: trailingAnchor,
-                         padding: .init(top: Constants.offset, left: .zero, bottom: .zero, right: .zero))
+                         trailing: trailingAnchor)
         
         let stack = UIStackView.create(views: [errorLabel, instructionsLabel],
                                        spacing: Constants.stackSpacing)
@@ -261,7 +260,6 @@ extension TitledTextFieldViewV2 {
         static let clearButtonSize = CGSize(width: 24, height: 24)
         static let textBlockInset = UIEdgeInsets(top: 12, left: 16, bottom: 12, right: 16)
         static let inputCornerRadius: CGFloat = 12
-        static let offset: CGFloat = 8
         static let stackSpacing: CGFloat = 8
         static let textStackSpacing: CGFloat = 4
         static let disableColor = UIColor.black.withAlphaComponent(0.3)

@@ -35,7 +35,8 @@ final class TableSecondaryHeadingView: BaseCodeView {
     
     func configure(with viewModel: TableSecondaryHeadingViewModel) {
         self.viewModel = viewModel
-
+        self.accessibilityIdentifier = viewModel.headingModel.componentId
+        
         label.text = viewModel.headingModel.label
         label.accessibilityLabel = viewModel.headingModel.label
         

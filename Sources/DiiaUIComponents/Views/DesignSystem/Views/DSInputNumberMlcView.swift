@@ -1,6 +1,54 @@
 
 import UIKit
 import DiiaCommonTypes
+import Lottie
+
+public enum DSInputNumberLoadingIconsState {
+    case defaultIcons
+    case loading
+    case success
+}
+
+public struct DSInputNumberMlcModel: Codable {
+    public let componentId: String?
+    public let inputCode: String?
+    public let label: String
+    public let placeholder: String?
+    public let hint: String?
+    public let value: String?
+    public let maxValue: Double?
+    public let minValue: Double?
+    public let mandatory: Bool?
+    public let errorMessage: String?
+    public let mask: String?
+    public let iconRight: DSIconModel?
+    
+    public init(componentId: String?,
+                inputCode: String?,
+                label: String,
+                placeholder: String?,
+                hint: String?,
+                value: String?,
+                maxValue: Double?,
+                minValue: Double?,
+                mandatory: Bool?,
+                errorMessage: String?,
+                mask: String? = nil,
+                iconRight: DSIconModel? = nil) {
+        self.componentId = componentId
+        self.inputCode = inputCode
+        self.label = label
+        self.placeholder = placeholder
+        self.hint = hint
+        self.value = value
+        self.maxValue = maxValue
+        self.minValue = minValue
+        self.mandatory = mandatory
+        self.errorMessage = errorMessage
+        self.mask = mask
+        self.iconRight = iconRight
+    }
+}
 
 // MARK: - ViewModel
 public final class DSInputNumberMlcViewModel {
@@ -11,13 +59,14 @@ public final class DSInputNumberMlcViewModel {
     public let hint: String?
     public let maskCapacity: Int?
     public let mask: String?
-    public let value: Double?
+    public let value: String?
     public let maxValue: Double?
     public let minValue: Double?
     public let mandatory: Bool?
     public let errorMessage: String?
     public let iconRight: DSIconModel?
     public let fieldState = Observable<TextFieldState>(value: .unfocused)
+    public let accessoryState = Observable<DSInputNumberLoadingIconsState>(value: .defaultIcons)
     public var validators: [TextValidationErrorGenerator] = []
     
     public init(
@@ -27,7 +76,7 @@ public final class DSInputNumberMlcViewModel {
         placeholder: String?,
         hint: String?,
         mask: String?,
-        value: Double?,
+        value: String?,
         maxValue: Double?,
         minValue: Double?,
         mandatory: Bool?,
@@ -53,7 +102,7 @@ public final class DSInputNumberMlcViewModel {
         self.iconRight = iconRight
         
         if let capacity = self.maskCapacity {
-            validators.append(.init(type: .length(min: capacity, max: capacity), error: errorMessage))
+            validators.append(TextValidationErrorGenerator(type: .length(min: capacity, max: capacity), error: errorMessage))
         }
         
         if minValue != nil || maxValue != nil {
@@ -81,6 +130,23 @@ final class DSInputNumberMlcView: BaseCodeView {
     private var viewModel: DSInputNumberMlcViewModel?
     private var eventHandler: ((ConstructorItemEvent) -> Void)?
     private var lastNotifiedDigits: String?
+    private var currentDigits: String?
+    
+    private lazy var checkInput: LottieAnimationView = {
+        let animation = LottieAnimation.named("check_input")
+        let lottieView = LottieAnimationView(animation: animation)
+        lottieView.loopMode = .playOnce
+        lottieView.backgroundBehavior = .pauseAndRestore
+        return lottieView
+    }()
+    
+    private lazy var loader: LottieAnimationView = {
+        let animation = LottieAnimation.named("black_spinner")
+        let lottieView = LottieAnimationView(animation: animation)
+        lottieView.loopMode = .loop
+        lottieView.backgroundBehavior = .pauseAndRestore
+        return lottieView
+    }()
     
     // MARK: - Lifecycle
     override func setupSubviews() {
@@ -100,10 +166,14 @@ final class DSInputNumberMlcView: BaseCodeView {
         contentHStack.addArrangedSubviews([
             labelsStack,
             clearButton,
-            rightIcon
+            rightIcon,
+            loader,
+            checkInput
         ])
         clearButton.withSize(Constants.iconSize)
         rightIcon.withSize(Constants.iconSize)
+        loader.withSize(Constants.iconSize)
+        checkInput.withSize(Constants.iconSize)
         
         labelsStack.addArrangedSubviews([
             titleLabel,
@@ -115,12 +185,14 @@ final class DSInputNumberMlcView: BaseCodeView {
         textField.borderStyle = .none
         textField.clearButtonMode = .never
         textField.delegate = self
-
         
         hintErrorStack.addArrangedSubviews([
             hintLabel,
             errorLabel
         ])
+        
+        loader.isHidden = true
+        checkInput.isHidden = true
     }
     
     //MARK: - Public methods
@@ -130,6 +202,7 @@ final class DSInputNumberMlcView: BaseCodeView {
     
     public func configure(with viewModel: DSInputNumberMlcViewModel) {
         self.viewModel = viewModel
+        eventHandler?(.onComponentConfigured(with: .inputNumber(viewModel: viewModel)))
         titleLabel.text = viewModel.label
         hintLabel.text = viewModel.hint
         hintLabel.isHidden = viewModel.hint == nil
@@ -137,9 +210,12 @@ final class DSInputNumberMlcView: BaseCodeView {
         errorLabel.isHidden = true
         
         textField.placeholder = viewModel.placeholder ?? viewModel.mask
+        lastNotifiedDigits = nil
+        currentDigits = nil
         
         if let value = viewModel.value {
-            textField.text = String(Int(value))
+            applyMask(value)
+            notifyInputChanged(digits: value)
         } else {
             textField.text = nil
         }
@@ -164,7 +240,12 @@ final class DSInputNumberMlcView: BaseCodeView {
         viewModel.fieldState.observe(observer: self) { [weak self] state in
             self?.updateState(with: state)
         }
-        lastNotifiedDigits = nil
+        
+        viewModel.accessoryState.removeObserver(observer: self)
+        viewModel.accessoryState.observe(observer: self) { [weak self] state in
+            self?.updateAccessoryState(state)
+        }
+        
         updateIconsVisibility()
         updateInstructionsState()
     }
@@ -207,14 +288,79 @@ final class DSInputNumberMlcView: BaseCodeView {
         self.layoutIfNeeded()
     }
     
+    private func updateAccessoryState(_ state: DSInputNumberLoadingIconsState) {
+        switch state {
+        case .defaultIcons:
+            stopLoader()
+            stopCheck()
+            loader.isHidden = true
+            checkInput.isHidden = true
+            updateIconsVisibility()
+        case .loading:
+            rightIcon.isHidden = true
+            clearButton.isHidden = true
+            checkInput.isHidden = true
+            loader.isHidden = false
+            playLoader()
+        case .success:
+            rightIcon.isHidden = true
+            clearButton.isHidden = true
+            loader.isHidden = true
+            stopLoader()
+            checkInput.isHidden = false
+            playCheckOnce()
+        }
+        layoutIfNeeded()
+    }
+
+    private func playLoader() {
+        if !loader.isAnimationPlaying {
+            loader.play()
+        }
+    }
+
+    private func stopLoader() {
+        loader.stop()
+    }
+
+    private func playCheckOnce() {
+        checkInput.stop()
+        checkInput.currentProgress = 0
+        checkInput.play()
+    }
+
+    private func stopCheck() {
+        checkInput.stop()
+    }
+    
     @objc private func onClearTapped() {
-        textField.text = nil
-        updateInstructionsState()
-        updateIconsVisibility()
+        applyMask(nil)
         notifyInputChanged(digits: nil)
     }
     
+    private func applyMask(_ rawText: String?) {
+        let raw = rawText ?? .empty
+        var digits = raw.digits
+
+        if let capacity = viewModel?.maskCapacity, digits.count > capacity {
+            digits = String(digits.prefix(capacity))
+        }
+
+        if let mask = viewModel?.mask, viewModel?.maskCapacity != nil {
+            textField.text = digits.isEmpty ? nil : formatUsingMask(mask, digits: digits)
+        } else {
+            textField.text = digits.isEmpty ? nil : digits
+        }
+        
+        currentDigits = digits.isEmpty ? nil : digits
+
+        updateIconsVisibility()
+        updateInstructionsState()
+    }
+
     private func updateIconsVisibility() {
+        guard viewModel?.accessoryState.value == .defaultIcons else { return }
+        
         let hasText = !(textField.text?.isEmpty ?? false)
         let hasScanner = (viewModel?.iconRight != nil && viewModel?.mask != nil)
         
@@ -240,7 +386,7 @@ final class DSInputNumberMlcView: BaseCodeView {
     
     //MARK: - Validation
     private func updateInstructionsState() {
-        let digits = textField.text?.digits ?? ""
+        let digits = currentDigits ?? .empty
         let hasFocus = textField.isFirstResponder
         
         if digits.isEmpty {
@@ -315,29 +461,14 @@ extension DSInputNumberMlcView: UITextFieldDelegate {
     public func textField(_ textField: UITextField,
                           shouldChangeCharactersIn range: NSRange,
                           replacementString string: String) -> Bool {
-        if string.isEmpty { return true }
 
-        let currentText = textField.text ?? .empty
-        guard let replacementRange = Range(range, in: currentText) else {
-            return false
-        }
-        let updated = currentText.replacingCharacters(in: replacementRange, with: string)
+        let currentText = textField.text ?? ""
+        guard let replacementRange = Range(range, in: currentText) else { return false }
+        let updatedText = currentText.replacingCharacters(in: replacementRange, with: string)
 
-        var digits = updated.digits
+        applyMask(updatedText)
+        notifyInputChanged(digits: currentDigits)
 
-        if let mask = viewModel?.mask,
-           let capacity = viewModel?.maskCapacity {
-            if digits.count > capacity {
-                digits = String(digits.prefix(capacity))
-            }
-            textField.text = formatUsingMask(mask, digits: digits)
-        } else {
-            textField.text = digits
-        }
-
-        updateIconsVisibility()
-        updateInstructionsState()
-        notifyInputChanged(digits: digits)
         return false
     }
 
@@ -350,7 +481,7 @@ extension DSInputNumberMlcView: UITextFieldDelegate {
 //MARK: - input protocol
 extension DSInputNumberMlcView: DSInputComponentProtocol {
     public func isValid() -> Bool {
-        let digits = textField.text?.digits ?? ""
+        let digits = currentDigits ?? ""
         let mandatory = viewModel?.mandatory ?? false
         
         if mandatory && digits.isEmpty {
@@ -369,12 +500,12 @@ extension DSInputNumberMlcView: DSInputComponentProtocol {
     }
     
     public func inputCode() -> String {
-        viewModel?.inputCode ?? "inputNumberMlc"
+        viewModel?.inputCode ?? Constants.inputCode
     }
     
     public func inputData() -> AnyCodable? {
-        guard let inputText = textField.text?.digits, !inputText.isEmpty else { return nil }
-        return .string(inputText)
+        guard let digits = currentDigits, !digits.isEmpty else { return nil }
+        return .string(digits)
     }
 }
 

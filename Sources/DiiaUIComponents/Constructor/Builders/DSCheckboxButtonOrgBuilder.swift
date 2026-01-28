@@ -22,7 +22,9 @@ public struct DSCheckboxButtonOrgBuilder: DSViewBuilderProtocol {
         if let buttonModel = model.btnPrimaryDefaultAtm ?? model.btnPrimaryWideAtm, let action = buttonModel.action {
             let btnVM = DSLoadingButtonViewModel(
                 title: buttonModel.label,
-                state: .disabled)
+                state: .disabled,
+                componentId: buttonModel.componentId
+            )
             btnVM.callback = { [weak btnVM] in
                 guard let btnVM = btnVM else { return }
                 eventHandler(.buttonAction(parameters: action, viewModel: btnVM))
@@ -33,7 +35,9 @@ public struct DSCheckboxButtonOrgBuilder: DSViewBuilderProtocol {
         if let buttonModel = model.btnStrokeWideAtm, let action = buttonModel.action {
             let vm = DSLoadingButtonViewModel(
                 title: buttonModel.label,
-                state: .enabled)
+                state: .enabled,
+                componentId: buttonModel.componentId
+            )
             vm.callback = { [weak vm] in
                 guard let btnVM = vm else { return }
                 eventHandler(.buttonAction(parameters: action, viewModel: btnVM))
@@ -45,7 +49,9 @@ public struct DSCheckboxButtonOrgBuilder: DSViewBuilderProtocol {
         if let buttonModel = model.btnPlainAtm, let action = buttonModel.action {
             let plainBtnVM = DSLoadingButtonViewModel(
                 title: buttonModel.label,
-                state: .enabled)
+                state: .enabled,
+                componentId: buttonModel.componentId
+            )
             plainBtnVM.callback = { [weak plainBtnVM] in
                 guard let btnVM = plainBtnVM else { return }
                 eventHandler(.buttonAction(parameters: action, viewModel: btnVM))

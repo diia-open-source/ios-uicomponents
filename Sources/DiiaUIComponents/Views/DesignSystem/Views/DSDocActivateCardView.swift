@@ -111,7 +111,7 @@ public final class DSDocActivateCardView: BaseCodeView {
         
         plainButton.isHidden = viewModel.btnPlainAtm == nil
         if let btnPlainAtm = viewModel.btnPlainAtm {
-            let plainBtnViewModel = DSLoadingButtonViewModel(title: btnPlainAtm.label, state: .enabled)
+            let plainBtnViewModel = DSLoadingButtonViewModel(title: btnPlainAtm.label, state: .enabled, componentId: btnPlainAtm.componentId)
             plainBtnViewModel.callback = { [weak plainBtnViewModel] in
                 guard let plainBtnViewModel = plainBtnViewModel, let action = btnPlainAtm.action else { return }
                 viewModel.eventHandler(.buttonAction(parameters: action, viewModel: plainBtnViewModel))

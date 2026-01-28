@@ -37,6 +37,7 @@ public final class DSIconUrlAtmView: BaseCodeView {
    
     public override func setupSubviews() {
         initialSetup()
+        setupAccessibility()
         imageView.isHidden = true
     }
     
@@ -46,6 +47,7 @@ public final class DSIconUrlAtmView: BaseCodeView {
             self?.imageView.isHidden = false
             self?.loadingView.isHidden = true
         }
+        imageView.accessibilityLabel = model.accessibilityDescription
         imageView.loadImage(imageURL: model.url, placeholder: R.image.defaultImagePlaceholder.image, completion: finishCallback, onError: finishCallback)
     }
     
@@ -77,6 +79,11 @@ public final class DSIconUrlAtmView: BaseCodeView {
         let tap = UITapGestureRecognizer(target: self, action: #selector(onClick))
         self.addGestureRecognizer(tap)
         self.isUserInteractionEnabled = true
+    }
+    
+    private func setupAccessibility() {
+        imageView.isAccessibilityElement = true
+        imageView.accessibilityTraits = .image
     }
     
     // MARK: - Actions

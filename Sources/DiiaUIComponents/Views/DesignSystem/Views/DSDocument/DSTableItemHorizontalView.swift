@@ -21,7 +21,6 @@ public final class DSTableItemHorizontalView: BaseCodeView {
                                                 spacing: Constants.bigStackSpacing,
                                                 alignment: .top)
     
-    private var supportProportionConstraint: NSLayoutConstraint?
     private var proportionConstraint: NSLayoutConstraint?
     private var urlOpener: URLOpenerProtocol?
 
@@ -38,6 +37,14 @@ public final class DSTableItemHorizontalView: BaseCodeView {
         
         titleLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
         titleLabel.setContentHuggingPriority(.required, for: .horizontal)
+
+        valueTextView.configureForParametrizedText()
+        valueTextView.delegate = self
+        valueTextView.textContainer.lineBreakMode = .byWordWrapping
+
+        valueStack.alignment = .leading
+        
+        supportLabel.widthAnchor.constraint(equalToConstant: Constants.supportLabelWidth).isActive = true
 
         valueTextView.configureForParametrizedText()
         valueTextView.delegate = self
@@ -119,7 +126,6 @@ public final class DSTableItemHorizontalView: BaseCodeView {
                         detailsFont: UIFont = FontBook.usualFont,
                         valueDetailsFont: UIFont = FontBook.usualFont,
                         detailsColor: UIColor = Constants.lightBlackColor,
-                        iconProportion: CGFloat = Constants.iconProportion,
                         titleProportion: CGFloat = Constants.titleProportion,
                         numberOfLines: Int = 0) -> DSTableItemHorizontalView {
         
@@ -133,10 +139,6 @@ public final class DSTableItemHorizontalView: BaseCodeView {
         proportionConstraint?.isActive = false
         proportionConstraint = titleStack.widthAnchor.constraint(equalTo: widthAnchor, multiplier: iconImage == nil ? titleProportion : Constants.smallTitleProportion)
         proportionConstraint?.isActive = true
-        
-        supportProportionConstraint?.isActive = false
-        supportProportionConstraint = supportLabel.widthAnchor.constraint(equalTo: widthAnchor, multiplier: Constants.iconProportion)
-        supportProportionConstraint?.isActive = true
         
         titleLabel.numberOfLines = numberOfLines
         valueTextView.textContainer.maximumNumberOfLines = numberOfLines
@@ -187,11 +189,11 @@ extension DSTableItemHorizontalView: UITextViewDelegate {
 
 public extension DSTableItemHorizontalView {
     enum Constants {
-        public static let iconProportion: CGFloat = 0.1
         public static let titleProportion: CGFloat = 0.5
         public static let lightBlackColor = UIColor.black.withAlphaComponent(0.4)
+        static let supportLabelWidth: CGFloat = 30
         static let smallTitleProportion: CGFloat = 0.4
-        static let bigStackSpacing: CGFloat = 8
+        static let bigStackSpacing: CGFloat = 12
         static let minTextScaleFactor: CGFloat = 0.5
         static let buttonSize = CGSize(width: 24, height: 24)
         static let lineHeightMultiply: CGFloat = 1.25

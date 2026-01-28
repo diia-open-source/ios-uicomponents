@@ -12,13 +12,8 @@ public struct DSStaticTickerAtmViewBuilder: DSViewBuilderProtocol {
         guard let model: DSStaticTickerAtmModel = object.parseValue(forKey: self.modelKey) else { return nil }
 
         let viewModel = DSStaticTickerViewModel(model: model)
-        viewModel.onTimerExpiration = {
-            guard let action = viewModel.action else { return }
-            eventHandler(.action(action))
-        }
-
         let view = DSStaticTickerView()
-        view.configure(with: viewModel)
+        view.configure(with: viewModel, eventHandler: eventHandler)
 
         eventHandler(.onComponentConfigured(with: .staticTicker(viewModel: viewModel)))
 

@@ -54,6 +54,26 @@ public final class DSListItemViewModel: NSObject {
         self.detailsParameters = detailsParameters
     }
     
+    public init(item: DSListGroupItem, onClick: Callback? = nil) {
+        let imageProvider = UIComponentsConfiguration().imageProvider
+        self.id = item.id
+        self.leftBase64Icon = nil
+        self.leftBigIcon = imageProvider.imageForCode(imageCode: item.bigIconLeft?.code)
+        self.leftLogoLink = item.logoLeft
+        self.leftSmallIcon = nil
+        self.title = item.label
+        self.details = item.description
+        self.rightIcon = imageProvider.imageForCode(imageCode: item.iconRight?.code)
+        self.isEnabled = true
+        self.onClick = onClick
+        self.componentId = item.id
+        self.accessibilityDescription = item.accessibilityDescription
+        self.chipStatusAtm = item.chipStatusAtm
+        self.amountAtm = item.amountAtm
+        self.isLoading = false
+        self.detailsParameters = item.parameters
+    }
+    
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(id)
@@ -155,10 +175,14 @@ public final class DSListItemView: BaseCodeView {
         leftBigIconView.isHidden = viewModel.leftBigIcon == nil
  
         titleLabel.text = viewModel.title
-        
-        detailsTextView.attributedText = viewModel.details?.attributedTextWithParameters(parameters: viewModel.detailsParameters)
+
         detailsTextView.isHidden = viewModel.details == nil
-        
+        if let detailsParameters = viewModel.detailsParameters, !detailsParameters.isEmpty {
+            detailsTextView.attributedText = viewModel.details?.attributedTextWithParameters(parameters: detailsParameters)
+        } else {
+            detailsTextView.text = viewModel.details
+        }
+
         rightIconView.image = viewModel.rightIcon
         rightIconView.isHidden = viewModel.rightIcon == nil
         onClickHandler = viewModel.onClick

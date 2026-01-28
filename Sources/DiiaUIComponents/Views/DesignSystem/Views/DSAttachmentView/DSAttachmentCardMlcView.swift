@@ -84,6 +84,10 @@ final public class DSAttachmentCardMlcView: BaseCodeView {
         deleteIcon.isHidden = model.attachmentCardMlc?.iconRight == nil
         if let iconRight = model.attachmentCardMlc?.iconRight {
             deleteIcon.setIcon(iconRight)
+            deleteIcon.onClick = { [weak self] action in
+                guard let action else { return }
+                self?.eventHandler?(.action(action))
+            }
         }
         statusStackView.isHidden = model.attachmentCardMlc?.chipStatusAtm == nil && model.attachmentCardMlc?.iconRight == nil
         

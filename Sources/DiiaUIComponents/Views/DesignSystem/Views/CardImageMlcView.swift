@@ -41,14 +41,21 @@ public final class CardImageMlcView: BaseCodeView {
             multiplier: 1/Constants.imageRatio).isActive = true
         
         animationView.heightAnchor.constraint(equalTo: imageView.heightAnchor).isActive = true
+        
+        setupAccessibility()
     }
     
     public func configure(with model: CardImageMlc) {
         accessibilityIdentifier = model.componentId
+        
         titleLabel.isHidden = model.label == nil
         titleLabel.text = model.label
+        titleLabel.accessibilityLabel = model.label
+        
         descriptionLabel.isHidden = model.description == nil
         descriptionLabel.text = model.description
+        descriptionLabel.accessibilityLabel = model.description
+        
         imageView.isHidden = model.image == nil
         if let imageURL = model.image {
             imageView.configure(with: DSIconUrlAtmModel(
@@ -58,6 +65,7 @@ public final class CardImageMlcView: BaseCodeView {
                 action: model.action))
         }
         animationView.isHidden = model.gif == nil
+        animationView.accessibilityLabel = model.gifAccessibilityDescription
         if let gifName = model.gif {
             animationView.animation = LottieAnimation.named(gifName, animationCache: nil)
             animationView.play()
@@ -66,6 +74,18 @@ public final class CardImageMlcView: BaseCodeView {
         if let attentionIconMessageMlc = model.attentionIconMessageMlc {
             attentionIconView.configure(with: attentionIconMessageMlc)
         }
+    }
+    
+    // MARK: - Private methods
+    private func setupAccessibility() {
+        titleLabel.isAccessibilityElement = true
+        titleLabel.accessibilityTraits = [.staticText, .header]
+        
+        descriptionLabel.isAccessibilityElement = true
+        descriptionLabel.accessibilityTraits = .staticText
+        
+        animationView.isAccessibilityElement = true
+        animationView.accessibilityTraits = .image
     }
 }
 

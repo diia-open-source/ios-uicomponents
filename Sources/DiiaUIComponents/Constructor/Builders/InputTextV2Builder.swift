@@ -59,7 +59,7 @@ public struct InputTextV2Builder: DSViewBuilderProtocol {
             viewModel.fieldState.value = .disabled
         }
         
-        let insets = paddingType.defaultPadding(object: object, modelKey: modelKey)
+        let insets = paddingType.defaultPaddingV2(object: object, modelKey: modelKey)
         let paddingBox = BoxView(subview: inputView).withConstraints(insets: insets)
         return paddingBox
     }

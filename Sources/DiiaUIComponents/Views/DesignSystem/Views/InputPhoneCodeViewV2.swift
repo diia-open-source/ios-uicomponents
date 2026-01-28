@@ -74,8 +74,7 @@ public final class InputPhoneCodeViewV2: BaseCodeView, DSInputComponentProtocol 
                                                spacing: Constants.stackSpacing)).withConstraints(insets: Constants.contentPadding)
         textStackBox.backgroundColor = .white
         
-        let bottomStack = UIStackView.create(views: [hintLabel, errorLabel],
-                                             padding: Constants.bottomPadding)
+        let bottomStack = BoxView(subview: UIStackView.create(views: [hintLabel, errorLabel])).withConstraints(insets:  Constants.bottomPadding)
         stack([textStackBox, bottomStack], spacing: Constants.smallSpacing)
         
         textField.autocapitalizationType = .none

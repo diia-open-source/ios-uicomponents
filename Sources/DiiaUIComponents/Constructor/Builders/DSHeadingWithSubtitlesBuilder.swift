@@ -25,7 +25,8 @@ extension DSHeadingWithSubtitlesBuilder: DSViewMockableBuilderProtocol {
     public func makeMockModel() -> AnyCodable {
         let model = DSHeadingWithSubtitlesModel(
             value: "Main Heading",
-            subtitles: ["First subtitle", "Second subtitle", "Third subtitle"]
+            subtitles: ["First subtitle", "Second subtitle", "Third subtitle"],
+            componentId: "componentId"
         )
         return .dictionary([
             modelKey: .fromEncodable(encodable: model)

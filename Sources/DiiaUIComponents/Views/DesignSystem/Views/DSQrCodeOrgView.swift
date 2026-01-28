@@ -19,7 +19,7 @@ final public class DSQrCodeOrgView: BaseCodeView {
     
     private let qrCodeView = DSQRCodeMlcView()
     
-    private let expireTimerLabel = DSExpireLabel()
+    private let expireTimerLabel = DSExpireLabel(configuration: Constants.expireLabelConfig)
     private let expireTextLabel = UILabel().withParameters(
         font: FontBook.statusFont,
         textColor: UIColor.black.withAlphaComponent(Constants.expireLabelAlphaColor)
@@ -239,5 +239,6 @@ extension DSQrCodeOrgView {
         static let expireLabelAlphaColor: CGFloat = 0.5
         static let qrCodeSize = CGSize(width: 230, height: 230)
         static let loadingIconSize = CGSize(width: 80, height: 80)
+        static let expireLabelConfig = DSExpireLabel.Configuration(timerLabelWidth: 42)
     }
 }

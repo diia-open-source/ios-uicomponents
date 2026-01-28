@@ -61,6 +61,9 @@ public final class TopNavigationView: UIView {
         backButton.accessibilityTraits = .button
         backButton.accessibilityLabel = R.Strings.general_back.localized()
         
+        titleLabel.isAccessibilityElement = true
+        titleLabel.accessibilityTraits = .header
+        
         contextButton.isAccessibilityElement = true
         contextButton.accessibilityTraits = .button
         contextButton.accessibilityLabel = R.Strings.general_context_menu_open.localized()

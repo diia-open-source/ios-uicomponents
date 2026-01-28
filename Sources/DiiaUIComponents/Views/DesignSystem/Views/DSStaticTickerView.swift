@@ -10,8 +10,10 @@ public final class DSStaticTickerView: BaseCodeView {
         textAlpha: 1,
         timerLabelWidth: Constants.timerLabelWidth))
     private let label = UILabel().withParameters(font: FontBook.usualFont, numberOfLines: 1)
-
     private lazy var mainHStackView = UIStackView.create(.horizontal, views: [label])
+
+    private var viewModel: DSStaticTickerViewModel?
+    private var eventHandler: ((ConstructorItemEvent) -> Void)?
 
     // MARK: - Lifecycle
     public override func setupSubviews() {
@@ -33,11 +35,17 @@ public final class DSStaticTickerView: BaseCodeView {
         addSubview(expireTimerLabel)
         expireTimerLabel.translatesAutoresizingMaskIntoConstraints = false
         expireTimerLabel.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        expireTimerLabel.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true      
+        expireTimerLabel.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+
+        let tap = UITapGestureRecognizer(target: self, action: #selector(onTap))
+        addGestureRecognizer(tap)
     }
 
     // MARK: - Public Methods
-    public func configure(with viewModel: DSStaticTickerViewModel) {
+    public func configure(with viewModel: DSStaticTickerViewModel, eventHandler: @escaping (ConstructorItemEvent) -> Void) {
+        self.viewModel = viewModel
+        self.eventHandler = eventHandler
+
         viewModel.type.removeObserver(observer: self)
         viewModel.label.removeObserver(observer: self)
         viewModel.timerText.removeObserver(observer: self)
@@ -72,6 +80,11 @@ public final class DSStaticTickerView: BaseCodeView {
     // MARK: - Private
     private func time(to timestamp: Int) -> Int {
         return timestamp - Int(Date().timeIntervalSince1970)
+    }
+
+    @objc private func onTap() {
+        guard let action = viewModel?.action else { return }
+        eventHandler?(.action(action))
     }
 }
 

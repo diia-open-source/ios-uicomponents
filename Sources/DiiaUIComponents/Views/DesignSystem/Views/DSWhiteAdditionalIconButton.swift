@@ -90,7 +90,7 @@ public final class DSWhiteAdditionalIconButton: BaseCodeView {
     
     public override func layoutSubviews() {
         super.layoutSubviews()
-        containerView.layer.cornerRadius = frame.height * 0.5
+        containerView.layer.cornerRadius = Constants.cornerRadius
         containerView.clipsToBounds = true
     }
     
@@ -113,8 +113,9 @@ public final class DSWhiteAdditionalIconButton: BaseCodeView {
 
 extension DSWhiteAdditionalIconButton {
     private enum Constants {
-        static let stackInsets: UIEdgeInsets = .init(top: 8, left: 18, bottom: 8, right: 18)
+        static let stackInsets: UIEdgeInsets = .init(top: 10, left: 10, bottom: 10, right: 10)
         static let iconSize: CGSize = .init(width: 24, height: 24)
         static let spacing: CGFloat = 8
+        static let cornerRadius: CGFloat = 16
     }
 }

@@ -4,11 +4,13 @@ import Foundation
 public final class DSLoadingButtonViewModel {
     public let title: Observable<String> = .init(value: "")
     public let state: Observable<LoadingStateButton.LoadingState> = .init(value: .disabled)
+    public let componentId: String?
     public var callback: (() -> Void)?
     
-    public init(title: String, state: LoadingStateButton.LoadingState) {
+    public init(title: String, state: LoadingStateButton.LoadingState, componentId: String? = nil) {
         self.title.value = title
         self.state.value = state
+        self.componentId = componentId
     }
 }
 

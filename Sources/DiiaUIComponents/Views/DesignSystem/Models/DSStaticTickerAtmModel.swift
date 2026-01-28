@@ -31,11 +31,15 @@ public class DSStaticTickerViewModel {
     private var runTimer: Int = 0
     private var timerLength: TimeInterval = 0
 
-    var onTimerExpiration: (() -> Void)?
+    public var onTimerExpiration: (() -> Void)?
 
     public func setupTimer(for timerTime: Int) {
-        self.timerLength = TimeInterval(timerTime)
-        self.startTimer()
+        if timerTime < 0 {
+            timerText.value = "00:00"
+        } else {
+            self.timerLength = TimeInterval(timerTime)
+            self.startTimer()
+        }
     }
 
     public func cancelTimer() {
@@ -80,8 +84,7 @@ public class DSStaticTickerViewModel {
 
         timerText.value = String(format: Constants.timerFormat, minutes, seconds)
 
-        if runTimer == .zero {
-            timerText.value = nil
+        if runTimer <= .zero {
             cancelTimer()
             onTimerExpiration?()
         }

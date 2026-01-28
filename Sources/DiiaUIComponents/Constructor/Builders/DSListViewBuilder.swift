@@ -44,7 +44,8 @@ public struct DSListViewBuilder: DSViewBuilderProtocol {
                 componentId: item.id,
                 accessibilityDescription: item.accessibilityDescription,
                 chipStatusAtm: item.chipStatusAtm,
-                amountAtm: item.amountAtm)
+                amountAtm: item.amountAtm,
+                detailsParameters: item.parameters)
             if let parameter = item.action {
                 viewModel.onClick = { [weak viewModel, weak groupViewModel] in
                     guard let viewModel = viewModel, let groupViewModel = groupViewModel else { return }

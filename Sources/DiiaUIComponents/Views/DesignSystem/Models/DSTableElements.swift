@@ -262,9 +262,11 @@ public struct DSPhotoItemModel: Codable {
 public struct DSHeadingWithSubtitlesModel: Codable, Equatable {
     public let value: String
     public let subtitles: [String]?
+    public let componentId: String?
     
-    public init(value: String, subtitles: [String]?) {
+    public init(value: String, subtitles: [String]?, componentId: String? = nil) {
         self.value = value
         self.subtitles = subtitles
+        self.componentId = componentId
     }
 }

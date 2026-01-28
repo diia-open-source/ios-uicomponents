@@ -123,6 +123,9 @@ public final class TopNavigationBigView: BaseCodeView {
         backButton.isAccessibilityElement = true
         backButton.accessibilityLabel = R.Strings.general_accessibility_back_button_hint.localized()
         
+        titleLabel.isAccessibilityElement = true
+        titleLabel.accessibilityTraits = .header
+        
         actionButton.isAccessibilityElement = true
         actionButton.accessibilityTraits = .button
     }
@@ -141,6 +144,6 @@ private extension TopNavigationBigView {
         static let textsSpacing: CGFloat = 8
         static let buttonSize: CGSize = .init(width: 44, height: 44)
         
-        static let blackAlpha: UIColor = .black.withAlphaComponent(0.5)
+        static let blackAlpha: UIColor = .black.withAlphaComponent(0.6)
     }
 }

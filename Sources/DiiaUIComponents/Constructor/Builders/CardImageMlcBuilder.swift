@@ -48,6 +48,7 @@ public struct CardImageMlc: Codable {
     public let attentionIconMessageMlc: DSAttentionIconMessageMlc?
     public let image: String?
     public let gif: String?
+    public let gifAccessibilityDescription: String?
     public let action: DSActionParameter?
     
     public init(
@@ -58,6 +59,7 @@ public struct CardImageMlc: Codable {
         attentionIconMessageMlc: DSAttentionIconMessageMlc? = nil,
         image: String? = nil,
         gif: String? = nil,
+        gifAccessibilityDescription: String? = nil,
         action: DSActionParameter? = nil) {
             self.componentId = componentId
             self.label = label
@@ -66,6 +68,7 @@ public struct CardImageMlc: Codable {
             self.attentionIconMessageMlc = attentionIconMessageMlc
             self.image = image
             self.gif = gif
+            self.gifAccessibilityDescription = gifAccessibilityDescription
             self.action = action
         }
 }

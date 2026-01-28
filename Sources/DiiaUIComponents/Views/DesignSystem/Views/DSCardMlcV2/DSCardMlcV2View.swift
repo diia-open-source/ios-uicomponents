@@ -59,6 +59,7 @@ public final class DSCardMlcV2View: BaseCodeView {
         addSubviews()
         setupLayout()
         handleTap()
+        setupAccessibility()
         
         bottomRightIcon.onClick = { [weak self] action in
             self?.viewModel?.onTap?(action)
@@ -199,6 +200,14 @@ public final class DSCardMlcV2View: BaseCodeView {
         self.translatesAutoresizingMaskIntoConstraints = false
         self.widthAnchor.constraint(greaterThanOrEqualToConstant: Constants.iconUrlSize.width + Constants.contentHStackSpacing + Constants.estimatedWidth).isActive = true
         self.heightAnchor.constraint(greaterThanOrEqualToConstant: Constants.iconUrlSize.height + Constants.mediumSpacing).isActive = true
+    }
+    
+    private func setupAccessibility() {
+        label.isAccessibilityElement = true
+        label.accessibilityTraits = .header
+        
+        bottomRightIcon.isAccessibilityElement = true
+        bottomRightIcon.accessibilityTraits = .button
     }
     
     private func updateCollectionViewHeight() {

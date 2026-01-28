@@ -71,7 +71,7 @@ private extension DSBtnAddOptionAtmView {
         static let descriptionLabelTextColor: UIColor = .black.withAlphaComponent(0.54)
         static let spacing: CGFloat = 16
         static let smallSpacing: CGFloat = 4
-        static let cornerRadius: CGFloat = 10
+        static let cornerRadius: CGFloat = 16
         static let defaultAlpha: CGFloat = 1
         static let disabledAlpha: CGFloat = 0.5
     }
