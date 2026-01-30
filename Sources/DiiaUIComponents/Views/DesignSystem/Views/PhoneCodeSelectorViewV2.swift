@@ -11,7 +11,7 @@ public final class PhoneCodeSelectorViewV2: BaseCodeView {
     
     // MARK: - Init
     public override func setupSubviews() {
-        arrowImageView.image = UIImage(named: "right_arrow")?.withRenderingMode(.alwaysTemplate)
+        arrowImageView.image = R.image.arrowRight.image?.withRenderingMode(.alwaysTemplate)
         flagLabel.setContentHuggingPriority(.required, for: .horizontal)
         phoneCodeLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
         phoneCodeLabel.setContentHuggingPriority(.required, for: .horizontal)

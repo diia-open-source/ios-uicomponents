@@ -60,7 +60,7 @@ public final class DSListItemViewModel: NSObject {
         self.leftBase64Icon = nil
         self.leftBigIcon = imageProvider.imageForCode(imageCode: item.bigIconLeft?.code)
         self.leftLogoLink = item.logoLeft
-        self.leftSmallIcon = nil
+        self.leftSmallIcon = imageProvider.imageForCode(imageCode: item.iconLeft?.code)
         self.title = item.label
         self.details = item.description
         self.rightIcon = imageProvider.imageForCode(imageCode: item.iconRight?.code)
@@ -139,8 +139,9 @@ public final class DSListItemView: BaseCodeView {
         detailsTextView.font = FontBook.usualFont
         detailsTextView.textColor = .black540
         detailsTextView.textContainer.lineBreakMode = .byTruncatingTail
-        detailsTextView.configureForParametrizedText()
+        detailsTextView.configureForParametrizedText(linkTextColor: .black540)
         detailsTextView.setContentCompressionResistancePriority(.required, for: .horizontal)
+        detailsTextView.delegate = self
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(onClick))
         addGestureRecognizer(tapGesture)
         isUserInteractionEnabled = true
@@ -178,7 +179,7 @@ public final class DSListItemView: BaseCodeView {
 
         detailsTextView.isHidden = viewModel.details == nil
         if let detailsParameters = viewModel.detailsParameters, !detailsParameters.isEmpty {
-            detailsTextView.attributedText = viewModel.details?.attributedTextWithParameters(parameters: detailsParameters)
+            detailsTextView.attributedText = viewModel.details?.attributedTextWithParameters(textColor: .black540, parameters: detailsParameters)
         } else {
             detailsTextView.text = viewModel.details
         }
@@ -257,6 +258,12 @@ public final class DSListItemView: BaseCodeView {
     
     @objc private func onClick() {
         onClickHandler?()
+    }
+}
+
+extension DSListItemView: UITextViewDelegate {
+    public func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+        return !(UIComponentsConfiguration.shared.urlOpener?.url(urlString: URL.absoluteString, linkType: nil) ?? false)
     }
 }
 

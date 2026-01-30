@@ -28,7 +28,7 @@ public struct DSTableBlockTwoColumnsOrgBuilder: DSViewBuilderProtocol {
 
 extension DSTableBlockTwoColumnsOrgBuilder {
     enum Constants {
-        static let insets = UIEdgeInsets(top: 24, left: .zero, bottom: .zero, right: .zero)
+        static let insets = UIEdgeInsets(top: 24, left: 24, bottom: .zero, right: 24)
     }
 }
 

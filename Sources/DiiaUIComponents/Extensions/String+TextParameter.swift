@@ -10,6 +10,7 @@ public extension String {
 
     func attributedTextWithParameters(
         font: UIFont = FontBook.usualFont,
+        textColor: UIColor = .black,
         lineHeightMultiple: CGFloat = 1.25,
         lineHeight: CGFloat? = nil,
         paragraphSpacing: CGFloat? = nil,
@@ -32,6 +33,7 @@ public extension String {
             string: self,
             attributes: [
                 .font: font,
+                .foregroundColor: textColor,
                 .paragraphStyle: paragraphStyle,
             ])
         

@@ -24,7 +24,7 @@ public final class DSPhoneCodeSelectorView: BaseCodeView {
     
     // MARK: - Init
     public override func setupSubviews() {
-        arrowImageView.image = UIImage(named: "right_arrow")?.withRenderingMode(.alwaysTemplate)
+        arrowImageView.image = R.image.arrowRight.image?.withRenderingMode(.alwaysTemplate)
         flagLabel.setContentHuggingPriority(.required, for: .horizontal)
         
         let contentStack = UIStackView.create(

@@ -4,7 +4,7 @@ import UIKit
 
 public final class DSCardMlcV2View: BaseCodeView {
     private let mainStack = UIStackView.create(.vertical, spacing: Constants.spacing)
-    private let contentHStack = UIStackView.create(.horizontal, spacing: Constants.contentHStackSpacing, alignment: .leading)
+    private let contentHStack = UIStackView.create(.horizontal, spacing: Constants.contentHStackSpacing, alignment: .top)
     private let contentVStack = UIStackView.create(.vertical, spacing: Constants.mediumSpacing)
     private let descriptionsStack = UIStackView.create()
     private let rowsStack = UIStackView.create(spacing: Constants.mediumSpacing)
@@ -56,6 +56,8 @@ public final class DSCardMlcV2View: BaseCodeView {
     public override func setupSubviews() {
         backgroundColor = .white
         layer.cornerRadius = Constants.cornerRadius
+        label.setContentCompressionResistancePriority(.required, for: .vertical)
+
         addSubviews()
         setupLayout()
         handleTap()
@@ -71,10 +73,8 @@ public final class DSCardMlcV2View: BaseCodeView {
         super.layoutSubviews()
         let width = chipsCollectionView.bounds.width
         guard width > 0 else { return }
-        if width != lastChipsWidthStored {
-            lastChipsWidthStored = width
-            updateCollectionViewHeight()
-        }
+        lastChipsWidthStored = width
+        updateCollectionViewHeight()
     }
     
     public func configure(with viewModel: DSCardMlcV2ViewModel) {
@@ -82,7 +82,7 @@ public final class DSCardMlcV2View: BaseCodeView {
         
         accessibilityIdentifier = viewModel.componentId
         label.text = viewModel.label
-        
+
         attentionIconMessageView.isHidden = viewModel.attentionIconMessageMlc == nil
         if let attentionIconMessageMlc = viewModel.attentionIconMessageMlc {
             attentionIconMessageView.configure(with: attentionIconMessageMlc)
@@ -102,6 +102,7 @@ public final class DSCardMlcV2View: BaseCodeView {
             descriptionsStack.safelyRemoveArrangedSubviews()
             descriptions.forEach {
                 let descriptionLabel = UILabel().withParameters(font: FontBook.usualFont, textColor: Constants.grayTextColor)
+                descriptionLabel.setContentCompressionResistancePriority(.required, for: .vertical)
                 descriptionLabel.text = $0
                 descriptionsStack.addArrangedSubview(descriptionLabel)
             }
@@ -222,24 +223,25 @@ public final class DSCardMlcV2View: BaseCodeView {
         chipsCollectionView.collectionViewLayout.invalidateLayout()
         chipsCollectionView.layoutIfNeeded()
         
-        let collectionWidth = chipsCollectionView.bounds.width
-        var totalWidth: CGFloat = 0
+        let maxWidth = chipsCollectionView.bounds.width
+        var currentRowWidth: CGFloat = 0
         var rowCount = 1
-        
+
         for chip in chips {
-            let textWidth = DSChipStatusAtmView.widthForText(text: chip.chipStatusAtm.name)
-            let width = textWidth + Constants.chipHorizontalPadding * 2 + Constants.chipBorderWidth * 2
-            
-            totalWidth += width + Constants.minimumInteritemSpacing
-            
-            if totalWidth > collectionWidth {
+            let chipViewWidth = DSChipStatusAtmView.widthForText(text: chip.chipStatusAtm.name)
+            currentRowWidth += chipViewWidth
+
+            let shouldAddRow = currentRowWidth > maxWidth
+
+            if shouldAddRow {
                 rowCount += 1
-                totalWidth = width
+                currentRowWidth = chipViewWidth
+            } else {
+                currentRowWidth += Constants.minimumInteritemSpacing
             }
         }
-        
+
         let newHeight = CGFloat(rowCount) * Constants.chipsHeight + CGFloat(rowCount - 1) * Constants.minimumLineSpacing
-        
         if lastAppliedChipsHeight != newHeight {
             lastAppliedChipsHeight = newHeight
             chipsCollectionViewHeightConstraint?.constant = newHeight

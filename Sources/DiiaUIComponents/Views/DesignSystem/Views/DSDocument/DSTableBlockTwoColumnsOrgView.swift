@@ -13,7 +13,7 @@ public final class DSTableBlockTwoColumnsOrgView: BaseCodeView {
         backgroundView.layer.cornerRadius = Constants.cornerRadius
         backgroundView.backgroundColor = .white
         addSubview(backgroundView)
-        backgroundView.fillSuperview(padding: Constants.padding)
+        backgroundView.fillSuperview()
         backgroundView.addSubview(tableBlockTwoColumnsOrgView)
         tableBlockTwoColumnsOrgView.fillSuperview(padding: .init(top: Constants.spacing,
                                                                  left: 0,
@@ -34,7 +34,6 @@ public final class DSTableBlockTwoColumnsOrgView: BaseCodeView {
 
 extension DSTableBlockTwoColumnsOrgView {
     enum Constants {
-        static let padding = UIEdgeInsets(top: 0, left: 24, bottom: 0, right: 24)
         static let spacing: CGFloat = 16
         static let cornerRadius: CGFloat = 16
         static let verticalStackSpace: CGFloat = 12
