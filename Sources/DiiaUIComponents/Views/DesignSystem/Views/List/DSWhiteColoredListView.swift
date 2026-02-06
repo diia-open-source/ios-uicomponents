@@ -104,6 +104,7 @@ public final class DSWhiteColoredListView: BaseCodeView {
     private func addTitleView(_ title: String) {
         let descriptionLabel = BoxView(subview: UILabel().withParameters(font: FontBook.usualFont))
         descriptionLabel.subview.text = title
+        descriptionLabel.subview.accessibilityTraits = .header
         descriptionLabel.withConstraints(insets: Constants.titleInsets)
         descriptionLabel.subview.setContentCompressionResistancePriority(.required, for: .vertical)
         stackView.addArrangedSubview(descriptionLabel)

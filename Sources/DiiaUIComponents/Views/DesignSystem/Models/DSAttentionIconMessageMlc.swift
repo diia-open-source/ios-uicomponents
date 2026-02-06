@@ -2,7 +2,7 @@
 import Foundation
 import DiiaCommonTypes
 
-public struct DSAttentionIconMessageMlc: Codable {
+public struct DSAttentionIconMessageMlc: Codable, Equatable {
     public let componentId: String?
     public let smallIconAtm: DSIconModel
     public let text: String
@@ -49,7 +49,7 @@ public struct DSAttentionIconMessageMlc: Codable {
     )
 }
 
-public struct DSAttentionIconMessageMlcExpanded: Codable {
+public struct DSAttentionIconMessageMlcExpanded: Codable, Equatable {
     public let expandedText: String
     public let collapsedText: String
     public let isExpanded: Bool?
@@ -61,7 +61,7 @@ public struct DSAttentionIconMessageMlcExpanded: Codable {
     }
 }
 
-public enum DSAttentionIconBackgroundMode: String, Codable {
+public enum DSAttentionIconBackgroundMode: String, Codable, Equatable {
     case info
     case note
     

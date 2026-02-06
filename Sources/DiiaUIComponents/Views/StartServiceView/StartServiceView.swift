@@ -23,6 +23,7 @@ public final class StartServiceView: UIView {
     public override func awakeFromNib() {
         super.awakeFromNib()
         setup()
+        setupAccessibility()
     }
     
     // MARK: - Setup
@@ -41,6 +42,12 @@ public final class StartServiceView: UIView {
         statusView.isHidden = message == nil
         guard let message = message else { return }
         statusView.configure(message: message)
+    }
+    
+    // MARK: - Private
+    private func setupAccessibility() {
+        greetingsLabel.isAccessibilityElement = true
+        greetingsLabel.accessibilityTraits = .header
     }
 }
 

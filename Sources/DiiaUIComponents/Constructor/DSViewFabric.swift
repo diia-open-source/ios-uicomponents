@@ -247,6 +247,7 @@ public extension DSViewFabric {
         DSTableBlockTwoColumnsOrgBuilder(),
         DSImageCardCarouselBuilder(),
         DSChipTabsViewBuilder(),
+        DSCenterChipTabsOrgBuilder(),
         DSLoopingVideoCardBuilder(),
         DSCardMlcV2Builder(),
         DSCheckboxCascadeGroupBuilder(),

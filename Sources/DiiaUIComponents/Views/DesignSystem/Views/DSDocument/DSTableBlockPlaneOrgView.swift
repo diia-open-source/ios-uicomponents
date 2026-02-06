@@ -131,7 +131,7 @@ public final class DSTableBlockPlaneOrgView: BaseCodeView {
     // MARK: - Accessibility
     private func setupAccessibility() {
         headingLabel.isAccessibilityElement = true
-        headingLabel.accessibilityTraits = .staticText
+        headingLabel.accessibilityTraits = .header
         
         subheadingLabel.isAccessibilityElement = true
         subheadingLabel.accessibilityTraits = .staticText

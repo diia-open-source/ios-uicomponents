@@ -13,7 +13,9 @@ public struct DSInputNumberViewBuilder: DSViewBuilderProtocol {
         eventHandler: @escaping (ConstructorItemEvent) -> Void
     ) -> UIView? {
         guard let data: DSInputNumberMlcModel = object.parseValue(forKey: self.modelKey) else { return nil }
-        
+        let validators = data.validation?.compactMap {
+            TextValidationErrorGenerator(validationModel: $0)
+        } ?? []
         let inputView = DSInputNumberMlcView()
         inputView.setEventHandler(eventHandler)
         inputView.configure(with: DSInputNumberMlcViewModel(
@@ -28,7 +30,8 @@ public struct DSInputNumberViewBuilder: DSViewBuilderProtocol {
             minValue: data.minValue,
             mandatory: data.mandatory,
             errorMessage: data.errorMessage,
-            iconRight: data.iconRight))
+            iconRight: data.iconRight,
+            validators: validators))
         let paddingBox = BoxView(subview: inputView).withConstraints(insets: paddingType.defaultPadding(object: object, modelKey: modelKey))
         return paddingBox
     }

@@ -1,16 +1,6 @@
 
 import UIKit
 
-public struct DSTitleCentralizedMlcModel: Codable {
-    public let componentId: String
-    public let label: String
-    
-    public init(componentId: String, label: String) {
-        self.componentId = componentId
-        self.label = label
-    }
-}
-
 final public class DSTitleCentralizedMlcView: BaseCodeView {
     private let centralizedLabel = UILabel().withParameters(font: FontBook.mainFont.regular.size(21))
     

@@ -31,7 +31,8 @@ extension DSTableBlockTwoColumnsBuilder: DSViewMockableBuilderProtocol {
                 value: "value",
                 subtitles: ["subtitle1", "subtitle2"],
                 componentId: "componentId"
-            )
+            ),
+            attentionIconMessageMlc: .mock
         )
         return .dictionary([
             modelKey: .fromEncodable(encodable: model)

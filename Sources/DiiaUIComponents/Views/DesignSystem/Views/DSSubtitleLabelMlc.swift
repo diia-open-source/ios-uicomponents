@@ -25,6 +25,7 @@ public final class DSSubtitleLabelMlcView: BaseCodeView {
     
     public func configure(model: DSSubtitleLabelMlc) {
         label.text = model.label
+        label.accessibilityTraits = .header
         let icon = UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: model.icon)
         iconView.isHidden = icon == nil
         iconView.image = icon

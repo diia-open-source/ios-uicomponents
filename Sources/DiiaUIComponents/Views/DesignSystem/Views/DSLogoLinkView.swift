@@ -44,6 +44,7 @@ final class DSLogoLinkView: BaseCodeView {
         loadingView.translatesAutoresizingMaskIntoConstraints = false
         loadingView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         loadingView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+        loadingView.withSize(Constants.placeholderSize)
         addSubview(imageView)
         
         imageView.fillSuperview()

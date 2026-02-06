@@ -18,12 +18,20 @@ public struct DSTitleLabelBuilder: DSViewBuilderProtocol {
                          eventHandler: @escaping (ConstructorItemEvent) -> Void) -> UIView? {
         guard let data: DSTitleLabelMlc = object.parseValue(forKey: self.modelKey) else { return nil }
         
-        let label = UILabel().withParameters(font: FontBook.cardsHeadingFont)
-        label.text = data.label
-        label.accessibilityIdentifier = data.componentId
+        let label = titleLabel(with: data)
         let insets = padding ?? paddingType.defaultPadding(object: object, modelKey: modelKey)
         let paddingBox = BoxView(subview: label).withConstraints(insets: insets)
         return paddingBox
+    }
+    
+    private func titleLabel(with data: DSTitleLabelMlc) -> UILabel {
+        let label = UILabel().withParameters(font: FontBook.cardsHeadingFont)
+        label.text = data.label
+        label.accessibilityIdentifier = data.componentId
+        label.isAccessibilityElement = true
+        label.accessibilityTraits = .header
+        label.accessibilityLabel = data.label
+        return label
     }
 }
 

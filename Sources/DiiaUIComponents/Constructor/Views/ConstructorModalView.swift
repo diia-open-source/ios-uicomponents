@@ -125,7 +125,7 @@ public final class ConstructorModalView: BaseCodeView {
         spacer.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         let topBlock = UIStackView.create(.horizontal,
                                           views: [topView, spacer, bottomBox],
-                                          alignment: .top)
+                                          alignment: .center)
         stackView.addArrangedSubview(topBlock)
     }
     

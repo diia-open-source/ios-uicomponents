@@ -12,11 +12,12 @@ public struct DSTitleCentralizedMlcBuilder: DSViewBuilderProtocol {
                          eventHandler: @escaping (ConstructorItemEvent) -> Void) -> UIView? {
         guard let data: DSTitleCentralizedMlcModel = object.parseValue(forKey: self.modelKey) else { return nil }
         
-        let view = DSTitleCentralizedMlcView()
-        view.configure(with: data)
+        let label = UILabel().withParameters(font: FontBook.mainFont.regular.size(Constants.labelFontSize), numberOfLines: 0, textAlignment: .center)
+        label.accessibilityIdentifier = data.componentId
+        label.text = data.label
         
         let insets = padding.defaultPaddingV2(object: object, modelKey: modelKey)
-        let paddingBox = BoxView(subview: view).withConstraints(insets: insets)
+        let paddingBox = BoxView(subview: label).withConstraints(insets: insets)
         return paddingBox
     }
 }
@@ -27,5 +28,12 @@ extension DSTitleCentralizedMlcBuilder: DSViewMockableBuilderProtocol {
         return .dictionary([
             modelKey: .fromEncodable(encodable: model)
         ])
+    }
+}
+
+// MARK: - Constants
+private extension DSTitleCentralizedMlcBuilder {
+    enum Constants {
+        static let labelFontSize: CGFloat = 21
     }
 }

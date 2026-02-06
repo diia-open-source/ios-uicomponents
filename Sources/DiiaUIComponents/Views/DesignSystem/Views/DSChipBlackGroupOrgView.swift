@@ -107,6 +107,7 @@ public final class DSChipBlackGroupOrgView: BaseCodeView, DSResetStateComponentP
             separatorView,
             chipItemsVStack
         ])
+        setupAccessibility()
         layoutIfNeeded()
     }
     
@@ -162,6 +163,11 @@ public final class DSChipBlackGroupOrgView: BaseCodeView, DSResetStateComponentP
             spacing: Constants.chipHorizontalInset)
         stack.withHeight(Constants.chipHeight)
         return stack
+    }
+    
+    private func setupAccessibility() {
+        chipsTitleLabel.isAccessibilityElement = true
+        chipsTitleLabel.accessibilityTraits = .header
     }
 }
 

@@ -36,20 +36,15 @@ public final class DSTableBlockTwoColumnsPlaneOrgView: BaseCodeView {
             headingView.configure(model: headingData)
             mainStackView.addArrangedSubview(headingView)
         }
-        if let photoItem = models.photo, imagesContent[photoItem] != nil || models.photoURL != nil {
-            let photoItemView = DSDocPhotoView()
-            photoItemView.isAccessibilityElement = true
-            photoItemView.accessibilityTraits = .image
-            photoItemView.accessibilityLabel = R.Strings.document_accessibility_doc_photo.localized()
-            if let photoURL = models.photoURL {
-                photoItemView.configure(
-                    imageURL: photoURL,
-                    accessibilityDescription: R.Strings.accessibility_photo_url.localized())
-            } else {
-                photoItemView.configure(content: imagesContent[photoItem])
-            }
-            photoItemView.withBorder(width: 1, color: Constants.borderColor)
-            tableStackView.addArrangedSubview(photoItemView)
+        if let attentionIconMessageMlc = models.attentionIconMessageMlc {
+            let attentionView = DSAttentionIconMessageView()
+            attentionView.configure(with: attentionIconMessageMlc)
+            mainStackView.addArrangedSubview(attentionView)
+        }
+        if let photoItem = models.photo, imagesContent[photoItem] != nil {
+            setupPhotoView(image: imagesContent[photoItem])
+        } else if models.photoUrl != nil {
+            setupPhotoView(photoURL: models.photoUrl)
         }
         let verticalStackView = UIStackView.create(.vertical, spacing: Constants.verticalStackSpace)
         if let itemsData = models.items {
@@ -77,6 +72,22 @@ public final class DSTableBlockTwoColumnsPlaneOrgView: BaseCodeView {
     }
     
     private func setupUI() {}
+    
+    private func setupPhotoView(image: UIImage? = nil, photoURL: String? = nil) {
+        let photoItemView = DSDocPhotoView()
+        photoItemView.isAccessibilityElement = true
+        photoItemView.accessibilityTraits = .image
+        photoItemView.accessibilityLabel = R.Strings.document_accessibility_doc_photo.localized()
+        if let photoURL = photoURL {
+            photoItemView.configure(
+                imageURL: photoURL,
+                accessibilityDescription: R.Strings.accessibility_photo_url.localized())
+        } else {
+            photoItemView.configure(content: image)
+        }
+        photoItemView.withBorder(width: 1, color: Constants.borderColor)
+        tableStackView.addArrangedSubview(photoItemView)
+    }
 }
 
 extension DSTableBlockTwoColumnsPlaneOrgView {

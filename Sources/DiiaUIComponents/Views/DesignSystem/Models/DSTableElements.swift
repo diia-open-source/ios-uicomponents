@@ -222,20 +222,25 @@ public struct DSValueIcon: Codable, Equatable {
 public struct DSTableBlockTwoColumnPlaneOrg: Codable, Equatable {
     public let componentId: String?
     public let photo: DSDocumentContentData?
-    public let photoURL: String?
+    public let photoUrl: String?
     public let items: [DSItemsModel]?
     public let headingWithSubtitlesMlc: DSHeadingWithSubtitlesModel?
+    public let attentionIconMessageMlc: DSAttentionIconMessageMlc?
     
-    public init(componentId: String? = nil,
-                photo: DSDocumentContentData?,
-                photoURL: String? = nil,
-                items: [DSItemsModel]?,
-                headingWithSubtitlesMlc: DSHeadingWithSubtitlesModel?) {
+    public init(
+        componentId: String? = nil,
+        photo: DSDocumentContentData?,
+        photoUrl: String? = nil,
+        items: [DSItemsModel]?,
+        headingWithSubtitlesMlc: DSHeadingWithSubtitlesModel?,
+        attentionIconMessageMlc: DSAttentionIconMessageMlc? = nil
+    ) {
         self.componentId = componentId
         self.photo = photo
-        self.photoURL = photoURL
+        self.photoUrl = photoUrl
         self.items = items
         self.headingWithSubtitlesMlc = headingWithSubtitlesMlc
+        self.attentionIconMessageMlc = attentionIconMessageMlc
     }
 }
 

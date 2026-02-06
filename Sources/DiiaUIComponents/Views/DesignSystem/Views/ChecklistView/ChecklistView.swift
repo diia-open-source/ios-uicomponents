@@ -99,6 +99,7 @@ public final class ChecklistView: BaseCodeView, DSInputComponentProtocol, DSRese
     private func addTitleLabel(text: String) {
         let titleLabelBox = BoxView(subview: UILabel().withParameters(font: FontBook.usualFont))
         titleLabelBox.subview.text = text
+        titleLabelBox.subview.accessibilityTraits = .header
         titleLabelBox.withConstraints(insets: Constants.contentInsets)
         stackView.addArrangedSubview(titleLabelBox)
         addSeparatorView()

@@ -22,6 +22,7 @@ public struct DSInputNumberMlcModel: Codable {
     public let errorMessage: String?
     public let mask: String?
     public let iconRight: DSIconModel?
+    public let validation: [InputValidationModel]?
     
     public init(componentId: String?,
                 inputCode: String?,
@@ -34,7 +35,8 @@ public struct DSInputNumberMlcModel: Codable {
                 mandatory: Bool?,
                 errorMessage: String?,
                 mask: String? = nil,
-                iconRight: DSIconModel? = nil) {
+                iconRight: DSIconModel? = nil,
+                validation: [InputValidationModel]? = nil) {
         self.componentId = componentId
         self.inputCode = inputCode
         self.label = label
@@ -47,6 +49,7 @@ public struct DSInputNumberMlcModel: Codable {
         self.errorMessage = errorMessage
         self.mask = mask
         self.iconRight = iconRight
+        self.validation = validation
     }
 }
 
@@ -67,7 +70,7 @@ public final class DSInputNumberMlcViewModel {
     public let iconRight: DSIconModel?
     public let fieldState = Observable<TextFieldState>(value: .unfocused)
     public let accessoryState = Observable<DSInputNumberLoadingIconsState>(value: .defaultIcons)
-    public var validators: [TextValidationErrorGenerator] = []
+    public var validators: [TextValidationErrorGenerator]
     
     public init(
         componentId: String?,
@@ -81,7 +84,8 @@ public final class DSInputNumberMlcViewModel {
         minValue: Double?,
         mandatory: Bool?,
         errorMessage: String?,
-        iconRight: DSIconModel?
+        iconRight: DSIconModel?,
+        validators: [TextValidationErrorGenerator] = []
     ) {
         self.componentId = componentId
         self.inputCode = inputCode
@@ -89,27 +93,34 @@ public final class DSInputNumberMlcViewModel {
         self.placeholder = placeholder
         self.hint = hint
         self.mask = mask
-        if let mask, !mask.isEmpty {
-            self.maskCapacity = mask.filter { $0 == "#" }.count
-        } else {
-            self.maskCapacity = nil
-        }
         self.value = value
         self.maxValue = maxValue
         self.minValue = minValue
         self.mandatory = mandatory
         self.errorMessage = errorMessage
         self.iconRight = iconRight
+        self.validators = validators
         
-        if let capacity = self.maskCapacity {
-            validators.append(TextValidationErrorGenerator(type: .length(min: capacity, max: capacity), error: errorMessage))
+        if let mask, !mask.isEmpty {
+            self.maskCapacity = mask.filter { $0 == "#" }.count
+        } else {
+            self.maskCapacity = nil
         }
-        
+ 
         if minValue != nil || maxValue != nil {
             self.validators.append(
                 TextValidationErrorGenerator(
                     type: .number(min: minValue, max: maxValue),
                     error: errorMessage))
+        }
+        
+        if self.validators.isEmpty, let capacity = self.maskCapacity {
+            self.validators.append(
+                TextValidationErrorGenerator(
+                    type: .length(min: capacity, max: capacity),
+                    error: errorMessage
+                )
+            )
         }
     }
 }

@@ -105,15 +105,9 @@ public extension UITableView {
         register(cellType.self, forCellReuseIdentifier: cellType.reuseID)
     }
 
-    final func dequeueReusableCell<T: UITableViewCell>(
-        for indexPath: IndexPath,
-        cellType: T.Type = T.self
-    ) -> T where T: Reusable {
-        guard let cell = dequeueReusableCell(withIdentifier: cellType.reuseID,
-                                             for: indexPath) as? T else {
-            fatalError(
-                "Failed to dequeue a cell with identifier \(cellType.reuseID) matching type \(cellType.self)."
-            )
+    final func dequeueReusableCell<T: Reusable & UITableViewCell>(for indexPath: IndexPath, cellType: T.Type = T.self) -> T {
+        guard let cell = dequeueReusableCell(withIdentifier: cellType.reuseID, for: indexPath) as? T else {
+            return T()
         }
         return cell
     }

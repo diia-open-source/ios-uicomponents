@@ -17,15 +17,30 @@ public final class ScanModalCardView: BaseCodeView {
     
     // MARK: - Init
     public override func setupSubviews() {
-        let mainStack = UIStackView.create(
-            views: [chipStatusAtmView, titleLabel, descriptionLabel, tableItemsStack, attentionIconMessageView, listItemsStack],
+        let infoVStack = UIStackView.create(
+            views: [chipStatusAtmView, titleLabel, descriptionLabel, tableItemsStack, attentionIconMessageView],
             spacing: Constants.stackSpacing)
         
         let container = UIView()
         container.backgroundColor = .white
         container.layer.cornerRadius = Constants.mainStackCornerRadius
-        container.addSubview(mainStack)
-        mainStack.fillSuperview(padding: Constants.mainStackPadding)
+        container.addSubview(infoVStack)
+        
+        infoVStack.anchor(
+            top: container.topAnchor,
+            leading: container.leadingAnchor,
+            trailing: container.trailingAnchor,
+            padding: Constants.infoStackPadding
+        )
+        
+        container.addSubview(listItemsStack)
+        listItemsStack.anchor(
+            top: infoVStack.bottomAnchor,
+            leading: container.leadingAnchor,
+            bottom: container.bottomAnchor,
+            trailing: container.trailingAnchor,
+            padding: Constants.listItemStackPadding
+        )
         
         addSubview(container)
         container.anchor(
@@ -89,9 +104,7 @@ public final class ScanModalCardView: BaseCodeView {
                 tableItemsStack.addArrangedSubview(makeSeparator())
             }
             if let tableItemHorizontalMlc = tableItem.tableItemHorizontalMlc {
-                let tableHorizontalView = BoxView(
-                    subview: horizontalMlcbuilder.makeView(model: tableItemHorizontalMlc))
-                    .withConstraints(insets: Constants.padding)
+                let tableHorizontalView = BoxView(subview: horizontalMlcbuilder.makeView(model: tableItemHorizontalMlc))
                 tableItemsStack.addArrangedSubview(tableHorizontalView)
             }
             if let tableItemVerticalMlc = tableItem.tableItemVerticalMlc {
@@ -107,7 +120,7 @@ public final class ScanModalCardView: BaseCodeView {
         let separator = UIView()
         separator.backgroundColor = UIColor(AppConstants.Colors.separatorColor)
         separator.withHeight(Constants.separatorHeight)
-        return separator
+        return BoxView(subview: separator).withConstraints(insets: Constants.separatorInset)
     }
 }
 
@@ -117,9 +130,11 @@ private extension ScanModalCardView {
         static let stackSpacing: CGFloat = 16
         static let mainStackCornerRadius: CGFloat = 16
         static let contentStackSpacing: CGFloat = 8
-        static let mainStackPadding = UIEdgeInsets(horizontal: 24, vertical: 24)
+        static let infoStackPadding = UIEdgeInsets(horizontal: 24, vertical: 24)
         static let bottomIconPadding = UIEdgeInsets(top: 24)
         static let padding = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+        static let separatorInset = UIEdgeInsets(horizontal: 16)
         static let separatorHeight: CGFloat = 1
+        static let listItemStackPadding = UIEdgeInsets(left: 8, right: 8, bottom: 8, top: 16)
     }
 }

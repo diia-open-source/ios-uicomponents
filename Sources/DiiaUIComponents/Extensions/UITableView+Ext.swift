@@ -17,13 +17,5 @@ extension UITableView {
         footer.frame.size = footer.systemLayoutSizeFitting(.init(width: frame.width, height: UIView.layoutFittingCompressedSize.height))
         self.tableFooterView = footer
     }
-
-    func dequeueReusableCell<CellClass: Reusable & UITableViewCell>(cellClass: CellClass.Type, for indexPath: IndexPath) -> CellClass {
-        guard let cell = self.dequeueReusableCell(withIdentifier: cellClass.reuseID, for: indexPath) as? CellClass
-        else {
-            return CellClass()
-        }
-        return cell
-    }
 }
 

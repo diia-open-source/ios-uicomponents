@@ -33,6 +33,7 @@ public final class DSTextContainerView: BaseCodeView {
     
     // MARK: - Setup
     public func configure(label: String?, text: String?, parameters: [TextParameter] = []) {
+        titleLabel.accessibilityTraits = .header
         titleLabel.isHidden = label == nil
         if let label = label {
             titleLabel.text = label
