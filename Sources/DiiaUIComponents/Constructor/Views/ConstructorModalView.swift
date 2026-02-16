@@ -118,14 +118,14 @@ public final class ConstructorModalView: BaseCodeView {
         closeButton.isHidden = false
         closeButton.backgroundColor = .clear
         let bottomBox = BoxView(subview: closeButton)
-            .withConstraints(insets: .init(top: 0, left: 0, bottom: 0, right: Constants.padding))
+            .withConstraints(insets: Constants.closeBtnPadding)
         let topView = views.removeFirst()
         let spacer = UIView()
         spacer.setContentHuggingPriority(.defaultLow, for: .horizontal)
         spacer.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         let topBlock = UIStackView.create(.horizontal,
                                           views: [topView, spacer, bottomBox],
-                                          alignment: .center)
+                                          alignment: .top)
         stackView.addArrangedSubview(topBlock)
     }
     
@@ -181,6 +181,5 @@ private extension ConstructorModalView {
         static let closeBtnSize = CGSize(width: 48, height: 48)
         static let closeBtnPadding = UIEdgeInsets(top: 24, left: .zero, bottom: .zero, right: 16)
         static let closeBtnInnerPadding: UIEdgeInsets = .allSides(16)
-
     }
 }

@@ -280,13 +280,13 @@ final class DSInputNumberMlcView: BaseCodeView {
             self.titleLabel.textColor = .black
             self.errorLabel.isHidden = true
             self.hintLabel.isHidden = self.viewModel?.hint?.isEmpty == true
-        case .error:
-            self.isUserInteractionEnabled = true
-            self.containerView.alpha = Constants.defaultAlpha
-            self.containerView.layer.borderColor = Constants.errorColor.cgColor
-            self.titleLabel.textColor = Constants.errorColor
-            self.errorLabel.isHidden = false
-            self.hintLabel.isHidden = true
+        case .error(let focused):
+                isUserInteractionEnabled = true
+                containerView.alpha = Constants.defaultAlpha
+                containerView.layer.borderColor = Constants.errorColor.cgColor
+                titleLabel.textColor = Constants.errorColor
+                errorLabel.isHidden = focused
+                hintLabel.isHidden = true
         case .disabled:
             self.isUserInteractionEnabled = false
             self.containerView.layer.borderColor = Constants.borderEmpty.cgColor
@@ -373,9 +373,9 @@ final class DSInputNumberMlcView: BaseCodeView {
         guard viewModel?.accessoryState.value == .defaultIcons else { return }
         
         let hasText = !(textField.text?.isEmpty ?? false)
-        let hasScanner = (viewModel?.iconRight != nil && viewModel?.mask != nil)
+        let hasRightIcon = (viewModel?.iconRight != nil)
         
-        if hasScanner {
+        if hasRightIcon {
             rightIcon.isHidden = hasText
             clearButton.isHidden = !hasText
         } else {
@@ -399,29 +399,29 @@ final class DSInputNumberMlcView: BaseCodeView {
     private func updateInstructionsState() {
         let digits = currentDigits ?? .empty
         let hasFocus = textField.isFirstResponder
-        
+
         if digits.isEmpty {
             errorLabel.text = nil
             errorLabel.isHidden = true
             viewModel?.fieldState.value = hasFocus ? .focused : .unfocused
             return
         }
-        
-        if hasFocus, (viewModel?.maskCapacity != nil), !isMaskSatisfied(by: digits) {
+
+        if hasFocus {
             errorLabel.text = nil
             errorLabel.isHidden = true
             viewModel?.fieldState.value = .focused
             return
         }
-        
+
         let errorText = error(for: digits)
         errorLabel.text = errorText
-        errorLabel.isHidden = !(errorText != nil)
-        
+        errorLabel.isHidden = (errorText == nil)
+
         if errorText != nil {
-            viewModel?.fieldState.value = .error(focused: hasFocus)
+            viewModel?.fieldState.value = .error(focused: false)
         } else {
-            viewModel?.fieldState.value = hasFocus ? .focused : .unfocused
+            viewModel?.fieldState.value = .unfocused
         }
     }
     
@@ -496,10 +496,6 @@ extension DSInputNumberMlcView: DSInputComponentProtocol {
         let mandatory = viewModel?.mandatory ?? false
         
         if mandatory && digits.isEmpty {
-            return false
-        }
-        
-        if !digits.isEmpty && !isMaskSatisfied(by: digits) {
             return false
         }
         

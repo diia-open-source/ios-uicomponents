@@ -74,6 +74,6 @@ extension DSTableAccordionOrgView {
         static let cornerRadius = CGFloat(16)
         static let dividerColor = UIColor("#E2ECF4")
         static let dividerHeight = CGFloat(1)
-        static let mainStackPaddings = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
+        static let mainStackPaddings = UIEdgeInsets(top: 0, left: 16, bottom: 16, right: 16)
     }
 }

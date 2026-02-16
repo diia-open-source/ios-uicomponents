@@ -142,10 +142,13 @@ public final class ChecklistView: BaseCodeView, DSInputComponentProtocol, DSRese
 //MARK: - DSInputComponentProtocol
 extension ChecklistView {
     public func isValid() -> Bool {
-        if viewModel?.mandatory == false {
-            return true
+        let mandatory = viewModel?.mandatory ?? false
+
+        if mandatory {
+            let selectedItemsCount = viewModel?.selectedItems().count ?? 0
+            return selectedItemsCount > 0
         } else {
-            return !(viewModel?.selectedItems().isEmpty ?? true)
+            return true
         }
     }
     

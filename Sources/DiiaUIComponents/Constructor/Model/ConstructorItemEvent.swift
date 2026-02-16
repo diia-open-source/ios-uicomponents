@@ -2,7 +2,6 @@
 import Foundation
 
 public enum ConstructorItemEvent {
-    case unknown
     case action(DSActionParameter)
     case buttonAction(parameters: DSActionParameter, viewModel: DSLoadingButtonViewModel)
     case cardMlcAction(parameters: DSActionParameter, viewModel: DSCardMlcV2ViewModel)
@@ -20,6 +19,14 @@ public enum ConstructorItemEvent {
     case onComponentConfigured(with: ConstructorEventViewType)
     case collectionChange(item: String)
     case componentSizeDidChange
+    
+    /// Represents a dynamic event
+    ///
+    /// - Important:
+    ///   Prefer strongly-typed `ConstructorItemEvent` cases whenever possible.
+    ///   `dynamicEvent` is intended for external UI components implementations and
+    ///   should not be used for common components.
+    case customEvent(CustomConstructorEvent)
     
     public func actionParameters() -> DSActionParameter? {
         switch self {
@@ -63,4 +70,33 @@ public enum ConstructorEventViewType {
     case linkQrShareView(viewModel: DSLinkQrShareViewModel)
     case titledView(viewModel: DSTitleMlcViewModel)
     case inputNumber(viewModel: DSInputNumberMlcViewModel)
+    
+    /// Represents a runtime-defined view type coming from UIComponents configuration.
+    ///
+    /// - Important:
+    ///   Prefer strongly-typed cases whenever possible.
+    ///   This case is intended for externally registered components.
+    case customView(CustomConstructorViewTypeData)
+}
+
+public struct CustomConstructorEvent {
+    public let code: String
+    public let payload: [String: Any]
+    
+    public init(code: String, payload: [String: Any]) {
+        self.code = code
+        self.payload = payload
+    }
+}
+
+public struct CustomConstructorViewTypeData {
+    public let code: String
+    public let viewModel: CustomConstructorViewModel
+    
+    public init(code: String, viewModel: CustomConstructorViewModel) {
+        self.code = code
+        self.viewModel = viewModel
+    }
+    
+    public protocol CustomConstructorViewModel {}
 }

@@ -56,16 +56,7 @@ public enum TextValidator: Validator {
             return doubleValue >= (min ?? .leastNormalMagnitude)
                 && doubleValue <= (max ?? .greatestFiniteMagnitude)
         case .regEx(let regEx):
-            do {
-                let regex = try NSRegularExpression(pattern: regEx, options: [])
-                if regex.firstMatch(in: value, options: [], range: NSMakeRange(0, value.utf16.count)) != nil {
-                    return true
-                } else {
-                    return false
-                }
-            } catch {
-                return false
-            }
+            return value.isValid(regex: regEx)
         case .date(let minDate, let maxDate, let dateFormatter):
             guard let date = dateFormatter.date(from: value) else { return false }
             if let maxDate = maxDate, maxDate < date { return false }

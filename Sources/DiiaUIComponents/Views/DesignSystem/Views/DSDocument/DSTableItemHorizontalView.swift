@@ -37,12 +37,6 @@ public final class DSTableItemHorizontalView: BaseCodeView {
         
         titleLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
         titleLabel.setContentHuggingPriority(.required, for: .horizontal)
-
-        valueTextView.configureForParametrizedText()
-        valueTextView.delegate = self
-        valueTextView.textContainer.lineBreakMode = .byWordWrapping
-
-        valueStack.alignment = .leading
         
         supportLabel.widthAnchor.constraint(equalToConstant: Constants.supportLabelWidth).isActive = true
 
