@@ -45,7 +45,7 @@ final class CardProgressMlcView: BaseCodeView {
         progressView.configure(for: model.progressBarAtm)
         
         if let iconUrlAtm = model.leftBigImage {
-            leftImageView.configure(with: iconUrlAtm)
+            leftImageView.configure(with: iconUrlAtm, placeholder: R.image.largePlaceholder.image)
         }
         rightImageView.subview.image = UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: model.iconRight?.code)
         

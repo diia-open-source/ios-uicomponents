@@ -640,6 +640,16 @@ public struct DSDotNavigationModel: Codable {
     }
 }
 
+public struct DSBlackDotNavigationModel: Codable {
+    public let count: Int
+    public let componentId: String
+    
+    public init(count: Int, componentId: String) {
+        self.count = count
+        self.componentId = componentId
+    }
+}
+
 public struct DSDetailsTextValueMlc: Codable {
     public let logo: String?
     public let label: String

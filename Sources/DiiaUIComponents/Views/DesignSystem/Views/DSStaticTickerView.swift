@@ -9,8 +9,7 @@ public final class DSStaticTickerView: BaseCodeView {
         font: FontBook.usualFont,
         textAlpha: 1,
         timerLabelWidth: Constants.timerLabelWidth))
-    private let label = UILabel().withParameters(font: FontBook.usualFont, numberOfLines: 1)
-    private lazy var mainHStackView = UIStackView.create(.horizontal, views: [label])
+    private let label = UILabel().withParameters(font: FontBook.usualFont, numberOfLines: 1, textAlignment: .center)
 
     private var viewModel: DSStaticTickerViewModel?
     private var eventHandler: ((ConstructorItemEvent) -> Void)?
@@ -22,12 +21,12 @@ public final class DSStaticTickerView: BaseCodeView {
 
         withHeight(Constants.height)
 
-        backgroundView.addSubview(mainHStackView)
-        mainHStackView.anchor(
+        backgroundView.addSubview(label)
+        label.anchor(
             leading: backgroundView.leadingAnchor,
             trailing: backgroundView.trailingAnchor,
             padding: UIEdgeInsets(horizontal: Constants.horizontalPadding))
-        mainHStackView.centerYAnchor.constraint(equalTo: backgroundView.centerYAnchor).isActive = true
+        label.centerYAnchor.constraint(equalTo: backgroundView.centerYAnchor).isActive = true
 
         label.isHidden = true
         expireTimerLabel.isHidden = true
@@ -55,9 +54,12 @@ public final class DSStaticTickerView: BaseCodeView {
             self?.backgroundView.image = viewModel.type.value.backgroundImage
         }
 
-        viewModel.label.observe(observer: self) { [weak self] text in
-            guard self?.label.text != text else { return }
-            self?.label.text = text
+        viewModel.label.observe(observer: self) { [weak self, weak viewModel] text in
+            guard let self, self.label.text != text else { return }
+            let isTimerHidden = viewModel?.timerText.value == nil
+            self.label.isHidden = !isTimerHidden
+            self.expireTimerLabel.isHidden = isTimerHidden
+            self.label.text = text
         }
 
         label.textColor = viewModel.type.value.textColor
@@ -70,7 +72,8 @@ public final class DSStaticTickerView: BaseCodeView {
             viewModel.setupTimer(for: time(to: expireLabelModel.timer))
 
             viewModel.timerText.observe(observer: self) { [weak self] timerText in
-                self?.expireTimerLabel.updateTimer(with: timerText ?? "")
+                guard let timerText else { return }
+                self?.expireTimerLabel.updateTimer(with: timerText)
             }
         } else {
             label.text = viewModel.label.value

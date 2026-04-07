@@ -12,7 +12,7 @@ public struct CardImageCarouselBuilder: DSViewBuilderProtocol {
                          withPadding paddingType: DSViewPaddingType,
                          viewFabric: DSViewFabric?,
                          eventHandler: @escaping (ConstructorItemEvent) -> Void) -> UIView? {
-        guard let data: DSImageCardCarouselModel = object.parseValue(forKey: self.modelKey) else { return nil }
+        guard let data: DSCardImageCarouselModel = object.parseValue(forKey: self.modelKey) else { return nil }
         
         let view = HorizontalCollectionView()
         view.configure(

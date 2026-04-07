@@ -9,6 +9,8 @@
 "general_accessibility_accordion_opened" = "Розгорнуто";
 "general_accessibility_accordion_closed" = "Згорнуто";
 "general_accessibility_copy_button" = "Скопіювати";
+"general_accessibility_button_selected" = "Обрано";
+"general_accessibility_button_not_selected" = "Не обрано";
 
 "made_in_ua_cashback_dashboard_amount" = "%@ грн %@ коп";
 

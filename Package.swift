@@ -17,7 +17,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/diia-open-source/ios-commontypes.git", .upToNextMinor(from: Version(1, 0, 0))),
-        .package(url: "https://github.com/diia-open-source/ios-mvpmodule.git",.upToNextMinor(from: Version(1, 0, 0))),
+        .package(url: "https://github.com/diia-open-source/ios-mvpmodule.git", .upToNextMinor(from: Version(1, 0, 0))),
         .package(url: "https://github.com/SwiftKickMobile/SwiftMessages", exact: Version(9, 0, 9)),
         .package(url: "https://github.com/onevcat/Kingfisher", .upToNextMajor(from: "7.12.0")),
         .package(url: "https://github.com/airbnb/lottie-spm.git", exact: Version(4, 6, 0))

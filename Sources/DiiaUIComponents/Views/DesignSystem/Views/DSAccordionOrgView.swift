@@ -16,6 +16,8 @@ final public class DSAccordionOrgView: BaseCodeView {
         font: FontBook.usualFont,
         textColor: Constants.descriptionTextColor
     )
+    
+    private let descriptionIcon = UIImageView().withSize(Constants.iconSize)
 
     private let headingHStack = UIStackView.create(
         .horizontal,
@@ -23,22 +25,18 @@ final public class DSAccordionOrgView: BaseCodeView {
         alignment: .center,
         distribution: .fillProportionally
     )
-
-    private let headingVLabelsVStack = UIStackView.create(
-        .vertical,
-        spacing: Constants.spacing
-    )
-
-    private let mainVStack = UIStackView.create(
-        .vertical,
-        spacing: Constants.spacing
-    )
+    
+    private let descriptionStack = UIStackView.create(
+        .horizontal,
+        spacing: Constants.smallSpacing,
+        alignment: .center)
 
     private let collapsableContentVStack = UIStackView.create(
-        .vertical
+        .vertical,
+        spacing: Constants.spacing
     )
 
-    private let accordionIcon = UIImageView().withSize(Constants.accordionIconSize)
+    private let accordionIcon = UIImageView().withSize(Constants.iconSize)
 
     private var viewFabric = DSViewFabric.instance
     private var state: State = .collapsed
@@ -48,14 +46,26 @@ final public class DSAccordionOrgView: BaseCodeView {
     override public func setupSubviews() {
         translatesAutoresizingMaskIntoConstraints = false
         accordionIcon.contentMode = .scaleAspectFill
+        descriptionIcon.contentMode = .scaleAspectFit
 
+        [titleLabel, descriptionLabel].forEach {
+            $0.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        }
+        
+        let headingVLabelsVStack = UIStackView.create(
+            views: [titleLabel, descriptionStack],
+            spacing: Constants.spacing)
+        
+        let mainVStack = UIStackView.create(
+            views: [headingHStack, collapsableContentVStack],
+            spacing: Constants.mainSpacing)
+        
         addSubview(mainVStack)
+        
         mainVStack.fillSuperview(padding: Constants.mainPadding)
-
-        headingVLabelsVStack.addArrangedSubviews([titleLabel, descriptionLabel])
         headingHStack.addArrangedSubviews([headingVLabelsVStack, accordionIcon])
-        mainVStack.addArrangedSubviews([headingHStack, collapsableContentVStack])
-
+        descriptionStack.addArrangedSubviews([descriptionIcon, descriptionLabel])
+        
         addTapGestureRecognizer()
     }
 
@@ -67,13 +77,25 @@ final public class DSAccordionOrgView: BaseCodeView {
 
         descriptionLabel.isHidden = model.description == nil
         descriptionLabel.text = model.description
+        
+        descriptionIcon.isHidden = model.descriptionIcon == nil
+        
+        if let descriptionIconModel = model.descriptionIcon {
+            let imageProvider = UIComponentsConfiguration.shared.imageProvider
+            descriptionIcon.image = imageProvider.imageForCode(imageCode: descriptionIconModel.code)
+            descriptionIcon.accessibilityIdentifier = descriptionIconModel.componentId
+            descriptionIcon.accessibilityLabel = descriptionIconModel.accessibilityDescription
+        }
+        
+        descriptionStack.isHidden = descriptionIcon.isHidden && descriptionIcon.isHidden
 
         let isExpanded = model.states.isExpanded ?? false
         setState(isExpanded ? .expanded : .collapsed, animated: false)
-
+        
         collapsableContentVStack.safelyRemoveArrangedSubviews()
-        guard let itemsModels = model.expandedContent?.items else { return }
-        for model in itemsModels {
+        guard let expandedContent = model.expandedContent else { return }
+        let itemsModels = expandedContent.items
+        for (index, model) in itemsModels.enumerated() {
             guard let view = viewFabric.makeView(
                 from: model,
                 withPadding: .fixed(paddings: .zero),
@@ -82,6 +104,9 @@ final public class DSAccordionOrgView: BaseCodeView {
                 continue
             }
             collapsableContentVStack.addArrangedSubview(view)
+            if expandedContent.showDivider == true && index < (itemsModels.count - 1) {
+                collapsableContentVStack.addArrangedSubview(divider())
+            }
         }
     }
 
@@ -122,6 +147,13 @@ final public class DSAccordionOrgView: BaseCodeView {
         }
     }
     
+    private func divider() -> UIView {
+        let view = UIView().withHeight(1)
+        view.backgroundColor = Constants.separatorColor
+        return view
+        
+    }
+    
     private func addTapGestureRecognizer() {
         let tap = UITapGestureRecognizer(target: self, action: #selector(onClick))
         headingHStack.addGestureRecognizer(tap)
@@ -140,9 +172,12 @@ final public class DSAccordionOrgView: BaseCodeView {
 private extension DSAccordionOrgView {
     enum Constants {
         static let mainPadding = UIEdgeInsets(top: 16.0, left: 0.0, bottom: 8.0, right: 0.0)
-        static let accordionIconSize = CGSize(width: 24.0, height: 24.0)
+        static let iconSize = CGSize(width: 24.0, height: 24.0)
         static let animationDuration: TimeInterval = 0.3
         static let descriptionTextColor: UIColor = .black.withAlphaComponent(0.6)
+        static let mainSpacing: CGFloat = 16
         static let spacing: CGFloat = 8
+        static let smallSpacing: CGFloat = 4
+        static let separatorColor = UIColor("#E2ECF4")
     }
 }

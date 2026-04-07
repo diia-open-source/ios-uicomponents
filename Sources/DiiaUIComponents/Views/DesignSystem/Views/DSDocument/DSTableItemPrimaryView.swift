@@ -8,6 +8,9 @@ public final class DSTableItemPrimaryView: BaseCodeView {
     private let titleLabel = UILabel()
     private let valueLabel = UILabel()
     private let iconButtonView = UIButton()
+    private let secondaryLabel = UILabel()
+    private let secondaryValueLabel = UILabel()
+    private let secondaryStack = UIStackView.create(spacing: Constants.stackSpacing)
     
     public override func setupSubviews() {
         translatesAutoresizingMaskIntoConstraints = false
@@ -15,11 +18,20 @@ public final class DSTableItemPrimaryView: BaseCodeView {
                                                 views: [valueLabel, iconButtonView, UIView()],
                                                 spacing: Constants.stackSpacing,
                                                 alignment: .center)
-        stack([titleLabel, valueIconStack], spacing: Constants.stackSpacing)
-        
+        let mainStack = UIStackView.create(.vertical,
+                                           views: [titleLabel, valueIconStack],
+                                           spacing: Constants.stackSpacing)
+
+        secondaryStack.addArrangedSubview(secondaryLabel)
+        secondaryStack.addArrangedSubview(secondaryValueLabel)
+        secondaryStack.isHidden = true
+
+        let outerStack = stack([mainStack, secondaryStack])
+        outerStack.setCustomSpacing(Constants.secondaryStackTopSpacing, after: mainStack)
+
         iconButtonView.withSize(Constants.imageSize)
         iconButtonView.contentHorizontalAlignment = .leading
-        
+
         setupView()
     }
     
@@ -37,15 +49,33 @@ public final class DSTableItemPrimaryView: BaseCodeView {
         }
     }
     
-    public func configure(model: DSTableItemPrimaryMlc) {
-        titleLabel.text = model.label
-        valueLabel.text = model.value
+    public func configure(for title: String?, value: String, icon: DSIconModel?) {
+        titleLabel.text = title
+        valueLabel.text = value
         
-        iconButtonView.isHidden = model.icon == nil
+        valueLabel.text = value
+        valueLabel.accessibilityLabel = value
         
-        if let iconName = model.icon?.code {
-            iconButtonView.setImage(UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: iconName), for: .normal)
+        iconButtonView.isHidden = icon == nil
+        if let iconName = icon?.code {
+            iconButtonView.setImage(UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: iconName),
+                                    for: .normal)
         }
+    }
+    
+    public func configure(model: DSTableItemPrimaryMlc) {
+        configure(for: model.label, value: model.value, icon: model.icon)
+    }
+    
+    public func configure(model: DSDocNumberCopyMlc) {
+        configure(for: model.label, value: model.value, icon: model.icon)
+        
+        let hasSecondary = model.secondaryLabel != nil || model.secondaryValue != nil
+        secondaryStack.isHidden = !hasSecondary
+        secondaryLabel.text = model.secondaryLabel
+        secondaryLabel.isHidden = model.secondaryLabel == nil
+        secondaryValueLabel.text = model.secondaryValue
+        secondaryValueLabel.isHidden = model.secondaryValue == nil
     }
     
     private func setupView() {
@@ -55,6 +85,13 @@ public final class DSTableItemPrimaryView: BaseCodeView {
         valueLabel.font = FontBook.numbersHeadingFont
         valueLabel.numberOfLines = 1
         valueLabel.textColor = .black
+
+        secondaryLabel.font = FontBook.mainFont.regular.size(14)
+        secondaryLabel.numberOfLines = 0
+        secondaryLabel.textColor = .black
+        secondaryValueLabel.font = FontBook.mainFont.regular.size(14)
+        secondaryValueLabel.numberOfLines = 0
+        secondaryValueLabel.textColor = .black
         
         iconButtonView.addTarget(self, action: #selector(actionRecognizer), for: .touchUpInside)
         setupAccessibility()
@@ -70,6 +107,7 @@ public final class DSTableItemPrimaryView: BaseCodeView {
         valueLabel.font = valueFont
         titleLabel.numberOfLines = numberOfLines
         valueLabel.numberOfLines = numberOfLines
+        
         if numberOfLines == 1 {
             titleLabel.adjustsFontSizeToFitWidth = true
             valueLabel.adjustsFontSizeToFitWidth = true
@@ -102,5 +140,7 @@ extension DSTableItemPrimaryView {
         static let stackSpacing: CGFloat = 8
         static let imageSize = CGSize(width: 44, height: 44)
         static let copyImage = "copy"
+        static let secondaryStackTopSpacing: CGFloat = 16
+        static let secondaryStackBottomSpacing: CGFloat = 8
     }
 }

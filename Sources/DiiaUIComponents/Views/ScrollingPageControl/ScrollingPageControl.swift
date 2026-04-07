@@ -133,18 +133,24 @@ open class ScrollingPageControl: UIView {
     }
     
     internal func updatePositions() {
-        let sidePages = (maxDots - centerDots) / 2
-        let horizontalOffset = CGFloat(-pageOffset + sidePages) * (dotSize + spacing) + (bounds.width - intrinsicContentSize.width) / 2
-        let centerPage = centerDots / 2 + pageOffset
+        let visualCenterIndex = CGFloat(pageOffset) + CGFloat(centerDots - 1) / 2.0
+        let step = dotSize + spacing
+        let horizontalOffset = bounds.midX - (visualCenterIndex * step)
+        let centerPage = Double(pageOffset) + Double(centerDots) / 2.0
+        
         dotViews.enumerated().forEach { page, dot in
-            let center = CGPoint(x: horizontalOffset + bounds.minX + dotSize / 2 + (dotSize + spacing) * CGFloat(page),
-                                 y: bounds.midY)
+            let x = horizontalOffset + CGFloat(page) * step
+            let center = CGPoint(x: x, y: bounds.midY)
             let scale: CGFloat = page == self.selectedPage ? Constants.selectedPageScale : {
-                let distance = abs(page - centerPage)
-                let middleDot = maxDots / 2 + maxDots % 2
-                if distance > middleDot || (distance == middleDot && page <= distance && maxDots >= 6) { return 0 }
-                return Constants.pageScales[max(0, min(2, distance - centerDots / 2))]
+                let distance = abs(Double(page) - centerPage)
+                let middleDot = Double(maxDots) / 2.0
+                
+                if distance > middleDot { return 0 }
+                
+                let scaleIndex = max(0, min(2, Int(floor(distance - Double(centerDots) / 2.0))))
+                return Constants.pageScales[scaleIndex]
             }()
+            
             dot.frame = CGRect(origin: .zero, size: CGSize(width: dotSize * scale, height: dotSize * scale))
             dot.center = center
         }

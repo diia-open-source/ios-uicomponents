@@ -21,9 +21,13 @@ public final class DSTableBlockTwoColumnsOrgView: BaseCodeView {
                                                                  right: 0))
     }
     
-    public func configure(models: DSTableBlockTwoColumnPlaneOrg, imagesContent: [DSDocumentContentData: UIImage], eventHandler: ((ConstructorItemEvent) -> Void)? = nil) {
+    public func configure(
+        models: DSTableBlockTwoColumnPlaneOrg,
+        imageProvider: DSImageNameProvider?,
+        eventHandler: ((ConstructorItemEvent) -> Void)? = nil
+    ) {
         self.accessibilityIdentifier = models.componentId
-        tableBlockTwoColumnsOrgView.configure(models: models, imagesContent: imagesContent, eventHandler: eventHandler)
+        tableBlockTwoColumnsOrgView.configure(models: models, imageProvider: imageProvider, eventHandler: eventHandler)
     }
     
     private func setupUI() {

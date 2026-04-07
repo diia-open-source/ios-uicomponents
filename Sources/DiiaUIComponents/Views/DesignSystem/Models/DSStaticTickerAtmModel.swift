@@ -34,8 +34,8 @@ public class DSStaticTickerViewModel {
     public var onTimerExpiration: (() -> Void)?
 
     public func setupTimer(for timerTime: Int) {
-        if timerTime < 0 {
-            timerText.value = "00:00"
+        if timerTime <= 0 {
+            timerText.value = nil
         } else {
             self.timerLength = TimeInterval(timerTime)
             self.startTimer()

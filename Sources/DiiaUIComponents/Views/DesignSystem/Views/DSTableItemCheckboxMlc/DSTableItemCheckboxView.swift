@@ -113,7 +113,7 @@ public final class DSTableItemCheckboxView: BaseCodeView {
             checkmarkImageView.image = R.image.checkbox_partialSelected.image
             return
         }
-        checkmarkImageView.image = viewModel.isSelected.value ? R.image.checkbox_enabled.image : R.image.checkbox_disabled.image
+        checkmarkImageView.image = viewModel.isSelected.value ? R.image.checkbox_selected.image : R.image.checkbox_deselected.image
         
         if viewModel.isSelected.value {
             accessibilityTraitsSet.insert(.selected)

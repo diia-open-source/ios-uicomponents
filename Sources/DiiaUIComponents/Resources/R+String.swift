@@ -10,6 +10,8 @@ enum R {
         case general_accessibility_accordion_opened
         case general_accessibility_accordion_closed
         case general_accessibility_copy_button
+        case general_accessibility_button_selected
+        case general_accessibility_button_not_selected
         case document_accessibility_doc_photo
         case document_accessibility_signature_photo
         
@@ -17,6 +19,8 @@ enum R {
         case general_accessibility_filters_applied
         case general_accessibility_text_field_clear_button
         case pdr_penalty_accessibility_video
+        case general_accessibility_radio_button_selected
+        case general_accessibility_radio_button_not_selected
         
         // MARK: - General
         case general_ok

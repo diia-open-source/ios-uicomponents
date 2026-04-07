@@ -2,10 +2,10 @@
 import UIKit
 
 // MARK: - DSChipItemView
-public struct DSChipItem {
+public class DSChipItem {
     public let code: String?
     public let name: String
-    public let numCount: Int?
+    public let numCount: Observable<Int?> = .init(value: nil)
     public let iconLeft: DSIconModel?
     public var isSelected: Bool
     public var isSelectable: Bool?
@@ -21,7 +21,7 @@ public struct DSChipItem {
                 action: DSActionParameter?) {
         self.code = code
         self.name = name
-        self.numCount = numCount
+        self.numCount.value = numCount
         self.iconLeft = iconLeft
         self.isSelected = isSelected
         self.action = action
@@ -74,27 +74,30 @@ public final class DSChipItemView: BaseCodeView {
     }
     
     public func configure(viewModel: DSChipItem) {
-        self.viewModel = viewModel
-        
-        itemLabel.text = viewModel.name
+            self.viewModel?.numCount.removeObserver(observer: self)
+            self.viewModel = viewModel
+            
+            itemLabel.text = viewModel.name
+            
+            viewModel.numCount.observe(observer: self) { [weak self] countValue in
+                self?.itemNumContainer.isHidden = countValue == nil || countValue == 0
+                if let numCount = countValue, numCount != 0 {
+                    let itemsCount = numCount < 100 ? numCount.description : "99+"
+                    self?.itemCounterLabel.text = itemsCount
+                    self?.accessibilityValue = itemsCount
+                }
+                self?.layoutIfNeeded()
+            }
+            
+            leftIconView.isHidden = viewModel.iconLeft == nil
+            if let iconLeft = viewModel.iconLeft {
+                leftIconView.image = UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: iconLeft.code)
+            }
 
-        itemNumContainer.isHidden = viewModel.numCount == nil || viewModel.numCount == 0
-        
-        if let numCount = viewModel.numCount, numCount != 0 {
-            let itemsCount = numCount < 100 ? numCount.description : "99+"
-            itemCounterLabel.text = itemsCount
-            accessibilityValue = itemsCount
+            backgroundColor = viewModel.isSelected ? .white : Constants.uncheckedColor
+            
+            setupAccessibility()
         }
-
-        leftIconView.isHidden = viewModel.iconLeft == nil
-        if let iconLeft = viewModel.iconLeft {
-            leftIconView.image = UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: iconLeft.code)
-        }
-
-        backgroundColor = viewModel.isSelected ? .white : Constants.uncheckedColor
-        
-        setupAccessibility()
-    }
     
     // MARK: - Accessibility
     private func setupAccessibility() {
@@ -116,7 +119,7 @@ private extension DSChipItemView {
 }
 
 // MARK: - DSChipTabsView
-public struct DSChipTabViewModel {
+public class DSChipTabViewModel {
     public let items: [DSChipItem]
     public let onSelect: (DSChipItem) -> Void
     

@@ -60,8 +60,10 @@ extension DSCheckboxGroupOrgView: DSInputComponentProtocol {
         let mandatory = viewModel?.model.mandatory ?? false
 
         if mandatory {
+            let mandatoryMinCount = viewModel?.model.minMandatorySelectedItems ?? 1
+            
             let selectedItemsCount = viewModel?.selectedItems().count ?? 0
-            return selectedItemsCount > 0
+            return selectedItemsCount >= mandatoryMinCount
         } else {
             return true
         }

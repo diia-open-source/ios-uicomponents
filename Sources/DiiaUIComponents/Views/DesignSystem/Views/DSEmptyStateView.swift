@@ -19,7 +19,7 @@ public struct DSEmptyStateMlc: Codable {
 final public class DSEmptyStateView: BaseCodeView {
     private let mainStack = UIStackView.create(.vertical,spacing: Constants.smallSpacing, alignment: .center)
     private let iconLabelStack = UIStackView.create(.vertical,spacing: Constants.bigSpacing, alignment: .center)
-    private let titleLabel = UILabel().withParameters(font: FontBook.documentNumberHeadingFont, textColor: .black)
+    private let titleLabel = UILabel().withParameters(font: FontBook.smallHeadingFont, textColor: .black)
     private let textLabel = UILabel().withParameters(font: FontBook.usualFont, textColor: .black)
     private let iconView = DSIconView().withSize(Constants.iconSize)
     

@@ -25,10 +25,29 @@ public final class DSAlertCardMlcV2View: BaseCodeView {
 
         addSubview(stack)
         stack.fillSuperview(padding: Constants.stackPadding)
+        
+        setupAccessibility()
+    }
+    
+    // MARK: - Private
+    private func setupAccessibility() {
+        icon.isAccessibilityElement = false
+        
+        topLabel.isAccessibilityElement = true
+        topLabel.accessibilityTraits = .staticText
+        
+        secondaryLabel.isAccessibilityElement = true
+        secondaryLabel.accessibilityTraits = .staticText
+        
+        button.isAccessibilityElement = true
+        button.accessibilityTraits = .button
     }
 
     // MARK: - Public
     public func configure(model: DSAlertCardMlcV2Model, eventHandler: ((ConstructorItemEvent) -> Void)?) {
+        topLabel.accessibilityLabel = model.label
+        secondaryLabel.accessibilityLabel = model.text
+        
         icon.isHidden = model.iconAtm == nil
         icon.image = UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: model.iconAtm?.code)
 
@@ -45,6 +64,7 @@ public final class DSAlertCardMlcV2View: BaseCodeView {
                 componentId: buttonModel.componentId
             )
             button.configure(viewModel: buttonViewModel)
+            button.accessibilityLabel = buttonModel.label
 
             buttonViewModel.callback = { [weak buttonViewModel] in
                 guard let action = buttonModel.action, let buttonViewModel else { return }

@@ -13,8 +13,8 @@ final public class DSAttentionIconMessageView: BaseCodeView {
     private let expandIcon = UIImageView()
     private let expandButtonStack = UIStackView.create(.horizontal, spacing: Constants.spacing, alignment: .leading)
     private var expandModel: DSAttentionIconMessageMlcExpanded?
-    private let textLabel = UILabel().withParameters(font: FontBook.usualFont,
-                                                              lineBreakMode: .byTruncatingTail)
+    private let collapsedLabel = UILabel().withParameters(font: FontBook.usualFont, lineBreakMode: .byTruncatingTail)
+    private let expandedLabel = UILabel().withParameters(font: FontBook.usualFont)
     private let strokeButton = ActionLoadingStateButton()
     private let strokeButtonContainer = UIView()
     
@@ -25,6 +25,9 @@ final public class DSAttentionIconMessageView: BaseCodeView {
         layer.cornerRadius = Constants.cornerRadius
         addSubview(mainHStack)
         addSubview(iconImage)
+        
+        collapsedLabel.numberOfLines = Constants.textNumberOfLines
+        expandedLabel.numberOfLines = 0
         
         iconImage.withSize(Constants.imageSize)
         expandIcon.withSize(Constants.expandIconSize)
@@ -43,7 +46,7 @@ final public class DSAttentionIconMessageView: BaseCodeView {
         strokeButton.setStyle(style: .light)
         strokeButton.contentEdgeInsets = Constants.strokeButtonInsets
         
-        mainHStack.addArrangedSubviews([textLabel, textView, expandButtonStack, strokeButtonContainer])
+        mainHStack.addArrangedSubviews([collapsedLabel, expandedLabel, textView, expandButtonStack, strokeButtonContainer])
         expandButtonStack.addArrangedSubviews([expandButtonTitle, expandIcon])
         
         textView.linkTextAttributes = [
@@ -86,14 +89,22 @@ final public class DSAttentionIconMessageView: BaseCodeView {
         
         if let expanded = model.expanded {
             self.isExpanded = expanded.isExpanded ?? false
-            textLabel.isHidden = false
-            textLabel.text = model.text
+            
+            collapsedLabel.text = model.text
+            expandedLabel.text = model.text
+            
+            collapsedLabel.isHidden = false
+            expandedLabel.isHidden = false
             textView.isHidden = true
+            
             setState(isExpanded, animated: false)
         } else {
-            textLabel.isHidden = true
+            collapsedLabel.isHidden = true
+            expandedLabel.isHidden = true
             textView.isHidden = false
-            textView.attributedText = model.text.attributedTextWithParameters(font: FontBook.usualFont, parameters: model.parameters ?? [])
+            textView.attributedText = model.text.attributedTextWithParameters(
+                font: FontBook.usualFont,
+                parameters: model.parameters ?? [])
         }
         
         backgroundColor = UIColor(model.backgroundMode.color)
@@ -110,17 +121,27 @@ final public class DSAttentionIconMessageView: BaseCodeView {
     
     private func setState(_ isExpanded: Bool, animated: Bool) {
         guard let model = expandModel else { return }
-        self.expandButtonTitle.text = isExpanded ? model.collapsedText : model.expandedText
-        self.expandIcon.image = isExpanded ? R.image.arrowUp.image : R.image.arrowDown.image
-        let updateContent = { [weak self] in
-            self?.textLabel.numberOfLines = isExpanded ? 0 : Constants.textNumberOfLines
-            self?.layoutIfNeeded()
-            self?.eventHandler?(.componentSizeDidChange)
-        }
+        expandButtonTitle.text = isExpanded ? model.collapsedText : model.expandedText
+        expandIcon.image = isExpanded ? R.image.arrowUp.image : R.image.arrowDown.image
+
         if animated {
-            UIView.animate(withDuration: Constants.animationDuration, animations: updateContent)
+            UIView.animate(withDuration: Constants.animationDuration) { [weak self] in
+                guard let self else { return }
+                self.collapsedLabel.alpha = isExpanded ? 0 : 1
+                self.expandedLabel.alpha = isExpanded ? 1 : 0
+                self.superview?.layoutIfNeeded()
+            } completion: { [weak self] _ in
+                guard let self else { return }
+                self.collapsedLabel.isHidden = isExpanded
+                self.expandedLabel.isHidden = !isExpanded
+                self.collapsedLabel.alpha = 1
+                self.expandedLabel.alpha = 1
+                self.eventHandler?(.componentSizeDidChange)
+            }
         } else {
-            updateContent()
+            collapsedLabel.isHidden = isExpanded
+            expandedLabel.isHidden = !isExpanded
+            eventHandler?(.componentSizeDidChange)
         }
     }
 }
@@ -141,7 +162,7 @@ extension DSAttentionIconMessageView {
         static let cornerRadius: CGFloat = 16
         static let imageSize = CGSize(width: 24, height: 24)
         static let expandIconSize = CGSize(width: 16, height: 16)
-        static let animationDuration: TimeInterval = 0.3
+        static let animationDuration: TimeInterval = 0.2
         static let textNumberOfLines: Int = 3
         static let strokeButtonContainerInsets: UIEdgeInsets = UIEdgeInsets(top: 8)
         static let strokeButtonHeight: CGFloat = 36

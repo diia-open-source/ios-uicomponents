@@ -25,7 +25,7 @@ public struct DSBackgroundWhiteViewBuilder: DSViewBuilderProtocol {
             eventHandler: eventHandler
         ))
         
-        let insets = padding.defaultPadding(object: object, modelKey: modelKey)
+        let insets = padding.shortPadding(object: object, modelKey: modelKey)
         let container = BoxView(subview: view).withConstraints(insets: insets)
         return container
     }

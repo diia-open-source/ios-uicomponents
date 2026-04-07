@@ -13,7 +13,8 @@ public final class TabSwitcherCollectionCell: BaseCollectionNibCell {
     var isSelectedState: Bool = false {
         didSet {
             contentView.backgroundColor = isSelectedState ? .white : Constants.unselectedItem
-            accessibilityTraits = isSelectedState ? [.selected, .button] : [.button]
+            accessibilityValue = isSelectedState ? R.Strings.general_accessibility_button_selected.localized() :
+                                                   R.Strings.general_accessibility_button_not_selected.localized()
         }
     }
     
@@ -84,8 +85,7 @@ public final class TabSwitcherCollectionCell: BaseCollectionNibCell {
         titleConstraint?.isActive = !hasAdditionalText
         additionConstraint?.isActive = hasAdditionalText
         
-        accessibilityLabel = tabItem.title
-        accessibilityValue = additionalText
+        accessibilityLabel = [tabItem.title, additionalText].compactMap({ $0 }).joined(separator: ",")
         
         setNeedsLayout()
     }

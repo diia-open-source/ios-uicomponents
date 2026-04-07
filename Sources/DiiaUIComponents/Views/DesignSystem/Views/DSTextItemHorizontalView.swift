@@ -50,6 +50,8 @@ final class DSTextItemHorizontalView: BaseCodeView {
         spacerView.setContentHuggingPriority(.defaultLow, for: .horizontal)
         spacerView.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         withHeight(Constants.height)
+        
+        setupAccessibility()
     }
     
     public func configure(with model: DSTextItemHorizontalModel) {
@@ -57,9 +59,20 @@ final class DSTextItemHorizontalView: BaseCodeView {
         iconRight.isHidden = model.iconRight == nil
         if let iconRight = model.iconRight {
             self.iconRight.setIcon(iconRight)
+            self.iconRight.accessibilityTraits = iconRight.action != nil ? .button : .image
         }
         titleLabel.text = model.label
         valueLabel.text = model.value
+        
+        labelValueStack.accessibilityLabel = [model.label, model.value].compactMap({ $0 }).joined(separator: .empty)
+    }
+    
+    // MARK: - Private
+    private func setupAccessibility() {
+        labelValueStack.isAccessibilityElement = true
+        labelValueStack.accessibilityTraits = .staticText
+        
+        iconRight.isAccessibilityElement = true
     }
 }
 

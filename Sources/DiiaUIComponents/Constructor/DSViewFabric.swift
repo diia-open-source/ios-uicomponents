@@ -235,6 +235,7 @@ public extension DSViewFabric {
         DSSmallCheckIconOrgBuilder(),
         DSPhotoGroupOrgBuilder(),
         DSBackgroundWhiteViewBuilder(),
+        DSBackgroundWhiteViewV2Builder(),
         DSTableItemCheckboxViewBuilder(),
         DSTableMainHeadingBuilder(),
         DSScalingTitleBuilder(),
@@ -244,7 +245,7 @@ public extension DSViewFabric {
         DSMapChipTabsViewBuilder(),
         DSHorizontalScrollCardBuilder(),
         DSVerificationCodesBuilder(),
-        DSTableBlockTwoColumnsOrgBuilder(),
+        DSTableBlockTwoColumnsOrgBuilder(imageProvider: UIComponentsConfiguration.shared.imageProvider),
         DSImageCardCarouselBuilder(),
         DSChipTabsViewBuilder(),
         DSCenterChipTabsOrgBuilder(),
@@ -289,6 +290,7 @@ public extension DSViewFabric {
         DSCalendarOrgV2Builder(),
         DSLinkSettingsBuilder(),
         DSBtnPrimaryPlainIconBuilder(),
+        DSTransparentBtnMlcBuilder(),
         DSPBtnAddOptionAtmBuilder(),
         CardImageMlcBuilder(),
         CardImageCarouselBuilder(),
@@ -299,6 +301,8 @@ public extension DSViewFabric {
         ScanModalCardBuilder(),
         ActionSheetOrgBuilder(),
         PermissionMessageMlcBuilder(),
+        TransparentInfoCardMlcBuilder(),
+        ControlsContainerOrgBuilder(),
         CardProgressMlcBuilder()
     ]
 }

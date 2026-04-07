@@ -12,3 +12,15 @@ public struct DSImageCardCarouselModel: Codable {
         self.items = items
     }
 }
+
+public struct DSCardImageCarouselModel: Codable {
+    public let componentId: String
+    public let dotBlackNavigationAtm: DSBlackDotNavigationModel
+    public let items: [AnyCodable]
+    
+    public init(componentId: String, dotBlackNavigationAtm: DSBlackDotNavigationModel, items: [AnyCodable]) {
+        self.componentId = componentId
+        self.dotBlackNavigationAtm = dotBlackNavigationAtm
+        self.items = items
+    }
+}

@@ -89,9 +89,10 @@ public final class TopNavigationView: UIView {
         loadingLabel.font = FontBook.usualFont
     }
     
-    public func setupTitle(title: String?) {
+    public func setupTitle(title: String?, alignment: NSTextAlignment = .left) {
         titleLabel.text = title
         titleLabel.accessibilityLabel = title
+        titleLabel.textAlignment = alignment
     }
     
     public func setupOnClose(callback: Callback?) {

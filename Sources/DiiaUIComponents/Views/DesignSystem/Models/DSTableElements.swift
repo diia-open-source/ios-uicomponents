@@ -95,6 +95,29 @@ public struct DSTableItemPrimaryMlc: Codable, Equatable {
     }
 }
 
+public struct DSDocNumberCopyMlc: Codable, Equatable {
+    public let componentId: String?
+    public let label: String?
+    public let value: String
+    public let secondaryLabel: String?
+    public let secondaryValue: String?
+    public let icon: DSIconModel?
+    
+    public init(componentId: String? = nil,
+                label: String? = nil,
+                value: String,
+                secondaryLabel: String? = nil,
+                secondaryValue: String? = nil,
+                icon: DSIconModel? = nil) {
+        self.componentId = componentId
+        self.label = label
+        self.value = value
+        self.secondaryLabel = secondaryLabel
+        self.secondaryValue = secondaryValue
+        self.icon = icon
+    }
+}
+
 public struct DSTableItemHorizontalMlc: Codable, Equatable {
     public var supportingValue: String?
     public let label: String
@@ -221,7 +244,7 @@ public struct DSValueIcon: Codable, Equatable {
 
 public struct DSTableBlockTwoColumnPlaneOrg: Codable, Equatable {
     public let componentId: String?
-    public let photo: DSDocumentContentData?
+    public let photo: String?
     public let photoUrl: String?
     public let items: [DSItemsModel]?
     public let headingWithSubtitlesMlc: DSHeadingWithSubtitlesModel?
@@ -229,7 +252,7 @@ public struct DSTableBlockTwoColumnPlaneOrg: Codable, Equatable {
     
     public init(
         componentId: String? = nil,
-        photo: DSDocumentContentData?,
+        photo: String? = nil,
         photoUrl: String? = nil,
         items: [DSItemsModel]?,
         headingWithSubtitlesMlc: DSHeadingWithSubtitlesModel?,

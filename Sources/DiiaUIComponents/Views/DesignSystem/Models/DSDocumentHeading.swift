@@ -4,15 +4,15 @@ import Foundation
 public struct DSDocumentHeading: Codable, Equatable {
     public let headingWithSubtitlesMlc: DSHeadingWithSubtitlesModel?
     public let headingWithSubtitleWhiteMlc: DSHeadingWithSubtitlesModel?
-    public let docNumberCopyMlc: DSTableItemPrimaryMlc?
-    public let docNumberCopyWhiteMlc: DSTableItemPrimaryMlc?
+    public let docNumberCopyMlc: DSDocNumberCopyMlc?
+    public let docNumberCopyWhiteMlc: DSDocNumberCopyMlc?
     public let stackMlc: DSStackMlc?
     public let iconAtm: DSIconModel?
 
     public init(headingWithSubtitlesMlc: DSHeadingWithSubtitlesModel? = nil,
                 headingWithSubtitleWhiteMlc: DSHeadingWithSubtitlesModel? = nil,
-                docNumberCopyMlc: DSTableItemPrimaryMlc? = nil,
-                docNumberCopyWhiteMlc: DSTableItemPrimaryMlc? = nil,
+                docNumberCopyMlc: DSDocNumberCopyMlc? = nil,
+                docNumberCopyWhiteMlc: DSDocNumberCopyMlc? = nil,
                 iconAtm: DSIconModel? = nil,
                 stackMlc: DSStackMlc? = nil) {
         self.headingWithSubtitlesMlc = headingWithSubtitlesMlc

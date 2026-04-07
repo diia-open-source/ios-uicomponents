@@ -56,6 +56,7 @@ final public class DSRadioBtnGroupOrgV2View: BaseCodeView {
                 label: buttonModel.label,
                 status: buttonModel.status,
                 details: buttonModel.description,
+                descriptions: buttonModel.descriptions,
                 isAvailable: isAvailable,
                 isSelected: .init(value: isSelected))
             viewModel.onClick = { [weak self, weak viewModel] in

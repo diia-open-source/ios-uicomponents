@@ -14,11 +14,15 @@ public struct BankingCardBuilder: DSViewBuilderProtocol {
         let view = BankingCardView()
         view.accessibilityIdentifier = data.componentId
         
-        let viewModel = BankingCardViewModel(model: data) {
-            if let action = data.action {
-                eventHandler(.action(action))
+        let callback: Callback = {
+            guard let action = data.action else {
+                return
             }
+            
+            eventHandler(.action(action))
         }
+
+        let viewModel = BankingCardViewModel(model: data, action: data.action != nil ? callback : nil)
         view.configure(with: viewModel)
         
         let insets = padding.defaultPadding(object: object, modelKey: modelKey)

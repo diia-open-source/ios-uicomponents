@@ -1,5 +1,6 @@
 
 import Foundation
+import DiiaCommonTypes
 
 public struct DSDashboardCardMlc: Codable {
     public let componentId: String
@@ -13,8 +14,9 @@ public struct DSDashboardCardMlc: Codable {
     public let descriptionCenter: String?
     public let action: DSActionParameter?
     public let btnSemiLightAtm: DSButtonModel?
+    public let colorMode: DSWidgetColorMode?
     
-    public init(componentId: String, type: DSWidgetType, icon: String?, label: String?, amountLarge: String?, amountSmall: String?, description: String?, iconCenter: String?, descriptionCenter: String?, action: DSActionParameter?, btnSemiLightAtm: DSButtonModel?) {
+    public init(componentId: String, type: DSWidgetType, icon: String?, label: String?, amountLarge: String?, amountSmall: String?, description: String?, iconCenter: String?, descriptionCenter: String?, action: DSActionParameter?, btnSemiLightAtm: DSButtonModel?, colorMode: DSWidgetColorMode?) {
         self.componentId = componentId
         self.type = type
         self.icon = icon
@@ -26,6 +28,7 @@ public struct DSDashboardCardMlc: Codable {
         self.descriptionCenter = descriptionCenter
         self.action = action
         self.btnSemiLightAtm = btnSemiLightAtm
+        self.colorMode = colorMode
     }
 }
 
@@ -33,4 +36,12 @@ public enum DSWidgetType: String, Codable {
     case empty, button, description
 }
 
-
+public enum DSWidgetColorMode: String, Codable, EnumDecodable {
+    public static var defaultValue: DSWidgetColorMode = .green
+    
+    case green
+    case blue
+    case purple
+    case orange
+    case transparentWhite
+}

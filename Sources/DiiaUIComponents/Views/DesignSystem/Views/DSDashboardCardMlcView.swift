@@ -3,7 +3,6 @@ import Foundation
 import UIKit
 
 /// design_system_code: dashboardCardMlc
-
 public final class DSDashboardCardMlcViewModel {
     public let dashboardCardMlc: DSDashboardCardMlc
     public let eventHandler: ((ConstructorItemEvent) -> ())?
@@ -12,6 +11,28 @@ public final class DSDashboardCardMlcViewModel {
          eventHandler: ((ConstructorItemEvent) -> ())?) {
         self.dashboardCardMlc = dashboardCardMlc
         self.eventHandler = eventHandler
+    }
+    
+    var gradientColors: [UIColor]? {
+        switch dashboardCardMlc.colorMode ?? .green {
+        case .green: [
+            UIColor(hex: 0x8ED0D0).withAlphaComponent(0.5),
+            UIColor(hex: 0xA7ED96).withAlphaComponent(0.5)
+        ]
+        case .blue: [
+            UIColor(hex: 0x4BB3FE).withAlphaComponent(0.5),
+            UIColor(hex: 0xA9D4E7).withAlphaComponent(0.5)
+        ]
+        case .purple: [
+            UIColor(hex: 0x96A3ED).withAlphaComponent(0.5),
+            UIColor(hex: 0xEEBBFF).withAlphaComponent(0.5)
+        ]
+        case .orange: [
+            UIColor(hex: 0xED9996).withAlphaComponent(0.5),
+            UIColor(hex: 0xFFD992).withAlphaComponent(0.5)
+        ]
+        default: nil
+        }
     }
 }
 
@@ -22,13 +43,14 @@ public final class DSDashboardCardMlcView: BaseCodeView {
     private let amountSmallLabel = UILabel().withParameters(font: FontBook.emptyStateTitleFont)
     private let descriptionLabel = UILabel().withParameters(font: FontBook.usualFont,
                                                             textColor: UIColor.black600)
+    private let buttonContainer = UIView()
     private let button = ActionButton()
     private var emptyIcon = UIImageView()
     private let emptyDescription = UILabel().withParameters(font: FontBook.usualFont)
     
     private let labelStack = UIStackView.create(.horizontal, spacing: Constants.smallPadding, alignment: .center)
     private let amountView = UIView()
-    private let fullViewStack = UIStackView.create(spacing: Constants.smallPadding, alignment: .top, distribution: .equalSpacing)
+    private let fullViewStack = UIStackView.create(spacing: Constants.smallPadding, distribution: .equalSpacing)
     private let emptyStack = UIStackView.create(spacing: Constants.padding, alignment: .center)
     
     private let imageProvider = UIComponentsConfiguration.shared.imageProvider
@@ -44,13 +66,17 @@ public final class DSDashboardCardMlcView: BaseCodeView {
         icon.withSize(Constants.imageSize)
         labelStack.addArrangedSubviews([icon, label])
         
-        amountView.addSubview(amountLabel)
+        amountView.addSubviews([amountLabel, amountSmallLabel])
         amountLabel.anchor(top: amountView.topAnchor, leading: amountView.leadingAnchor, bottom: amountView.bottomAnchor)
+        amountSmallLabel.anchor(leading: amountLabel.trailingAnchor, bottom: amountView.bottomAnchor)
+        amountSmallLabel.trailingAnchor.constraint(lessThanOrEqualTo: amountView.trailingAnchor).isActive = true
         
-        amountView.addSubview(amountSmallLabel)
-        amountSmallLabel.anchor(leading: amountLabel.trailingAnchor, bottom: amountView.bottomAnchor, trailing: amountView.trailingAnchor)
-        
-        fullViewStack.addArrangedSubviews([labelStack, amountView, descriptionLabel, button])
+        buttonContainer.addSubview(button)
+        button.withHeight(Constants.buttonHeight)
+        button.anchor(top: buttonContainer.topAnchor, bottom: buttonContainer.bottomAnchor)
+        button.centerXAnchor.constraint(equalTo: buttonContainer.centerXAnchor).isActive = true
+
+        fullViewStack.addArrangedSubviews([labelStack, amountView, descriptionLabel, buttonContainer])
         emptyStack.addArrangedSubviews([emptyIcon, emptyDescription])
         
         button.type = .text
@@ -66,7 +92,6 @@ public final class DSDashboardCardMlcView: BaseCodeView {
         fullViewStack.fillSuperview(padding: .allSides(Constants.padding))
         
         emptyIcon.withSize(Constants.emptyImageSize)
-        button.withHeight(Constants.buttonHeight)
         
         addSubview(emptyStack)
         emptyStack.translatesAutoresizingMaskIntoConstraints = false
@@ -152,38 +177,34 @@ public final class DSDashboardCardMlcView: BaseCodeView {
         case .empty:
             displayFullStack(false)
             emptyStack.isHidden = false
-            backgroundColor = UIColor.init(white: 1.0, alpha: 0.5)
         case .button:
             emptyStack.isHidden = true
             displayFullStack(true)
-            button.isHidden = false
+            buttonContainer.isHidden = false
             descriptionLabel.isHidden = true
-            configureGradient(for: .button)
         case .description:
             emptyStack.isHidden = true
             displayFullStack(true)
-            button.isHidden = true
+            buttonContainer.isHidden = true
             descriptionLabel.isHidden = false
-            configureGradient(for: .description)
         }
         
+        configureBackground()
         setupAccessibility(for: type)
     }
     
-    private func configureGradient(for type: DSWidgetType) {
-        let gradient = GradientView()
-        var colors = [UIColor]()
-        switch type {
-        case .button:
-            colors = Constants.buttonWidgetColors
-        case .description:
-            colors = Constants.textWidgetColors
-        default: break
+    private func configureBackground() {
+        guard let colors = viewModel?.gradientColors else {
+            backgroundColor = .white.withAlphaComponent(0.5)
+            return
         }
-        gradient.configureGradient(for: colors,
-                                   corner: Constants.cornerRadius,
-                                   startPoint: .init(x: 0.0, y: 0.5),
-                                   endPoint: .init(x: 1.0, y: 0.5))
+        let gradient = GradientView()
+        gradient.configureGradient(
+            for: colors,
+            corner: Constants.cornerRadius,
+            startPoint: .init(x: 0.0, y: 0.5),
+            endPoint: .init(x: 1.0, y: 0.5)
+        )
         insertSubview(gradient, at: 0)
         gradient.fillSuperview()
     }
@@ -199,7 +220,6 @@ public final class DSDashboardCardMlcView: BaseCodeView {
         }
         
         return nil
-        
     }
 }
 
@@ -215,9 +235,5 @@ extension DSDashboardCardMlcView {
         static let emptyImageSize = CGSize(width: 24, height: 24)
         static let buttonColor = UIColor(white: 1, alpha: 0.42)
         static let buttonTitleEdgeInsets: UIEdgeInsets = .init(top: 0, left: 12, bottom: 0, right: 12)
-        static let buttonWidgetColors = [UIColor(hex: 0x4BB3FE).withAlphaComponent(0.5),
-                                         UIColor(hex: 0xA9D4E7).withAlphaComponent(0.5)]
-        static let textWidgetColors = [UIColor(hex: 0x8ED0D0).withAlphaComponent(0.5),
-                                       UIColor(hex: 0xA7ED96).withAlphaComponent(0.5)]
     }
 }

@@ -57,11 +57,10 @@ public final class FloatingTextLabel: BaseCodeView {
     }
     
     public func configure(model: DSTickerAtom, leadingBuffer: CGFloat = 16) {
-        self.leadingBuffer = leadingBuffer
         withHeight(model.usage.height)
         layoutIfNeeded()
         labelText = model.value
-        configureUI(backgroundImage: model.type.backgroundImage)
+        configureUI(backgroundImage: model.type.backgroundImage, leadingBuffer: leadingBuffer)
         animate()
         accessibilityIdentifier = model.componentId
     }

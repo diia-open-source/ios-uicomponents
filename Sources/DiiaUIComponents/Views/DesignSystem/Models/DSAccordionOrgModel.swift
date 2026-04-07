@@ -3,12 +3,14 @@ import DiiaCommonTypes
 
 public struct DSAccordionOrgExpandedContentModel: Codable {
     public let items: [AnyCodable]
+    public let showDivider: Bool?
 }
 
 public struct DSAccordionOrgModel: Codable {
     public let componentId: String?
     public let heading: String
     public let description: String?
+    public let descriptionIcon: DSIconModel?
     public let states: DSAccordionOrgState
     public let expandedContent: DSAccordionOrgExpandedContentModel?
 }

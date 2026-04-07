@@ -5,7 +5,7 @@ import DiiaCommonTypes
 /// design_system_code: scanModalCardOrg
 public final class ScanModalCardView: BaseCodeView {
     private let chipStatusAtmView = DSChipStatusAtmView()
-    private let titleLabel = UILabel().withParameters(font: FontBook.bigText)
+    private let titleLabel = UILabel().withParameters(font: FontBook.smallHeadingFont)
     private let descriptionLabel = UILabel().withParameters(font: FontBook.bigText)
     private let tableItemsStack = UIStackView.create()
     private let attentionIconMessageView = DSAttentionIconMessageView()

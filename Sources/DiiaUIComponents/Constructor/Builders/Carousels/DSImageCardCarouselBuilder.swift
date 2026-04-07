@@ -68,6 +68,17 @@ final class DSImageCardCarouselDataSource: NSObject, UICollectionViewDataSource 
         self.fabric = fabric
         self.eventHandler = eventHandler
     }
+    
+    init(sourceModel: DSCardImageCarouselModel,
+         fabric: DSViewFabric,
+         eventHandler: @escaping (ConstructorItemEvent) -> Void) {
+        self.sourceModel = DSImageCardCarouselModel(
+            componentId: sourceModel.componentId,
+            dotNavigationAtm: .init(count: sourceModel.dotBlackNavigationAtm.count),
+            items: sourceModel.items)
+        self.fabric = fabric
+        self.eventHandler = eventHandler
+    }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let item = sourceModel.items[indexPath.row]

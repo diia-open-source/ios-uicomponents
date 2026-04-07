@@ -24,6 +24,11 @@ public struct DSListWidgetItemsContainer: Codable {
     public let listWidgetItemMlc: DSListWidgetItemModel?
     public let listItemMlc: DSListItemMlcModel?
     
+    public init(listWidgetItemMlc: DSListWidgetItemModel? = nil, listItemMlc: DSListItemMlcModel? = nil) {
+        self.listWidgetItemMlc = listWidgetItemMlc
+        self.listItemMlc = listItemMlc
+    }
+    
     public func searchModel() -> SearchItemModel? {
         if let listWidgetItemMlc {
             return SearchItemModel(

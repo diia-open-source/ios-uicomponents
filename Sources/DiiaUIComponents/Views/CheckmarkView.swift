@@ -29,9 +29,10 @@ public final class CheckmarkView: BaseCodeView {
     
     private var isChecked = false {
         didSet {
-            let image = isChecked ? R.image.checkbox_enabled.image : R.image.checkbox_disabled.image
+            let image = isChecked ? R.image.checkbox_selected.image : R.image.checkbox_deselected.image
             checkmarkImageView.image = image
-            accessibilityTraits = isChecked ? [.button, .selected] : [.button]
+            checkmarkImageView.accessibilityValue = isChecked ? R.Strings.general_accessibility_radio_button_selected.localized()
+                                                              : R.Strings.general_accessibility_radio_button_not_selected.localized()
             onChange?(isChecked)
         }
     }
@@ -73,7 +74,6 @@ public final class CheckmarkView: BaseCodeView {
                           parameters: [TextParameter]? = nil,
                           onChange: ((Bool) -> Void)?) {
         accessibilityIdentifier = componentId
-        accessibilityLabel = text
         
         self.isChecked = isChecked
         self.onChange = onChange
@@ -84,8 +84,10 @@ public final class CheckmarkView: BaseCodeView {
                 parameters: parameters
         ) {
             self.textView.attributedText = attributed
+            textView.accessibilityAttributedLabel = attributed
         } else {
             self.textView.text = text
+            textView.accessibilityLabel = text
         }
     }
     
@@ -106,7 +108,11 @@ public final class CheckmarkView: BaseCodeView {
     
     // MARK: - Accessibility
     private func setupAccessibility() {
-        isAccessibilityElement = true
+        checkmarkImageView.isAccessibilityElement = true
+        textView.isAccessibilityElement = true
+        textView.accessibilityValue = ""
+        
+        accessibilityElements = [textView, checkmarkImageView]
     }
 }
 

@@ -32,6 +32,7 @@ extension DSAccordionOrgBuilder: DSViewMockableBuilderProtocol {
             componentId: "componentId",
             heading: "heading",
             description: "description",
+            descriptionIcon: .mock,
             states: DSAccordionOrgState(
                 isExpanded: true,
                 expandedIcon: DSIconModel(
@@ -49,7 +50,8 @@ extension DSAccordionOrgBuilder: DSViewMockableBuilderProtocol {
                     isEnable: true
                 )
             ),
-            expandedContent: DSAccordionOrgExpandedContentModel(items: []))
+            expandedContent: DSAccordionOrgExpandedContentModel(items: [],
+                                                                showDivider: nil))
         return .dictionary([
             modelKey: .fromEncodable(encodable: model)
         ])

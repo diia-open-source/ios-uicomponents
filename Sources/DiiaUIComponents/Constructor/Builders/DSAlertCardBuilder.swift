@@ -24,12 +24,6 @@ public struct DSAlertCardBuilder: DSViewBuilderProtocol {
     }
 }
 
-extension DSAlertCardBuilder {
-    enum Constants {
-        static let stackInsets = UIEdgeInsets.init(top: 24, left: 24, bottom: 0, right: 24)
-    }
-}
-
 extension DSAlertCardBuilder: DSViewMockableBuilderProtocol {
     public func makeMockModel() -> AnyCodable {
         let model = DSAlertCardMlc(

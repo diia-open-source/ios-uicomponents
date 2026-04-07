@@ -43,6 +43,7 @@ public struct DSBtnPlainIconModel: Codable {
     public let state: DSButtonState?
     public let label: String
     public let icon: String
+    public let accessibilityDescription: String?
     public let action: DSActionParameter?
     
     public init(
@@ -50,6 +51,7 @@ public struct DSBtnPlainIconModel: Codable {
         state: DSButtonState? = nil,
         label: String,
         icon: String,
+        accessibilityDescription: String? = nil,
         action: DSActionParameter?,
         componentId: String?
     ) {
@@ -57,6 +59,7 @@ public struct DSBtnPlainIconModel: Codable {
         self.state = state
         self.label = label
         self.icon = icon
+        self.accessibilityDescription = accessibilityDescription
         self.action = action
         self.componentId = componentId
     }
@@ -66,6 +69,7 @@ public struct DSBtnPlainIconModel: Codable {
         state: .enabled,
         label: "label",
         icon: "home",
+        accessibilityDescription: "accessibilityDescription",
         action: .mock,
         componentId: "componentId"
     )

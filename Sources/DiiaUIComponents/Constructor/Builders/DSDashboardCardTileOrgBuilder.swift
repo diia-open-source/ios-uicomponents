@@ -15,7 +15,8 @@ public struct DSDashboardCardTileOrgBuilder: DSViewBuilderProtocol {
         let view = DSDashboardCardTileOrgView()
         view.accessibilityIdentifier = model.componentId
         view.configure(with: viewModel)
-        return BoxView(subview: view).withConstraints(insets: Constants.offset)
+        let insets = paddingType.defaultPadding(object: object, modelKey: modelKey)
+        return BoxView(subview: view).withConstraints(insets: insets)
     }
 }
 
@@ -32,7 +33,8 @@ extension DSDashboardCardTileOrgBuilder: DSViewMockableBuilderProtocol {
             iconCenter: "info",
             descriptionCenter: "Center text",
             action: DSActionParameter.mock,
-            btnSemiLightAtm: DSButtonModel.mock
+            btnSemiLightAtm: DSButtonModel.mock,
+            colorMode: .green
         ))
         let cardItem2 = DSDashboardCardItem(dashboardCardMlc: DSDashboardCardMlc(
             componentId: "componentId",
@@ -45,7 +47,8 @@ extension DSDashboardCardTileOrgBuilder: DSViewMockableBuilderProtocol {
             iconCenter: nil,
             descriptionCenter: nil,
             action: nil,
-            btnSemiLightAtm: DSButtonModel.mock
+            btnSemiLightAtm: DSButtonModel.mock,
+            colorMode: .green
         ))
         
         let model = DSDashboardCardTileOrg(

@@ -43,7 +43,9 @@ public final class DSTableAccordionOrgView: BaseCodeView {
             }
 
             headingView.configure(with: viewModel)
-            mainStack.addArrangedSubview(headingView)
+            let headingBox = BoxView(subview: headingView)
+                .withConstraints(insets: .init(top: Constants.topSpacing))
+            mainStack.addArrangedSubview(headingBox)
         }
 
         for (index, item) in model.items.enumerated() {
@@ -72,6 +74,7 @@ public final class DSTableAccordionOrgView: BaseCodeView {
 extension DSTableAccordionOrgView {
     private enum Constants {
         static let cornerRadius = CGFloat(16)
+        static let topSpacing = CGFloat(16)
         static let dividerColor = UIColor("#E2ECF4")
         static let dividerHeight = CGFloat(1)
         static let mainStackPaddings = UIEdgeInsets(top: 0, left: 16, bottom: 16, right: 16)

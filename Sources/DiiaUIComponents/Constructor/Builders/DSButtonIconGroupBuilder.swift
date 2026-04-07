@@ -19,6 +19,7 @@ public struct DSButtonIconGroupBuilder: DSViewBuilderProtocol {
             let viewModel = IconedLoadingStateViewModel(
                 name: btnLoadPlainIconAtm.label,
                 image: UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: btnLoadPlainIconAtm.icon) ?? UIImage(),
+                accessibilityDescription: btnLoadPlainIconAtm.accessibilityDescription,
                 componentId: btnLoadPlainIconAtm.componentId)
             if let action = btnLoadPlainIconAtm.action {
                 viewModel.clickHandler = {

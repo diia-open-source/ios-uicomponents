@@ -9,6 +9,7 @@ public final class DSRadioBtnMlcV2ViewModel: NSObject {
     public let iconLeft: DSIconModel?
     public let label: String
     public let details: String?
+    public let descriptions: [String]?
     public let status: String?
     public let isAvailable: Bool
     public var isSelected: Observable<Bool>
@@ -21,6 +22,7 @@ public final class DSRadioBtnMlcV2ViewModel: NSObject {
                 label: String,
                 status: String?,
                 details: String?,
+                descriptions: [String]?,
                 isAvailable: Bool,
                 isSelected: Observable<Bool>,
                 onClick: Callback? = nil) {
@@ -31,6 +33,7 @@ public final class DSRadioBtnMlcV2ViewModel: NSObject {
         self.label = label
         self.status = status
         self.details = details
+        self.descriptions = descriptions
         self.isAvailable = isAvailable
         self.isSelected = isSelected
         self.onClick = onClick
@@ -46,6 +49,7 @@ final public class DSRadioBtnMlcV2View: BaseCodeView {
     private let titleLabel = UILabel().withParameters(font: FontBook.bigText, textColor: .black)
     private let descriptionLabel = UILabel().withParameters(font: FontBook.usualFont,
                                                             textColor: Constants.descriptionLabelColor)
+    private let descriptionStack = UIStackView.create(.vertical, spacing: Constants.smallSpacing)
     private let statusLabel = UILabel().withParameters(font: FontBook.usualFont,
                                                        textColor: Constants.statusLabelColor)
     private let iconLeft = DSIconView()
@@ -69,7 +73,8 @@ final public class DSRadioBtnMlcV2View: BaseCodeView {
         
         contentLabelStack.addArrangedSubviews([
             iconLabelStack,
-            descriptionLabel
+            descriptionLabel,
+            descriptionStack
         ])
       
         iconStatusStack.addArrangedSubviews([
@@ -101,6 +106,7 @@ final public class DSRadioBtnMlcV2View: BaseCodeView {
         self.viewModel = viewModel
         accessibilityIdentifier = viewModel.componentId
         accessibilityLabel = [viewModel.label, viewModel.details, viewModel.status].compactMap({ $0 }).joined(separator: ",")
+        descriptionStack.safelyRemoveArrangedSubviews()
         
         titleLabel.text = viewModel.label
         descriptionLabel.isHidden = viewModel.details == nil
@@ -111,6 +117,16 @@ final public class DSRadioBtnMlcV2View: BaseCodeView {
         iconLeft.isHidden = viewModel.iconLeft == nil
         if let iconLeft = viewModel.iconLeft {
             self.iconLeft.setIcon(iconLeft)
+        }
+        
+        descriptionStack.isHidden = viewModel.descriptions == nil
+        if let descriptions = viewModel.descriptions {
+            descriptions.forEach {
+                let descriptionLabel = UILabel().withParameters(font: FontBook.usualFont,
+                                                    textColor: Constants.descriptionLabelColor)
+                descriptionLabel.text = $0
+                descriptionStack.addArrangedSubview(descriptionLabel)
+            }
         }
         
         iconRight.isHidden = viewModel.iconRight == nil

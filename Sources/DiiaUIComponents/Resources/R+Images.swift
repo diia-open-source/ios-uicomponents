@@ -8,10 +8,15 @@ extension R {
         case loadingBar
         case buttonContainer
         case gradienCircle
+        case checkbox_deselected
+        case checkbox_selected
         case checkbox_disabled
-        case checkbox_enabled
+        case checkbox_selected_disabled
         case checkbox_partialSelected
+        case roundButton_deselected
+        case roundButton_selected
         case roundButton_disabled
+        case roundButton_selected_disabled
         case penaltyGradient
         case filledCheckbox
         case emptyChecboxBlack
@@ -52,11 +57,13 @@ extension R {
         case defaultLoadingIcon = "DS_defaultLoadingIcon"
         case defaultImagePlaceholder = "DS_defaultImagePlaceholder"
         case defaultIconLarge = "DS_defaultIconLarge"
+        case starBlack = "DS_starBlack"
         case checkBoxSelectedDisable
         case radioBtnSelectedDisable
         case checkboxSquarePartiallySelected
         case arrowUp = "arrow_up"
         case arrowDown = "arrow_down"
+        case largePlaceholder = "largePlaceholder"
         
         var image: UIImage? {
             return UIImage(named: rawValue, in: Bundle.module, compatibleWith: nil)

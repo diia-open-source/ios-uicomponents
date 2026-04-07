@@ -24,7 +24,7 @@ public struct DSIconUrlAtmModel: Codable {
     )
 }
 
-/// design_system_code: iconUrlAtm, smallIconUrlAtm
+/// design_system_code: iconUrlAtm, smallIconUrlAtm, extraLargeIconUrlAtm
 public final class DSIconUrlAtmView: BaseCodeView {
     private let imageView = UIImageView()
     private var eventHandler: ((ConstructorItemEvent) -> Void) = { _ in }
@@ -41,14 +41,15 @@ public final class DSIconUrlAtmView: BaseCodeView {
         imageView.isHidden = true
     }
     
-    public func configure(with model: DSIconUrlAtmModel) {
+    public func configure(with model: DSIconUrlAtmModel, placeholder: UIImage? = nil) {
         self.action = model.action
         let finishCallback: Callback = { [weak self] in
             self?.imageView.isHidden = false
             self?.loadingView.isHidden = true
         }
         imageView.accessibilityLabel = model.accessibilityDescription
-        imageView.loadImage(imageURL: model.url, placeholder: R.image.defaultImagePlaceholder.image, completion: finishCallback, onError: finishCallback)
+        let placeholder = placeholder ?? R.image.ds_placeholder.image
+        imageView.loadImage(imageURL: model.url, placeholder: placeholder, completion: finishCallback, onError: finishCallback)
     }
     
     public func configure(with image: UIImage?) {

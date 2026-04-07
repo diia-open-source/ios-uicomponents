@@ -49,6 +49,7 @@ public extension UIColor {
     static let statusGreen = UIColor("#60C864")
     static let statusGray = UIColor("#000000").withAlphaComponent(0.3)
     static let black600 = UIColor("#000000").withAlphaComponent(0.6)
+    static let black400 = UIColor("#000000").withAlphaComponent(0.4)
     static let black540 = UIColor("#000000").withAlphaComponent(0.54)
     
     static let statusHistoryGreen = UIColor("#65C680")

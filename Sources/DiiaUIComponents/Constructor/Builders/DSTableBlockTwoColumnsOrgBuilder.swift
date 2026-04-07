@@ -4,10 +4,10 @@ import DiiaCommonTypes
 
 public struct DSTableBlockTwoColumnsOrgBuilder: DSViewBuilderProtocol {
     public let modelKey = "tableBlockTwoColumnsOrg"
-    private let imagesContent: [DSDocumentContentData: UIImage]?
+    private let imageProvider: DSImageNameProvider?
     
-    public init(imagesContent: [DSDocumentContentData : UIImage]? = nil) {
-        self.imagesContent = imagesContent
+    public init(imageProvider: DSImageNameProvider? = nil) {
+        self.imageProvider = imageProvider
     }
     
     public func makeView(from object: AnyCodable,
@@ -17,9 +17,11 @@ public struct DSTableBlockTwoColumnsOrgBuilder: DSViewBuilderProtocol {
         guard let data: DSTableBlockTwoColumnPlaneOrg = object.parseValue(forKey: self.modelKey) else { return nil }
         
         let view = DSTableBlockTwoColumnsOrgView()
-        view.configure(models: data,
-                       imagesContent: imagesContent ?? [:],
-                       eventHandler: eventHandler)
+        view.configure(
+            models: data,
+            imageProvider: imageProvider,
+            eventHandler: eventHandler
+        )
         
         let box = BoxView(subview: view).withConstraints(insets: padding.insets(for: object, modelKey: modelKey, defaultInsets: Constants.insets))
         return box
@@ -36,7 +38,7 @@ extension DSTableBlockTwoColumnsOrgBuilder: DSViewMockableBuilderProtocol {
     public func makeMockModel() -> AnyCodable {
         let model = DSTableBlockTwoColumnPlaneOrg(
             componentId: "componentId(optional)",
-            photo: .photo,
+            photo: "imageCode",
             items: [DSItemsModel(
                 tableItemVerticalMlc: .mock
             )],

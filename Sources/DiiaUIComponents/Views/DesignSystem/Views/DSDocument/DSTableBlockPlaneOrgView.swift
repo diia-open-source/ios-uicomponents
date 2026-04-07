@@ -118,7 +118,7 @@ public final class DSTableBlockPlaneOrgView: BaseCodeView {
     
     private func verticalTableItem(model: DSTableItemVerticalMlc, eventHandler: ((ConstructorItemEvent) -> Void)?) -> UIView {
         let verticalTableItem = DSTableItemVerticalView()
-        verticalTableItem.configure(model: model, eventHandler: eventHandler)
+        verticalTableItem.configure(model: model, eventHandler: eventHandler, urlOpener: UIComponentsConfiguration.shared.urlOpener)
         return BoxView(subview: verticalTableItem).withConstraints(insets: Constants.stackSubviewInsets)
     }
     

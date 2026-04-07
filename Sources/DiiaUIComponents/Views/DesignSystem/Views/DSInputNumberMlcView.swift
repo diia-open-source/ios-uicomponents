@@ -18,6 +18,8 @@ public struct DSInputNumberMlcModel: Codable {
     public let value: String?
     public let maxValue: Double?
     public let minValue: Double?
+    public let maxCount: Int?
+    public let minCount: Int?
     public let mandatory: Bool?
     public let errorMessage: String?
     public let mask: String?
@@ -32,6 +34,8 @@ public struct DSInputNumberMlcModel: Codable {
                 value: String?,
                 maxValue: Double?,
                 minValue: Double?,
+                maxCount: Int?,
+                minCount: Int?,
                 mandatory: Bool?,
                 errorMessage: String?,
                 mask: String? = nil,
@@ -45,6 +49,8 @@ public struct DSInputNumberMlcModel: Codable {
         self.value = value
         self.maxValue = maxValue
         self.minValue = minValue
+        self.maxCount = maxCount
+        self.minCount = minCount
         self.mandatory = mandatory
         self.errorMessage = errorMessage
         self.mask = mask
@@ -60,11 +66,12 @@ public final class DSInputNumberMlcViewModel {
     public let label: String
     public let placeholder: String?
     public let hint: String?
-    public let maskCapacity: Int?
     public let mask: String?
     public let value: String?
     public let maxValue: Double?
     public let minValue: Double?
+    public let maxCount: Int?
+    public let minCount: Int?
     public let mandatory: Bool?
     public let errorMessage: String?
     public let iconRight: DSIconModel?
@@ -82,6 +89,8 @@ public final class DSInputNumberMlcViewModel {
         value: String?,
         maxValue: Double?,
         minValue: Double?,
+        maxCount: Int?,
+        minCount: Int?,
         mandatory: Bool?,
         errorMessage: String?,
         iconRight: DSIconModel?,
@@ -96,28 +105,29 @@ public final class DSInputNumberMlcViewModel {
         self.value = value
         self.maxValue = maxValue
         self.minValue = minValue
+        self.maxCount = maxCount
+        self.minCount = minCount
         self.mandatory = mandatory
         self.errorMessage = errorMessage
         self.iconRight = iconRight
-        self.validators = validators
+                
+        self.validators = []
         
-        if let mask, !mask.isEmpty {
-            self.maskCapacity = mask.filter { $0 == "#" }.count
-        } else {
-            self.maskCapacity = nil
+        if minCount != nil || maxCount != nil {
+            self.validators.append(
+                TextValidationErrorGenerator(
+                    type: .length(min: minCount ?? 0, max: maxCount ?? Int.max),
+                    error: errorMessage
+                )
+            )
         }
- 
+
+        self.validators.append(contentsOf: validators)
+
         if minValue != nil || maxValue != nil {
             self.validators.append(
                 TextValidationErrorGenerator(
                     type: .number(min: minValue, max: maxValue),
-                    error: errorMessage))
-        }
-        
-        if self.validators.isEmpty, let capacity = self.maskCapacity {
-            self.validators.append(
-                TextValidationErrorGenerator(
-                    type: .length(min: capacity, max: capacity),
                     error: errorMessage
                 )
             )
@@ -161,6 +171,9 @@ final class DSInputNumberMlcView: BaseCodeView {
     
     // MARK: - Lifecycle
     override func setupSubviews() {
+        translatesAutoresizingMaskIntoConstraints = false
+        setContentHuggingPriority(.defaultLow, for: .horizontal)
+        setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         addSubview(mainStack)
         mainStack.fillSuperview()
         mainStack.addArrangedSubviews([
@@ -226,7 +239,7 @@ final class DSInputNumberMlcView: BaseCodeView {
         
         if let value = viewModel.value {
             applyMask(value)
-            notifyInputChanged(digits: value)
+            notifyInputChanged(digits: currentDigits)
         } else {
             textField.text = nil
         }
@@ -235,13 +248,15 @@ final class DSInputNumberMlcView: BaseCodeView {
         if let icon = viewModel.iconRight {
             rightIcon.setIcon(icon)
         }
-        
+
+        rightIcon.gestureRecognizers?.forEach { rightIcon.removeGestureRecognizer($0) }
         if let iconAction = viewModel.iconRight?.action {
             rightIcon.tapGestureRecognizer { [weak self] in
                 self?.eventHandler?(.action(iconAction))
             }
         }
-        
+
+        clearButton.gestureRecognizers?.forEach { clearButton.removeGestureRecognizer($0) }
         clearButton.setIcon(R.image.clearInput.image ?? UIImage())
         clearButton.tapGestureRecognizer { [weak self] in
             self?.onClearTapped()
@@ -257,7 +272,6 @@ final class DSInputNumberMlcView: BaseCodeView {
             self?.updateAccessoryState(state)
         }
         
-        updateIconsVisibility()
         updateInstructionsState()
     }
     
@@ -281,12 +295,12 @@ final class DSInputNumberMlcView: BaseCodeView {
             self.errorLabel.isHidden = true
             self.hintLabel.isHidden = self.viewModel?.hint?.isEmpty == true
         case .error(let focused):
-                isUserInteractionEnabled = true
-                containerView.alpha = Constants.defaultAlpha
-                containerView.layer.borderColor = Constants.errorColor.cgColor
-                titleLabel.textColor = Constants.errorColor
-                errorLabel.isHidden = focused
-                hintLabel.isHidden = true
+            isUserInteractionEnabled = true
+            containerView.alpha = Constants.defaultAlpha
+            containerView.layer.borderColor = Constants.errorColor.cgColor
+            titleLabel.textColor = Constants.errorColor
+            errorLabel.isHidden = focused
+            hintLabel.isHidden = true
         case .disabled:
             self.isUserInteractionEnabled = false
             self.containerView.layer.borderColor = Constants.borderEmpty.cgColor
@@ -351,37 +365,39 @@ final class DSInputNumberMlcView: BaseCodeView {
     
     private func applyMask(_ rawText: String?) {
         let raw = rawText ?? .empty
-        var digits = raw.digits
-
-        if let capacity = viewModel?.maskCapacity, digits.count > capacity {
-            digits = String(digits.prefix(capacity))
-        }
-
-        if let mask = viewModel?.mask, viewModel?.maskCapacity != nil {
-            textField.text = digits.isEmpty ? nil : formatUsingMask(mask, digits: digits)
-        } else {
-            textField.text = digits.isEmpty ? nil : digits
+        var input = stripMaskSeparators(from: raw)
+      
+        if let maxCount = viewModel?.maxCount, input.count > maxCount {
+            input = String(input.prefix(maxCount))
         }
         
-        currentDigits = digits.isEmpty ? nil : digits
-
-        updateIconsVisibility()
+        if let mask = viewModel?.mask, !mask.isEmpty {
+            textField.text = input.isEmpty ? nil : formatUsingMask(mask, input: input)
+        } else {
+            textField.text = input.isEmpty ? nil : input
+        }
+        
+        currentDigits = input.isEmpty ? nil : input
         updateInstructionsState()
+    }
+    
+    private func stripMaskSeparators(from text: String) -> String {
+        guard let mask = viewModel?.mask else { return text }
+        let separators = Set(mask.filter { $0 != "#" })
+        return text.filter { !separators.contains($0) }
     }
 
     private func updateIconsVisibility() {
         guard viewModel?.accessoryState.value == .defaultIcons else { return }
         
         let hasText = !(textField.text?.isEmpty ?? false)
+        let hasFocus = textField.isFirstResponder
         let hasRightIcon = (viewModel?.iconRight != nil)
         
-        if hasRightIcon {
-            rightIcon.isHidden = hasText
-            clearButton.isHidden = !hasText
-        } else {
-            rightIcon.isHidden = true
-            clearButton.isHidden = !hasText
-        }
+        let showClear = hasText && hasFocus
+        
+        clearButton.isHidden = !showClear
+        rightIcon.isHidden = showClear || !hasRightIcon
     }
     
     private func notifyInputChanged(digits: String?) {
@@ -399,6 +415,8 @@ final class DSInputNumberMlcView: BaseCodeView {
     private func updateInstructionsState() {
         let digits = currentDigits ?? .empty
         let hasFocus = textField.isFirstResponder
+        
+        updateIconsVisibility()
 
         if digits.isEmpty {
             errorLabel.text = nil
@@ -435,27 +453,20 @@ final class DSInputNumberMlcView: BaseCodeView {
         return nil
     }
     
-    private func formatUsingMask(_ mask: String, digits: String) -> String {
+    private func formatUsingMask(_ mask: String, input: String) -> String {
         var result = ""
-        var digitIndex = digits.startIndex
+        var inputIndex = input.startIndex
         
         for symbol in mask {
-            guard digitIndex < digits.endIndex else { break }
+            guard inputIndex < input.endIndex else { break }
             if symbol == "#" {
-                result.append(digits[digitIndex])
-                digitIndex = digits.index(after: digitIndex)
+                result.append(input[inputIndex])
+                inputIndex = input.index(after: inputIndex)
             } else {
                 result.append(symbol)
             }
         }
         return result
-    }
-    
-    private func isMaskSatisfied(by digits: String) -> Bool {
-        guard let capacity = viewModel?.maskCapacity else {
-            return true
-        }
-        return digits.count == capacity
     }
 }
 

@@ -19,9 +19,8 @@ public final class DSBackgroundWhiteViewModel {
     }
 }
 
-/// design_system_code: questionFormsOrg
+/// design_system_code: backgroundWhiteOrg
 public final class DSBackgroundWhiteView: BaseCodeView {
-    
     private let inputFieldsStack = UIStackView.create(spacing: Constants.stackSpacing)
     
     private var viewFabric = DSViewFabric.instance

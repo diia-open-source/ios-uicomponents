@@ -65,7 +65,7 @@ public final class DSCheckboxMlcView: BaseCodeView {
     private func updateSelectionState() {
         guard let viewModel else { return }
 
-        checkmarkImageView.image = viewModel.isSelected.value ? R.image.checkbox_enabled.image : R.image.checkbox_disabled.image
+        checkmarkImageView.image = viewModel.isSelected.value ? R.image.checkbox_selected.image : R.image.checkbox_deselected.image
 
         if viewModel.isSelected.value {
             accessibilityTraitsSet.insert(.selected)

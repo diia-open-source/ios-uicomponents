@@ -14,6 +14,9 @@ public struct DSTitleCentralizedMlcBuilder: DSViewBuilderProtocol {
         
         let label = UILabel().withParameters(font: FontBook.mainFont.regular.size(Constants.labelFontSize), numberOfLines: 0, textAlignment: .center)
         label.accessibilityIdentifier = data.componentId
+        label.isAccessibilityElement = true
+        label.accessibilityTraits = .header
+        label.accessibilityLabel = data.label
         label.text = data.label
         
         let insets = padding.defaultPaddingV2(object: object, modelKey: modelKey)

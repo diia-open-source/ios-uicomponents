@@ -28,6 +28,8 @@ public struct DSInputNumberViewBuilder: DSViewBuilderProtocol {
             value: data.value ,
             maxValue: data.maxValue,
             minValue: data.minValue,
+            maxCount: data.maxCount,
+            minCount: data.minCount,
             mandatory: data.mandatory,
             errorMessage: data.errorMessage,
             iconRight: data.iconRight,

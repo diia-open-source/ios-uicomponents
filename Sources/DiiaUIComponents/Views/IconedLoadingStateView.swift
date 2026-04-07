@@ -5,6 +5,7 @@ import DiiaCommonTypes
 public final class IconedLoadingStateViewModel: NSObject {
     public let name: String
     public let image: UIImage?
+    public let accessibilityDescription: String?
     public let componentId: String?
     public var clickHandler: Callback?
     @objc public dynamic var isLoading: Bool
@@ -12,12 +13,14 @@ public final class IconedLoadingStateViewModel: NSObject {
     
     public init(name: String,
                 image: UIImage?,
+                accessibilityDescription: String? = nil,
                 clickHandler: Callback? = nil,
                 isLoading: Bool = false,
                 componentId: String? = nil,
                 loadingImage: UIImage? = nil) {
         self.name = name
         self.image = image
+        self.accessibilityDescription = accessibilityDescription
         self.clickHandler = clickHandler
         self.isLoading = isLoading
         self.componentId = componentId
@@ -50,7 +53,12 @@ public final class IconedLoadingStateView: BaseCodeView {
     
     public func configure(viewModel: IconedLoadingStateViewModel) {
         accessibilityIdentifier = viewModel.componentId
-        accessibilityLabel = viewModel.name
+        
+        if let accessibilityDescription = viewModel.accessibilityDescription {
+            accessibilityLabel = accessibilityDescription
+        } else {
+            accessibilityLabel = viewModel.name
+        }
         
         self.viewModel = viewModel
         imageView.image = viewModel.image

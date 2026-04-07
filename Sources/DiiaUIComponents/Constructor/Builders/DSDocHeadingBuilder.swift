@@ -36,12 +36,12 @@ extension DSDocHeadingBuilder: DSViewMockableBuilderProtocol {
                 subtitles: ["subtitle1", "subtitle2"],
                 componentId: "componentId"
             ),
-            docNumberCopyMlc: DSTableItemPrimaryMlc(
+            docNumberCopyMlc: DSDocNumberCopyMlc(
                 label: "label",
                 value: "value",
                 icon: .mock
             ),
-            docNumberCopyWhiteMlc: DSTableItemPrimaryMlc(
+            docNumberCopyWhiteMlc: DSDocNumberCopyMlc(
                 label: "label",
                 value: "value",
                 icon: .mock

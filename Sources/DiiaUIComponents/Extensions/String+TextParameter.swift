@@ -50,7 +50,7 @@ public extension String {
                     attributedText.addAttributes([.link: link], range: replacedRange)
                 }
             case .phone:
-                let phoneLink = "tel://\(parameter.data.resource.components(separatedBy: CharacterSet.decimalDigits.inverted).joined())"
+                let phoneLink = "tel:" + parameter.data.resource.filter { $0.isNumber || $0 == "+" }
                 attributedText.addAttributes([.link: phoneLink], range: replacedRange)
             case .email:
                 if parameter.data.resource.isValidEmail {

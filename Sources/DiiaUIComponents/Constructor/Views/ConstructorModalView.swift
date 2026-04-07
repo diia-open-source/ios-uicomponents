@@ -81,7 +81,7 @@ public final class ConstructorModalView: BaseCodeView {
             bodyScrollView.contentInset.top = .zero
             
             var topViews = views
-            setupCloseButton(views: &topViews, for: topGroupStack)
+            setupCloseButton(views: &topViews, for: topGroupStack, buttonPadding: Constants.closeBtnTopPadding)
             
             topGroupStack.addArrangedSubviews(topViews)
         }
@@ -91,7 +91,7 @@ public final class ConstructorModalView: BaseCodeView {
         bodyStack.safelyRemoveArrangedSubviews()
         var bodyViews = views
         if closeButton.isHidden, withCloseButton, !bodyViews.isEmpty {
-            setupCloseButton(views: &bodyViews, for: bodyStack)
+            setupCloseButton(views: &bodyViews, for: bodyStack, buttonPadding: Constants.closeBtnBodyPadding)
         }
         bodyStack.addArrangedSubviews(bodyViews)
     }
@@ -114,11 +114,11 @@ public final class ConstructorModalView: BaseCodeView {
         bodyScrollView.separatorShouldAlwaysBeVisible = views.isEmpty ? false : nil
     }
     
-    private func setupCloseButton(views: inout [UIView], for stackView: UIStackView) {
+    private func setupCloseButton(views: inout [UIView], for stackView: UIStackView, buttonPadding: UIEdgeInsets? = nil) {
         closeButton.isHidden = false
         closeButton.backgroundColor = .clear
         let bottomBox = BoxView(subview: closeButton)
-            .withConstraints(insets: Constants.closeBtnPadding)
+            .withConstraints(insets: buttonPadding)
         let topView = views.removeFirst()
         let spacer = UIView()
         spacer.setContentHuggingPriority(.defaultLow, for: .horizontal)
@@ -179,7 +179,8 @@ private extension ConstructorModalView {
         static let groupPadding: CGFloat = 32
         static let progressAnimationDuration: CGFloat = 1.5
         static let closeBtnSize = CGSize(width: 48, height: 48)
-        static let closeBtnPadding = UIEdgeInsets(top: 24, left: .zero, bottom: .zero, right: 16)
+        static let closeBtnBodyPadding = UIEdgeInsets(top: .zero, left: .zero, bottom: .zero, right: 16)
+        static let closeBtnTopPadding = UIEdgeInsets(top: 24, left: .zero, bottom: .zero, right: 16)
         static let closeBtnInnerPadding: UIEdgeInsets = .allSides(16)
     }
 }

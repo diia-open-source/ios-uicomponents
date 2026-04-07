@@ -23,9 +23,9 @@ public final class CheckmarkViewWithDescription: UIView {
     private var isChecked: Bool = false {
         didSet {
             if useRoundButton {
-                self.checkedImageView.image = isChecked ? R.image.radioCheckbox.image : R.image.roundButton_disabled.image
+                self.checkedImageView.image = isChecked ? R.image.radioCheckbox.image : R.image.roundButton_deselected.image
             } else {
-                self.checkedImageView.image = isChecked ? R.image.checkbox_enabled.image : R.image.checkbox_disabled.image
+                self.checkedImageView.image = isChecked ? R.image.checkbox_selected.image : R.image.checkbox_deselected.image
             }
             
             accessibilityTraits = isChecked ? [.selected, .button] : [.button]

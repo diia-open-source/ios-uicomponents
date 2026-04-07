@@ -14,9 +14,14 @@ public extension CALayer {
         shadowOpacity = alpha
         shadowOffset = CGSize(width: x, height: y)
         shadowRadius = blur / 2.0
-
-        let rect = bounds.insetBy(dx: -spread, dy: -spread)
-        shadowPath = UIBezierPath(roundedRect: rect, cornerRadius: cornerRadius).cgPath
+        
+        if spread == 0 {
+            shadowPath = nil
+        } else {
+            let dx = -spread
+            let rect = bounds.insetBy(dx: dx, dy: dx)
+            shadowPath = UIBezierPath(rect: rect).cgPath
+        }
         
         shouldRasterize = true
         rasterizationScale = UIScreen.main.scale

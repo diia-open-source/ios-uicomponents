@@ -31,7 +31,8 @@ extension DSDashboardCardMlcBuilder: DSViewMockableBuilderProtocol {
             iconCenter: "info",
             descriptionCenter: "Center description",
             action: DSActionParameter.mock,
-            btnSemiLightAtm: DSButtonModel.mock
+            btnSemiLightAtm: DSButtonModel.mock,
+            colorMode: .green
         )
         return .dictionary([
             modelKey: .fromEncodable(encodable: model)

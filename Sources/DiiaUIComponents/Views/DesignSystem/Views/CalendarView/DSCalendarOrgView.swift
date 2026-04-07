@@ -106,6 +106,7 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
         stubMsgBoxView.layer.cornerRadius = cornerRadius
         pagginationMsgView.layer.cornerRadius = cornerRadius
         fullCalendarStackCornerView?.layer.cornerRadius = cornerRadius
+        animationView.layer.cornerRadius = cornerRadius
 
         legendView.isHidden = viewModel.legends == nil
         if let legend = viewModel.legends?.first(where: {$0.type == .initial}) {
@@ -343,10 +344,14 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
     }
     
     private func createMonthLabel(date: Date) -> UIView {
-        var isActive = calendar.isDate(date, equalTo: Date(), toGranularity: .month) || date > Date()
-        if let maxDateStr = viewModel?.calendarOrg.value.currentTimeMlc?.maxDate,
-           let maxDate = Constants.monthYearFormatter.date(from: maxDateStr) {
-            isActive = isActive && (date.compare(maxDate) == .orderedAscending || date.compare(maxDate) == .orderedSame)
+        let currentTimeMlc = viewModel?.calendarOrg.value.currentTimeMlc
+        let now = Date()
+        var isActive = calendar.isDate(date, equalTo: now, toGranularity: .month) || date > now
+        if let minStr = currentTimeMlc?.minDate, let minDate = Constants.monthYearFormatter.date(from: minStr) {
+            isActive = isActive && date >= minDate
+        }
+        if let maxStr = currentTimeMlc?.maxDate, let maxDate = Constants.monthYearFormatter.date(from: maxStr) {
+            isActive = isActive && date <= maxDate
         }
         let item = DSCalendarItemOrg(date: fullDateFormatter.string(from: date),
                                      calendarItemAtm: .init(label: date.monthStr.prefix(3).capitalized,
@@ -395,8 +400,15 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
     }
     
     private func setupYearHeader(for currentTime: DSCurrentTimeMlc? = nil) {
-        guard let viewModel = viewModel, let selectedPeriod = viewModel.selectedPeriod.value else { return }
-        
+        guard let viewModel else { return }
+        let selectedPeriod: Date
+        if let period = viewModel.selectedPeriod.value {
+            selectedPeriod = period
+        } else if let minDate = viewModel.calendarOrg.value.currentTimeMlc?.minDate {
+            selectedPeriod = Constants.monthYearFormatter.date(from: minDate) ?? Date()
+        } else {
+            selectedPeriod = Date()
+        }
         self.stubMsgBoxView.isHidden = true
         
         let currentTime = "\(calendar.component(.year, from: selectedPeriod))"

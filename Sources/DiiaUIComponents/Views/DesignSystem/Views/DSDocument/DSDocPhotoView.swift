@@ -16,11 +16,14 @@ public final class DSDocPhotoView: BaseCodeView {
         layer.cornerRadius = Constants.viewCorner
     }
     
-    public func configure(imageURL: String, accessibilityDescription: String?) {
-        photoView.configure(with: DSIconUrlAtmModel(componentId: nil,
-                                                    url: imageURL,
-                                                    accessibilityDescription: accessibilityDescription,
-                                                    action: nil))
+    public func configure(imageURL: String, accessibilityDescription: String?, placeholder: UIImage? = nil) {
+        photoView.configure(
+            with: DSIconUrlAtmModel(componentId: nil,
+                                    url: imageURL,
+                                    accessibilityDescription: accessibilityDescription,
+                                    action: nil),
+            placeholder: placeholder
+        )
     }
     
     public func configure(content: UIImage?) {

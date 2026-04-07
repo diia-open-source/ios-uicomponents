@@ -113,7 +113,7 @@ public final class DSWhiteAdditionalIconButton: BaseCodeView {
 
 extension DSWhiteAdditionalIconButton {
     private enum Constants {
-        static let stackInsets: UIEdgeInsets = .init(top: 10, left: 10, bottom: 10, right: 10)
+        static let stackInsets: UIEdgeInsets = .init(top: 8, left: 10, bottom: 8, right: 10)
         static let iconSize: CGSize = .init(width: 24, height: 24)
         static let spacing: CGFloat = 8
         static let cornerRadius: CGFloat = 16

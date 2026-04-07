@@ -102,6 +102,8 @@ public final class BankingCardView: BaseCodeView {
         
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(viewTapAction))
         addGestureRecognizer(tapRecognizer)
+        
+        setupAccessibility()
     }
     
     public func configure(with model: BankingCardViewModel) {
@@ -124,11 +126,19 @@ public final class BankingCardView: BaseCodeView {
         }
         if let paymentSystemLogo = model.paymentSystemLogo {
             paymentIconView.setIcon(paymentSystemLogo)
+            paymentIconView.accessibilityLabel = model.paymentSystemAccessibilityDescription
         }
         if !model.logos.isEmpty {
             for logo in model.logos {
                 let logoImage = DSIconView().withSize(Constants.mediumIconSize)
-                logoImage.setIcon(logo.code)
+                logoImage.isAccessibilityElement = true
+                logoImage.accessibilityTraits = logo.action != nil ? .button : .image
+                if logo.action != nil {
+                    logoImage.onClick = { [weak self] _ in
+                        self?.viewTapAction()
+                    }
+                }
+                logoImage.setIcon(logo)
                 logosStack?.addArrangedSubview(logoImage)
             }
             logosStack?.addArrangedSubview(UIView())
@@ -143,12 +153,16 @@ public final class BankingCardView: BaseCodeView {
         
         titleLabel.textColor = type == .empty ? .black : .white
         descriptionLabel.textColor = type == .empty ? .black : .white
-        
+    }
+    
+    private func setupAccessibility() {
+        paymentIconView.isAccessibilityElement = true
+        paymentIconView.accessibilityTraits = .image
     }
     
     @objc
     private func viewTapAction() {
-        viewModel?.action()
+        viewModel?.action?()
     }
 }
 
