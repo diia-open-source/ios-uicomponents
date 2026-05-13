@@ -2,39 +2,71 @@
 import UIKit
 import DiiaCommonTypes
 
-struct TransparentInfoCardMlcModel: Codable {
-    let componentId: String
-    let label: String
-    let chipStatusAtm: DSCardStatusChipModel?
-    let rows: [RowModel]?
-    let bottomLeftLabel: BottomLeftModel?
-    let bottomRightLabel: BottomRightModel?
-    let action: DSActionParameter?
-    let description: String?
+public struct TransparentInfoCardMlcModel: Codable {
+    public let componentId: String
+    public let label: String
+    public let chipStatusAtm: DSCardStatusChipModel?
+    public let rows: [RowModel]?
+    public let bottomLeftLabel: BottomLeftModel?
+    public let bottomRightLabel: BottomRightModel?
+    public let action: DSActionParameter?
+    public let description: String?
     
-    struct RowModel: Codable {
-        let iconLeft: DSIconModel?
-        let label: String
-        let value: String?
+    public init(componentId: String, label: String, chipStatusAtm: DSCardStatusChipModel?, rows: [RowModel]?, bottomLeftLabel: BottomLeftModel?, bottomRightLabel: BottomRightModel?, action: DSActionParameter?, description: String?) {
+        self.componentId = componentId
+        self.label = label
+        self.chipStatusAtm = chipStatusAtm
+        self.rows = rows
+        self.bottomLeftLabel = bottomLeftLabel
+        self.bottomRightLabel = bottomRightLabel
+        self.action = action
+        self.description = description
     }
-
-    struct BottomLeftModel: Codable {
-        let text: String?
-        let additionalText: AdditionalText?
-
-        struct AdditionalText: Codable {
-            let text: String?
-            let isStrikethrough: Bool?
+    
+    public struct RowModel: Codable {
+        public let iconLeft: DSIconModel?
+        public let label: String
+        public let value: String?
+        
+        public init(iconLeft: DSIconModel?, label: String, value: String?) {
+            self.iconLeft = iconLeft
+            self.label = label
+            self.value = value
         }
     }
 
-    struct BottomRightModel: Codable {
-        let text: String?
-        let iconRight: DSIconModel?
+    public struct BottomLeftModel: Codable {
+        public let text: String?
+        public let additionalText: AdditionalText?
+        
+        public init(text: String?, additionalText: AdditionalText?) {
+            self.text = text
+            self.additionalText = additionalText
+        }
+        
+        public struct AdditionalText: Codable {
+            public let text: String?
+            public let isStrikethrough: Bool?
+            
+            public init(text: String?, isStrikethrough: Bool?) {
+                self.text = text
+                self.isStrikethrough = isStrikethrough
+            }
+        }
+    }
+
+    public struct BottomRightModel: Codable {
+        public let text: String?
+        public let iconRight: DSIconModel?
+        
+        public init(text: String?, iconRight: DSIconModel?) {
+            self.text = text
+            self.iconRight = iconRight
+        }
     }
 }
 
-final class TransparentInfoCardMlcView: BaseCodeView {
+final public class TransparentInfoCardMlcView: BaseCodeView {
     private lazy var mainStack = UIStackView.create(views: [container, descriptionLabel], spacing: Constants.spacing)
     private let container = UIView()
     private let rowsStack = UIStackView.create(spacing: Constants.spacing)
@@ -75,12 +107,15 @@ final class TransparentInfoCardMlcView: BaseCodeView {
     private var eventHandler: ((ConstructorItemEvent) -> Void)?
     private var model: TransparentInfoCardMlcModel?
 
-    override func setupSubviews() {
+    public override func setupSubviews() {
+        translatesAutoresizingMaskIntoConstraints = false
         addSubview(mainStack)
         mainStack.fillSuperview()
         
         container.backgroundColor = Constants.transparentBackgroundColor
         container.withBorder(width: 1, color: .white, cornerRadius: Constants.cornerRadius)
+
+        leftBottomLabel.setContentHuggingPriority(.required, for: .horizontal)
 
         rightBottomIcon.withSize(Constants.imageSize)
         
@@ -90,18 +125,18 @@ final class TransparentInfoCardMlcView: BaseCodeView {
         chipStatusView.anchor(top: chipStatusContainer.topAnchor, leading: chipStatusContainer.leadingAnchor, bottom: chipStatusContainer.bottomAnchor, trailing: nil, padding: .zero)
         
         container.tapGestureRecognizer { [weak self] in
-            guard let action = self?.model?.action else { return }
-            self?.eventHandler?(.action(action))
+            guard let self, let action = self.model?.action else { return }
+            self.eventHandler?(.statefulAction(parameters: action, stateHandler: self))
         }
         container.isUserInteractionEnabled = true
         
         rightBottomStack.tapGestureRecognizer { [weak self] in
-            guard let action = self?.model?.bottomRightLabel?.iconRight?.action else { return }
-            self?.eventHandler?(.action(action))
+            guard let self, let action = self.model?.bottomRightLabel?.iconRight?.action else { return }
+            self.eventHandler?(.statefulAction(parameters: action, stateHandler: self))
         }
     }
     
-    func configure(with model: TransparentInfoCardMlcModel, eventHandler: @escaping (ConstructorItemEvent) -> Void) {
+    public func configure(with model: TransparentInfoCardMlcModel, eventHandler: @escaping (ConstructorItemEvent) -> Void) {
         self.eventHandler = eventHandler
         self.model = model
         
@@ -197,6 +232,22 @@ final class TransparentInfoCardMlcView: BaseCodeView {
             spacing: Constants.rowHorizontalSpacing,
             alignment: .top
         )
+    }
+}
+
+extension TransparentInfoCardMlcView: StatefullViewProtocol {
+    public func setState(_ state: DSButtonState) {
+        self.isUserInteractionEnabled = true
+        rightBottomIcon.stopRotation()
+        switch state {
+        case .disabled:
+            self.isUserInteractionEnabled = false
+        case .loading:
+            rightBottomIcon.image = R.image.blackGradientSpinner.image
+            rightBottomIcon.startRotating()
+        default:
+            rightBottomIcon.image = UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: model?.bottomRightLabel?.iconRight?.code)
+        }
     }
 }
 

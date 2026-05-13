@@ -15,6 +15,8 @@ public final class TitledMultilineTextView: BaseCodeView, DSInputComponentProtoc
     private var separatorColor: UIColor = .statusGray
     
     public override func setupSubviews() {
+        translatesAutoresizingMaskIntoConstraints = false
+        
         backgroundColor = .clear
         addSubview(titleLabel)
         addSubview(textView)
@@ -143,7 +145,8 @@ public final class TitledMultilineTextView: BaseCodeView, DSInputComponentProtoc
     //MARK: - DSInputComponentProtocol
     public func isValid() -> Bool {
         guard let inputText = textView.text else { return false }
-        
+        let isPlaceholder = textView.text == viewModel?.placeholder
+        guard !isPlaceholder else { return false }
         if viewModel?.mandatory == true {
             return !inputText.isEmpty && error(for: inputText) == nil
         } else {

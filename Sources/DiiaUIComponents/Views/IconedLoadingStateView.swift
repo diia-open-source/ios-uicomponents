@@ -28,6 +28,17 @@ public final class IconedLoadingStateViewModel: NSObject {
     }
 }
 
+extension IconedLoadingStateViewModel: StatefullViewProtocol {
+    public func setState(_ state: DSButtonState) {
+        switch state {
+        case .loading:
+            self.isLoading = true
+        default:
+            self.isLoading = false
+        }
+    }
+}
+
 public final class IconedLoadingStateView: BaseCodeView {
     private var mainStack: UIStackView?
     private let imageView: UIImageView = UIImageView().withSize(Constants.iconSize)

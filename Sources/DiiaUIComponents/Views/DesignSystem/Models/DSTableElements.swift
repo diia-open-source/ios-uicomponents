@@ -178,6 +178,9 @@ public struct DSTableItemVerticalMlc: Codable, Equatable {
     public var secondaryLabel: String?
     public let value: String?
     public var secondaryValue: String?
+    public let text: String?
+    public let strikeText: String?
+    public let blueText: DSBlueText?
     public var icon: DSIconModel?
     public let valueImage: DSDocumentContentData?
     public let valueImages: [String]?
@@ -185,24 +188,32 @@ public struct DSTableItemVerticalMlc: Codable, Equatable {
     public let valueParameters: [TextParameter]?
     public let componentId: String?
     
-    public init(supportingValue: String? = nil,
-                pointSupportingValue: String? = nil,
-                label: String? = nil,
-                secondaryLabel: String? = nil,
-                value: String? = nil,
-                secondaryValue: String? = nil,
-                icon: DSIconModel? = nil,
-                valueImage: DSDocumentContentData? = nil,
-                valueImages: [String]? = nil,
-                valueIcons: [DSValueIcon]? = nil,
-                valueParameters: [TextParameter]? = nil,
-                componentId: String? = nil) {
+    public init(
+        supportingValue: String? = nil,
+        pointSupportingValue: String? = nil,
+        label: String? = nil,
+        secondaryLabel: String? = nil,
+        value: String? = nil,
+        secondaryValue: String? = nil,
+        text: String? = nil,
+        strikeText: String? = nil,
+        blueText: DSBlueText? = nil,
+        icon: DSIconModel? = nil,
+        valueImage: DSDocumentContentData? = nil,
+        valueImages: [String]? = nil,
+        valueIcons: [DSValueIcon]? = nil,
+        valueParameters: [TextParameter]? = nil,
+        componentId: String? = nil
+    ) {
         self.supportingValue = supportingValue
         self.pointSupportingValue = pointSupportingValue
         self.label = label
         self.secondaryLabel = secondaryLabel
         self.value = value
         self.secondaryValue = secondaryValue
+        self.text = text
+        self.strikeText = strikeText
+        self.blueText = blueText
         self.icon = icon
         self.valueImage = valueImage
         self.valueImages = valueImages
@@ -218,6 +229,9 @@ public struct DSTableItemVerticalMlc: Codable, Equatable {
         secondaryLabel: "secondaryLabel(optional)",
         value: "value(optional)",
         secondaryValue: "secondaryValue(optional)",
+        text: "text(optional)",
+        strikeText: "strike text(optional)",
+        blueText: DSBlueText(text: "Blue text(optional)", iconLeft: .mock),
         icon: .mock,
         valueImage: .photo,
         valueImages: ["valueImage"],
@@ -229,6 +243,16 @@ public struct DSTableItemVerticalMlc: Codable, Equatable {
                                                   resource: "resourse"))],
         componentId: "componentId"
     )
+}
+
+public struct DSBlueText: Codable, Equatable {
+    public let text: String?
+    public let iconLeft: DSIconModel?
+    
+    public init(text: String?, iconLeft: DSIconModel?) {
+        self.text = text
+        self.iconLeft = iconLeft
+    }
 }
 
 public struct DSValueIcon: Codable, Equatable {

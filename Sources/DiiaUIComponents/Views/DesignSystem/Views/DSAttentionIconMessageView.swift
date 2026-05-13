@@ -32,12 +32,19 @@ final public class DSAttentionIconMessageView: BaseCodeView {
         iconImage.withSize(Constants.imageSize)
         expandIcon.withSize(Constants.expandIconSize)
         
-        iconImage.anchor(top: topAnchor, leading: leadingAnchor, padding: Constants.iconPaddings)
-        mainHStack.anchor(top: topAnchor,
-                          leading: iconImage.trailingAnchor,
-                          bottom: bottomAnchor,
-                          trailing: trailingAnchor,
-                          padding: Constants.mainStackPadding)
+        iconImage.anchor(
+            top: topAnchor,
+            leading: leadingAnchor,
+            padding: Constants.iconPaddings)
+        iconImage.bottomAnchor.constraint(
+            lessThanOrEqualTo: bottomAnchor,
+            constant: Constants.iconBottomPadding).isActive = true
+        mainHStack.anchor(
+            top: topAnchor,
+            leading: iconImage.trailingAnchor,
+            bottom: bottomAnchor,
+            trailing: trailingAnchor,
+            padding: Constants.mainStackPadding)
         
         strokeButtonContainer.addSubview(strokeButton)
         strokeButton.fillSuperview(padding: Constants.strokeButtonContainerInsets)
@@ -156,6 +163,7 @@ extension DSAttentionIconMessageView {
     enum Constants {
         static let mainStackPadding = UIEdgeInsets(top: 16, left: 8, bottom: 16, right: 16)
         static let iconPaddings = UIEdgeInsets(top: 16, left: 16, bottom: 0, right: 0)
+        static let iconBottomPadding: CGFloat = -16
         static let padding: CGFloat = 16
         static let spacing: CGFloat = 8
         static let lineHeight: CGFloat = 18

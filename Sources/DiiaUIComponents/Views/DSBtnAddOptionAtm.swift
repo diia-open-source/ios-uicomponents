@@ -32,10 +32,15 @@ final public class DSBtnAddOptionAtmView: BaseCodeView {
         ])
         self.layer.cornerRadius = Constants.cornerRadius
         self.backgroundColor = .white
+        
+        setupAccessibility()
     }
     
     public func configure(with model: DSBtnAddOptionAtm, eventHandler: @escaping (ConstructorItemEvent) -> Void) {
         accessibilityIdentifier = model.componentId
+        accessibilityLabel = model.label
+        accessibilityValue = model.description
+        
         textLabel.text = model.label
 
         descriptionLabel.isHidden = model.description == nil
@@ -55,11 +60,19 @@ final public class DSBtnAddOptionAtmView: BaseCodeView {
         switch model.state {
         case .disabled:
             isUserInteractionEnabled = false
+            accessibilityTraits.insert(.notEnabled)
             alpha = Constants.disabledAlpha
         default:
             isUserInteractionEnabled = true
+            accessibilityTraits.remove(.notEnabled)
             alpha = Constants.defaultAlpha
         }
+    }
+    
+    // MARK: - Private
+    private func setupAccessibility() {
+        isAccessibilityElement = true
+        accessibilityTraits = .button
     }
 }
 

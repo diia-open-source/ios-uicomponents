@@ -94,6 +94,7 @@ public final class ConstructorModalViewController: UIViewController {
 
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
         view.addGestureRecognizer(tapRecognizer)
+        tapRecognizer.cancelsTouchesInView = false
         presenter.configureView()
     }
     

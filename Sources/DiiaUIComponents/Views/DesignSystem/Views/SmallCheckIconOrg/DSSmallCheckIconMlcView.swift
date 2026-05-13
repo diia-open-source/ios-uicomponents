@@ -2,7 +2,6 @@
 import UIKit
 import DiiaCommonTypes
 
-
 public final class DSSmallCheckIconMlcViewModel: NSObject {
     public let componentId: String?
     public let id: String?

@@ -26,6 +26,7 @@ public final class DSDocumentHeadingView: BaseCodeView {
         
         ellipseButton.withSize(Constants.buttonSize)
         ellipseButton.addTarget(self, action: #selector(ellipseButtonAction), for: .touchUpInside)
+        setupAccessibility()
     }
     
     public func configure(model: DSDocumentHeading) {
@@ -69,6 +70,11 @@ public final class DSDocumentHeadingView: BaseCodeView {
     
     @objc private func ellipseButtonAction(_ sender: UIButton) {
         buttonCallback?()
+    }
+    
+    private func setupAccessibility() {
+        isAccessibilityElement = false
+        stackView.isAccessibilityElement = false
     }
 }
 

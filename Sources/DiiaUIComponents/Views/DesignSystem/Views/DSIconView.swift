@@ -36,14 +36,15 @@ public final class DSIconView: BaseCodeView {
     }
 
     // MARK: - Public Methods
-    public func setIcon(_ icon: DSIconModel) {
+    public func setIcon(_ icon: DSIconModel, renderingMode: UIImage.RenderingMode = .alwaysOriginal) {
         self.model = icon
         self.isUserInteractionEnabled = icon.action != nil
 
         accessibilityIdentifier = icon.componentId
         accessibilityLabel = icon.accessibilityDescription
         
-        imageView.image = UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: icon.code)
+        let image = UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: icon.code)
+        imageView.image = image?.withRenderingMode(renderingMode)
     }
     
     public func setIcon(_ iconCode: String) {

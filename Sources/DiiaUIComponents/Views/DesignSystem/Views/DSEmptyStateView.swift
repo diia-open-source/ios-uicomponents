@@ -19,8 +19,8 @@ public struct DSEmptyStateMlc: Codable {
 final public class DSEmptyStateView: BaseCodeView {
     private let mainStack = UIStackView.create(.vertical,spacing: Constants.smallSpacing, alignment: .center)
     private let iconLabelStack = UIStackView.create(.vertical,spacing: Constants.bigSpacing, alignment: .center)
-    private let titleLabel = UILabel().withParameters(font: FontBook.smallHeadingFont, textColor: .black)
-    private let textLabel = UILabel().withParameters(font: FontBook.usualFont, textColor: .black)
+    private let titleLabel = UILabel().withParameters(font: FontBook.mainFont.regular.size(Constants.fontSize), textColor: .black, textAlignment: .center)
+    private let textLabel = UILabel().withParameters(font: FontBook.usualFont, textColor: .black, textAlignment: .center)
     private let iconView = DSIconView().withSize(Constants.iconSize)
     
     public override func setupSubviews() {
@@ -34,7 +34,6 @@ final public class DSEmptyStateView: BaseCodeView {
             iconLabelStack,
             textLabel
         ])
-        textLabel.textAlignment = .center
         self.layer.cornerRadius = Constants.cornerRadius
         self.withBorder(width: Constants.borderWidth, color: Constants.borderColor)
     }
@@ -60,6 +59,7 @@ private extension DSEmptyStateView {
     enum Constants {
         static let smallSpacing: CGFloat = 8
         static let bigSpacing: CGFloat = 16
+        static let fontSize: CGFloat = 16
         static let iconSize: CGSize = .init(width: 32, height: 32)
         static let paddings: UIEdgeInsets = .init(top: 24, left: 32, bottom: 24, right: 32)
         static let cornerRadius: CGFloat = 24

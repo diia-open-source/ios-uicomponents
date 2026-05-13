@@ -1,5 +1,6 @@
 
 import UIKit
+import DiiaCommonTypes
 
 // MARK: - DSChipItemView
 public class DSChipItem {
@@ -52,6 +53,7 @@ public final class DSChipItemView: BaseCodeView {
     }
     
     public override func setupSubviews() {
+        translatesAutoresizingMaskIntoConstraints = false
         itemLabel.withParameters(font: FontBook.usualFont)
         itemLabel.numberOfLines = 1
         itemCounterLabel.withParameters(font: FontBook.usualFont)
@@ -74,30 +76,30 @@ public final class DSChipItemView: BaseCodeView {
     }
     
     public func configure(viewModel: DSChipItem) {
-            self.viewModel?.numCount.removeObserver(observer: self)
-            self.viewModel = viewModel
-            
-            itemLabel.text = viewModel.name
-            
-            viewModel.numCount.observe(observer: self) { [weak self] countValue in
-                self?.itemNumContainer.isHidden = countValue == nil || countValue == 0
-                if let numCount = countValue, numCount != 0 {
-                    let itemsCount = numCount < 100 ? numCount.description : "99+"
-                    self?.itemCounterLabel.text = itemsCount
-                    self?.accessibilityValue = itemsCount
-                }
-                self?.layoutIfNeeded()
+        self.viewModel?.numCount.removeObserver(observer: self)
+        self.viewModel = viewModel
+        
+        itemLabel.text = viewModel.name
+        
+        viewModel.numCount.observe(observer: self) { [weak self] countValue in
+            self?.itemNumContainer.isHidden = countValue == nil || countValue == 0
+            if let numCount = countValue, numCount != 0 {
+                let itemsCount = numCount < 100 ? numCount.description : "99+"
+                self?.itemCounterLabel.text = itemsCount
+                self?.accessibilityValue = itemsCount
             }
-            
-            leftIconView.isHidden = viewModel.iconLeft == nil
-            if let iconLeft = viewModel.iconLeft {
-                leftIconView.image = UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: iconLeft.code)
-            }
-
-            backgroundColor = viewModel.isSelected ? .white : Constants.uncheckedColor
-            
-            setupAccessibility()
+            self?.layoutIfNeeded()
         }
+        
+        leftIconView.isHidden = viewModel.iconLeft == nil
+        if let iconLeft = viewModel.iconLeft {
+            leftIconView.image = UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: iconLeft.code)
+        }
+
+        backgroundColor = viewModel.isSelected ? .white : Constants.uncheckedColor
+        
+        setupAccessibility()
+    }
     
     // MARK: - Accessibility
     private func setupAccessibility() {

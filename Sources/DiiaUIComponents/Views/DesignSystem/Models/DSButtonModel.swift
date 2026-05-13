@@ -37,4 +37,5 @@ public enum DSButtonState: String, Codable, EnumDecodable {
     case disabled
     case invisible
     case selected
+    case loading
 }

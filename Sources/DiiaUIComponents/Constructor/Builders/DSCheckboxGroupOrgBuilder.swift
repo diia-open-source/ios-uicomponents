@@ -39,81 +39,25 @@ extension DSCheckboxGroupOrgBuilder: DSViewMockableBuilderProtocol {
             mandatory: true,
             items: [
                 DSCheckboxGroupOrgItemModel(
-                    checkboxMlc: DSCheckboxMlcModel(
-                        id: "id",
-                        label: "Second round checkbox",
-                        componentId: "componentId",
-                        inputCode: "inputCode",
-                        description: "Description for second checkbox",
-                        isSelected: nil,
-                        isEnabled: true
-                    )
+                    checkboxMlc: .mock
                 ),
                 DSCheckboxGroupOrgItemModel(
-                    checkboxMlc: DSCheckboxMlcModel(
-                        id: "id",
-                        label: "Second round checkbox",
-                        componentId: "componentId",
-                        inputCode: "inputCode",
-                        description: "Description for second checkbox",
-                        isSelected: nil,
-                        isEnabled: false
-                    )
+                    checkboxMlc: .mock
                 ),
                 DSCheckboxGroupOrgItemModel(
-                    checkboxMlc: DSCheckboxMlcModel(
-                        id: "id",
-                        label: "Second round checkbox",
-                        componentId: "componentId",
-                        inputCode: "inputCode",
-                        description: nil,
-                        isSelected: false,
-                        isEnabled: true
-                    )
+                    checkboxMlc: .mock
                 ),
                 DSCheckboxGroupOrgItemModel(
-                    checkboxMlc: DSCheckboxMlcModel(
-                        id: "id",
-                        label: "Second round checkbox",
-                        componentId: "componentId",
-                        inputCode: "inputCode",
-                        description: "Description for second checkbox",
-                        isSelected: true,
-                        isEnabled: true
-                    )
+                    checkboxMlc: .mock
                 ),
                 DSCheckboxGroupOrgItemModel(
-                    checkboxMlc: DSCheckboxMlcModel(
-                        id: "id",
-                        label: "Second round checkbox",
-                        componentId: "componentId",
-                        inputCode: "inputCode",
-                        description: "Description for second checkbox",
-                        isSelected: true,
-                        isEnabled: false
-                    )
+                    checkboxMlc: .mock
                 ),
                 DSCheckboxGroupOrgItemModel(
-                    checkboxMlc: DSCheckboxMlcModel(
-                        id: "id",
-                        label: "Second round checkbox",
-                        componentId: "componentId",
-                        inputCode: "inputCode",
-                        description: nil,
-                        isSelected: true,
-                        isEnabled: true
-                    )
+                    checkboxMlc: .mock
                 ),
                 DSCheckboxGroupOrgItemModel(
-                    checkboxMlc: DSCheckboxMlcModel(
-                        id: "id",
-                        label: "Second round checkbox",
-                        componentId: "componentId",
-                        inputCode: "inputCode",
-                        description: "Description for second checkbox",
-                        isSelected: nil,
-                        isEnabled: nil
-                    )
+                    checkboxMlc: .mock
                 )
             ],
             minMandatorySelectedItems: 2

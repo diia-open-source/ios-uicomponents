@@ -1,5 +1,6 @@
 
 import UIKit
+import DiiaCommonTypes
 
 public final class DSTitleMlcViewModel {
     public let componentId: String

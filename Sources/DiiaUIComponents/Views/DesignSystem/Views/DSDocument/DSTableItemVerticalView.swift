@@ -9,14 +9,20 @@ public final class DSTableItemVerticalView: DSTableItemView {
     
     private let mainStack = UIStackView.create(.horizontal, spacing: Constants.spacing, alignment: .top)
     private let labelValueStack = UIStackView.create(spacing: Constants.stackSpacing)
+    private let strikeBlockStack = UIStackView.create(spacing: Constants.stackSpacing)
+    private let strikeTextStack = UIStackView.create(.horizontal, spacing: Constants.stackSpacing)
+    private let blueTextStack = UIStackView.create(.horizontal, spacing: Constants.stackSpacing)
     
     private var urlOpener: URLOpenerProtocol?
     
     public override func setupSubviews() {
         super.setupSubviews()
         translatesAutoresizingMaskIntoConstraints = false
+        strikeTextStack.addArrangedSubviews([textLabel, strikeTextLabel])
+        blueTextStack.addArrangedSubviews([blueIconLeft, blueTextLabel])
+        strikeBlockStack.addArrangedSubviews([strikeTextStack, blueTextStack])
         labelValueStack.addArrangedSubviews([label, subLabel, value, subValue, icon])
-        mainStack.addArrangedSubviews([supportLabel, labelValueStack, actionButton])
+        mainStack.addArrangedSubviews([supportLabel, labelValueStack, strikeBlockStack, actionButton])
         addSubview(mainStack)
         
         value.configureForParametrizedText()
@@ -69,7 +75,8 @@ public final class DSTableItemVerticalView: DSTableItemView {
                                                                    lineHeight: Constants.lineHeight,
                                                                    lineBreakMode: .byWordWrapping)
         subValue.accessibilityAttributedLabel = accessibilityLabel(for: model.secondaryValue ?? "")
-
+        
+        configureStrikeBlock(model: model)
         configureSupportingLabel(model: model)
 
         label.setContentCompressionResistancePriority(.required, for: .horizontal)
@@ -111,6 +118,33 @@ public final class DSTableItemVerticalView: DSTableItemView {
         }
 
         mainStack.layoutIfNeeded()
+    }
+    
+    private func configureStrikeBlock(model: DSTableItemVerticalMlc) {
+        strikeTextStack.isHidden = model.text == nil && model.strikeText == nil
+        blueTextStack.isHidden = model.blueText == nil
+        strikeBlockStack.isHidden = strikeTextStack.isHidden && blueTextStack.isHidden
+        
+        textLabel.isHidden = model.text == nil
+        strikeTextLabel.isHidden = model.strikeText == nil
+        blueIconLeft.isHidden = model.blueText?.iconLeft == nil
+        blueTextLabel.isHidden = model.blueText?.text == nil
+        
+        textLabel.text = model.text
+        
+        if let strikeText = model.strikeText {
+            let attributedString = NSMutableAttributedString(string: strikeText)
+            attributedString.addAttributes(
+                [.strikethroughStyle: NSUnderlineStyle.single.rawValue],
+                range: NSRange(location: 0, length: attributedString.length)
+            )
+            strikeTextLabel.attributedText = attributedString
+        }
+        
+        if let icon = model.blueText?.iconLeft {
+            blueIconLeft.setIcon(icon, renderingMode: .alwaysTemplate)
+        }
+        blueTextLabel.text = model.blueText?.text
     }
 
     private func configureSupportingLabel(model: DSTableItemVerticalMlc) {
@@ -160,6 +194,7 @@ public final class DSTableItemVerticalView: DSTableItemView {
         
         value.isAccessibilityElement = true
         value.accessibilityTraits = .staticText
+        value.accessibilityValue = "" /// Because VoiceOver copies text from a UITextView
         
         subLabel.isAccessibilityElement = true
         subLabel.accessibilityTraits = .staticText

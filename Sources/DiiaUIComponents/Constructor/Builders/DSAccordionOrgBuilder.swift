@@ -18,7 +18,7 @@ public struct DSAccordionOrgBuilder: DSViewBuilderProtocol {
                 view.setFabric(viewFabric)
             }
 
-            view.configure(with: model, eventHandler: eventHandler)
+            view.configure(with: model, eventHandler: eventHandler, urlOpener: UIComponentsConfiguration.shared.urlOpener)
 
             let insets = padding.defaultPadding(object: object, modelKey: modelKey)
             let paddingBox = BoxView(subview: view).withConstraints(insets: insets)
@@ -36,22 +36,27 @@ extension DSAccordionOrgBuilder: DSViewMockableBuilderProtocol {
             states: DSAccordionOrgState(
                 isExpanded: true,
                 expandedIcon: DSIconModel(
-                    code: "code",
+                    code: "arrowSliderDown",
                     accessibilityDescription: "accessibilityDescription",
                     componentId: "componentId",
                     action: .init(type: "iconAction"),
                     isEnable: true
                 ),
                 collapsedIcon: DSIconModel(
-                    code: "code",
+                    code: "arrowSliderLeft",
                     accessibilityDescription: "accessibilityDescription",
                     componentId: "componentId",
                     action: .init(type: "iconAction"),
                     isEnable: true
                 )
             ),
-            expandedContent: DSAccordionOrgExpandedContentModel(items: [],
-                                                                showDivider: nil))
+            expandedContent: DSAccordionOrgExpandedContentModel(items: [.dictionary(["tableItemHorizontalMlc": .fromEncodable(encodable: DSTableItemHorizontalMlc.mock)]),
+                                                                        .dictionary(["tableItemHorizontalMlc": .fromEncodable(encodable: DSTableItemHorizontalMlc.mock)]),
+                                                                        .dictionary(["tableItemHorizontalMlc": .fromEncodable(encodable: DSTableItemHorizontalMlc.mock)])
+
+            ],
+                                                                showDivider: nil,
+                                                                attentionIconMessageMlc: .mock))
         return .dictionary([
             modelKey: .fromEncodable(encodable: model)
         ])

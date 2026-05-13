@@ -10,14 +10,9 @@ public final class DSChipView: BaseCodeView {
         
         addSubview(textLabel)
         textLabel.fillSuperview(padding: Constants.textPaddings)
-    }
-    
-    public override var intrinsicContentSize: CGSize {
-        let size = textLabel.intrinsicContentSize
-        return CGSize(
-            width: size.width + Constants.textPaddings.left + Constants.textPaddings.right,
-            height: size.height + Constants.textPaddings.top + Constants.textPaddings.bottom
-        )
+
+        textLabel.setContentHuggingPriority(.required, for: .horizontal)
+        textLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
     }
     
     public override func layoutSubviews() {
@@ -29,9 +24,7 @@ public final class DSChipView: BaseCodeView {
         textLabel.text = model.name
         textLabel.textColor = UIColor(model.statusTextColor)
         backgroundColor = UIColor(model.statusViewColor)
-        withBorder(width: Constants.borderWidth, color: model.borderColor, cornerRadius: frame.height / 2)
-        setNeedsLayout()
-        layoutIfNeeded()
+        withBorder(width: Constants.borderWidth, color: model.borderColor)
     }
 }
 

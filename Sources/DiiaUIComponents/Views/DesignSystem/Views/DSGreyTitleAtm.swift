@@ -22,6 +22,8 @@ public final class DSGreyTitleAtm: BaseCodeView {
     // MARK: - Setup
     public func configure(with model: DSGreyTitleAtmModel) {
         textLabel.accessibilityIdentifier = model.componentId
+        textLabel.accessibilityTraits = .header
+        textLabel.accessibilityLabel = model.label
         textLabel.text = model.label
         textLabel.textColor = .black.withAlphaComponent(Constants.labelOpacity)
     }

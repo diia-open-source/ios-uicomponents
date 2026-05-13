@@ -68,6 +68,7 @@ public struct DSCheckboxButtonOrgBuilder: DSViewBuilderProtocol {
             buttonVM: buttomVM,
             strokeButtonVM: strokeButtonVM,
             plainButtonVM: plainButtomVM)
+        viewModel.eventHandler = eventHandler
         view.configure(with: viewModel)
         return view
     }

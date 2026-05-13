@@ -105,7 +105,12 @@ final public class DSRadioBtnMlcV2View: BaseCodeView {
     public func configure(with viewModel: DSRadioBtnMlcV2ViewModel) {
         self.viewModel = viewModel
         accessibilityIdentifier = viewModel.componentId
-        accessibilityLabel = [viewModel.label, viewModel.details, viewModel.status].compactMap({ $0 }).joined(separator: ",")
+        accessibilityLabel = [
+            viewModel.label,
+            viewModel.details,
+            viewModel.status,
+            viewModel.descriptions?.compactMap({ $0 }).joined(separator: ",")
+        ].compactMap({ $0 }).joined(separator: ",")
         descriptionStack.safelyRemoveArrangedSubviews()
         
         titleLabel.text = viewModel.label

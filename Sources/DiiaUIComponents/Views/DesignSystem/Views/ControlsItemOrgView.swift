@@ -10,19 +10,19 @@ public struct ControlsItemOrgModel: Codable {
     public let size: SelectorSize
     public let alignment: SelectorAlignment
     public let item: AnyCodable
-    public let code: String
+    public let dataJson: String
     public let isSelected: Bool?
     public let isEnabled: Bool?
     public let innerSideSpacer: InnerSideSpacer
     
-    public init(componentId: String, paddingMode: DSPaddingsModel, selectorItem: AnyCodable, size: SelectorSize, alignment: SelectorAlignment, item: AnyCodable, code: String, isSelected: Bool?, isEnabled: Bool?, innerSideSpacer: InnerSideSpacer) {
+    public init(componentId: String, paddingMode: DSPaddingsModel, selectorItem: AnyCodable, size: SelectorSize, alignment: SelectorAlignment, item: AnyCodable, dataJson: String, isSelected: Bool?, isEnabled: Bool?, innerSideSpacer: InnerSideSpacer) {
         self.componentId = componentId
         self.paddingMode = paddingMode
         self.selectorItem = selectorItem
         self.size = size
         self.alignment = alignment
         self.item = item
-        self.code = code
+        self.dataJson = dataJson
         self.isSelected = isSelected
         self.isEnabled = isEnabled
         self.innerSideSpacer = innerSideSpacer
@@ -90,11 +90,11 @@ public final class ControlsItemOrgViewModel: Hashable {
     
     public func hash(into hasher: inout Hasher) {
         hasher.combine(model.componentId)
-        hasher.combine(model.code)
+        hasher.combine(model.dataJson)
     }
     
     public static func == (lhs: ControlsItemOrgViewModel, rhs: ControlsItemOrgViewModel) -> Bool {
-        lhs.model.code == rhs.model.code && lhs.model.componentId == rhs.model.componentId
+        lhs.model.dataJson == rhs.model.dataJson && lhs.model.componentId == rhs.model.componentId
     }
 }
 

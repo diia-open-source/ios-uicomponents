@@ -1,8 +1,7 @@
 
 import UIKit
 
-public final class VerticalRoundButton: UIButton {
-
+public final class VerticalRoundButton: HighlightedButton {
     public override func layoutSubviews() {
         super.layoutSubviews()
         

@@ -3,6 +3,7 @@ import Foundation
 
 public enum ConstructorItemEvent {
     case action(DSActionParameter)
+    case statefulAction(parameters: DSActionParameter, stateHandler: StatefullViewProtocol)
     case buttonAction(parameters: DSActionParameter, viewModel: DSLoadingButtonViewModel)
     case cardMlcAction(parameters: DSActionParameter, viewModel: DSCardMlcV2ViewModel)
     case inputChanged(ConstructorInputModel)
@@ -31,6 +32,7 @@ public enum ConstructorItemEvent {
     public func actionParameters() -> DSActionParameter? {
         switch self {
         case .action(let parameters),
+                .statefulAction(let parameters, _),
                 .buttonAction(let parameters, _),
                 .listAction(let parameters, _, _),
                 .buttonLoadIconAction(let parameters, _),
@@ -45,6 +47,21 @@ public enum ConstructorItemEvent {
             default:
                 return nil
             }
+        default:
+            return nil
+        }
+    }
+    
+    public func statefullHandler() -> StatefullViewProtocol? {
+        switch self {
+        case .statefulAction(_, let handler):
+            return handler
+        case .buttonAction(_, let handler):
+            return handler
+        case .buttonLoadIconAction(_, let handler):
+            return handler
+        case .filterButtonAction(_, let handler):
+            return handler
         default:
             return nil
         }
@@ -99,4 +116,8 @@ public struct CustomConstructorViewTypeData {
     }
     
     public protocol CustomConstructorViewModel {}
+}
+
+public protocol StatefullViewProtocol {
+    func setState(_ state: DSButtonState)
 }

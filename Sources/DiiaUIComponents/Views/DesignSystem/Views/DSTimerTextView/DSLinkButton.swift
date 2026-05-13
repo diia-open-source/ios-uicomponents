@@ -3,7 +3,7 @@ import UIKit
 import DiiaCommonTypes
 
 /// design_system_code: btnLinkAtm
-public final class DSLinkButton: UIButton {
+public final class DSLinkButton: HighlightedButton {
     public var onClick: Callback?
     
     // MARK: - Init

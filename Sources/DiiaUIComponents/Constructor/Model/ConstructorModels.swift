@@ -64,7 +64,7 @@ public struct DSBottomGroupOrg: Codable {
     public let checkboxBtnOrg: DSCheckboxBtnOrg?
     public let btnPrimaryDefaultAtm: DSButtonModel?
     public let btnPrimaryWideAtm: DSButtonModel?
-    public let btnPlainAtm: DSButtonModel?
+    public let btnPlainAtm: DSButtonPlainAtmModel?
     public let btnStrokeDefaultAtm: DSButtonModel?
     public let btnLoadIconPlainGroupMlc: DSBtnLoadPlainGroupMlc?
     public let btnPrimaryLargeAtm: DSButtonModel?
@@ -73,7 +73,7 @@ public struct DSBottomGroupOrg: Codable {
                 checkboxBtnOrg: DSCheckboxBtnOrg?,
                 btnPrimaryDefaultAtm: DSButtonModel?,
                 btnPrimaryWideAtm: DSButtonModel? = nil,
-                btnPlainAtm: DSButtonModel?,
+                btnPlainAtm: DSButtonPlainAtmModel?,
                 btnStrokeDefaultAtm: DSButtonModel?,
                 btnLoadIconPlainGroupMlc: DSBtnLoadPlainGroupMlc?,
                 btnPrimaryLargeAtm: DSButtonModel?) {

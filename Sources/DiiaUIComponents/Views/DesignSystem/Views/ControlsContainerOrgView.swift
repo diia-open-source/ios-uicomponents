@@ -74,7 +74,7 @@ public final class ControlsContainerOrgViewModel {
                 selectedItems.remove(item)
             }
         }
-        eventHandler(.inputChanged(.init(inputCode: model.inputCode, inputData: .array(selectedItems.map { AnyCodable.string($0.model.code) }))))
+        eventHandler(.inputChanged(.init(inputCode: model.inputCode, inputData: .array(selectedItems.map { AnyCodable.string($0.model.dataJson) }))))
     }
     
     func isValid() -> Bool {
@@ -157,7 +157,7 @@ extension ControlsContainerOrgView: DSInputComponentProtocol {
     }
     
     public func inputData() -> AnyCodable? {
-        return .array(viewModel?.selectedItems.map { AnyCodable.string($0.model.code) } ?? [])
+        return .array(viewModel?.selectedItems.map { AnyCodable.string($0.model.dataJson) } ?? [])
     }
 }
 

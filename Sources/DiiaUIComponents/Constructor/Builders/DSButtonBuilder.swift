@@ -63,7 +63,7 @@ public struct DSPrimaryWideButtonBuilder: DSViewBuilderProtocol {
         }
         button.configure(viewModel: vm)
         button.withHeight(Constants.buttonHeight)
-        let insets = (paddingType == .default) ? Constants.defaultPaddings : Constants.smallPaddings
+        let insets = paddingType.shortPadding(object: object, modelKey: modelKey)
         let paddingBox = BoxView(subview: button).withConstraints(insets: insets)
         return paddingBox
     }
@@ -107,7 +107,7 @@ public struct DSPrimaryLargeButtonBuilder: DSViewBuilderProtocol {
         button.configure(viewModel: vm)
         button.contentEdgeInsets = Constants.buttonEdgeInsets
         button.withHeight(Constants.buttonLargeHeight)
-        let insets = (paddingType == .default) ? Constants.defaultPaddings : Constants.smallPaddings
+        let insets = paddingType.shortPadding(object: object, modelKey: modelKey)
         let paddingBox = BoxView(subview: button).withConstraints(insets: insets)
         return paddingBox
     }
@@ -152,7 +152,7 @@ public struct DSStrokeButtonBuilder: DSViewBuilderProtocol {
             eventHandler(.action(action))
         }
         
-        let insets = (paddingType == .default) ? Constants.defaultPaddings : Constants.smallPaddings
+        let insets = paddingType.shortPadding(object: object, modelKey: modelKey)
         let paddingBox = BoxView(subview: button).withConstraints(insets: insets)
         return paddingBox
     }
@@ -176,46 +176,37 @@ extension DSStrokeButtonBuilder: DSViewMockableBuilderProtocol {
     }
 }
 
-public struct DSPlainButtonBuilder: DSViewBuilderProtocol {
+public struct DSBtnPlainAtmBuilder: DSViewBuilderProtocol {
     public let modelKey = "btnPlainAtm"
-    
+
     public func makeView(from object: AnyCodable,
                          withPadding paddingType: DSViewPaddingType,
                          viewFabric: DSViewFabric?,
                          eventHandler: @escaping (ConstructorItemEvent) -> Void) -> UIView? {
-        guard let data: DSButtonModel = object.parseValue(forKey: self.modelKey), let state = loadingState(for: data.state) else { return nil }
-        
-        let button = ActionLoadingStateButton()
-        button.setStyle(style: .plain)
-        button.setLoadingState(state, withTitle: data.label)
-        button.titleLabel?.font = FontBook.bigText
-        button.contentEdgeInsets = Constants.buttonEdgeInsets
-        button.withHeight(Constants.buttonHeight)
-        button.onClick = {
-            guard let action = data.action else { return }
-            eventHandler(.action(action))
-        }
-        
-        let insets = (paddingType == .default) ? Constants.defaultPaddings : Constants.smallPaddings
+        guard let model: DSButtonPlainAtmModel = object.parseValue(forKey: self.modelKey) else { return nil }
+
+        let button = makeView(model: model, eventHandler: eventHandler)
+        let insets = paddingType.shortPadding(object: object, modelKey: modelKey)
         let paddingBox = BoxView(subview: button).withConstraints(insets: insets)
         return paddingBox
     }
+
+    func makeView(model: DSButtonPlainAtmModel, eventHandler: @escaping (ConstructorItemEvent) -> Void) -> DSButtonPlainAtmView {
+        let button = DSButtonPlainAtmView()
+        button.withHeight(Constants.buttonLargeHeight)
+        button.onClick = {
+            guard let action = model.action else { return }
+            eventHandler(.action(action))
+        }
+        button.configure(with: model)
+        return button
+    }
 }
 
-extension DSPlainButtonBuilder: DSViewMockableBuilderProtocol {
+extension DSBtnPlainAtmBuilder: DSViewMockableBuilderProtocol {
     public func makeMockModel() -> AnyCodable {
-        let model = DSButtonModel(
-            label: "label",
-            state: DSButtonState.enabled,
-            action: DSActionParameter(
-                type: "type",
-                subtype: "subtype",
-                resource: "resource",
-                subresource: "subresource"),
-            componentId: "componentId"
-        )
         return .dictionary([
-            modelKey: .fromEncodable(encodable: model)
+            modelKey: .fromEncodable(encodable: DSButtonPlainAtmModel.mock)
         ])
     }
 }
@@ -238,7 +229,7 @@ public struct DSButtonLinkBuilder: DSViewBuilderProtocol {
             eventHandler(.action(action))
         }
         
-        let insets = (paddingType == .default) ? Constants.defaultPaddings : Constants.smallPaddings
+        let insets = paddingType.shortPadding(object: object, modelKey: modelKey)
         let paddingBox = BoxView(subview: button).withConstraints(insets: insets)
         return paddingBox
     }
@@ -337,7 +328,7 @@ public struct BtnStrokeWideAtmBuilder: DSViewBuilderProtocol {
             eventHandler(.action(action))
         }
         
-        let insets = (paddingType == .default) ? Constants.defaultPaddings : Constants.smallPaddings
+        let insets = paddingType.shortPadding(object: object, modelKey: modelKey)
         let paddingBox = BoxView(subview: button).withConstraints(insets: insets, centeredX: true)
         return paddingBox
     }
@@ -369,6 +360,8 @@ private func loadingState(for state: DSButtonState?) -> LoadingStateButton.Loadi
         return .disabled
     case .invisible:
         return nil
+    case .loading:
+        return .loading
     default:
         return .enabled
     }

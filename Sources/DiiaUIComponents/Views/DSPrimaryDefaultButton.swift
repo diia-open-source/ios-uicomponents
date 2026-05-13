@@ -30,7 +30,7 @@ public final class DSPrimaryDefaultButton: LoadingStateButton, DSConditionCompon
             self?.setTitle(title, for: .normal)
         }
         viewModel.state.observe(observer: self) { [weak self] state in
-            self?.setLoadingState(state)
+            self?.setLoadingState(state, withTitle: viewModel.title.value)
         }
     }
     

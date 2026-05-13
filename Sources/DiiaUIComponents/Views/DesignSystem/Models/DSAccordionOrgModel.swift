@@ -4,6 +4,7 @@ import DiiaCommonTypes
 public struct DSAccordionOrgExpandedContentModel: Codable {
     public let items: [AnyCodable]
     public let showDivider: Bool?
+    public let attentionIconMessageMlc: DSAttentionIconMessageMlc?
 }
 
 public struct DSAccordionOrgModel: Codable {

@@ -39,11 +39,6 @@ public final class PresentedController: UIViewController, ModalPresentationViewC
         }
     }
     
-    public override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        UIAccessibility.post(notification: .screenChanged, argument: self)
-    }
-    
     public override func viewWillDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         children.last?.beginAppearanceTransition(false, animated: false)

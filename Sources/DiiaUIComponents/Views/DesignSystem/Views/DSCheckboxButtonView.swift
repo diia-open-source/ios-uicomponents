@@ -8,6 +8,8 @@ public final class DSCheckboxButtonViewModel {
     public let mainButtonVM: DSLoadingButtonViewModel?
     public let strokeButtonVM: DSLoadingButtonViewModel?
     public let plainButtonVM: DSLoadingButtonViewModel?
+    public var eventHandler: ((ConstructorItemEvent) -> Void)?
+    public var isValidInput: Bool = true
     
     public init(checkboxVMs: [CheckmarkViewModel],
                 buttonVM: DSLoadingButtonViewModel?,
@@ -28,25 +30,23 @@ public final class DSCheckboxButtonViewModel {
     
     public func validateButtons() {
         let isAllChecked = checkboxVMs.allSatisfy({ $0.isChecked })
-        mainButtonVM?.state.value = isAllChecked ? .enabled : .disabled
-        strokeButtonVM?.state.value = isAllChecked ? .enabled : .disabled
+        mainButtonVM?.state.value = isAllChecked && isValidInput ? .enabled : .disabled
+        strokeButtonVM?.state.value = isAllChecked && isValidInput ? .enabled : .disabled
     }
 }
 
-public final class DSCheckboxButtonView: BaseCodeView, DSInputComponentProtocol {
+public final class DSCheckboxButtonView: BaseCodeView, DSInputComponentProtocol, DSConditionComponentProtocol {
     
     private let checkboxStackView = UIStackView.create(spacing: Constants.spacing)
     private let primaryButton = DSPrimaryDefaultButton()
     private let plainButton = DSLoadingButton()
-    private let strokeButtonBox: BoxView<DSLoadingButton> = {
+    private let strokeButton: DSLoadingButton = {
         let button = DSLoadingButton()
         button.setStyle(style: .light)
         button.titleLabel?.font = FontBook.bigText
-        button.contentEdgeInsets = Constants.buttonEdgeInsets
         button.withHeight(Constants.buttonHeight)
         
-        let paddingBox = BoxView(subview: button).withConstraints(insets: .zero, centeredX: true)
-        return paddingBox
+        return button
     }()
     
     private var viewModel: DSCheckboxButtonViewModel?
@@ -70,7 +70,7 @@ public final class DSCheckboxButtonView: BaseCodeView, DSInputComponentProtocol 
         plainButton.contentEdgeInsets = Constants.buttonEdgeInsets
         plainButton.setStyle(style: .plain)
         
-        stack([checkboxStackView, primaryButton, strokeButtonBox, plainButton],
+        stack([checkboxStackView, primaryButton, strokeButton, plainButton],
               spacing: Constants.spacing,
               padding: Constants.containerPadding)
     }
@@ -83,9 +83,9 @@ public final class DSCheckboxButtonView: BaseCodeView, DSInputComponentProtocol 
             primaryButton.configure(viewModel: buttonVM)
         }
         
-        strokeButtonBox.isHidden = viewModel.strokeButtonVM == nil
+        strokeButton.isHidden = viewModel.strokeButtonVM == nil
         if let strokeButtonVM = viewModel.strokeButtonVM {
-            strokeButtonBox.subview.configure(viewModel: strokeButtonVM)
+            strokeButton.configure(viewModel: strokeButtonVM)
         }
         
         plainButton.isHidden = viewModel.plainButtonVM == nil
@@ -101,9 +101,11 @@ public final class DSCheckboxButtonView: BaseCodeView, DSInputComponentProtocol 
                 isChecked: checkboxVM.isChecked,
                 parameters: checkboxVM.parameters
             ) { [weak self] isSelected in
-                self?.viewModel?.updateState(
+                guard let self else { return }
+                self.viewModel?.updateState(
                     selectedCheckbox: checkboxVM,
                     isSelected: isSelected)
+                self.viewModel?.eventHandler?(.inputChanged(.init(inputCode: Constants.componentId, inputData: nil)))
             }
             checkboxStackView.addArrangedSubview(checkboxView)
         }
@@ -114,16 +116,22 @@ public final class DSCheckboxButtonView: BaseCodeView, DSInputComponentProtocol 
     }
     
     public func isValid() -> Bool {
-        guard let viewModel = viewModel else { return false }
+        guard let viewModel else { return false }
         return viewModel.checkboxVMs.allSatisfy({ $0.isChecked })
     }
     
     public func inputCode() -> String {
-        return "checkboxBtnOrg"
+        return Constants.componentId
     }
     
     public func inputData() -> AnyCodable? {
         return nil
+    }
+    
+    public func updateConditions(inputFields: [DSInputComponentProtocol]) {
+        let isValid = inputFields.count > 1 ? inputFields.allSatisfy({ $0.isValid() }) : true
+        self.viewModel?.isValidInput = isValid
+        self.viewModel?.validateButtons()
     }
 }
 
@@ -139,5 +147,6 @@ extension DSCheckboxButtonView {
         static let buttonEdgeInsets = UIEdgeInsets(top: 0, left: 40, bottom: 0, right: 40)
         static let borderWidth: CGFloat = 1
         static let borderColor = UIColor("#C5D9E9")
+        static let componentId = "checkboxBtnOrg"
     }
 }

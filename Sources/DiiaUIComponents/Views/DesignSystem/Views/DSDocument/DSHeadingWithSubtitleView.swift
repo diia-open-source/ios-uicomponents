@@ -25,6 +25,7 @@ public final class DSHeadingWithSubtitleView: BaseCodeView {
         
         headingLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
         headingLabel.setContentHuggingPriority(.required, for: .horizontal)
+        setupAccessibility()
     }
     
     public func configure(model: DSHeadingWithSubtitlesModel) {
@@ -53,6 +54,7 @@ public final class DSHeadingWithSubtitleView: BaseCodeView {
                                          lineHeight: Constants.lineTitleHeight)
         label.attributedText = attributed
         label.numberOfLines = 0
+        label.accessibilityAttributedLabel = accessibilityLabel(for: text)
         
         label.setContentCompressionResistancePriority(.required, for: .horizontal)
         label.setContentHuggingPriority(.required, for: .horizontal)

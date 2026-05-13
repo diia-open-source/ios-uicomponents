@@ -13,11 +13,13 @@ public final class StartServiceView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         fromNib(bundle: Bundle.module)
+        setup()
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         fromNib(bundle: Bundle.module)
+        setup()
     }
     
     public override func awakeFromNib() {
@@ -59,6 +61,7 @@ private extension StartServiceView {
             .foregroundColor: UIColor.black,
             .underlineStyle: NSUnderlineStyle.single.rawValue
         ]
+        infoTextView.font = FontBook.usualFont
         infoTextView.isEditable = false
         infoTextView.isSelectable = true
         infoTextView.isScrollEnabled = false
@@ -70,6 +73,9 @@ private extension StartServiceView {
         
         attentionView.isHidden = true
         statusView.isHidden = true
+        
+        statusView.backgroundColor = .clear
+        attentionView.backgroundColor = .clear
     }
 }
 

@@ -37,7 +37,7 @@ public final class PairVerticalView: BaseCodeView {
     // MARK: - Private methods
     private func setupAccessibility() {
         itemTitle.isAccessibilityElement = true
-        itemTitle.accessibilityTraits = .staticText
+        itemTitle.accessibilityTraits = .header
         
         itemValue.isAccessibilityElement = true
         itemValue.accessibilityTraits = .staticText
@@ -93,6 +93,6 @@ public final class PairVerticalView: BaseCodeView {
 public extension PairVerticalView {
     enum Constants {
         public static let defaultSpacing: CGFloat = 2
-        public static let titleDefaultColor: UIColor = .black.withAlphaComponent(0.4)
+        public static let titleDefaultColor: UIColor = .black600
     }
 }

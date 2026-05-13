@@ -88,6 +88,7 @@ final class ConstructorPaginationScreenViewController: UIViewController, RatingF
         initialSetup()
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
         view.addGestureRecognizer(tapRecognizer)
+        tapRecognizer.cancelsTouchesInView = false
         presenter.configureView()
     }
 

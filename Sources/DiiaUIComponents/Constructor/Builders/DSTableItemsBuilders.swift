@@ -13,8 +13,9 @@ public struct DSTableItemVerticalMlcBuilder: DSViewBuilderProtocol {
         
         if let images = data.valueImages, images.count > 0 {
             let view = HorizontalPhotoCollectionView()
-            view.configure(title: nil, imageUrls: images, cellSize: .init(width: Constants.photoSize, height: Constants.photoSize))
-            return BoxView(subview: view).withConstraints(insets: paddingType.defaultCollectionPadding(object: object, modelKey: modelKey))
+            let inset = paddingType.defaultCollectionPadding(object: object, modelKey: modelKey)
+            view.configure(title: nil, imageUrls: images, cellSize: .init(width: Constants.photoSize, height: Constants.photoSize), sectionInset: inset)
+            return BoxView(subview: view).withConstraints(insets: inset)
         } else if let values = data.valueIcons, !values.isEmpty {
             let view = DSIconValueStackView()
             view.configure(valueIcons: values)
@@ -33,6 +34,15 @@ public struct DSTableItemVerticalMlcBuilder: DSViewBuilderProtocol {
     
     private enum Constants {
         static let photoSize: CGFloat = 100
+    }
+}
+
+extension DSTableItemVerticalMlcBuilder: DSViewMockableBuilderProtocol {
+    public func makeMockModel() -> AnyCodable {
+        let model = DSTableItemVerticalMlc.mock
+        return .dictionary([
+            modelKey: .fromEncodable(encodable: model)
+        ])
     }
 }
 

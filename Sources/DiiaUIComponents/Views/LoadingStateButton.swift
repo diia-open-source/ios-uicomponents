@@ -1,7 +1,7 @@
 
 import UIKit
 
-open class LoadingStateButton: UIButton {
+open class LoadingStateButton: HighlightedButton {
 
     // MARK: - LoadingState
     public enum LoadingState {
@@ -15,14 +15,15 @@ open class LoadingStateButton: UIButton {
     // MARK: - Properties
     public private(set) var loadingState: LoadingState = .enabled
     private var buttonStyle: LoadingStateButtonStyle = .solid
-        
-    private lazy var loadingImageView: AnimationView = {
-        let loadingContainer = LoadingContainerView()
-        loadingContainer.configure(size: Constants.loadingViewSize, loadingImage: R.image.gradienCircle.image)
-        let animationView = AnimationView(loadingContainer)
-        animationView.isHidden = true
-        initialSetup(forLeftView: animationView)
-        return animationView
+    
+    private lazy var loadingImageView: LoadingContainerView = {
+        let view = LoadingContainerView()
+        view.configure(size: Constants.loadingViewSize, loadingImage: R.image.gradienCircle.image)
+        addSubview(view)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+        view.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        return view
     }()
     
     private lazy var checkmarkImageView: UIImageView = {
@@ -51,8 +52,8 @@ open class LoadingStateButton: UIButton {
         
         [view.heightAnchor.constraint(equalToConstant: Constants.leftViewSize),
          view.widthAnchor.constraint(equalToConstant: Constants.leftViewSize),
-         view.rightAnchor.constraint(equalTo: title.leftAnchor, constant: Constants.stateViewsRightOffset),
-         view.centerYAnchor.constraint(equalTo: title.centerYAnchor, constant: 0)
+         view.rightAnchor.constraint(equalTo: title.leftAnchor),
+         view.centerYAnchor.constraint(equalTo: title.centerYAnchor)
         ].forEach { $0.isActive = true }
          
         view.isHidden = true
@@ -218,7 +219,6 @@ open class LoadingStateButton: UIButton {
 // MARK: - Constants
 extension LoadingStateButton {
     private enum Constants {
-        static let stateViewsRightOffset: CGFloat = -9
         static let arrowViewRightOffset: CGFloat = 12
         static let appearingDelay: TimeInterval = 0.2
         static let arrowHeight: CGFloat = 12
@@ -263,27 +263,27 @@ public struct ButtonStyleConfiguration {
 public struct LoadingStateButtonStyle {
     public static let solid = LoadingStateButtonStyle(
         enabledStyle: .init(backgroundColor: .black, titleColor: .white),
-        loadingStyle: .init(backgroundColor: .black, titleColor: .white),
+        loadingStyle: .init(backgroundColor: .black, titleColor: .clear),
         disabledStyle: .init(backgroundColor: .black.withAlphaComponent(Constants.disabledAlpha), titleColor: .white)
     )
     public static let plain = LoadingStateButtonStyle(
         enabledStyle: .init(backgroundColor: .clear, titleColor: .black),
-        loadingStyle: .init(backgroundColor: .clear, titleColor: .black),
+        loadingStyle: .init(backgroundColor: .clear, titleColor: .clear),
         disabledStyle: .init(backgroundColor: .clear, titleColor: .black.withAlphaComponent(Constants.disabledAlpha))
     )
     public static let light = LoadingStateButtonStyle(
         enabledStyle: .init(backgroundColor: .clear, titleColor: .black, borderColor: .black, borderWidth: Constants.borderWidth),
-        loadingStyle: .init(backgroundColor: .clear, titleColor: .black, borderColor: .black, borderWidth: Constants.borderWidth),
+        loadingStyle: .init(backgroundColor: .clear, titleColor: .clear, borderColor: .black, borderWidth: Constants.borderWidth),
         disabledStyle: .init(backgroundColor: .clear, titleColor: .black.withAlphaComponent(Constants.disabledAlpha), borderColor: .black.withAlphaComponent(Constants.disabledAlpha), borderWidth: Constants.borderWidth)
     )
     public static let white = LoadingStateButtonStyle(
         enabledStyle: .init(backgroundColor: .white, titleColor: .black),
-        loadingStyle: .init(backgroundColor: .white, titleColor: .black),
+        loadingStyle: .init(backgroundColor: .white, titleColor: .clear),
         disabledStyle: .init(backgroundColor: .white.withAlphaComponent(Constants.disabledAlpha), titleColor: .black.withAlphaComponent(Constants.disabledAlpha))
     )
     public static let whiteBordered = LoadingStateButtonStyle(
         enabledStyle: .init(backgroundColor: .clear, titleColor: .white, borderColor: .white, borderWidth: Constants.borderWidth),
-        loadingStyle: .init(backgroundColor: .clear, titleColor: .white, borderColor: .white, borderWidth: Constants.borderWidth),
+        loadingStyle: .init(backgroundColor: .clear, titleColor: .clear, borderColor: .white, borderWidth: Constants.borderWidth),
         disabledStyle: .init(backgroundColor: .clear, titleColor: .white.withAlphaComponent(Constants.disabledAlpha), borderColor: .white.withAlphaComponent(Constants.disabledAlpha), borderWidth: Constants.borderWidth)
     )
 

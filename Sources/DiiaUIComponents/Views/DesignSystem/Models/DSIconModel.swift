@@ -22,7 +22,7 @@ public struct DSIconModel: Codable, Equatable {
     }
     
     static let mock = DSIconModel(
-        code: "retry",
+        code: "home",
         accessibilityDescription: "accessibilityDescription(optional)",
         componentId: "componentId(optional)",
         action: .mock,

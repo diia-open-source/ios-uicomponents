@@ -4,7 +4,7 @@ import UIKit
 import DiiaCommonTypes
 
 public class StateMessageViewModel {
-    public let iconName: String
+    public let iconName: String?
     public let title: String?
     public let descriptionText: String?
     public let componentId: String?
@@ -13,7 +13,7 @@ public class StateMessageViewModel {
     public let parameters: [TextParameter]?
     public var repeatAction: Callback?
     
-    public init(iconName: String = "",
+    public init(iconName: String? = nil,
                 title: String? = nil,
                 btnTitle: String? = nil,
                 btnAccessibilityHint: String? = nil,
@@ -57,7 +57,10 @@ public class StateMessageView: BaseCodeView {
                           urlOpener: URLOpenerProtocol? = nil) {
         accessibilityIdentifier = viewModel.componentId
         
-        imageView.image = UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: viewModel.iconName)
+        imageView.isHidden = viewModel.iconName == nil
+        if let iconName = viewModel.iconName {
+            imageView.image = UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: iconName)
+        }
 
         self.urlOpener = urlOpener
         self.viewModel = viewModel
@@ -117,7 +120,7 @@ public class StateMessageView: BaseCodeView {
             alignment: .center)
 
         addSubview(stack)
-        stack.fillSuperview(padding: .init(vertical: Constants.verticalPadding))
+        stack.fillSuperview(padding: .allSides(Constants.verticalPadding))
         stack.setCustomSpacing(Constants.buttonSpacing, after: textStack)
         
         descriptionTextView.configureForParametrizedText()

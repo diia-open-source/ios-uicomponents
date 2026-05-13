@@ -1,5 +1,6 @@
 
 import Foundation
+import DiiaCommonTypes
 
 /// design_system_code: qrCodeOrg
 public struct DSQrCodeOrgModel: Codable {

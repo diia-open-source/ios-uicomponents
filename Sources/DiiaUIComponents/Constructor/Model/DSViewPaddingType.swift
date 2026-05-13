@@ -6,6 +6,7 @@ public enum DSViewPaddingType: Equatable {
     case `default`
     case firstComponent
     case fixed(paddings: UIEdgeInsets)
+    case withDefault(paddings: UIEdgeInsets)
     
     public func defaultPadding(object: AnyCodable? = nil, modelKey: String? = nil) -> UIEdgeInsets {
         let model = DSPaddingsModel.createFromJSON(object, modelKey: modelKey)
@@ -20,6 +21,8 @@ public enum DSViewPaddingType: Equatable {
             return calculatedInsets(for: paddingsModel, defaultInsets: .init(top: 8, left: 24, bottom: 0, right: 24))
         case .fixed(let paddings):
             return paddings
+        case .withDefault(let paddings):
+            return calculatedInsets(for: paddingsModel, defaultInsets: paddings)
         }
     }
     
@@ -36,6 +39,8 @@ public enum DSViewPaddingType: Equatable {
             return calculatedInsets(for: paddingsModel, defaultInsets: .init(top: 8, left: 24, bottom: 0, right: 24))
         case .fixed(let paddings):
             return paddings
+        case .withDefault(let paddings):
+            return calculatedInsets(for: paddingsModel, defaultInsets: paddings)
         }
     }
     
@@ -50,6 +55,8 @@ public enum DSViewPaddingType: Equatable {
             return calculatedInsets(for: paddingsModel, defaultInsets: .init(top: 8, left: 16, bottom: 0, right: 16))
         case .fixed(let paddings):
             return paddings
+        case .withDefault(let paddings):
+            return calculatedInsets(for: paddingsModel, defaultInsets: paddings)
         }
     }
     
@@ -67,6 +74,8 @@ public enum DSViewPaddingType: Equatable {
             insets = .init(top: 8, left: 0, bottom: 0, right: 0)
         case .fixed(let paddings):
             return paddings
+        case .withDefault(let paddings):
+            insets = paddings
         }
         
         if let topPaddingSize: DSSizingType = paddingsModel?.top {
@@ -97,6 +106,14 @@ public enum DSViewPaddingType: Equatable {
             rightInset = sidePaddingSize.horizontalSize
         }
         
+        if let start: DSSizingType = paddingsModel?.start {
+            leftInset = start.horizontalSize
+        }
+        
+        if let end: DSSizingType = paddingsModel?.end {
+            rightInset = end.horizontalSize
+        }
+        
         if let topPaddingSize: DSSizingType = paddingsModel?.top {
             topInset = topPaddingSize.verticalSize
         }
@@ -110,7 +127,7 @@ public enum DSViewPaddingType: Equatable {
 }
 
 public enum DSSizingType: String, Codable {
-    case none, medium, large
+    case none, medium, large, extraLarge
     
     var horizontalSize: CGFloat {
         switch self {
@@ -120,6 +137,8 @@ public enum DSSizingType: String, Codable {
             return 16
         case .large:
             return 24
+        case .extraLarge:
+            return 48
         }
     }
     
@@ -131,6 +150,8 @@ public enum DSSizingType: String, Codable {
             return 8
         case .large:
             return 16
+        case .extraLarge:
+            return 24
         }
     }
 }
@@ -138,10 +159,14 @@ public enum DSSizingType: String, Codable {
 public struct DSPaddingsModel: Codable {
     public let top: DSSizingType?
     public let side: DSSizingType?
+    public let start: DSSizingType?
+    public let end: DSSizingType?
     
-    public init(top: DSSizingType?, side: DSSizingType?) {
+    public init(top: DSSizingType?, side: DSSizingType? = nil, start: DSSizingType? = nil, end: DSSizingType? = nil) {
         self.top = top
         self.side = side
+        self.start = start
+        self.end = end
     }
     
     static func createFromJSON(_ json: AnyCodable?, modelKey: String? = nil) -> DSPaddingsModel? {

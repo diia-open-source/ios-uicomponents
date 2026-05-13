@@ -81,6 +81,9 @@ public final class DSNavigationPanelV2View: BaseCodeView {
         backButton.isAccessibilityElement = true
         backButton.accessibilityTraits = .button
         backButton.accessibilityLabel = R.Strings.general_back.localized()
+        
+        smallTitle.isAccessibilityElement = true
+        smallTitle.accessibilityTraits = .header
     }
 }
 

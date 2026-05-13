@@ -1,5 +1,6 @@
 
 import UIKit
+import DiiaCommonTypes
 
 /// design_system_code: accordionOrg
 final public class DSAccordionOrgView: BaseCodeView {
@@ -70,7 +71,7 @@ final public class DSAccordionOrgView: BaseCodeView {
     }
 
     // MARK: - Public Methods
-    public func configure(with model: DSAccordionOrgModel, eventHandler: @escaping ((ConstructorItemEvent) -> Void)) {
+    public func configure(with model: DSAccordionOrgModel, eventHandler: @escaping ((ConstructorItemEvent) -> Void), urlOpener: URLOpenerProtocol? = nil) {
         self.model = model
 
         titleLabel.text = model.heading
@@ -94,6 +95,14 @@ final public class DSAccordionOrgView: BaseCodeView {
         
         collapsableContentVStack.safelyRemoveArrangedSubviews()
         guard let expandedContent = model.expandedContent else { return }
+
+        if let attentionMessageModel = expandedContent.attentionIconMessageMlc {
+            let attentionIconMessageView = DSAttentionIconMessageView()
+            attentionIconMessageView.setEventHandler(eventHandler)
+            attentionIconMessageView.configure(with: attentionMessageModel, urlOpener: urlOpener)
+            collapsableContentVStack.addArrangedSubview(attentionIconMessageView)
+        }
+
         let itemsModels = expandedContent.items
         for (index, model) in itemsModels.enumerated() {
             guard let view = viewFabric.makeView(

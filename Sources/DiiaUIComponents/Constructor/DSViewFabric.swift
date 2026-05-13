@@ -175,7 +175,7 @@ public extension DSViewFabric {
         DSPrimaryWideButtonBuilder(),
         DSStrokeButtonBuilder(),
         BtnStrokeWideAtmBuilder(),
-        DSPlainButtonBuilder(),
+        DSBtnPlainAtmBuilder(),
         DSButtonLinkBuilder(),
         DSTableBlockOrgBuilder(),
         DSDocHeadingBuilder(),
@@ -265,7 +265,7 @@ public extension DSViewFabric {
 		InputPhoneCodeV2Builder(),
         DSPaginationMessageMlcBuilder(),
         DSRadioBtnGroupOrgV2Builder(),
-		PaymentInfoV2Builder(),
+		DSPaymentInfoV2Builder(),
         DSEditAutomaticallyDeterminedValueBuilder(),
         DSItemReadViewBuilder(),
         DSStubInfoMessageMlcViewBuilder(),
@@ -291,6 +291,7 @@ public extension DSViewFabric {
         DSLinkSettingsBuilder(),
         DSBtnPrimaryPlainIconBuilder(),
         DSTransparentBtnMlcBuilder(),
+        DSBtnIconPlainStrokeMlcBuilder(),
         DSPBtnAddOptionAtmBuilder(),
         CardImageMlcBuilder(),
         CardImageCarouselBuilder(),
@@ -301,8 +302,10 @@ public extension DSViewFabric {
         ScanModalCardBuilder(),
         ActionSheetOrgBuilder(),
         PermissionMessageMlcBuilder(),
+        StateMessageMlcBuilder(),
         TransparentInfoCardMlcBuilder(),
         ControlsContainerOrgBuilder(),
+        DSMediaGroupOrgBuilder(),
         CardProgressMlcBuilder()
     ]
 }

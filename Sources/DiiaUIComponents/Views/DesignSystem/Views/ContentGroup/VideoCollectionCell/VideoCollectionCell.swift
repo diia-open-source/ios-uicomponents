@@ -30,6 +30,7 @@ public final class VideoCollectionCell: UICollectionViewCell, Reusable {
         addSubviews(viewArray)
         viewArray.forEach({$0.translatesAutoresizingMaskIntoConstraints = false})
         imageView.fillSuperview()
+        imageView.backgroundColor = .black
         layer.cornerRadius = Constants.cornerRadius
         layer.masksToBounds = true
         loadingIndicator.topAnchor.constraint(equalTo: self.topAnchor).isActive = true

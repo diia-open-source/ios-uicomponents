@@ -91,6 +91,8 @@ final public class ConstructorViewController: UIViewController {
         initialSetup()
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
         view.addGestureRecognizer(tapRecognizer)
+        tapRecognizer.cancelsTouchesInView = false
+        
         presenter.configureView()
     }
     

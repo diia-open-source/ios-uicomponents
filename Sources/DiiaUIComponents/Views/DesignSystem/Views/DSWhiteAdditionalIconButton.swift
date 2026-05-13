@@ -28,6 +28,17 @@ public final class DSWhiteAdditionalIconButtonViewModel: NSObject {
     }
 }
 
+extension DSWhiteAdditionalIconButtonViewModel: StatefullViewProtocol {
+    public func setState(_ state: DSButtonState) {
+        switch state {
+        case .loading:
+            self.isLoading.value = true
+        default:
+            self.isLoading.value = false
+        }
+    }
+}
+
 public final class DSWhiteAdditionalIconButton: BaseCodeView {
     private let badgeCounter = DSBadgeCounterView()
     private let label = UILabel().withParameters(font: FontBook.usualFont)

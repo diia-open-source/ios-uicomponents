@@ -20,7 +20,7 @@ public struct DSCardStatusChipModel: Codable, Equatable {
     
     public var statusTextColor: String {
         switch self.type {
-        case .fail, .success:
+        case .fail:
             return AppConstants.Colors.white
         default:
             return AppConstants.Colors.black
@@ -36,7 +36,7 @@ public struct DSCardStatusChipModel: Codable, Equatable {
         case .pending:
             return AppConstants.Colors.statusYellow
         case .success:
-            return AppConstants.Colors.statusGreen
+            return AppConstants.Colors.additionalStatusGreen
         case .white:
             return AppConstants.Colors.white
         case .blue:

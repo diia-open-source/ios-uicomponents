@@ -1,5 +1,6 @@
 
 import Foundation
+import DiiaCommonTypes
 
 public final class DSCardMlcV2ViewModel {
     public let componentId: String?

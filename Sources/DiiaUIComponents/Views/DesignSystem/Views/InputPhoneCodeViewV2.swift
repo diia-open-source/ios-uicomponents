@@ -90,6 +90,7 @@ public final class InputPhoneCodeViewV2: BaseCodeView, DSInputComponentProtocol 
         self.addGestureRecognizer(tapRecognizer)
         
         addSelectorGestureRecognizer()
+        setupAccessibility()
     }
     
     // MARK: - Public Methods
@@ -226,6 +227,12 @@ public final class InputPhoneCodeViewV2: BaseCodeView, DSInputComponentProtocol 
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(onTappedAction))
         phoneCodeSelectorView.addGestureRecognizer(tapGesture)
         phoneCodeSelectorView.isUserInteractionEnabled = true
+    }
+    
+    private func setupAccessibility() {
+        clearSearchBox.isAccessibilityElement = true
+        clearSearchBox.accessibilityTraits = .button
+        clearSearchBox.accessibilityLabel = R.Strings.general_accessibility_text_field_clear_button.localized()
     }
     
     // MARK: - Actions

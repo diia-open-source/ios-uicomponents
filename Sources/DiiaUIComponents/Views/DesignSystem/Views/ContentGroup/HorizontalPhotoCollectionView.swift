@@ -35,14 +35,18 @@ public final class HorizontalPhotoCollectionView: BaseCodeView {
         collectionView.backgroundColor = .clear
         collectionView.delegate = self
         collectionView.dataSource = self
+        
+        setupAccessibility()
     }
     
     // MARK: - Configuration
-    public func configure(title: String?, imageUrls: [String], cellSize: CGSize) {
+    public func configure(title: String?, imageUrls: [String], cellSize: CGSize, sectionInset: UIEdgeInsets = .zero) {
         self.items = imageUrls.compactMap({HorizontalPhotoCollectionItem.image(url: $0)})
         titleLabel.text = title
+        titleLabel.accessibilityLabel = title
         titleLabel.isHidden = title == nil
         self.cellSize = cellSize
+        collectionViewLayout.sectionInset = sectionInset
         collectionView.withHeight(cellSize.height)
         layoutIfNeeded()
         collectionView.reloadData()
@@ -53,19 +57,26 @@ public final class HorizontalPhotoCollectionView: BaseCodeView {
                           titleFont: UIFont = FontBook.smallHeadingFont,
                           items: [HorizontalPhotoCollectionItem],
                           cellSize: CGSize,
-                          offset: CGFloat? = nil) {
+                          sectionInset: UIEdgeInsets? = nil) {
         self.items = items
         titleLabel.text = title
+        titleLabel.accessibilityLabel = title
         titleLabel.font = titleFont
         titleLabel.isHidden = title == nil
         descriptionLabel.text = description
         descriptionLabel.isHidden = description == nil
         self.cellSize = cellSize
-        let sectionOffset = offset ?? Constants.stackSpacing
-        collectionViewLayout.sectionInset = .init(top: .zero, left: sectionOffset, bottom: .zero, right: sectionOffset)
+        let sectionInset = sectionInset ?? .init(top: .zero, left: Constants.stackSpacing, bottom: .zero, right: Constants.stackSpacing)
+        collectionViewLayout.sectionInset = sectionInset
         collectionView.withHeight(cellSize.height)
         layoutIfNeeded()
         collectionView.reloadData()
+    }
+    
+    // MARK: - Private
+    private func setupAccessibility() {
+        titleLabel.isAccessibilityElement = true
+        titleLabel.accessibilityTraits = .header
     }
 }
 

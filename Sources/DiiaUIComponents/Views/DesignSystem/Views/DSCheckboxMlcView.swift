@@ -7,6 +7,7 @@ public final class DSCheckboxMlcView: BaseCodeView {
     private let titleLabel = UILabel().withParameters(font: FontBook.bigText)
     private let descriptionLabel = UILabel().withParameters(font: FontBook.usualFont, textColor: Constants.descriptionLabelTextColor)
     private let labelsStack = UIStackView.create(.vertical, spacing: Constants.verticalSpacing, alignment: .leading)
+    private let descriptionsStack = UIStackView.create(.vertical, spacing: Constants.descriptionsStackSpacing)
 
     private let checkmarkImageView = UIImageView().withSize(Constants.checkmarkImageSize)
 
@@ -26,7 +27,7 @@ public final class DSCheckboxMlcView: BaseCodeView {
         mainStack.addArrangedSubviews([checkmarkImageView, labelsStack])
         mainStack.fillSuperview(padding: Constants.innerPaddings)
 
-        labelsStack.addArrangedSubviews([titleLabel, descriptionLabel])
+        labelsStack.addArrangedSubviews([titleLabel, descriptionLabel, descriptionsStack])
 
         addTapGestureRecognizer()
         setupAccessibility()
@@ -43,6 +44,17 @@ public final class DSCheckboxMlcView: BaseCodeView {
 
         descriptionLabel.isHidden = viewModel.model.description == nil
         descriptionLabel.text = viewModel.model.description
+        
+        descriptionsStack.safelyRemoveArrangedSubviews()
+        descriptionsStack.isHidden = viewModel.model.descriptions == nil
+        if let descriptions = viewModel.model.descriptions {
+            descriptions.forEach {
+                let descriptionLabel = UILabel().withParameters(font: FontBook.usualFont,
+                                                                textColor: .black540)
+                descriptionLabel.text = $0
+                descriptionsStack.addArrangedSubview(descriptionLabel)
+            }
+        }
 
         viewModel.isSelected.observe(observer: self) { [weak self] _ in
             self?.updateSelectionState()
@@ -118,5 +130,6 @@ private extension DSCheckboxMlcView {
         static let innerPaddings = UIEdgeInsets.allSides(16.0)
         static let checkmarkImageSize = CGSize(width: 20, height: 20)
         static let descriptionLabelTextColor = UIColor.black.withAlphaComponent(0.5)
+        static let descriptionsStackSpacing: CGFloat = 8.0
     }
 }

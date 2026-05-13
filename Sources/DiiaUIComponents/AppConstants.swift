@@ -15,6 +15,7 @@ public struct AppConstants {
         static let imagePlaceholder = "#EFF7FE"
         static let disabledText = "#71767A"
         static let statusGreen = "#19BE6F"
+        static let additionalStatusGreen = "#76E0AD"
         static let darkGreen = "#008939"
         static let statusYellow = "#FFD600"
         static let statusBlue = "#BED9F5"

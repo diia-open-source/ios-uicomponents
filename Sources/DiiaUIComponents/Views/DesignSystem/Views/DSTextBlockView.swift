@@ -114,6 +114,7 @@ public final class DSTextBlockView: BaseCodeView {
     public override func setupSubviews() {
         super.setupSubviews()
         setupTextView()
+        setupAccessibility()
         
         backgroundColor = .white
         layer.cornerRadius = Constants.cornerRadius
@@ -141,6 +142,7 @@ public final class DSTextBlockView: BaseCodeView {
         if let title = viewModel.title {
             let attributedText = title.attributed(font: FontBook.smallHeadingFont, lineHeight: Constants.lineHeight)
             titleLabel.attributedText = attributedText
+            titleLabel.accessibilityLabel = title
         }
         
         textView.isHidden = viewModel.text == nil
@@ -212,6 +214,11 @@ public final class DSTextBlockView: BaseCodeView {
         textView.textContainerInset = .zero
         textView.textContainer.lineFragmentPadding = .zero
         textView.delegate = self
+    }
+    
+    private func setupAccessibility() {
+        titleLabel.isAccessibilityElement = true
+        titleLabel.accessibilityTraits = .header
     }
 }
 

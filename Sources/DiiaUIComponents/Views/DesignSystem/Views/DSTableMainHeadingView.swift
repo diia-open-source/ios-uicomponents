@@ -38,6 +38,20 @@ public final class DSTableMainHeadingView: BaseCodeView {
             alignment: .top,
             in: self
         )
+        
+        setupAccessibility()
+    }
+    
+    // MARK: - Private Methods
+    private func setupAccessibility() {
+        titleLabel.isAccessibilityElement = true
+        titleLabel.accessibilityTraits = .header
+        
+        descriptionLabel.isAccessibilityElement = true
+        descriptionLabel.accessibilityTraits = .staticText
+        
+        headingButton.isAccessibilityElement = true
+        headingButton.accessibilityTraits = .button
     }
     
     // MARK: - Public Methods

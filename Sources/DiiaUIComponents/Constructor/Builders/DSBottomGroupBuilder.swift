@@ -56,16 +56,19 @@ public struct DSBottomGroupBuilder: DSViewBuilderProtocol {
             let checkBoxBtn = createCheckboxBtn(with: checkBoxBtnOrg, eventHandler: eventHandler)
             buttonStack.addArrangedSubview(checkBoxBtn)
         }
-        
+
         if let btnPlainAtm = model.btnPlainAtm {
-            let plainButton = createPlainButton(with: btnPlainAtm,
-                                                eventHandler: eventHandler)
-            buttonStack.addArrangedSubview(plainButton)
+            let view = createPlainBtn(with: btnPlainAtm, eventHandler: eventHandler)
+            buttonStack.addArrangedSubview(view)
         }
-        
+
         return buttonStack
     }
-    
+
+    private func createPlainBtn(with model: DSButtonPlainAtmModel, eventHandler: @escaping (ConstructorItemEvent) -> Void) -> DSButtonPlainAtmView {
+        return DSBtnPlainAtmBuilder().makeView(model: model, eventHandler: eventHandler)
+    }
+
     private func createCheckboxBtn(with model: DSCheckboxBtnOrg, eventHandler: @escaping (ConstructorItemEvent) -> Void) -> DSCheckboxButtonView {
         return DSCheckboxButtonOrgBuilder().makeView(model: model, eventHandler: eventHandler)
     }
@@ -235,7 +238,7 @@ extension DSBottomGroupBuilder: DSViewMockableBuilderProtocol {
             ),
             btnPrimaryDefaultAtm: btnModel,
             btnPrimaryWideAtm: btnModel,
-            btnPlainAtm: btnModel,
+            btnPlainAtm: .mock,
             btnStrokeDefaultAtm: btnModel,
             btnLoadIconPlainGroupMlc: DSBtnLoadPlainGroupMlc(
                 items: [DSBtnLoadPlainIconAtm(

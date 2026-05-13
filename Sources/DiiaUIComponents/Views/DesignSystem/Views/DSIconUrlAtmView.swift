@@ -49,6 +49,7 @@ public final class DSIconUrlAtmView: BaseCodeView {
         }
         imageView.accessibilityLabel = model.accessibilityDescription
         let placeholder = placeholder ?? R.image.ds_placeholder.image
+        imageView.backgroundColor = Constants.disabledBgColor
         imageView.loadImage(imageURL: model.url, placeholder: placeholder, completion: finishCallback, onError: finishCallback)
     }
     
@@ -98,5 +99,6 @@ public final class DSIconUrlAtmView: BaseCodeView {
 private extension DSIconUrlAtmView {
     enum Constants {
         static let placeholderSize: CGSize = .init(width: 18, height: 18)
+        static let disabledBgColor = UIColor("#F0F3F7")
     }
 }

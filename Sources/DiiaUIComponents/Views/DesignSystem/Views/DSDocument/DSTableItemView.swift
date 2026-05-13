@@ -7,6 +7,10 @@ public class DSTableItemView: BaseCodeView {
     internal var subLabel = UILabel()
     internal var value = UITextView()
     internal var subValue = UILabel()
+    internal var textLabel = UILabel()
+    internal var strikeTextLabel = UILabel()
+    internal var blueIconLeft = DSIconView().withSize(Constants.blueIconLeftSize)
+    internal var blueTextLabel = UILabel()
     internal var supportLabel = UILabel()
     internal var icon = UIImageView()
     internal var actionButton = ActionButton(type: .icon)
@@ -19,6 +23,10 @@ public class DSTableItemView: BaseCodeView {
         subLabel.isHidden = true
         value.isHidden = true
         subValue.isHidden = true
+        textLabel.isHidden = true
+        strikeTextLabel.isHidden = true
+        blueIconLeft.isHidden = true
+        blueTextLabel.isHidden = true
         supportLabel.isHidden = true
         icon.isHidden = true
         actionButton.isHidden = true
@@ -34,11 +42,18 @@ public class DSTableItemView: BaseCodeView {
         value.font = FontBook.usualFont
         supportLabel.font = FontBook.usualFont
         subValue.font = FontBook.usualFont
+        textLabel.font = FontBook.bigText
+        strikeTextLabel.font = FontBook.bigText
+        blueTextLabel.font = FontBook.usualFont
         
         subValue.textColor = Constants.lightBlack
         subLabel.textColor = Constants.lightBlack
+        strikeTextLabel.textColor = .black540
+        blueTextLabel.textColor = Constants.blueTextColor
         
         icon.contentMode = .scaleAspectFit
+        blueIconLeft.contentMode = .scaleAspectFit
+        blueIconLeft.tintColor = Constants.blueTextColor
     }
 }
 
@@ -46,5 +61,7 @@ extension DSTableItemView {
     enum Constants {
         static let lightBlack = UIColor.black.withAlphaComponent(0.4)
         static let buttonSize = CGSize(width: 24, height: 24)
+        static let blueIconLeftSize = CGSize(width: 16, height: 16)
+        static let blueTextColor = UIColor("#0075FB")
     }
 }
