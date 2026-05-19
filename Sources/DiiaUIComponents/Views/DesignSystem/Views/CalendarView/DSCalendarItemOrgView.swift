@@ -91,6 +91,6 @@ extension DSCalendarItemOrgView {
         static let legendSize = CGSize(width: 4, height: 4)
         static let buttonSize = CGSize(width: 40, height: 40)
         static let componentId = "calendarItem"
-        static let grayColor = UIColor.black.withAlphaComponent(0.3)
+        static let grayColor = UIColor.black.withAlphaComponent(0.4)
     }
 }

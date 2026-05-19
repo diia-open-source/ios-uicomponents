@@ -63,7 +63,10 @@ public final class DSTableMainHeadingView: BaseCodeView {
 
         descriptionLabel.isHidden = viewModel.headingModel.description == nil
         if let description = viewModel.headingModel.description {
-            descriptionLabel.text = description
+            descriptionLabel.attributedText = description.attributedTextWithParameters(
+                    font: FontBook.usualFont,
+                    textColor: Constants.valueTextColor,
+                    parameters: viewModel.headingModel.parameters ?? [])
             descriptionLabel.accessibilityLabel = description
         }
 

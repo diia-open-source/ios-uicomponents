@@ -30,11 +30,12 @@ public final class DSLegendMlcView: BaseCodeView {
         container.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
     }
 
-    public func configure(with viewModel: DSTitleMlcViewModel) {
+    public func configure(with viewModel: DSTitleMlcViewModel, hasDot: Bool = true) {
         accessibilityIdentifier = viewModel.componentId
         viewModel.label.observe(observer: self) { [weak self] title in
             self?.legendLabel.text = title
         }
+        self.legendMark.isHidden = !hasDot
     }
 }
 

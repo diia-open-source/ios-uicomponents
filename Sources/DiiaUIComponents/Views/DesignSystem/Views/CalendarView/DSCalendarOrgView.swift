@@ -12,7 +12,7 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
     private let backBtn = ActionButton(type: .icon)
     private let forwardBtn = ActionButton(type: .icon)
     private let stubMsgBoxView = BoxView(subview: StubMessageViewV2()).withConstraints(insets: Constants.stubPadding)
-    private let pagginationMsgView = BoxView(subview: DSPaginationMessageMlcView()).withConstraints(centeredX: true, centeredY: true)
+    private let pagginationMsgView = BoxView(subview: DSPaginationMessageMlcView()).withConstraints(centeredY: true)
     private let calendarStack = UIStackView.create(spacing: Constants.calendarSpacing, distribution: .fillEqually)
     private let chipsView = DSCalendarChipsView()
     private let chipsViewV2 = DSChipGroupOrgV2View()
@@ -73,9 +73,9 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
         
         addSubview(pagginationMsgView)
         pagginationMsgView.anchor(top: calendarBoxView.topAnchor,
-                           leading: globalStackView.leadingAnchor,
+                           leading: fullCalendarStack.leadingAnchor,
                            bottom: calendarBoxView.bottomAnchor,
-                           trailing: globalStackView.trailingAnchor)
+                           trailing: fullCalendarStack.trailingAnchor)
         pagginationMsgView.backgroundColor = .white
         pagginationMsgView.isHidden = true
         
@@ -98,6 +98,15 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
         forwardBtn.contentHorizontalAlignment = .center
     }
     
+    private func configureLegend(with viewModel: DSCalendarOrgViewModel) {
+        legendView.isHidden = viewModel.legends == nil
+        if let legend = viewModel.legends?.first(where: {$0.type == .initial}) {
+            legendView.configure(with: .init(componentId: legend.componentId, label: legend.label))
+        } else {
+            legendView.isHidden = true
+        }
+    }
+    
     public func configure(for viewModel: DSCalendarOrgViewModel) {
         let spacing = viewModel.isOldVersion ? Constants.viewPadding : Constants.viewPaddingV2
         globalStackView.spacing = spacing
@@ -108,12 +117,7 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
         fullCalendarStackCornerView?.layer.cornerRadius = cornerRadius
         animationView.layer.cornerRadius = cornerRadius
 
-        legendView.isHidden = viewModel.legends == nil
-        if let legend = viewModel.legends?.first(where: {$0.type == .initial}) {
-            legendView.configure(with: .init(componentId: legend.componentId, label: legend.label))
-        } else {
-            legendView.isHidden = true
-        }
+        configureLegend(with: viewModel)
         self.viewModel = viewModel
         if let currentTimeMlc = viewModel.calendarOrg.value.currentTimeMlc {
             currentTimeMlcView.configure(for: currentTimeMlc)
@@ -306,9 +310,11 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
             self?.viewModel?.selectedDate.value = self?.fullDateFormatter.date(from: viewModel.itemOrg?.date ?? "")
             if let legendType = viewModel.itemOrg?.legendType,
                let legendMlc = self?.viewModel?.legends?.first(where: {$0.type == legendType}) {
+                self?.legendView.isHidden = false
                 self?.legendView.configure(
                     with: .init(componentId: legendMlc.componentId,
-                                label: legendMlc.label)
+                                label: legendMlc.label),
+                    hasDot: legendType != .common
                 )
             }
         }
@@ -324,6 +330,7 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
         
         chipsView.isHidden = true
         chipsViewV2.isHidden = true
+        configureLegend(with: viewModel)
         
         setupYearHeader()
         

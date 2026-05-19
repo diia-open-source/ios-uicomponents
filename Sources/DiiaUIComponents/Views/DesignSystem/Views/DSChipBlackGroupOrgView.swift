@@ -114,6 +114,7 @@ public final class DSChipBlackGroupOrgView: BaseCodeView, DSResetStateComponentP
     public func configure(with viewModel: DSChipBlackGroupViewModel, eventHandler: ((ConstructorItemEvent) -> Void)? = nil) {
         chipsViewModel = viewModel
         chipsTitleLabel.text = viewModel.label
+        chipTitleLabelContainer.isHidden = viewModel.label == nil || viewModel.label?.isEmpty == true
         setNeedsLayout()
         
         eventHandler?(.onComponentConfigured(with: .resetStateComponent(component: self)))

@@ -92,7 +92,7 @@ final public class ConstructorViewController: UIViewController {
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
         view.addGestureRecognizer(tapRecognizer)
         tapRecognizer.cancelsTouchesInView = false
-        
+
         presenter.configureView()
     }
     
@@ -156,7 +156,10 @@ final public class ConstructorViewController: UIViewController {
     }
     
     @objc private func hideKeyboard() {
-        view.endEditing(true)
+        // TODO: - Fix it
+        onMainQueue { [weak self] in
+            self?.view.endEditing(true)
+        }
     }
 }
 

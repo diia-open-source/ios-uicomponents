@@ -32,19 +32,8 @@ final public class ChildContainerViewController: UIViewController, ModalPresenta
         }
     }
     
-    private lazy var visualEffectView: UIView = {
-        var visualEffectsOff = UIAccessibility.isReduceTransparencyEnabled
-        if visualEffectsOff {
-            let visualEffectView = UIView()
-            visualEffectView.backgroundColor = UIColor.black.withAlphaComponent(0.2)
-            return visualEffectView
-        } else {
-            let blurView = CustomIntensityVisualEffectView(effect: UIBlurEffect(style: .dark), intensity: 0.15)
-            blurView.backgroundColor = UIColor.black.withAlphaComponent(0.2)
-            return blurView
-        }
-    }()
-    
+    private lazy var visualEffectView = CustomIntensityVisualEffectView(effect: UIBlurEffect(style: .dark), intensity: 0.15)
+
     // MARK: - Lifecycle
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -148,49 +137,73 @@ extension ChildContainerViewController: ContainerProtocol {
 }
 
 public final class CustomIntensityVisualEffectView: UIVisualEffectView {
-    // MARK: Private props
-    private var animator: UIViewPropertyAnimator?
-    private var intensity: CGFloat
-    private var customEffect: UIVisualEffect?
-    
     /// Create visual effect view with given effect and its intensity
     ///
     /// - Parameters:
     ///   - effect: visual effect, eg UIBlurEffect(style: .dark)
     ///   - intensity: custom intensity from 0.0 (no effect) to 1.0 (full effect) using linear scale
-    public init(effect: UIVisualEffect, intensity: CGFloat) {
-        self.intensity = intensity
+    private var animator: UIViewPropertyAnimator?
+    private let intensity: CGFloat
+    private let customEffect: UIVisualEffect
+
+    private let reducedTransparencyBackgroundColor: UIColor
+
+    // MARK: - Lifecycle
+    public init(effect: UIVisualEffect, intensity: CGFloat, reducedTransparencyBackgroundColor: UIColor = UIColor.black.withAlphaComponent(0.2)) {
         self.customEffect = effect
-        
+        self.reducedTransparencyBackgroundColor = reducedTransparencyBackgroundColor
+        self.intensity = max(0, min(1, intensity))
         super.init(effect: nil)
+        addObservers()
     }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError()
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
-    
-    private func setupBlur() {
-        let visualEffectsOff = UIAccessibility.isReduceTransparencyEnabled
-        guard let customEffect, !visualEffectsOff else { return }
-        
-        animator?.stopAnimation(true)
-        
-        effect = nil
-        animator = UIViewPropertyAnimator(duration: 1, curve: .linear) { [weak self] in
-            self?.effect = customEffect
-        }
-        animator?.fractionComplete = intensity
+
+    deinit {
+        tearDown()
     }
-    
-    public override func didMoveToWindow() {
-        super.didMoveToWindow()
-        
-        if window != nil {
+
+    public override func didMoveToSuperview() {
+        super.didMoveToSuperview()
+        if superview != nil {
             setupBlur()
         }
     }
-    
-    deinit {
-        animator?.stopAnimation(true)
+
+    // MARK: - Private
+    private func addObservers() {
+        NotificationCenter.default.addObserver(
+            forName: UIApplication.didBecomeActiveNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.setupBlur()
+        }
+    }
+
+    private func setupBlur() {
+        tearDown()
+
+        guard !UIAccessibility.isReduceTransparencyEnabled else {
+            backgroundColor = reducedTransparencyBackgroundColor
+            return
+        }
+
+        let animator = UIViewPropertyAnimator(duration: 1, curve: .linear) { [weak self] in
+            self?.effect = self?.customEffect
+        }
+        self.animator = animator
+        animator.fractionComplete = intensity
+        animator.pausesOnCompletion = true
+    }
+
+    private func tearDown() {
+        effect = nil
+        if let animator, animator.state != .inactive {
+            animator.stopAnimation(true)
+            self.animator = nil
+        }
     }
 }

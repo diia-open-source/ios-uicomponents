@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/diia-open-source/ios-commontypes.git",
       "state" : {
-        "revision" : "70d8dcee3475ae525f95842d9a671485741264b5",
-        "version" : "1.0.22"
+        "revision" : "11524b3b54ee9415648e06c57284bba189715c39",
+        "version" : "1.0.23"
       }
     },
     {

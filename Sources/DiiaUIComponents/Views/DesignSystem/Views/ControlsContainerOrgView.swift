@@ -108,6 +108,7 @@ public final class ControlsContainerOrgView: BaseCodeView {
         addSubview(mainStack)
         mainStack.fillSuperview()
         buttonBox.subview.contentEdgeInsets = Constants.buttonInsets
+        buttonBox.subview.titleLabel?.font = FontBook.bigText
     }
     
     public func configure(_ viewModel: ControlsContainerOrgViewModel) {

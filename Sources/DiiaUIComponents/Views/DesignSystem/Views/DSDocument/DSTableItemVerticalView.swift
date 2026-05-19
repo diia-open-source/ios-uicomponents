@@ -9,7 +9,7 @@ public final class DSTableItemVerticalView: DSTableItemView {
     
     private let mainStack = UIStackView.create(.horizontal, spacing: Constants.spacing, alignment: .top)
     private let labelValueStack = UIStackView.create(spacing: Constants.stackSpacing)
-    private let strikeBlockStack = UIStackView.create(spacing: Constants.stackSpacing)
+    private let strikeBlockStack = UIStackView.create(spacing: Constants.stackSpacing, alignment: .leading)
     private let strikeTextStack = UIStackView.create(.horizontal, spacing: Constants.stackSpacing)
     private let blueTextStack = UIStackView.create(.horizontal, spacing: Constants.stackSpacing)
     
@@ -95,6 +95,12 @@ public final class DSTableItemVerticalView: DSTableItemView {
         value.isHidden = model.value == nil || model.value?.isEmpty == true
         subValue.isHidden = model.secondaryValue == nil
         icon.isHidden = image == nil
+        labelValueStack.isHidden = label.isHidden
+            && subLabel.isHidden
+            && value.isHidden
+            && subValue.isHidden
+            && icon.isHidden
+        
         actionButton.isHidden = model.icon == nil || value.isHidden
         
         if let icon = model.icon, let action = icon.action {

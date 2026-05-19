@@ -126,7 +126,10 @@ final class ConstructorPaginationScreenViewController: UIViewController, RatingF
     }
     
     @objc private func hideKeyboard() {
-        view.endEditing(true)
+        // TODO: - Fix it
+        onMainQueue { [weak self] in
+            self?.view.endEditing(true)
+        }
     }
 }
 

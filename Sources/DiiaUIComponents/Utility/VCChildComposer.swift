@@ -19,12 +19,12 @@ public struct VCChildComposer {
         animationType: ChildAnimationStyle
     ) {
         let view: UIView = parentView ?? parentViewController.view
-        parentViewController.addChild(childViewController)
-        childViewController.willMove(toParent: parentViewController)
         
         view.addSubview(childViewController.view)
         childViewController.view.fillSuperview()
-        
+
+        parentViewController.addChild(childViewController)
+
         switch animationType {
         case .top:
             childViewController.view.transform = .init(translationX: 0, y: -childViewController.view.frame.height)
@@ -36,20 +36,23 @@ public struct VCChildComposer {
             childViewController.view.transform = .init(translationX: 0, y: childViewController.view.frame.height)
         case .fadeIn:
             childViewController.view.alpha = 0
-        default:
+        case .none:
             childViewController.didMove(toParent: parentViewController)
             return
         }
         
-        UIView.animate(withDuration: 0.3,
-                       animations: {
-                        childViewController.view.alpha = 1
-                        childViewController.view.transform = .identity
-                    },
-                       completion: { _ in
-                        childViewController.didMove(toParent: parentViewController)
-                        log("presenting finished")
-                    })
+        UIView.animate(
+            withDuration: 0.3,
+            animations: { [weak childViewController] in
+                childViewController?.view.alpha = 1
+                childViewController?.view.transform = .identity
+            },
+            completion: { [weak childViewController, weak parentViewController] _ in
+                guard let childViewController else { return }
+                childViewController.didMove(toParent: parentViewController)
+                log("presenting finished")
+            }
+        )
     }
     
     public static func removeChild(
@@ -57,21 +60,28 @@ public struct VCChildComposer {
         from parentViewController: UIViewController,
         animationType: ChildAnimationStyle
     ) {
+        childViewController.willMove(toParent: nil)
+        
         let removingAction = {
             childViewController.view.removeFromSuperview()
             childViewController.removeFromParent()
         }
-        if childViewController.view.window == nil {
+        
+        guard childViewController.view.window != nil else {
             removingAction()
             return
         }
         
-        guard let snapShot = childViewController.view.snapshotView(afterScreenUpdates: false),
-            let superview = childViewController.view.superview else {
+        guard
+            let snapShot = childViewController.view.snapshotView(afterScreenUpdates: false),
+            let superview = childViewController.view.superview
+        else {
             removingAction()
             return
         }
-        snapShot.frame = childViewController.view.frame
+        
+        let childFrame = childViewController.view.frame
+        snapShot.frame = childFrame
         superview.addSubview(snapShot)
         
         removingAction()
@@ -79,36 +89,39 @@ public struct VCChildComposer {
         let completion = {
             snapShot.removeFromSuperview()
         }
-        var animations: Callback = {}
+        
+        let animations: Callback
         
         switch animationType {
         case .top:
             animations = {
-                snapShot.frame.origin.y = -childViewController.view.frame.height
+                snapShot.frame.origin.y = -childFrame.height
             }
         case .left:
             animations = {
-                snapShot.frame.origin.x = -childViewController.view.frame.width
+                snapShot.frame.origin.x = -childFrame.width
             }
         case .right:
             animations = {
-                snapShot.frame.origin.x = childViewController.view.frame.width
+                snapShot.frame.origin.x = childFrame.width
             }
         case .bottom:
             animations = {
-                snapShot.frame.origin.y = childViewController.view.frame.height
+                snapShot.frame.origin.y = childFrame.height
             }
         case .fadeIn:
             animations = {
                 snapShot.alpha = 0
             }
-        default:
+        case .none:
             completion()
             return
         }
         
-        UIView.animate(withDuration: 0.3,
-                       animations: { animations() },
-                       completion: { _ in completion() })
+        UIView.animate(
+            withDuration: 0.3,
+            animations: { animations() },
+            completion: { _ in completion() }
+        )
     }
 }

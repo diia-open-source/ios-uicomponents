@@ -13,14 +13,12 @@ public final class ContentLoadingView: BaseCodeView {
     }()
     
     private lazy var visualEffectView: UIView = {
-        var visualEffectsOff = UIAccessibility.isReduceTransparencyEnabled
-        if visualEffectsOff {
-            let visualEffectView = UIView()
-            visualEffectView.backgroundColor = UIColor(displayP3Red: 0, green: 0, blue: 0, alpha: Constants.backgroundAlpha)
-            return visualEffectView
-        } else {
-            return CustomIntensityVisualEffectView(effect: UIBlurEffect(style: UIBlurEffect.Style.light), intensity: Constants.blurIntensity)
-        }
+        let view = CustomIntensityVisualEffectView(
+            effect: UIBlurEffect(style: UIBlurEffect.Style.light),
+            intensity: Constants.blurIntensity,
+            reducedTransparencyBackgroundColor: UIColor(displayP3Red: 0, green: 0, blue: 0, alpha: Constants.backgroundAlpha)
+        )
+        return view
     }()
     
     // MARK: - Life Cycle

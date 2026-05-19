@@ -6,9 +6,18 @@ import DiiaCommonTypes
 public final class DSSelectorOrgV2View: BaseCodeView, DSInputComponentProtocol {
     private let borderedView = UIView()
 
-    private let titleLabel = UILabel().withParameters(font: FontBook.statusFont, numberOfLines: Constants.titleNumberOfLines)
-    private let textLabel = UILabel().withParameters(font: FontBook.bigText, numberOfLines: Constants.textNumberOfLines)
-    private let hintLabel = UILabel().withParameters(font: FontBook.statusFont, numberOfLines: Constants.hintNumberOfLines)
+    private let titleLabel = UILabel().withParameters(
+        font: FontBook.statusFont,
+        numberOfLines: Constants.titleNumberOfLines,
+        lineBreakMode: .byTruncatingTail)
+    private let textLabel = UILabel().withParameters(
+        font: FontBook.bigText,
+        numberOfLines: Constants.textNumberOfLines,
+        lineBreakMode: .byTruncatingTail)
+    private let hintLabel = UILabel().withParameters(
+        font: FontBook.statusFont,
+        numberOfLines: Constants.hintNumberOfLines,
+        lineBreakMode: .byTruncatingTail)
 
     private let arrowIconView: UIImageView = .init().withSize(Constants.arrowImageSize)
 

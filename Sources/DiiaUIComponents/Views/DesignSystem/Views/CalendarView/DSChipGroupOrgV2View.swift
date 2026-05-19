@@ -4,8 +4,7 @@ import Foundation
 import DiiaCommonTypes
 
 public final class DSChipGroupOrgV2View: BaseCodeView {
-    
-    private let chipsStack = UIStackView.create(spacing: Constants.viewPadding,
+    private let chipsStack = UIStackView.create(spacing: Constants.stackSpacing,
                                                 distribution: .fillEqually)
     private let mainHeaderView = DSTableMainHeadingView()
     private let secondaryHeadingView = TableSecondaryHeadingView()
@@ -51,7 +50,7 @@ public final class DSChipGroupOrgV2View: BaseCodeView {
         var index = 0
         while index < chipsGroup.items.count {
             let horizontalStack = UIStackView.create(.horizontal,
-                                                     spacing: Constants.viewPadding,
+                                                     spacing: Constants.stackSpacing,
                                                      distribution: .fillEqually)
             for _ in 0..<Constants.rowInLine where index < chipsGroup.items.count {
                 let chipTimeView = DSChipBlackMlcView()
@@ -90,5 +89,6 @@ private extension DSChipGroupOrgV2View {
         static let rowInLine = 3
         static let cornerRadius: CGFloat = 16
         static let viewPadding: CGFloat = 16
+        static let stackSpacing: CGFloat = 12
     }
 }

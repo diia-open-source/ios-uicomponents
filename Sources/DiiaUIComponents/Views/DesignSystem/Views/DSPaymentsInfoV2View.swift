@@ -125,10 +125,6 @@ public final class DSPaymentsInfoV2View: BaseCodeView {
         if let total = model.tableItemHorizontalLargeMlc {
             totalView.configure(item: total, urlOpener: UIComponentsConfiguration.shared.urlOpener)
             totalView.setValueAlignment(.right)
-
-            if model.btnIconPlainStrokeMlc != nil {
-                mainStack.setCustomSpacing(Constants.largeStackSpacing, after: totalView)
-            }
         }
     }
 

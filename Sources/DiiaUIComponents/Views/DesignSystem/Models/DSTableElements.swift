@@ -24,19 +24,36 @@ public struct DSTableHeadingItemModel: Codable, Equatable {
     public let icon: DSIconModel?
     public let componentId: String?
     public let description: String?
+    public let parameters: [TextParameter]?
     
-    public init(label: String, icon: DSIconModel? = nil, componentId: String? = nil, description: String? = nil) {
+    public init(
+        label: String,
+        icon: DSIconModel? = nil,
+        componentId: String? = nil,
+        description: String? = nil,
+        parameters: [TextParameter]? = nil) {
         self.label = label
         self.icon = icon
         self.componentId = componentId
         self.description = description
+        self.parameters = parameters
     }
     
     static let mock = DSTableHeadingItemModel(
         label: "label",
         icon: .mock,
         componentId: "componentId",
-        description: "description(optional)"
+        description: "description(optional)",
+        parameters: [
+            TextParameter(
+                type: .email,
+                data: TextParameterData(
+                    name: "supportEmail",
+                    alt: "support@example.com",
+                    resource: "support@example.com"
+                )
+            )
+        ]
     )
 }
 

@@ -7,8 +7,8 @@ public class DSTableItemView: BaseCodeView {
     internal var subLabel = UILabel()
     internal var value = UITextView()
     internal var subValue = UILabel()
-    internal var textLabel = UILabel()
-    internal var strikeTextLabel = UILabel()
+    internal var textLabel = UILabel().withParameters(font: FontBook.bigText, textAlignment: .left)
+    internal var strikeTextLabel = UILabel().withParameters(font: FontBook.bigText, textColor: .black540, textAlignment: .left)
     internal var blueIconLeft = DSIconView().withSize(Constants.blueIconLeftSize)
     internal var blueTextLabel = UILabel()
     internal var supportLabel = UILabel()
@@ -42,13 +42,10 @@ public class DSTableItemView: BaseCodeView {
         value.font = FontBook.usualFont
         supportLabel.font = FontBook.usualFont
         subValue.font = FontBook.usualFont
-        textLabel.font = FontBook.bigText
-        strikeTextLabel.font = FontBook.bigText
         blueTextLabel.font = FontBook.usualFont
         
         subValue.textColor = Constants.lightBlack
         subLabel.textColor = Constants.lightBlack
-        strikeTextLabel.textColor = .black540
         blueTextLabel.textColor = Constants.blueTextColor
         
         icon.contentMode = .scaleAspectFit

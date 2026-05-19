@@ -27,7 +27,6 @@ open class HighlightedButton: UIButton {
             }
         }
     }
-
 }
 
 // MARK: - Constants

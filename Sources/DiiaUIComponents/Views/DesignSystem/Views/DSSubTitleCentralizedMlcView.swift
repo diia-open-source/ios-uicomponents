@@ -6,7 +6,7 @@ public final class DSTitleMlcViewModel {
     public let componentId: String
     public let label: Observable<String>
     
-    init(componentId: String, label: String) {
+    public init(componentId: String, label: String) {
         self.componentId = componentId
         self.label = .init(value: label)
     }
