@@ -11,6 +11,9 @@
 "general_accessibility_copy_button" = "Скопіювати";
 "general_accessibility_button_selected" = "Обрано";
 "general_accessibility_button_not_selected" = "Не обрано";
+"general_accessibility_radio_button_selected" = "Обрано";
+"general_accessibility_radio_button_not_selected" = "Не обрано";
+"general_accessibility_strike_through" = "%@. Перекреслено";
 
 "made_in_ua_cashback_dashboard_amount" = "%@ грн %@ коп";
 
@@ -20,6 +23,7 @@
 
 "accessibility_photo_url" = "Фотографія";
 "general_accessibility_filters_applied" = "Застосовано %d";
+"general_accessibility_tab_selection_applied" = "Елементів %d";
 "general_accessibility_text_field_clear_button" = "Очистити поле";
 
 "pdr_penalty_accessibility_video" = "Відео";
@@ -33,6 +37,7 @@
 "general_step" = "Крок %@ з %@";
 "general_loading" = "Завантаження...";
 "general_retry" = "Спробувати ще раз";
+"general_cancel" = "Скасувати";
 "general_close" = "Закрити";
 "general_number_copied" = "Номер скопійовано";
 "general_date_picker_hint" = "дд / мм / рррр";
@@ -46,6 +51,14 @@
 "file_file_too_large" = "Файл завеликий. Завантажте файл до 5MB";
 
 "pagination_error_text" = "Не вдалося завантажити дані, спробуйте ще раз";
+
+"general_refresh_link_title" = "Оновити посилання?";
+"general_refresh_link_subtitle" = "Після оновлення попереднє посилання буде недійсним.";
+"general_refresh_link_error_title" = "Посилання не завантажилось";
+
+"general_refresh_qr_title" = "Оновити QR-код?";
+"general_refresh_qr_subtitle" = "Після оновлення попередній QR-код, буде недійсним.";
+"general_refresh_qr_error_title" = "QR-код не завантажився";
 
 // MARK: - ToolBar
 "toolbar_done" = "Готово";

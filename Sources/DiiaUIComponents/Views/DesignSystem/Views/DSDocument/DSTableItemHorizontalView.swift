@@ -69,6 +69,7 @@ public final class DSTableItemHorizontalView: BaseCodeView {
         titleLabel.attributedText = item.label.attributed(font: titleLabel.font,
                                                           lineHeightMultiple: Constants.lineHeightMultiply,
                                                           lineBreakMode: .byWordWrapping)
+        detailsLabel.isAccessibilityElement = item.secondaryLabel != nil
         detailsLabel.attributedText = item.secondaryLabel?.attributed(font: titleLabel.font,
                                                                       color: .black540,
                                                                       lineHeightMultiple: Constants.lineHeightMultiply,
@@ -77,6 +78,7 @@ public final class DSTableItemHorizontalView: BaseCodeView {
         
         setValueAlignment(item.orientation == true ? .right : .left)
         
+        valueTextView.isAccessibilityElement = item.value != nil
         if let valueParameters = item.valueParameters {
             valueTextView.attributedText = item.value?.attributedTextWithParameters(parameters: valueParameters)
         } else {
@@ -86,12 +88,14 @@ public final class DSTableItemHorizontalView: BaseCodeView {
                                                                   lineBreakMode: .byWordWrapping)
         }
 
+        valueDetailsLabel.isAccessibilityElement = item.secondaryValue != nil
         valueDetailsLabel.attributedText = item.secondaryValue?.attributed(font: titleLabel.font,
                                                                            color: .black540,
                                                                            lineHeightMultiple: Constants.lineHeightMultiply,
                                                                            lineBreakMode: .byWordWrapping)
         valueDetailsLabel.accessibilityAttributedLabel = accessibilityLabel(for: item.secondaryValue ?? "")
         
+        supportLabel.isAccessibilityElement = item.supportingValue != nil
         supportLabel.attributedText = item.supportingValue?.attributed(font: titleLabel.font,
                                                                        lineHeightMultiple: Constants.lineHeightMultiply,
                                                                        textAlignment: .right,
@@ -156,10 +160,7 @@ public final class DSTableItemHorizontalView: BaseCodeView {
     
     // MARK: - Accessibility
     private func setupAccessibility() {
-        detailsLabel.isAccessibilityElement = true
         detailsLabel.accessibilityTraits = .staticText
-        
-        valueDetailsLabel.isAccessibilityElement = true
         valueDetailsLabel.accessibilityTraits = .staticText
     }
     

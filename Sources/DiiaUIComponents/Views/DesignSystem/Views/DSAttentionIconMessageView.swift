@@ -13,8 +13,6 @@ final public class DSAttentionIconMessageView: BaseCodeView {
     private let expandIcon = UIImageView()
     private let expandButtonStack = UIStackView.create(.horizontal, spacing: Constants.spacing, alignment: .leading)
     private var expandModel: DSAttentionIconMessageMlcExpanded?
-    private let collapsedLabel = UILabel().withParameters(font: FontBook.usualFont, lineBreakMode: .byTruncatingTail)
-    private let expandedLabel = UILabel().withParameters(font: FontBook.usualFont)
     private let strokeButton = ActionLoadingStateButton()
     private let strokeButtonContainer = UIView()
     
@@ -25,9 +23,6 @@ final public class DSAttentionIconMessageView: BaseCodeView {
         layer.cornerRadius = Constants.cornerRadius
         addSubview(mainHStack)
         addSubview(iconImage)
-        
-        collapsedLabel.numberOfLines = Constants.textNumberOfLines
-        expandedLabel.numberOfLines = 0
         
         iconImage.withSize(Constants.imageSize)
         expandIcon.withSize(Constants.expandIconSize)
@@ -53,13 +48,14 @@ final public class DSAttentionIconMessageView: BaseCodeView {
         strokeButton.setStyle(style: .light)
         strokeButton.contentEdgeInsets = Constants.strokeButtonInsets
         
-        mainHStack.addArrangedSubviews([collapsedLabel, expandedLabel, textView, expandButtonStack, strokeButtonContainer])
+        mainHStack.addArrangedSubviews([textView, expandButtonStack, strokeButtonContainer])
         expandButtonStack.addArrangedSubviews([expandButtonTitle, expandIcon])
         
         textView.linkTextAttributes = [
             .foregroundColor: UIColor.black,
             .underlineStyle: NSUnderlineStyle.single.rawValue
         ]
+        
         textView.font = FontBook.usualFont
         textView.isEditable = false
         textView.isSelectable = true
@@ -68,10 +64,14 @@ final public class DSAttentionIconMessageView: BaseCodeView {
         textView.isUserInteractionEnabled = true
         textView.textContainerInset = .zero
         textView.textContainer.lineFragmentPadding = .zero
+        textView.textContainer.maximumNumberOfLines = Constants.textNumberOfLines
+        textView.textContainer.lineBreakMode = .byTruncatingTail
         textView.delegate = self
         
         let gesture = UITapGestureRecognizer(target: self, action: #selector(onTapped))
         expandButtonStack.addGestureRecognizer(gesture)
+        
+        setupAccessibility()
     }
     
     public func configure(with model: DSAttentionIconMessageMlc, urlOpener: URLOpenerProtocol? = nil) {
@@ -96,23 +96,14 @@ final public class DSAttentionIconMessageView: BaseCodeView {
         
         if let expanded = model.expanded {
             self.isExpanded = expanded.isExpanded ?? false
-            
-            collapsedLabel.text = model.text
-            expandedLabel.text = model.text
-            
-            collapsedLabel.isHidden = false
-            expandedLabel.isHidden = false
-            textView.isHidden = true
-            
             setState(isExpanded, animated: false)
         } else {
-            collapsedLabel.isHidden = true
-            expandedLabel.isHidden = true
-            textView.isHidden = false
-            textView.attributedText = model.text.attributedTextWithParameters(
-                font: FontBook.usualFont,
-                parameters: model.parameters ?? [])
+            textView.textContainer.maximumNumberOfLines = 0
         }
+        
+        textView.attributedText = model.text.attributedTextWithParameters(
+            font: FontBook.usualFont,
+            parameters: model.parameters ?? [])
         
         backgroundColor = UIColor(model.backgroundMode.color)
     }
@@ -130,26 +121,23 @@ final public class DSAttentionIconMessageView: BaseCodeView {
         guard let model = expandModel else { return }
         expandButtonTitle.text = isExpanded ? model.collapsedText : model.expandedText
         expandIcon.image = isExpanded ? R.image.arrowUp.image : R.image.arrowDown.image
-
+        expandButtonStack.accessibilityLabel = isExpanded ? model.collapsedText : model.expandedText
+        
+        textView.textContainer.maximumNumberOfLines = isExpanded ? 0 : Constants.textNumberOfLines
+        textView.invalidateIntrinsicContentSize()
         if animated {
-            UIView.animate(withDuration: Constants.animationDuration) { [weak self] in
-                guard let self else { return }
-                self.collapsedLabel.alpha = isExpanded ? 0 : 1
-                self.expandedLabel.alpha = isExpanded ? 1 : 0
-                self.superview?.layoutIfNeeded()
-            } completion: { [weak self] _ in
-                guard let self else { return }
-                self.collapsedLabel.isHidden = isExpanded
-                self.expandedLabel.isHidden = !isExpanded
-                self.collapsedLabel.alpha = 1
-                self.expandedLabel.alpha = 1
-                self.eventHandler?(.componentSizeDidChange)
+            UIView.animate(withDuration: Constants.animationDuration) {[weak self] in
+                self?.superview?.layoutIfNeeded()
+                self?.layoutIfNeeded()
             }
         } else {
-            collapsedLabel.isHidden = isExpanded
-            expandedLabel.isHidden = !isExpanded
             eventHandler?(.componentSizeDidChange)
         }
+    }
+    
+    private func setupAccessibility() {
+        expandButtonStack.isAccessibilityElement = true
+        expandButtonStack.accessibilityTraits = .button
     }
 }
 

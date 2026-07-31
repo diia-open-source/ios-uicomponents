@@ -85,8 +85,9 @@ public enum ConstructorEventViewType {
     case listItems(viewModel: DSListViewModel)
     case cascadeView(viewModel: DSCheckboxCascadeViewModel)
     case linkQrShareView(viewModel: DSLinkQrShareViewModel)
-    case titledView(viewModel: DSTitleMlcViewModel)
+    case textView(viewModel: DSTextMlcViewModel)
     case inputNumber(viewModel: DSInputNumberMlcViewModel)
+    case photoUpload(viewModel: DSPhotoUploadMlcViewModel)
     
     /// Represents a runtime-defined view type coming from UIComponents configuration.
     ///

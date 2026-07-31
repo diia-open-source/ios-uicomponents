@@ -109,6 +109,7 @@ public final class CheckmarkView: BaseCodeView {
     // MARK: - Accessibility
     private func setupAccessibility() {
         checkmarkImageView.isAccessibilityElement = true
+        checkmarkImageView.accessibilityTraits = .button
         textView.isAccessibilityElement = true
         textView.accessibilityValue = ""
         

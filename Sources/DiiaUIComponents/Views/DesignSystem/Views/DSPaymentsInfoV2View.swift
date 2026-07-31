@@ -81,7 +81,6 @@ public final class DSPaymentsInfoV2View: BaseCodeView {
     // MARK: - Private
     private func setupTopStack(model: DSPaymentInfoOrgV2Model) {
         chipView.isHidden = model.titleWithChip?.chipStatusAtm == nil
-        subtitleLabel.isHidden = model.titleWithChip?.description ?? model.subtitle == nil
 
         if let titleWithChipModel = model.titleWithChip {
             titleLabel.text = titleWithChipModel.text
@@ -103,6 +102,12 @@ public final class DSPaymentsInfoV2View: BaseCodeView {
             subtitleLabel.text = model.subtitle
             subtitleLabel.textColor = Constants.subtitleTextColor
         }
+
+        titleLabel.isHidden = titleLabel.text?.isEmpty ?? true
+        titleWithChipStack.isHidden = chipView.isHidden && titleLabel.isHidden
+
+        subtitleLabel.isHidden = subtitleLabel.text?.isEmpty ?? true
+        topStack.isHidden = subtitleLabel.isHidden && titleWithChipStack.isHidden
     }
 
     private func setupItemsStack(model: DSPaymentInfoOrgV2Model, eventHandler: @escaping (ConstructorItemEvent) -> Void) {

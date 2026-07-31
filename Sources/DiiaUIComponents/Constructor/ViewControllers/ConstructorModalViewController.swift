@@ -188,7 +188,6 @@ extension ConstructorModalViewController: ConstructorModalScreenViewProtocol {
                 superview: constructorView))
         }
         
-        
         if !scrollDependentViews.isEmpty, let scrollView = constructorView?.bodyScrollView {
             scrollViewDidScroll(scrollView)
         }
@@ -227,7 +226,6 @@ extension ConstructorModalViewController: ConstructorModalScreenViewProtocol {
                 keyboardInset: Constants.keyboardSpacing + view.safeAreaInsets.bottom,
                 superview: constructorView))
         }
-        
         
         if !scrollDependentViews.isEmpty, let scrollView = constructorView?.bodyScrollView {
             scrollViewDidScroll(scrollView)
@@ -281,8 +279,7 @@ extension ConstructorModalViewController: UIScrollViewDelegate {
 
 private extension ConstructorModalViewController {
     enum Constants {
-        static let offset: CGFloat = 32
-        static let keyboardSpacing: CGFloat = 8
+        static let keyboardSpacing: CGFloat = 40
         static let backgroundColor: UIColor = UIColor("#f1f6f6")
     }
 }

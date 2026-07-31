@@ -63,6 +63,20 @@ extension DSCardMlcV2Builder: DSViewMockableBuilderProtocol {
                     )
                 )
             ],
+            iconTexts: [
+                DSIconTextModel(
+                    iconLeft: DSIconModel(code: "carBlackOne"),
+                    text: "TEST TEXT"
+                ),
+                DSIconTextModel(
+                    iconLeft: DSIconModel(code: "info"),
+                    text: "TEST TEXT 2"
+                ),
+                DSIconTextModel(
+                    iconLeft: DSIconModel(code: "carBlackOne"),
+                    text: "TEST TEXT 3"
+                )
+            ],
             iconUrlAtm: DSIconUrlAtmModel(
                 componentId: "componentId",
                 url: "https://example.com/icon.png",

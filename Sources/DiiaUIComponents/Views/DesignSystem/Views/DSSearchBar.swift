@@ -33,6 +33,9 @@ public final class DSSearchBarView: BaseCodeView {
                 inputCode: Constants.inputCode,
                 inputData: .string(self?.searchView.searchText ?? .empty))))
         })
+        if let searchTextViewModel = searchView.searchTextViewModel {
+            self.eventHandler(.onComponentConfigured(with: .textView(viewModel: searchTextViewModel)))
+        }
         filterButton.isHidden = model.btnWhiteAdditionalIconAtm == nil
         if let filterButtonModel = model.btnWhiteAdditionalIconAtm {
             filterButtonViewModel = .init(

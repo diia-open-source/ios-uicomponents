@@ -159,7 +159,7 @@ public final class DSSelectorOrgV2View: BaseCodeView, DSInputComponentProtocol {
 // MARK: - Constants
 extension DSSelectorOrgV2View {
     private enum Constants {
-        static let insets: UIEdgeInsets = .allSides(12)
+        static let insets: UIEdgeInsets = .init(horizontal: 16, vertical: 12)
         static let labelsSpacing: CGFloat = 4
         static let hintTopSpacing: CGFloat = 4
         static let horizontalInnerHStackSpacing: CGFloat = 4

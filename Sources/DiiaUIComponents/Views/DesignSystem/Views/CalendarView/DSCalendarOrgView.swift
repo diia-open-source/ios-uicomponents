@@ -101,7 +101,7 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
     private func configureLegend(with viewModel: DSCalendarOrgViewModel) {
         legendView.isHidden = viewModel.legends == nil
         if let legend = viewModel.legends?.first(where: {$0.type == .initial}) {
-            legendView.configure(with: .init(componentId: legend.componentId, label: legend.label))
+            legendView.configure(with: .init(componentId: legend.componentId, text: legend.label))
         } else {
             legendView.isHidden = true
         }
@@ -119,7 +119,7 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
 
         configureLegend(with: viewModel)
         self.viewModel = viewModel
-        if let currentTimeMlc = viewModel.calendarOrg.value.currentTimeMlc {
+        if let currentTimeMlc = viewModel.currentTimeMlc {
             currentTimeMlcView.configure(for: currentTimeMlc)
         }
         if let backBtnModel = viewModel.calendarOrg.value.iconForMovingBackwards {
@@ -181,11 +181,10 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
         }
         
         self.viewModel?.selectedPeriod.removeObserver(observer: self)
-        viewModel.selectedPeriod.observe(observer: self) { [weak self] selectedPeriod in
-            guard let self else { return }
-            self.viewModel?.selectedChipData.value = nil
+        viewModel.selectedPeriod.observe(observer: self) { [weak self, weak viewModel] selectedPeriod in
+            guard let self, let viewModel else { return }
+            viewModel.selectedChipData.value = nil
             if self.calendarMode == .month {
-                guard let viewModel = self.viewModel else { return }
                 viewModel.eventHandler?(.calendarAction(event: .monthSelected(date: selectedPeriod),
                                                         viewModel: viewModel))
             } else {
@@ -246,14 +245,8 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
     }
     
     private func configureCalendar() {
-        guard let viewModel = viewModel else { return }
-        var selectedPeriod = Date()
-        if let date = viewModel.selectedPeriod.value {
-            selectedPeriod = date
-        } else if let displayMonthStr = viewModel.calendarOrg.value.currentTimeMlc?.displayMonth,
-                  let displayMonth = Constants.monthYearFormatter.date(from: displayMonthStr) {
-            selectedPeriod = displayMonth
-        }
+        guard let viewModel else { return }
+        let selectedPeriod = viewModel.selectedPeriod.value
         let availableItems = self.viewModel?.calendarOrg.value.items
         
         calendarStack.safelyRemoveArrangedSubviews()
@@ -313,7 +306,7 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
                 self?.legendView.isHidden = false
                 self?.legendView.configure(
                     with: .init(componentId: legendMlc.componentId,
-                                label: legendMlc.label),
+                                text: legendMlc.label),
                     hasDot: legendType != .common
                 )
             }
@@ -323,8 +316,8 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
     }
     
     @objc public func monthsConfigure() {
-        guard let viewModel = viewModel else { return }
-        let selectedPeriod = viewModel.selectedPeriod.value ?? Date()
+        guard let viewModel else { return }
+        let selectedPeriod = viewModel.selectedPeriod.value
         
         calendarStack.safelyRemoveArrangedSubviews()
         
@@ -351,7 +344,7 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
     }
     
     private func createMonthLabel(date: Date) -> UIView {
-        let currentTimeMlc = viewModel?.calendarOrg.value.currentTimeMlc
+        let currentTimeMlc = viewModel?.currentTimeMlc
         let now = Date()
         var isActive = calendar.isDate(date, equalTo: now, toGranularity: .month) || date > now
         if let minStr = currentTimeMlc?.minDate, let minDate = Constants.monthYearFormatter.date(from: minStr) {
@@ -381,16 +374,12 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
     //MARK: Setup calendar headers
     
     private func setupHeader() {
-        guard let viewModel = viewModel else { return }
+        guard let viewModel else { return }
         
-        let selectedPeriod = viewModel.selectedPeriod.value ?? Date()
+        let selectedPeriod = viewModel.selectedPeriod.value
         
-        if let currentTimeMlc = viewModel.calendarOrg.value.currentTimeMlc {
-            currentTimeMlcView.configure(for: currentTimeMlc)
-        } else {
-            let currentTime = selectedPeriod.monthStr.capitalized + " \(calendar.component(.year, from: selectedPeriod))"
-            currentTimeMlcView.configure(for: DSCurrentTimeMlc(label: currentTime))
-        }
+        let currentTime = selectedPeriod.monthStr.capitalized + " \(calendar.component(.year, from: selectedPeriod))"
+        currentTimeMlcView.configure(for: DSCurrentTimeMlc(label: currentTime))
         
         configureMonthButtons(viewModel, selectedPeriod)
         
@@ -408,15 +397,9 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
     
     private func setupYearHeader(for currentTime: DSCurrentTimeMlc? = nil) {
         guard let viewModel else { return }
-        let selectedPeriod: Date
-        if let period = viewModel.selectedPeriod.value {
-            selectedPeriod = period
-        } else if let minDate = viewModel.calendarOrg.value.currentTimeMlc?.minDate {
-            selectedPeriod = Constants.monthYearFormatter.date(from: minDate) ?? Date()
-        } else {
-            selectedPeriod = Date()
-        }
+        let selectedPeriod = viewModel.selectedPeriod.value
         self.stubMsgBoxView.isHidden = true
+        self.pagginationMsgView.isHidden = true
         
         let currentTime = "\(calendar.component(.year, from: selectedPeriod))"
         currentTimeMlcView.configure(for: DSCurrentTimeMlc(label: currentTime))
@@ -425,10 +408,10 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
     }
     
     private func configureYearButtons(_ viewModel: DSCalendarOrgViewModel, _ selectedPeriod: Date) {
-        let maxDateStr = viewModel.calendarOrg.value.currentTimeMlc?.maxDate ?? ""
+        let maxDateStr = viewModel.currentTimeMlc?.maxDate ?? ""
         let maxDateYear = Constants.monthYearFormatter.date(from: maxDateStr)?.year ?? (Date().year + 1)
         
-        let minDateStr = viewModel.calendarOrg.value.currentTimeMlc?.minDate ?? ""
+        let minDateStr = viewModel.currentTimeMlc?.minDate ?? ""
         let minDateYear = Constants.monthYearFormatter.date(from: minDateStr)?.year ?? Date().year
         
         let isBackAvailable = selectedPeriod.year > minDateYear
@@ -439,16 +422,16 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
     }
     
     private func configureMonthButtons(_ viewModel: DSCalendarOrgViewModel, _ selectedPeriod: Date) {
-        let maxDateStr = viewModel.calendarOrg.value.currentTimeMlc?.maxDate ?? ""
+        let maxDateStr = viewModel.currentTimeMlc?.maxDate ?? ""
         let maxDateMonth = Constants.monthYearFormatter.date(from: maxDateStr) ?? Date()
         
-        let minDateStr = viewModel.calendarOrg.value.currentTimeMlc?.minDate ?? ""
+        let minDateStr = viewModel.currentTimeMlc?.minDate ?? ""
         let minDateMonth = Constants.monthYearFormatter.date(from: minDateStr) ?? Date()
         
-        let isBackAvailable = selectedPeriod > minDateMonth
+        let isBackAvailable = selectedPeriod.year > minDateMonth.year || selectedPeriod.month > minDateMonth.month
         backBtn.isEnabled = isBackAvailable
         
-        let isNextAvailable = selectedPeriod < maxDateMonth
+        let isNextAvailable = selectedPeriod.year < maxDateMonth.year || selectedPeriod.month < maxDateMonth.month
         forwardBtn.isEnabled = isNextAvailable
     }
     
@@ -467,8 +450,8 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
     //MARK: Navigation month - year action
     
     private func changePeriod(reduce: Bool, for dateStr: String? = nil) {
-        guard let viewModel = viewModel else { return }
-        let selectPeriod = viewModel.selectedPeriod.value ?? Date()
+        guard let viewModel else { return }
+        let selectPeriod = viewModel.selectedPeriod.value
         viewModel.selectedDate.value = nil
         if calendarMode == .month, let date = dateStr {
             viewModel.selectedPeriod.value = Constants.monthYearFormatter.date(from: date) ?? selectPeriod

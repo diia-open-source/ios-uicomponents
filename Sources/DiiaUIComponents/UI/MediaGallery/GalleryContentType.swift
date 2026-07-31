@@ -35,7 +35,7 @@ public enum VideoPlayingState {
 public final class GalleryImageViewModel {
     var image: UIImage?
     let imageLink: String?
-    var actions: [Action] = []
+    public var actions: [Action] = []
 
     public init(imageLink: String?,
                 image: UIImage?

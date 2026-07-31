@@ -46,11 +46,14 @@ public final class DSCalendarItemOrgView: BaseCodeView {
         let tap = UITapGestureRecognizer(target: self, action: #selector(onTap))
         self.addGestureRecognizer(tap)
         self.isUserInteractionEnabled = true
+        setupAccessibility()
     }
     
     public func configure(for model: DSCalendarItemViewModel) {
         viewModel = model
         accessibilityIdentifier = Constants.componentId
+        accessibilityLabel = model.itemOrg?.calendarItemAtm?.label
+        accessibilityTraits = .button
         itemLabel.text = model.itemOrg?.calendarItemAtm?.label
         itemMark.isHidden = model.itemOrg?.legendType == nil || model.itemOrg?.legendType == .common
         
@@ -67,6 +70,7 @@ public final class DSCalendarItemOrgView: BaseCodeView {
     
     public func configure(for model: DSCalendarItemOrg) {
         accessibilityIdentifier = Constants.componentId
+        accessibilityLabel = model.calendarItemAtm?.label
         itemLabel.text = model.calendarItemAtm?.label
     }
     
@@ -78,10 +82,24 @@ public final class DSCalendarItemOrgView: BaseCodeView {
     
     public func changeSelected(isSelected: Bool = false) {
         let textColor: UIColor = viewModel?.itemOrg?.calendarItemAtm?.isActive ?? false ? .black : Constants.grayColor
+        if viewModel?.itemOrg?.calendarItemAtm?.isActive ?? false {
+            accessibilityTraits.remove(.notEnabled)
+        } else {
+            accessibilityTraits.insert(.notEnabled)
+        }
         itemLabel.backgroundColor = isSelected ? .black : .clear
         itemLabel.textColor = isSelected ? .white : textColor
         itemMark.backgroundColor = itemLabel.textColor
         viewModel?.onChange?(isSelected)
+        if isSelected {
+            accessibilityTraits.insert(.selected)
+        } else {
+            accessibilityTraits.remove(.selected)
+        }
+    }
+    
+    private func setupAccessibility() {
+        isAccessibilityElement = true
     }
 }
 

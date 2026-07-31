@@ -21,7 +21,6 @@ public final class DSDocumentHeadingView: BaseCodeView {
         hstack(stackView,
                ellipseButton,
                alignment: .bottom,
-               distribution: .fillProportionally,
                padding: Constants.padding)
         
         ellipseButton.withSize(Constants.buttonSize)

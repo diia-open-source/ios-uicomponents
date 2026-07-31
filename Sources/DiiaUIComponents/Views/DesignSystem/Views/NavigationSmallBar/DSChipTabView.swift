@@ -54,11 +54,8 @@ public final class DSChipItemView: BaseCodeView {
     
     public override func setupSubviews() {
         translatesAutoresizingMaskIntoConstraints = false
-        itemLabel.withParameters(font: FontBook.usualFont)
-        itemLabel.numberOfLines = 1
-        itemCounterLabel.withParameters(font: FontBook.usualFont)
-        itemCounterLabel.textColor = .white
-        itemCounterLabel.textAlignment = .center
+        itemLabel.withParameters(font: FontBook.usualFont, numberOfLines: 1, textAlignment: .center)
+        itemCounterLabel.withParameters(font: FontBook.tabBarTitle, textColor: .white, textAlignment: .center)
         itemNumContainer.backgroundColor = .black
         
         itemNumContainer.addSubview(itemCounterLabel)
@@ -68,7 +65,6 @@ public final class DSChipItemView: BaseCodeView {
         itemNumContainer.layer.cornerRadius = Constants.labelHeight/2.0
         
         itemCounterLabel.fillSuperview(padding: .allSides(Constants.labelPadding))
-        itemCounterLabel.font = FontBook.tabBarTitle
 
         addSubview(contentStackView)
         contentStackView.anchor(leading: leadingAnchor, trailing: trailingAnchor, padding: Constants.offset)
@@ -87,6 +83,8 @@ public final class DSChipItemView: BaseCodeView {
                 let itemsCount = numCount < 100 ? numCount.description : "99+"
                 self?.itemCounterLabel.text = itemsCount
                 self?.accessibilityValue = itemsCount
+            } else {
+                self?.accessibilityValue = nil
             }
             self?.layoutIfNeeded()
         }

@@ -1,17 +1,20 @@
 
 import UIKit
+import DiiaCommonTypes
 
 public struct DSEmptyStateMlc: Codable {
     public let componentId: String
     public let iconAtm: DSIconModel?
     public let title: String?
     public let text: String?
+    public let parameters: [TextParameter]?
     
-    public init(componentId: String, iconAtm: DSIconModel?, title: String?, text: String?) {
+    public init(componentId: String, iconAtm: DSIconModel?, title: String?, text: String?, parameters: [TextParameter]?) {
         self.componentId = componentId
         self.iconAtm = iconAtm
         self.title = title
         self.text = text
+        self.parameters = parameters
     }
 }
 
@@ -20,8 +23,9 @@ final public class DSEmptyStateView: BaseCodeView {
     private let mainStack = UIStackView.create(.vertical,spacing: Constants.smallSpacing, alignment: .center)
     private let iconLabelStack = UIStackView.create(.vertical,spacing: Constants.bigSpacing, alignment: .center)
     private let titleLabel = UILabel().withParameters(font: FontBook.mainFont.regular.size(Constants.fontSize), textColor: .black, textAlignment: .center)
-    private let textLabel = UILabel().withParameters(font: FontBook.usualFont, textColor: .black, textAlignment: .center)
+    private let textView = UITextView()
     private let iconView = DSIconView().withSize(Constants.iconSize)
+    private var urlOpener: URLOpenerProtocol?
     
     public override func setupSubviews() {
         addSubview(mainStack)
@@ -32,14 +36,18 @@ final public class DSEmptyStateView: BaseCodeView {
         ])
         mainStack.addArrangedSubviews([
             iconLabelStack,
-            textLabel
+            textView
         ])
+        textView.font = FontBook.usualFont
+        textView.configureForParametrizedText()
+        textView.delegate = self
         self.layer.cornerRadius = Constants.cornerRadius
         self.withBorder(width: Constants.borderWidth, color: Constants.borderColor)
     }
     
-    public func configure(with model: DSEmptyStateMlc) {
+    public func configure(with model: DSEmptyStateMlc, urlOpener: URLOpenerProtocol? = nil) {
         self.accessibilityIdentifier = model.componentId
+        self.urlOpener = urlOpener
         
         iconLabelStack.isHidden = model.iconAtm == nil && model.title == nil
         iconView.isHidden = model.iconAtm == nil
@@ -50,8 +58,20 @@ final public class DSEmptyStateView: BaseCodeView {
         titleLabel.isHidden = model.title == nil
         titleLabel.text = model.title
         
-        textLabel.isHidden = model.text == nil
-        textLabel.text = model.text
+        textView.isHidden = model.text == nil
+        if let text = model.text {
+            if let parameters = model.parameters, !parameters.isEmpty {
+                textView.attributedText = text.attributedTextWithParameters(parameters: parameters)
+            } else {
+                textView.text = text
+            }
+        }
+    }
+}
+
+extension DSEmptyStateView: UITextViewDelegate {
+    public func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+        return !(urlOpener?.url(urlString: URL.absoluteString, linkType: nil) ?? false)
     }
 }
 

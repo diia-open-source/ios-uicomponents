@@ -23,9 +23,9 @@ public enum DSTickerUsage: String, Codable, Equatable {
 
     var height: CGFloat {
         switch self {
-        case .document, .bodyOrg, .grand:
+        case .bodyOrg, .grand:
             return 32
-        case .stackedCard:
+        case .stackedCard, .document:
             return 24
         }
     }

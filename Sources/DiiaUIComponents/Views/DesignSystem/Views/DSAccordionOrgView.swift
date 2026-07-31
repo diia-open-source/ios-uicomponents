@@ -67,6 +67,7 @@ final public class DSAccordionOrgView: BaseCodeView {
         headingHStack.addArrangedSubviews([headingVLabelsVStack, accordionIcon])
         descriptionStack.addArrangedSubviews([descriptionIcon, descriptionLabel])
         
+        setupAccessibility()
         addTapGestureRecognizer()
     }
 
@@ -132,8 +133,10 @@ final public class DSAccordionOrgView: BaseCodeView {
         switch state {
         case .collapsed:
             code = model?.states.collapsedIcon?.code
+            accordionIcon.accessibilityValue = R.Strings.general_accessibility_accordion_closed.localized()
         case .expanded:
             code = model?.states.expandedIcon?.code
+            accordionIcon.accessibilityValue = R.Strings.general_accessibility_accordion_opened.localized()
         }
 
         accordionIcon.image = UIComponentsConfiguration
@@ -166,6 +169,11 @@ final public class DSAccordionOrgView: BaseCodeView {
     private func addTapGestureRecognizer() {
         let tap = UITapGestureRecognizer(target: self, action: #selector(onClick))
         headingHStack.addGestureRecognizer(tap)
+    }
+    
+    private func setupAccessibility() {
+        accordionIcon.isAccessibilityElement = true
+        accordionIcon.accessibilityTraits = .button
     }
 
     // MARK: - Actions

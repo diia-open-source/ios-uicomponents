@@ -118,7 +118,6 @@ public final class DSConstructorPaginationViewModel {
 }
 
 public final class DSConstructorPaginationView: BaseCodeView, DSConstructorPaginationViewDelegate, ScrollDependentComponentProtocol {
-    
     private let mainStack = UIStackView.create()
     private let itemsStack = DSVStackView()
     

@@ -70,8 +70,9 @@ public final class RoundedTabSelectionCell: BaseCollectionNibCell, NibLoadable {
         isSelectedState = viewModel.isSelected
         
         counterIconView.isHidden = viewModel.count ?? 0 == 0
-        if let count = viewModel.count {
+        if let count = viewModel.count, count != 0 {
             counterLabel.text = String(count)
+            containerView.accessibilityValue = R.Strings.general_accessibility_tab_selection_applied.formattedLocalized(arguments: count)
         }
         
         containerView.accessibilityLabel = viewModel.title

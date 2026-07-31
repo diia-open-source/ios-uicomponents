@@ -14,12 +14,14 @@ public final class StartServiceView: UIView {
         super.init(frame: frame)
         fromNib(bundle: Bundle.module)
         setup()
+        setupAccessibility()
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         fromNib(bundle: Bundle.module)
         setup()
+        setupAccessibility()
     }
     
     public override func awakeFromNib() {

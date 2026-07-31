@@ -89,13 +89,28 @@ public final class DSInputDateView: BaseCodeView, DSInputComponentProtocol {
         dateTextField.fillSuperview()
         datePickerTextField.fillSuperview()
 
-        titleLabel.anchor(top: topAnchor, leading: leadingAnchor, bottom: nil, trailing: trailingAnchor)
-        contentStack.anchor(top: titleLabel.bottomAnchor, leading: leadingAnchor, bottom: nil, trailing: trailingAnchor, padding: Constants.contentStackPadding)
-        bottomStack.anchor(top: contentStack.bottomAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor, padding: Constants.bottomStackPadding)
-
+        titleLabel.anchor(
+            top: topAnchor,
+            leading: leadingAnchor,
+            trailing: trailingAnchor
+        )
+        contentStack.anchor(
+            top: titleLabel.bottomAnchor,
+            leading: leadingAnchor,
+            trailing: trailingAnchor,
+            padding: Constants.contentStackPadding
+        )
+        bottomStack.anchor(
+            top: contentStack.bottomAnchor,
+            leading: leadingAnchor,
+            bottom: bottomAnchor,
+            trailing: trailingAnchor,
+            padding: Constants.bottomStackPadding
+        )
         calendarButton.setImage(
             R.image.calendar.image?.withRenderingMode(.alwaysOriginal),
-            for: .normal)
+            for: .normal
+        )
         calendarButton.addTarget(self, action: #selector(calendarClicked), for: .touchUpInside)
 
         setupUI()

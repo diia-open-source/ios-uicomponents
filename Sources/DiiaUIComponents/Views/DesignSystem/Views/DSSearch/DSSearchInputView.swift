@@ -10,7 +10,6 @@ public struct DSSearchModel: Codable {
 }
 
 public final class DSSearchInputView: BaseCodeView {
-    
     private var searchTextField = UITextField()
     private var clearSearchButton = UIButton()
     private var searchIcon = UIImageView(image: R.image.search_black.image, contentMode: .scaleAspectFit)
@@ -23,10 +22,10 @@ public final class DSSearchInputView: BaseCodeView {
     }
     private var customPlaceholder = ""
     
+    private(set) var searchTextViewModel: DSTextMlcViewModel?
+    
     public var searchText: String? {
-        get {
-            return searchTextField.text
-        }
+        return searchTextField.text
     }
     
     public override func setupSubviews() {
@@ -82,7 +81,14 @@ public final class DSSearchInputView: BaseCodeView {
         self.isActive = isActive
         self.clearCallback = closeCallback
         self.textChangeCallback = textChangeCallback
-        customPlaceholder = placeholder
+        self.customPlaceholder = placeholder
+        self.searchTextViewModel = DSTextMlcViewModel(
+            componentId: .empty,
+            text: .empty)
+        
+        searchTextViewModel?.text.observe(observer: self) { [weak self] value in
+            self?.searchTextField.text = value
+        }
     }
     
     public func toggleSearch(active: Bool) {

@@ -4,7 +4,6 @@ import DiiaCommonTypes
 
 /// design_system_code: inputTextMlcV2
 public final class TitledTextFieldViewV2: BaseCodeView, DSInputComponentProtocol {
-    
     public let textField = UITextField()
     
     private let titleLabel = UILabel().withParameters(font: FontBook.smallTitle)
@@ -92,7 +91,7 @@ public final class TitledTextFieldViewV2: BaseCodeView, DSInputComponentProtocol
         errorLabel.isHidden = true
         
         setupObserver()
-        updateInstructionsState()
+        updateInstructionsState(ignoringFocus: true)
     }
     
     public func validate() {
@@ -132,7 +131,7 @@ public final class TitledTextFieldViewV2: BaseCodeView, DSInputComponentProtocol
     
     @objc private func textFieldDidChangeValue(_ textField: UITextField) {
         let inputText = maskCleanedText()
-        clearSearchBox.isHidden = inputText.isEmpty
+        clearSearchBox.isHidden = inputText.isEmpty || viewModel?.fieldState.value.isFocused != true
         viewModel?.onChangeText?(inputText)
         if !errorLabel.isHidden {
             updateInstructionsState()
@@ -146,27 +145,25 @@ public final class TitledTextFieldViewV2: BaseCodeView, DSInputComponentProtocol
             guard let self = self else { return }
             self.textBlock.backgroundColor = .white
             self.textField.textColor = .black
+            self.clearSearchBox.isHidden = maskCleanedText().isEmpty || viewModel?.fieldState.value.isFocused != true
             switch textFieldState {
             case .focused:
                 self.titleLabel.textColor = .black
                 self.textBlock.withBorder(width: 1.0, color: .black, cornerRadius: Constants.inputCornerRadius)
                 self.instructionsLabel.isHidden = self.viewModel?.instructionsText?.isEmpty == true
                 self.errorLabel.isHidden = true
-                self.clearSearchBox.isHidden = textField.text?.isEmpty ?? true
             case .unfocused:
                 self.errorLabel.isHidden = self.errorLabel.text == nil
-                self.textBlock.withBorder(width: 1.0, color: .statusGray, cornerRadius: Constants.inputCornerRadius)
+                self.textBlock.withBorder(width: 1.0, color: Constants.disableBorderColor, cornerRadius: Constants.inputCornerRadius)
                 self.titleLabel.textColor = .black
                 self.instructionsLabel.isHidden = self.viewModel?.instructionsText?.isEmpty == true
                 self.errorLabel.isHidden = true
-                self.clearSearchBox.isHidden = true
             case .error(let focused):
                 let errorColor = errorLabel.textColor
                 self.titleLabel.textColor = errorColor
                 self.textBlock.withBorder(width: 1.0, color: errorColor ?? .red, cornerRadius: Constants.inputCornerRadius)
                 self.errorLabel.isHidden = false
                 self.instructionsLabel.isHidden = true
-                self.clearSearchBox.isHidden = !focused || textField.text?.isEmpty ?? true
             case .disabled:
                 self.textBlock.backgroundColor = #colorLiteral(red: 0.9411764706, green: 0.9529411765, blue: 0.968627451, alpha: 1)
                 self.titleLabel.textColor = Constants.disableColor
@@ -177,14 +174,15 @@ public final class TitledTextFieldViewV2: BaseCodeView, DSInputComponentProtocol
         }
     }
     
-    private func updateInstructionsState() {
+    private func updateInstructionsState(ignoringFocus: Bool = false) {
         let inputText = maskCleanedText()
         let errorText = error(for: inputText)
+        let isFocused = !ignoringFocus && !inputText.isEmpty
         errorLabel.text = errorText
         if errorText != nil {
-            self.viewModel?.fieldState.value = .error(focused: !inputText.isEmpty)
+            self.viewModel?.fieldState.value = .error(focused: isFocused)
         } else {
-            self.viewModel?.fieldState.value = inputText.isEmpty ? .unfocused : .focused
+            self.viewModel?.fieldState.value = isFocused ? .focused : .unfocused
         }
     }
     
@@ -264,5 +262,6 @@ extension TitledTextFieldViewV2 {
         static let textStackSpacing: CGFloat = 4
         static let disableColor = UIColor.black.withAlphaComponent(0.3)
         static let bottomViewPadding = UIEdgeInsets(top: 4, left: 16, bottom: .zero, right: 16)
+        static let disableBorderColor = UIColor(hex:0xC5D9E9)
     }
 }

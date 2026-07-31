@@ -15,17 +15,16 @@ public struct TableSecondaryHeadingViewModel {
 final class TableSecondaryHeadingView: BaseCodeView {
     private let label = UILabel().withParameters(font: FontBook.bigText, textColor: .black)
     private let headingButton = ActionButton(type: .icon)
+    private let leftIcon = UIImageView()
     private var viewModel: TableSecondaryHeadingViewModel?
     
     override func setupSubviews() {
         headingButton.tintColor = .black
         headingButton.isHidden = true
         headingButton.withSize(Constants.buttonSize)
+        leftIcon.withSize(Constants.buttonSize)
         
-        let stackView = UIStackView(arrangedSubviews: [label, headingButton])
-        stackView.axis = .horizontal
-        stackView.spacing = Constants.stackSpacing
-        stackView.alignment = .center
+        let stackView = UIStackView.create(.horizontal, views: [leftIcon, label, headingButton], spacing: Constants.stackSpacing, alignment: .center)
         
         addSubview(stackView)
         stackView.fillSuperview()
@@ -40,13 +39,19 @@ final class TableSecondaryHeadingView: BaseCodeView {
         label.text = viewModel.headingModel.label
         label.accessibilityLabel = viewModel.headingModel.label
         
+        let imageProvider = UIComponentsConfiguration.shared.imageProvider
+        
+        headingButton.isHidden = viewModel.headingModel.icon == nil
         if let iconModel = viewModel.headingModel.icon, let callback = viewModel.onClickAction {
-            let imageProvider = UIComponentsConfiguration.shared.imageProvider
             headingButton.accessibilityLabel = iconModel.accessibilityDescription
             headingButton.action = Action(iconName: imageProvider.imageNameForCode(imageCode: iconModel.code),
                                           callback: callback)
         }
-        headingButton.isHidden = viewModel.headingModel.icon == nil
+        leftIcon.isHidden = viewModel.headingModel.iconLeft == nil
+        if let iconModel = viewModel.headingModel.iconLeft {
+            leftIcon.accessibilityLabel = iconModel.accessibilityDescription
+            leftIcon.image = imageProvider.imageForCode(imageCode: iconModel.code)
+        }
     }
     
     private func setupAccessibility() {

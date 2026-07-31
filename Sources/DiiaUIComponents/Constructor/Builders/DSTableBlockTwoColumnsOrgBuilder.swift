@@ -44,6 +44,7 @@ extension DSTableBlockTwoColumnsOrgBuilder: DSViewMockableBuilderProtocol {
             )],
             headingWithSubtitlesMlc: DSHeadingWithSubtitlesModel(
                 value: "value",
+                uppercaseValue: "UPPERCASE VALUE",
                 subtitles: ["subtitle1", "subtitle2"],
                 componentId: "componentId"
             ),

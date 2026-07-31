@@ -122,7 +122,7 @@ extension HorizontalPhotoCollectionView: MediaGalleryDataSource, MediaGalleryDel
         case .image(let url, _):
             let vm = GalleryImageViewModel(imageLink: url, image: nil)
             vm.actions = [
-                .init(title: nil, image: R.image.close.image, callback: { [weak self] in
+                .init(title: nil, image: R.image.close.image, accessibilityDescription: R.Strings.general_close.localized(), callback: { [weak self] in
                     self?.swiftGallery?.dismiss(animated: true)
                     self?.swiftGallery = nil
                 })
@@ -131,7 +131,7 @@ extension HorizontalPhotoCollectionView: MediaGalleryDataSource, MediaGalleryDel
         case .video(let url, _, _):
             let vm = GalleryVideoViewModel(streamLink: nil, downloadLink: url)
             vm.actions = [
-                .init(title: nil, image: R.image.close.image, callback: { [weak self] in
+                .init(title: nil, image: R.image.close.image, accessibilityDescription: R.Strings.general_close.localized(), callback: { [weak self] in
                     self?.swiftGallery?.dismiss(animated: true)
                     self?.swiftGallery = nil
                 })

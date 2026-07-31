@@ -145,6 +145,8 @@ final public class TransparentInfoCardMlcView: BaseCodeView {
             chipStatusView.configure(for: chipStatusAtm)
         }
         label.text = model.label
+        label.accessibilityLabel = model.label
+        
         rowsStack.safelyRemoveArrangedSubviews()
         rowsStack.addArrangedSubview(label)
         for row in model.rows ?? [] {
@@ -188,6 +190,8 @@ final public class TransparentInfoCardMlcView: BaseCodeView {
                         [.strikethroughStyle: NSUnderlineStyle.single.rawValue],
                         range: NSRange(location: 0, length: attributed.length)
                     )
+                    
+                    leftBottomAdditionalLabel.accessibilityLabel = R.Strings.general_accessibility_strike_through.formattedLocalized(arguments: bottomLeftAdditionalText)
                 }
 
                 leftBottomAdditionalLabel.attributedText = mutable
@@ -200,6 +204,8 @@ final public class TransparentInfoCardMlcView: BaseCodeView {
 
         descriptionLabel.isHidden = model.description == nil
         descriptionLabel.text = model.description
+        
+        setupAccessibility()
     }
     
     private func createRow(_ row: TransparentInfoCardMlcModel.RowModel) -> UIView {
@@ -212,10 +218,15 @@ final public class TransparentInfoCardMlcView: BaseCodeView {
         icon.withSize(Constants.rowImageSize)
         icon.isHidden = row.iconLeft == nil
         if let action = row.iconLeft?.action {
+            icon.accessibilityTraits.insert(.button)
             icon.tapGestureRecognizer { [weak self] in
                 self?.eventHandler?(.action(action))
             }
         }
+        
+        titleLabel.isAccessibilityElement = true
+        descriptionLabel.isAccessibilityElement = true
+        icon.isAccessibilityElement = true
         
         return UIStackView.create(
             .horizontal,
@@ -232,6 +243,27 @@ final public class TransparentInfoCardMlcView: BaseCodeView {
             spacing: Constants.rowHorizontalSpacing,
             alignment: .top
         )
+    }
+    
+    private func setupAccessibility() {
+        isAccessibilityElement = false
+        
+        label.isAccessibilityElement = true
+        descriptionLabel.isAccessibilityElement = true
+        leftBottomLabel.isAccessibilityElement = true
+        leftBottomAdditionalLabel.isAccessibilityElement = true
+        rightBottomLabel.isAccessibilityElement = true
+        rightBottomIcon.isAccessibilityElement = true
+        rightBottomIcon.accessibilityTraits = .button
+        
+        accessibilityElements = [chipStatusView,
+                                 label,
+                                 rowsStack.arrangedSubviews,
+                                 leftBottomLabel,
+                                 leftBottomAdditionalLabel,
+                                 rightBottomLabel,
+                                 rightBottomIcon,
+                                 descriptionLabel]
     }
 }
 

@@ -42,12 +42,13 @@ public struct DSInputPhoneCodeModelV2: Codable {
 
 /// design_system_code: inputPhoneCodeOrgV2
 public final class InputPhoneCodeViewV2: BaseCodeView, DSInputComponentProtocol {
-    
     // MARK: - Subviews
-    private let titleLabel = UILabel().withParameters(font: FontBook.statusFont)
+    private let titleLabel = UILabel().withParameters(font: FontBook.statusFont, numberOfLines: 1, lineBreakMode: .byTruncatingTail)
     private let phoneCodeSelectorView = PhoneCodeSelectorViewV2().withWidth(Constants.phoneCodeViewWidth)
     private let textField = UITextField()
-    private let hintLabel = UILabel().withParameters(font: FontBook.statusFont, textColor: .halfBlack)
+    private let hintLabel = UILabel().withParameters(font: FontBook.statusFont,
+                                                     textColor: .halfBlack,
+                                                     numberOfLines: Constants.hintLines)
     private let errorLabel = UILabel().withParameters(font: FontBook.statusFont, textColor: Constants.errorColor)
     private let clearSearchBox: BoxView<UIButton> = BoxView(subview: UIButton()).withConstraints(size: Constants.clearButtonSize,
                                                                                                  centeredY: true)
@@ -105,9 +106,11 @@ public final class InputPhoneCodeViewV2: BaseCodeView, DSInputComponentProtocol 
             hintLabel.text = hint
         }
         
-        viewModel.currentPhoneCode.observe(observer: self) { [weak self] _ in
+        viewModel.currentPhoneCode.observe(observer: self, triggerNow: false) { [weak self] _ in
             self?.updateView()
         }
+        updateView(needStatesUpdate: false)
+        updateInstructionsState(ignoringFocus: true)
         
         self.viewModel?.fieldState.observe(observer: self) { [weak self] textFieldState in
             guard let self = self else { return }
@@ -132,7 +135,7 @@ public final class InputPhoneCodeViewV2: BaseCodeView, DSInputComponentProtocol 
                 self.clearSearchBox.isHidden = textField.text?.isEmpty ?? true
             case .unfocused:
                 self.textStackBox.withBorder(width: 1.0,
-                                             color: .statusGray,
+                                             color: Constants.disableBorderColor,
                                              cornerRadius: Constants.cornerRadius)
                 self.titleLabel.textColor = .black
                 self.hintLabel.isHidden = self.viewModel?.hint?.isEmpty == true
@@ -150,7 +153,7 @@ public final class InputPhoneCodeViewV2: BaseCodeView, DSInputComponentProtocol 
     }
     
     // MARK: - Private Methods
-    private func updateView() {
+    private func updateView(needStatesUpdate: Bool = true) {
         guard let mainViewModel = viewModel, let currentPhoneCode = mainViewModel.currentPhoneCode.value else { return }
         
         mainViewModel.validators = currentPhoneCode.validation?.map { .init(validationModel: $0) } ?? []
@@ -175,7 +178,7 @@ public final class InputPhoneCodeViewV2: BaseCodeView, DSInputComponentProtocol 
                                                              isEditable: mainViewModel.codeValueIsEditable)
         phoneCodeSelectorView.configure(with: selectorViewModel)
         
-        onEndEditing(text: value ?? .empty)
+        if needStatesUpdate { updateInstructionsState() }
     }
     
     @objc private func textFieldDidTapValue() {
@@ -197,21 +200,20 @@ public final class InputPhoneCodeViewV2: BaseCodeView, DSInputComponentProtocol 
         viewModel?.fieldState.value = .focused
     }
     
-    private func updateInstructionsState() {
+    private func updateInstructionsState(ignoringFocus: Bool = false) {
         let inputText = textField.text ?? .empty
         let errorText = error(for: inputText)
+        let isFocused = !ignoringFocus && !inputText.isEmpty
         errorLabel.text = errorText
         if errorText != nil {
-            self.viewModel?.fieldState.value = .error(focused: !inputText.isEmpty)
+            self.viewModel?.fieldState.value = .error(focused: isFocused)
         } else {
-            self.viewModel?.fieldState.value = inputText.isEmpty ? .unfocused : .focused
+            self.viewModel?.fieldState.value = isFocused ? .focused : .unfocused
         }
     }
     
     private func error(for text: String) -> String? {
-        guard let viewModel = viewModel,
-              let phoneCode = viewModel.currentPhoneCode.value?.value
-        else { return nil }
+        guard let viewModel, let phoneCode = viewModel.currentPhoneCode.value?.value else { return nil }
         
         let phone = (phoneCode + text).withoutSpaces
         guard !text.isEmpty else { return nil }
@@ -237,31 +239,25 @@ public final class InputPhoneCodeViewV2: BaseCodeView, DSInputComponentProtocol 
     
     // MARK: - Actions
     @objc private func onTappedAction() {
-        guard let viewModel = viewModel, viewModel.codeValueIsEditable else { return }
+        guard let viewModel, viewModel.codeValueIsEditable else { return }
         viewModel.eventHandler(.phoneCodeAction(viewModel: viewModel))
     }
     
     private func onChange(text: String) {
-        guard let viewModel = viewModel,
-              let phoneCode = viewModel.currentPhoneCode.value?.value
-        else { return }
+        guard let viewModel,
+              let phoneCode = viewModel.currentPhoneCode.value?.value else { return }
         
         viewModel.value = text
+        clearSearchBox.isHidden = text.isEmpty
+        
+        if !errorLabel.isHidden {
+            updateInstructionsState()
+        }
         
         let phone = (phoneCode + text).digits
         viewModel.eventHandler(.inputChanged(
             .init(inputCode: viewModel.inputCode, inputData: .string(phone))
         ))
-    }
-    
-    private func onEndEditing(text: String) {
-        let errorText = error(for: text)
-        errorLabel.text = errorText
-        if errorText != nil {
-            self.viewModel?.fieldState.value = .error(focused: true)
-        } else {
-            self.viewModel?.fieldState.value = text.isEmpty ? .unfocused : .focused
-        }
     }
 
     // MARK: - DSInputComponentProtocol
@@ -287,7 +283,6 @@ public final class InputPhoneCodeViewV2: BaseCodeView, DSInputComponentProtocol 
 }
 
 extension InputPhoneCodeViewV2: UITextFieldDelegate {
-    
     public func textFieldDidBeginEditing(_ textField: UITextField) {
         self.viewModel?.fieldState.value = errorLabel.text == nil ? .focused : .error(focused: true)
     }
@@ -317,11 +312,13 @@ private extension InputPhoneCodeViewV2 {
         static let phoneCodeSpacing: CGFloat = 12
         static let stackSpacing: CGFloat = 8
         static let smallSpacing: CGFloat = 4
+        static let hintLines: Int = 2
         static let bottomPadding = UIEdgeInsets(top: .zero, left: 16, bottom: .zero, right: 16)
         static let clearButtonSize = CGSize(width: 24, height: 24)
         static let contentPadding = UIEdgeInsets(top: 12, left: 16, bottom: 12, right: 16)
         static let errorColor = UIColor(AppConstants.Colors.persianRed)
         static let disableColor = UIColor.black.withAlphaComponent(0.3)
+        static let disableBorderColor = UIColor(hex:0xC5D9E9)
         static let disabledBackgroundColor: UIColor = #colorLiteral(red: 0.9411764706, green: 0.9529411765, blue: 0.968627451, alpha: 1)
         static let inputCode = "inputPhoneCodeV2"
     }

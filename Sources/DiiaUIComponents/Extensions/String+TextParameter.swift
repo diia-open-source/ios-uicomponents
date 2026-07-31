@@ -43,7 +43,7 @@ public extension String {
             guard Range(range, in: attributedText.string) != nil else { continue }
             attributedText.replaceCharacters(in: range, with: parameter.data.alt)
             let replacedRange = NSRange(location: range.location, length: parameter.data.alt.count)
-
+            
             switch parameter.type {
             case .link:
                 if let link = parameter.data.resource.percentEncodedUrl(), !link.isEmpty {

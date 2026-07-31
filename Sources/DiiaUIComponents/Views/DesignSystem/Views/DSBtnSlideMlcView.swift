@@ -85,15 +85,18 @@ final public class DSBtnSlideMlcView: BaseCodeView {
         imageView.centerXAnchor.constraint(equalTo: imageContainer.centerXAnchor).isActive = true
 
         addGesture()
+        setupAccessibility()
     }
 
     // MARK: - Public Methods
     public func configure(with model: DSBtnSlideMlcModel, eventHandler: @escaping (ConstructorItemEvent) -> Void) {
         self.model = model
         self.eventHandler = eventHandler
+        accessibilityIdentifier = model.componentId
         
         self.titleLabel.text = model.label
-
+        self.titleLabel.accessibilityLabel = model.label
+        
         self.imageContainer.isHidden = model.icon == nil
         if let iconModel = model.icon {
             self.imageView.image = UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: iconModel.code)
@@ -108,10 +111,17 @@ final public class DSBtnSlideMlcView: BaseCodeView {
 
     // MARK: - Private Methods
     private func addGesture() {
-        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan))
-        panGesture.delaysTouchesBegan = false
-        panGesture.cancelsTouchesInView = false
-        knobView.addGestureRecognizer(panGesture)
+        if UIAccessibility.isVoiceOverRunning {
+            knobView.tapGestureRecognizer { [weak self] in
+                guard let action = self?.model?.action else { return }
+                self?.eventHandler?(.action(action))
+            }
+        } else {
+            let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan))
+            panGesture.delaysTouchesBegan = false
+            panGesture.cancelsTouchesInView = false
+            knobView.addGestureRecognizer(panGesture)
+        }
     }
 
     private func setTitleLabelColorAnimated(_ color: UIColor, duration: TimeInterval) {
@@ -126,6 +136,16 @@ final public class DSBtnSlideMlcView: BaseCodeView {
         }
 
         CATransaction.commit()
+    }
+    
+    private func setupAccessibility() {
+        knobView.isAccessibilityElement = true
+        knobView.accessibilityTraits = .button
+        
+        titleLabel.isAccessibilityElement = true
+        titleLabel.accessibilityTraits = .staticText
+        
+        accessibilityElements = [titleLabel, knobView]
     }
 
     // MARK: - Actions

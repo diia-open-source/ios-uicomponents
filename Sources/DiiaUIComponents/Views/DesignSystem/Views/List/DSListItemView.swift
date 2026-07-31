@@ -248,12 +248,20 @@ public final class DSListItemView: BaseCodeView {
     
     private func setupAccessibility() {
         isAccessibilityElement = true
+        
         if let accessibilityDescription = viewModel?.accessibilityDescription {
             accessibilityLabel = accessibilityDescription
-        } else {
+            accessibilityTraits = (viewModel?.onClick != nil) ? .button : .staticText
+        } else if viewModel?.details != nil, viewModel?.detailsParameters != nil {
+            isAccessibilityElement = false
+            
+            titleLabel.isAccessibilityElement = true
+            titleLabel.accessibilityTraits = .header
+            detailsTextView.isAccessibilityElement = true
+        }  else {
             accessibilityLabel = "\(viewModel?.title ?? "") \(viewModel?.details ?? "") \(viewModel?.amountAtm?.value ?? ""). \(viewModel?.chipStatusAtm?.name ?? "")"
+            accessibilityTraits = (viewModel?.onClick != nil) ? .button : .staticText
         }
-        accessibilityTraits = (viewModel?.onClick != nil) ? .button : .staticText
     }
     
     @objc private func onClick() {

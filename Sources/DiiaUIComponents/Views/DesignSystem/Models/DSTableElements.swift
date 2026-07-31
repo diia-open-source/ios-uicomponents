@@ -21,6 +21,7 @@ public struct DSTableBlockItemModel: Codable, Equatable {
 
 public struct DSTableHeadingItemModel: Codable, Equatable {
     public let label: String
+    public let iconLeft: DSIconModel?
     public let icon: DSIconModel?
     public let componentId: String?
     public let description: String?
@@ -28,11 +29,14 @@ public struct DSTableHeadingItemModel: Codable, Equatable {
     
     public init(
         label: String,
+        iconLeft: DSIconModel? = nil,
         icon: DSIconModel? = nil,
         componentId: String? = nil,
         description: String? = nil,
-        parameters: [TextParameter]? = nil) {
+        parameters: [TextParameter]? = nil
+    ) {
         self.label = label
+        self.iconLeft = iconLeft
         self.icon = icon
         self.componentId = componentId
         self.description = description
@@ -329,12 +333,14 @@ public struct DSPhotoItemModel: Codable {
 }
 
 public struct DSHeadingWithSubtitlesModel: Codable, Equatable {
-    public let value: String
+    public let value: String?
+    public let uppercaseValue: String?
     public let subtitles: [String]?
     public let componentId: String?
     
-    public init(value: String, subtitles: [String]?, componentId: String? = nil) {
+    public init(value: String?, uppercaseValue: String? = nil, subtitles: [String]?, componentId: String? = nil) {
         self.value = value
+        self.uppercaseValue = uppercaseValue
         self.subtitles = subtitles
         self.componentId = componentId
     }

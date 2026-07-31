@@ -12,11 +12,13 @@ enum R {
         case general_accessibility_copy_button
         case general_accessibility_button_selected
         case general_accessibility_button_not_selected
+        case general_accessibility_strike_through
         case document_accessibility_doc_photo
         case document_accessibility_signature_photo
         
         case accessibility_photo_url
         case general_accessibility_filters_applied
+        case general_accessibility_tab_selection_applied
         case general_accessibility_text_field_clear_button
         case pdr_penalty_accessibility_video
         case general_accessibility_radio_button_selected
@@ -31,6 +33,7 @@ enum R {
         case general_loading
         case general_retry
         case general_close
+        case general_cancel
         case general_number_copied
         case general_date_picker_hint
         case general_time_picker_hint
@@ -46,6 +49,14 @@ enum R {
 
         // MARK: - Pagination
         case pagination_error_text
+        
+        // MARK: - QrShareLink
+        case general_refresh_link_title
+        case general_refresh_link_subtitle
+        case general_refresh_link_error_title
+        case general_refresh_qr_title
+        case general_refresh_qr_subtitle
+        case general_refresh_qr_error_title
         
         func localized() -> String {
             let localized = NSLocalizedString(rawValue, bundle: Bundle.module, comment: "")

@@ -22,7 +22,12 @@ public final class ParameterizedAttentionView: BaseCodeView {
     private var descriptionTextView: UITextView = UITextView()
     private var titleLabel: UILabel = UILabel().withParameters(font: FontBook.bigText)
     private var emojiLabel: UILabel = UILabel().withParameters(font: FontBook.bigEmoji)
+    private var accessibilityLinksStackView: UIStackView = UIStackView.create(.vertical, spacing: Constants.accessibilityLinksSpacing, distribution: .equalSpacing)
     private var urlOpener: URLOpenerProtocol?
+    
+    private var isVoiceOverRunning: Bool {
+        return UIAccessibility.isVoiceOverRunning
+    }
     
     // MARK: - LifeCycle
     public override func setupSubviews() {
@@ -63,7 +68,7 @@ public final class ParameterizedAttentionView: BaseCodeView {
         descriptionTextView.textContainer.lineFragmentPadding = .zero
         descriptionTextView.delegate = self
         
-        let stackView = UIStackView(arrangedSubviews: [titleLabel, descriptionTextView])
+        let stackView = UIStackView(arrangedSubviews: [titleLabel, descriptionTextView, accessibilityLinksStackView])
         stackView.axis = .vertical
         stackView.distribution = .equalSpacing
         stackView.spacing = 2
@@ -90,7 +95,16 @@ public final class ParameterizedAttentionView: BaseCodeView {
         titleLabel.isHidden = attentionMessage.title?.count ?? 0 == 0
         descriptionTextView.isHidden = attentionMessage.text?.count ?? 0 == 0
         
-        accessibilityLabel = attentionMessage.icon + (attentionMessage.title ?? "") + (attentionMessage.text ?? "")
+        accessibilityLinksStackView.isHidden = (attentionMessage.parameters ?? []).isEmpty || !isVoiceOverRunning
+        
+        if let parameters = attentionMessage.parameters, !parameters.isEmpty {
+            isAccessibilityElement = false
+            addAccessibilityLinks(in: accessibilityLinksStackView, for: attentionMessage)
+            titleLabel.accessibilityLabel = attentionMessage.title
+        } else {
+            isAccessibilityElement = true
+            accessibilityLabel = [attentionMessage.title, attentionMessage.text].compactMap({ $0 }).joined(separator: ",")
+        }
         
         setNeedsLayout()
         layoutIfNeeded()
@@ -98,8 +112,57 @@ public final class ParameterizedAttentionView: BaseCodeView {
     
     // MARK: - Accessibility
     private func setupAccessibility() {
-        isAccessibilityElement = true
         accessibilityTraits = .staticText
+        
+        emojiLabel.isAccessibilityElement = false
+        
+        titleLabel.isAccessibilityElement = true
+        titleLabel.accessibilityTraits = .staticText
+        
+        descriptionTextView.isAccessibilityElement = true
+    }
+
+    private func addAccessibilityLinks(in stackView: UIStackView, for attentionMessage: ParameterizedAttentionMessage) {
+        guard isVoiceOverRunning, let parameters = attentionMessage.parameters, !parameters.isEmpty else { return }
+        
+        stackView.safelyRemoveArrangedSubviews()
+
+        for parameter in parameters {
+            let textView = UITextView()
+            textView.configureForParametrizedText()
+            textView.delegate = self
+            textView.accessibilityTraits = .link
+            textView.attributedText = accessibilityLink(for: parameter)
+            
+            stackView.addArrangedSubview(textView)
+        }
+    }
+    
+    private func accessibilityLink(for parameter: TextParameter) -> NSAttributedString {
+        let text = parameter.data.alt
+        let attributedText = NSMutableAttributedString(
+            string: text,
+            attributes: [
+                .font: FontBook.usualFont,
+                .foregroundColor: UIColor.black,
+            ]
+        )
+        
+        switch parameter.type {
+        case .link:
+            if let link = parameter.data.resource.percentEncodedUrl(), !link.isEmpty {
+                attributedText.addAttribute(.link, value: link, range: .init(location: 0, length: text.utf16.count))
+            }
+        case .phone:
+            let phoneLink = "tel:" + parameter.data.resource.filter { $0.isNumber || $0 == "+" }
+            attributedText.addAttribute(.link, value: phoneLink, range: .init(location: 0, length: text.utf16.count))
+        case .email:
+            if parameter.data.resource.isValidEmail {
+                let email = "mailto:\(parameter.data.resource)"
+                attributedText.addAttribute(.link, value: email, range: .init(location: 0, length: text.utf16.count))
+            }
+        }
+        return attributedText
     }
 }
 
@@ -123,5 +186,6 @@ private extension ParameterizedAttentionView {
         static let titleLineHeight: CGFloat = 24
         static let descriptionLineHeight: CGFloat = 18
         static let stackViewInsets: UIEdgeInsets = .init(top: 16, left: 10, bottom: 16, right: 16)
+        static let accessibilityLinksSpacing: CGFloat = 2
     }
 }

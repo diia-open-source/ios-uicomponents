@@ -16,7 +16,7 @@ public final class DSCardMlcV2ViewModel {
     public let smallIconAtmStates: [DSSmallIconAtmState]
     public let attentionIconMessageMlc: DSAttentionIconMessageMlc?
     public let action: DSActionParameter?
-
+    public let iconTexts: [DSIconTextModel]?
     public var onTap: ((DSActionParameter?) -> Void)?
 
     public var currentStateIconModel: DSIconModel? {
@@ -30,6 +30,7 @@ public final class DSCardMlcV2ViewModel {
                 descriptions: [String]?,
                 rows: [String]?,
                 chips: [DSCardStatusChipMlc]?,
+                iconTexts: [DSIconTextModel]?,
                 iconUrlAtm: DSIconUrlAtmModel?,
                 smallIconAtm: DSIconModel?,
                 smallIconAtmWithStates: DSSmallIconAtmWithStatesModel?,
@@ -43,6 +44,7 @@ public final class DSCardMlcV2ViewModel {
         self.rows = rows
         self.chips = chips
         self.iconUrlAtm = iconUrlAtm
+        self.iconTexts = iconTexts
         self.smallIconAtm = smallIconAtm
         self.attentionIconMessageMlc = attentionIconMessageMlc
         self.action = action
@@ -63,6 +65,7 @@ public final class DSCardMlcV2ViewModel {
         self.descriptions = model.descriptions
         self.rows = model.rows
         self.chips = model.chips
+        self.iconTexts = model.iconTexts
         self.iconUrlAtm = model.iconUrlAtm
         self.smallIconAtm = model.smallIconAtm
         self.attentionIconMessageMlc = model.attentionIconMessageMlc
@@ -86,6 +89,7 @@ public struct DSCardMlcV2Model: Codable {
     public let rows: [String]?
     public let chips: [DSCardStatusChipMlc]?
     public let iconUrlAtm: DSIconUrlAtmModel?
+    public let iconTexts: [DSIconTextModel]?
     public let smallIconAtm: DSIconModel?
     public let smallIconAtmWithStates: DSSmallIconAtmWithStatesModel?
     public let attentionIconMessageMlc: DSAttentionIconMessageMlc?
@@ -98,6 +102,7 @@ public struct DSCardMlcV2Model: Codable {
                 descriptions: [String]?,
                 rows: [String]?,
                 chips: [DSCardStatusChipMlc]?,
+                iconTexts: [DSIconTextModel]?,
                 iconUrlAtm: DSIconUrlAtmModel?,
                 smallIconAtm: DSIconModel?,
                 smallIconAtmWithStates: DSSmallIconAtmWithStatesModel?,
@@ -110,6 +115,7 @@ public struct DSCardMlcV2Model: Codable {
         self.descriptions = descriptions
         self.rows = rows
         self.chips = chips
+        self.iconTexts = iconTexts
         self.iconUrlAtm = iconUrlAtm
         self.smallIconAtm = smallIconAtm
         self.smallIconAtmWithStates = smallIconAtmWithStates
@@ -124,4 +130,9 @@ public struct DSCardStatusChipMlc: Codable {
     public init(chipStatusAtm: DSCardStatusChipModel) {
         self.chipStatusAtm = chipStatusAtm
     }
+}
+
+public struct DSIconTextModel: Codable {
+    public let iconLeft: DSIconModel?
+    public let text: String
 }

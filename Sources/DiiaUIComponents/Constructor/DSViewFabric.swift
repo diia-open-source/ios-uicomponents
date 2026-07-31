@@ -306,6 +306,9 @@ public extension DSViewFabric {
         TransparentInfoCardMlcBuilder(),
         ControlsContainerOrgBuilder(),
         DSMediaGroupOrgBuilder(),
+        DropdownWithInputsBuilder(),
+        DSPhotoUploadMlcBuilder(),
+        DSTableHeadingWithTextMlcBuilder(),
         CardProgressMlcBuilder()
     ]
 }

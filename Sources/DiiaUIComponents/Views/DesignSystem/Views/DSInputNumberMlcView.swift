@@ -67,7 +67,7 @@ public final class DSInputNumberMlcViewModel {
     public let placeholder: String?
     public let hint: String?
     public let mask: String?
-    public let value: String?
+    public let value: Observable<String?>
     public let maxValue: Double?
     public let minValue: Double?
     public let maxCount: Int?
@@ -102,7 +102,7 @@ public final class DSInputNumberMlcViewModel {
         self.placeholder = placeholder
         self.hint = hint
         self.mask = mask
-        self.value = value
+        self.value = Observable<String?>(value: value)
         self.maxValue = maxValue
         self.minValue = minValue
         self.maxCount = maxCount
@@ -237,11 +237,11 @@ final class DSInputNumberMlcView: BaseCodeView {
         lastNotifiedDigits = nil
         currentDigits = nil
         
-        if let value = viewModel.value {
-            applyMask(value)
-            notifyInputChanged(digits: currentDigits)
-        } else {
-            textField.text = nil
+        viewModel.value.removeObserver(observer: self)
+        viewModel.value.observe(observer: self) { [weak self] value in
+            guard let self else { return }
+            self.applyMask(value)
+            self.notifyInputChanged(digits: self.currentDigits)
         }
         
         rightIcon.isHidden = viewModel.iconRight == nil
@@ -546,7 +546,7 @@ private extension DSInputNumberMlcView {
         static let borderFocus = UIColor.black
         
         static let errorColor = UIColor.red
-        static let hintColor = UIColor.black.withAlphaComponent(54)
+        static let hintColor = UIColor.black.withAlphaComponent(0.54)
         static let disabledAlpha: CGFloat = 0.3
         static let defaultAlpha: CGFloat = 1
         static let animation: TimeInterval = 0.15

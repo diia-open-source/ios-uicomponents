@@ -144,12 +144,13 @@ public final class DSInputPhoneCodeView: BaseCodeView, DSInputComponentProtocol 
             hintLabel.text = hint
         }
         
-        viewModel.currentPhoneCode.observe(observer: self) { [weak self] _ in
+        viewModel.currentPhoneCode.observe(observer: self, triggerNow: false) { [weak self] _ in
             self?.updateView()
         }
+        updateView(needStatesUpdate: false)
         
         self.viewModel?.fieldState.observe(observer: self) { [weak self] textFieldState in
-            guard let self = self else { return }
+            guard let self else { return }
             switch textFieldState {
             case .error:
                 self.titleLabel.textColor = Constants.errorColor
@@ -175,7 +176,7 @@ public final class DSInputPhoneCodeView: BaseCodeView, DSInputComponentProtocol 
     }
     
     // MARK: - Private Methods
-    private func updateView() {
+    private func updateView(needStatesUpdate: Bool = true) {
         guard let mainViewModel = viewModel, let currentPhoneCode = mainViewModel.currentPhoneCode.value else { return }
         
         mainViewModel.validators = currentPhoneCode.validation?.map { .init(validationModel: $0) } ?? []
@@ -200,7 +201,7 @@ public final class DSInputPhoneCodeView: BaseCodeView, DSInputComponentProtocol 
                                                              isEditable: mainViewModel.codeValueIsEditable)
         phoneCodeSelectorView.configure(with: selectorViewModel)
         
-        onEndEditing(text: value ?? .empty)
+        if needStatesUpdate { onEndEditing(text: value ?? .empty) }
     }
     
     private func setupAccessibility() {
@@ -232,14 +233,15 @@ public final class DSInputPhoneCodeView: BaseCodeView, DSInputComponentProtocol 
         }
     }
     
-    private func updateInstructionsState() {
+    private func updateInstructionsState(ignoringFocus: Bool = false) {
         let inputText = textField.text ?? .empty
         let errorText = error(for: inputText)
+        let isFocused = !ignoringFocus && !inputText.isEmpty
         errorLabel.text = errorText
         if errorText != nil {
-            self.viewModel?.fieldState.value = .error(focused: !inputText.isEmpty)
+            self.viewModel?.fieldState.value = .error(focused: isFocused)
         } else {
-            self.viewModel?.fieldState.value = inputText.isEmpty ? .unfocused : .focused
+            self.viewModel?.fieldState.value = isFocused ? .focused : .unfocused
         }
     }
     
@@ -276,6 +278,10 @@ public final class DSInputPhoneCodeView: BaseCodeView, DSInputComponentProtocol 
         else { return }
         
         viewModel.value = text
+        
+        if !errorLabel.isHidden {
+            updateInstructionsState()
+        }
         
         let phone = (phoneCode + text).digits
         viewModel.eventHandler(.inputChanged(

@@ -17,7 +17,7 @@ struct DSPaymentInfoV2Builder: DSViewBuilderProtocol {
             view.setFabric(viewFabric)
         }
 
-        let insets = padding.defaultPadding(object: object, modelKey: modelKey)
+        let insets = padding.defaultPaddingV2(object: object, modelKey: modelKey)
         let paddingBox = BoxView(subview: view).withConstraints(insets: insets)
         return paddingBox
     }

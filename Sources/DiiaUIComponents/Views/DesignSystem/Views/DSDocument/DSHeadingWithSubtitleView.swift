@@ -15,13 +15,18 @@ public final class DSHeadingWithSubtitleView: BaseCodeView {
         return label
     }()
     
+    private var uppercaseLabel: UILabel = UILabel().withParameters(
+        font: FontBook.docHeadingFont,
+        numberOfLines: Constants.headerNumberOfLines
+    )
+    
     private var stackView: UIStackView = UIStackView.create(spacing: Constants.stackSpacing)
     private var subLabels = [UILabel]()
     
     public override func setupSubviews() {
         addSubview(stackView)
         stackView.fillSuperview()
-        stackView.addArrangedSubview(headingLabel)
+        stackView.addArrangedSubviews([headingLabel, uppercaseLabel])
         
         headingLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
         headingLabel.setContentHuggingPriority(.required, for: .horizontal)
@@ -31,8 +36,18 @@ public final class DSHeadingWithSubtitleView: BaseCodeView {
     public func configure(model: DSHeadingWithSubtitlesModel) {
         self.accessibilityIdentifier = model.componentId
         
-        headingLabel.text = model.value
-        headingLabel.accessibilityAttributedLabel = accessibilityLabel(for: model.value)
+        headingLabel.isHidden = model.value == nil
+        if let value = model.value {
+            headingLabel.text = value
+            headingLabel.accessibilityAttributedLabel = accessibilityLabel(for: value)
+        }
+        
+        uppercaseLabel.isHidden = model.uppercaseValue == nil
+        if let uppercaseValue = model.uppercaseValue {
+            uppercaseLabel.text = uppercaseValue
+            uppercaseLabel.accessibilityAttributedLabel = accessibilityLabel(for: uppercaseValue)
+        }
+        
         subLabels = []
         model.subtitles?.forEach({
             self.stackView.addArrangedSubview(self.subtitleLabel(text: $0))

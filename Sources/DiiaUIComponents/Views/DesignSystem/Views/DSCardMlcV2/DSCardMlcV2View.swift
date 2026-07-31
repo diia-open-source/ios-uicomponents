@@ -8,6 +8,7 @@ public final class DSCardMlcV2View: BaseCodeView {
     private let contentVStack = UIStackView.create(.vertical, spacing: Constants.mediumSpacing)
     private let descriptionsStack = UIStackView.create()
     private let rowsStack = UIStackView.create(spacing: Constants.mediumSpacing)
+    private let iconTextsStack = UIStackView.create(spacing: Constants.mediumSpacing)
     private let statusLabelStack = UIStackView.create(.horizontal, alignment: .center, distribution: .fill)
     private let descriptionLabelStack =  UIStackView.create(spacing: Constants.smallSpacing)
     private let attentionIconMessageView = DSAttentionIconMessageView()
@@ -98,6 +99,7 @@ public final class DSCardMlcV2View: BaseCodeView {
         rightLabel.text = viewModel.rightLabel
         
         descriptionsStack.isHidden = viewModel.descriptions == nil
+            || viewModel.descriptions?.count == 0
         if let descriptions = viewModel.descriptions {
             descriptionsStack.safelyRemoveArrangedSubviews()
             descriptions.forEach {
@@ -116,6 +118,17 @@ public final class DSCardMlcV2View: BaseCodeView {
                 rowLabel.text = $0
                 rowsStack.addArrangedSubview(rowLabel)
             }
+        }
+        
+        iconTextsStack.isHidden = viewModel.iconTexts?.isEmpty ?? true
+        if let iconTexts = viewModel.iconTexts {
+            iconTextsStack.safelyRemoveArrangedSubviews()
+            var iconTextsArray: [UIStackView] = []
+            iconTexts.forEach {
+                let stack = createIconTexts(model: $0)
+                iconTextsArray.append(stack)
+            }
+            iconTextsStack.addArrangedSubviews(iconTextsArray)
         }
         
         iconUrlView.isHidden = viewModel.iconUrlAtm == nil
@@ -176,6 +189,7 @@ public final class DSCardMlcV2View: BaseCodeView {
         contentVStack.addArrangedSubviews([
             descriptionLabelStack,
             rowsStack,
+            iconTextsStack,
             chipsCollectionView
         ])
     }
@@ -248,6 +262,26 @@ public final class DSCardMlcV2View: BaseCodeView {
         }
     }
     
+    private func createIconTexts(model: DSIconTextModel) -> UIStackView {
+        let horizontalStack = UIStackView.create(.horizontal, spacing: Constants.smallSpacing, alignment: .center)
+        
+        if let iconLeft = model.iconLeft {
+            let icon = DSIconView()
+            icon.setIcon(iconLeft)
+            icon.withSize(Constants.iconTextSize)
+            icon.setContentHuggingPriority(.required, for: .horizontal)
+            icon.setContentCompressionResistancePriority(.required, for: .horizontal)
+            horizontalStack.addArrangedSubview(icon)
+        }
+        
+        let textLabel = UILabel().withParameters(font: FontBook.usualFont, textColor: Constants.grayTextColor)
+        textLabel.text = model.text
+        textLabel.setContentCompressionResistancePriority(.required, for: .vertical)
+        horizontalStack.addArrangedSubview(textLabel)
+        
+        return horizontalStack
+    }
+    
     private func handleTap() {
         let tap = UITapGestureRecognizer(target: self, action: #selector(onTap))
         addGestureRecognizer(tap)
@@ -305,5 +339,6 @@ private extension DSCardMlcV2View {
         static let chipHorizontalPadding: CGFloat = 8
         static let chipBorderWidth: CGFloat = 1
         static let layoutPriority = UILayoutPriority(999)
+        static let iconTextSize = CGSize(width: 16, height: 16)
     }
 }

@@ -141,7 +141,7 @@ class MediaGalleryPhotoCell: UICollectionViewCell, Reusable {
             button.tintColor = .white
             button.isAccessibilityElement = true
             button.accessibilityTraits = .button
-            button.accessibilityLabel = R.Strings.general_close.localized()
+            button.accessibilityLabel = action.accessibilityDescription
             button.withSize(Constants.buttonSize)
             actionStack.addArrangedSubview(button)
         }

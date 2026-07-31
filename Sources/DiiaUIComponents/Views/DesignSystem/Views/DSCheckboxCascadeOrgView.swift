@@ -68,7 +68,8 @@ public final class DSCheckboxCascadeViewModel {
     }
     
     private func checkupHeaderState() {
-        let selectedCount = items.value.filter { $0.isSelected.value == true }.count
+        let selectedItems = items.value.filter { $0.isSelected.value == true }
+        let selectedCount = selectedItems.count
         if selectedCount == items.value.count {
             tableItemCheckboxMlc?.isSelected.value = true
             tableItemCheckboxMlc?.isPartialSelected.value = false
@@ -77,6 +78,11 @@ public final class DSCheckboxCascadeViewModel {
             tableItemCheckboxMlc?.isPartialSelected.value = false
         } else {
             tableItemCheckboxMlc?.isPartialSelected.value = true
+        }
+        if tableItemCheckboxMlc?.mandatory == true
+            && tableItemCheckboxMlc?.isEnabled.value == false
+            && minMandatorySelectedItems > 0 {
+            selectedItems.forEach { $0.isEnabled.value = selectedCount != minMandatorySelectedItems }
         }
     }
 }

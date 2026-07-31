@@ -13,6 +13,7 @@ public final class DSChipView: BaseCodeView {
 
         textLabel.setContentHuggingPriority(.required, for: .horizontal)
         textLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
+        setupAccessibility()
     }
     
     public override func layoutSubviews() {
@@ -22,9 +23,15 @@ public final class DSChipView: BaseCodeView {
     
     public func configure(for model: DSCardStatusChipModel) {
         textLabel.text = model.name
+        accessibilityLabel = model.name
         textLabel.textColor = UIColor(model.statusTextColor)
         backgroundColor = UIColor(model.statusViewColor)
         withBorder(width: Constants.borderWidth, color: model.borderColor)
+    }
+    
+    private func setupAccessibility() {
+        isAccessibilityElement = true
+        accessibilityTraits = .staticText
     }
 }
 

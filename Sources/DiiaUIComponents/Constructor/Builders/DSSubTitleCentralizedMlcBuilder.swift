@@ -13,10 +13,10 @@ public struct DSSubTitleCentralizedMlcBuilder: DSViewBuilderProtocol {
         guard let model: DSSubTitleCentralizedMlcModel = object.parseValue(forKey: self.modelKey) else { return nil }
 
         let view = DSSubTitleCentralizedMlcView()
-        let viewModel = DSTitleMlcViewModel(componentId: model.componentId,
-                                            label: model.label)
+        let viewModel = DSTextMlcViewModel(componentId: model.componentId,
+                                           text: model.label)
         view.configure(with: viewModel)
-        eventHandler(.onComponentConfigured(with: .titledView(viewModel: viewModel)))
+        eventHandler(.onComponentConfigured(with: .textView(viewModel: viewModel)))
         let box = BoxView(subview: view)
             .withConstraints(
                 insets: paddingType.insets(

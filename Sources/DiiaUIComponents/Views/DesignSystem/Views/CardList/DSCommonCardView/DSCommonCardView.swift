@@ -219,13 +219,15 @@ public final class DSCommonCardView: UIView {
             tickerView.configure(with: ticker)
         }
         
-        //TODO: - Finish this card logic implementation 
+        //TODO: - Finish this card logic implementation
+        primaryButton.isAccessibilityElement = model.primaryButtonAction != nil
         primaryButton.isHidden = model.primaryButtonAction == nil
         if let primaryButtonAction = model.primaryButtonAction {
             primaryButton.action = primaryButtonAction
         }
         setPrimaryButtonActive(model.primaryButtonActive == true)
         
+        strokeButton.isAccessibilityElement = model.strokeButtonAction != nil
         strokeButton.isHidden = model.strokeButtonAction == nil
         if let strokeButtonAction = model.strokeButtonAction {
             strokeButton.action = strokeButtonAction
@@ -317,11 +319,9 @@ public final class DSCommonCardView: UIView {
         container.accessibilityLabel = "\(viewModel.title), \(label), \(viewModel.subtitles?.map({ $0.value }).joined(separator: ",") ?? ""), \(description), \(botLabel)"
         container.accessibilityValue = viewModel.chipStatusAtm?.name
         
-        strokeButton.isAccessibilityElement = true
         strokeButton.accessibilityTraits = .button
         strokeButton.accessibilityLabel = viewModel.strokeButtonAction?.title
         
-        primaryButton.isAccessibilityElement = true
         primaryButton.accessibilityTraits = .button
         primaryButton.accessibilityLabel = viewModel.primaryButtonAction?.title
         

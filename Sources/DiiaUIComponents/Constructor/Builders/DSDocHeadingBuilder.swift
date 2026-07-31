@@ -28,11 +28,13 @@ extension DSDocHeadingBuilder: DSViewMockableBuilderProtocol {
         let model = DSDocumentHeading(
             headingWithSubtitlesMlc: DSHeadingWithSubtitlesModel(
                 value: "value",
+                uppercaseValue: "UPPERCASE VALUE",
                 subtitles: ["subtitle1", "subtitle2"],
                 componentId: "componentId"
             ),
             headingWithSubtitleWhiteMlc: DSHeadingWithSubtitlesModel(
                 value: "value",
+                uppercaseValue: "UPPERCASE VALUE",
                 subtitles: ["subtitle1", "subtitle2"],
                 componentId: "componentId"
             ),

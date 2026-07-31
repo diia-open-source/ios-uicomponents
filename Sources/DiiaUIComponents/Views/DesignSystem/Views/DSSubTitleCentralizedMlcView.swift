@@ -2,13 +2,13 @@
 import UIKit
 import DiiaCommonTypes
 
-public final class DSTitleMlcViewModel {
+public final class DSTextMlcViewModel {
     public let componentId: String
-    public let label: Observable<String>
+    public let text: Observable<String>
     
-    public init(componentId: String, label: String) {
+    public init(componentId: String, text: String) {
         self.componentId = componentId
-        self.label = .init(value: label)
+        self.text = .init(value: text)
     }
 }
 
@@ -21,10 +21,10 @@ public final class DSSubTitleCentralizedMlcView: BaseCodeView {
         titleLabel.fillSuperview()
     }
 
-    public func configure(with viewModel: DSTitleMlcViewModel) {
+    public func configure(with viewModel: DSTextMlcViewModel) {
         accessibilityIdentifier = viewModel.componentId
-        viewModel.label.observe(observer: self) { [weak self] title in
-            self?.titleLabel.text = title
+        viewModel.text.observe(observer: self) { [weak self] text in
+            self?.titleLabel.text = text
         }
     }
 }

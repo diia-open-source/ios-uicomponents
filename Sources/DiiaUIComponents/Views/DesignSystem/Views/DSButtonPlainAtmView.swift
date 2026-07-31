@@ -18,15 +18,24 @@ public final class DSButtonPlainAtmView: BaseCodeView {
             contentHStackView.centerYAnchor.constraint(equalTo: centerYAnchor, constant: Constants.centerYOffset),
             contentHStackView.centerXAnchor.constraint(equalTo: centerXAnchor)
         ])
-
+        
+        setupAccessibility()
+        
         tapGestureRecognizer { [weak self] in
             self?.onClick?()
         }
+    }
+    
+    // MARK: - Private Methods
+    private func setupAccessibility() {
+        isAccessibilityElement = true
+        accessibilityTraits = .button
     }
 
     // MARK: - Public Methods
     public func configure(with model: DSButtonPlainAtmModel) {
         titleLabel.text = model.label
+        accessibilityLabel = model.label
         leftIconView.isHidden = model.iconLeft == nil
 
         if let iconModel = model.iconLeft {

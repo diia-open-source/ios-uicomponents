@@ -1,5 +1,6 @@
 
 import UIKit
+import DiiaCommonTypes
 
 public protocol MediaGalleryDataSource: NSObjectProtocol {
     func numberOfImagesInGallery(gallery: MediaGallery) -> Int
@@ -87,7 +88,7 @@ public final class MediaGallery: UIViewController, Rotatable {
     private var isVoiceOverRunning: Bool {
         return UIAccessibility.isVoiceOverRunning
     }
-
+    
     // MARK: Public Interface
     public init(delegate: MediaGalleryDelegate, dataSource: MediaGalleryDataSource) {
         super.init(nibName: nil, bundle: nil)

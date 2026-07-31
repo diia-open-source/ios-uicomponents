@@ -4,6 +4,14 @@ import DiiaCommonTypes
 
 public enum TextFieldState {
     case unfocused, focused, error(focused: Bool), disabled
+    
+    var isFocused: Bool {
+        switch self {
+        case .focused: return true
+        case .error(let focused): return focused
+        default: return false
+        }
+    }
 }
 
 public final class TitledTextFieldViewModel {
@@ -156,9 +164,8 @@ public final class TitledTextFieldView: BaseCodeView, DSInputComponentProtocol {
         instructionsLabel.isHidden = viewModel.instructionsText?.isEmpty == true
         errorLabel.text = nil
         errorLabel.isHidden = true
-        updateInstructionsState()
         
-        self.viewModel?.fieldState.observe(observer: self) { [weak self] textFieldState in
+        self.viewModel?.fieldState.observe(observer: self, triggerNow: false) { [weak self] textFieldState in
             guard let self = self else { return }
             switch textFieldState {
             case .focused:
@@ -181,6 +188,7 @@ public final class TitledTextFieldView: BaseCodeView, DSInputComponentProtocol {
             default: break
             }
         }
+        updateInstructionsState(ignoringFocus: true)
     }
     
     public func validate() {
@@ -222,14 +230,15 @@ public final class TitledTextFieldView: BaseCodeView, DSInputComponentProtocol {
         }
     }
     
-    private func updateInstructionsState() {
+    private func updateInstructionsState(ignoringFocus: Bool = false) {
         let inputText = maskCleanedText()
         let errorText = error(for: inputText)
+        let isFocused = !ignoringFocus && !inputText.isEmpty
         errorLabel.text = errorText
         if errorText != nil {
-            self.viewModel?.fieldState.value = .error(focused: !inputText.isEmpty)
+            self.viewModel?.fieldState.value = .error(focused: isFocused)
         } else {
-            self.viewModel?.fieldState.value = inputText.isEmpty ? .unfocused : .focused
+            self.viewModel?.fieldState.value = isFocused ? .focused : .unfocused
         }
     }
     

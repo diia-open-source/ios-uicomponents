@@ -39,7 +39,7 @@ extension DSInputPhoneCodeBuilder: DSViewMockableBuilderProtocol {
                 placeholder: "Номер телефону",
                 hint: "Введіть номер телефону у правильному форматі",
                 mask: "## ### ## ##",
-                value: "555 55 55",
+                value: "99 555 55 55",
                 mandatory: true,
                 validation: []
             ),
@@ -50,11 +50,11 @@ extension DSInputPhoneCodeBuilder: DSViewMockableBuilderProtocol {
                 id: "id_ua",
                 maskCode: "## ### ## ##",
                 placeholder: "placeholder",
-                label: "380",
+                label: "+380",
                 description: "UA",
-                value: "+380",
+                value: "380",
                 icon: "🇺🇦",
-                validation: [.init(regexp: "([0-9]{9})", flags: [], errorMessage: "Невірний номер")],
+                validation: [.init(regexp: "([0-9]{12})", flags: [], errorMessage: "Невірний номер")],
                 isDisable: false
             )],
             isDisable: false

@@ -14,7 +14,7 @@ public struct DSNavigationPanelMlcV2Builder: DSViewBuilderProtocol {
 
         let view = makeView(from: data,
                             eventHandler: eventHandler)
-        let boxView = BoxView(subview: view).withConstraints(insets: padding.defaultPaddingV2(object: object, modelKey: modelKey))
+        let boxView = BoxView(subview: view).withConstraints(insets: padding.insets(for: object, modelKey: modelKey, defaultInsets: .zero))
         return boxView
     }
 

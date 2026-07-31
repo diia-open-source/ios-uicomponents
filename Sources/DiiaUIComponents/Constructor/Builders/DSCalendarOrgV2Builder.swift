@@ -11,8 +11,9 @@ public struct DSCalendarOrgV2Builder: DSViewBuilderProtocol {
                          eventHandler: @escaping (ConstructorItemEvent) -> Void) -> UIView? {
         guard let data: DSCalendarOrgV2 = object.parseValue(forKey: self.modelKey) else { return nil }
         let view = DSCalendarOrgView()
-        let viewModel = DSCalendarOrgViewModel(calendarOrg: data,
-                                               inputCode: data.inputCode ?? self.modelKey)
+        let viewModel = DSCalendarOrgViewModel(
+            calendarOrg: data,
+            inputCode: data.inputCode ?? self.modelKey)
         viewModel.eventHandler = eventHandler
         view.configure(for: viewModel)
         let insets = padding.defaultPaddingV2(object: object, modelKey: modelKey)

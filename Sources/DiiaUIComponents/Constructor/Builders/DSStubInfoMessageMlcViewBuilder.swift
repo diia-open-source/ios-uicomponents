@@ -10,7 +10,7 @@ public struct DSStubInfoMessageMlcViewBuilder: DSViewBuilderProtocol {
         guard let data: DSEmptyStateMlc = object.parseValue(forKey: self.modelKey) else { return nil }
         
         let view = DSEmptyStateView()
-        view.configure(with: data)
+        view.configure(with: data, urlOpener: UIComponentsConfiguration.shared.urlOpener)
         let paddingBox = BoxView(subview: view).withConstraints(insets: padding.defaultPaddingV2(object: object, modelKey: modelKey))
         return paddingBox
     }
@@ -18,7 +18,17 @@ public struct DSStubInfoMessageMlcViewBuilder: DSViewBuilderProtocol {
 
 extension DSStubInfoMessageMlcViewBuilder: DSViewMockableBuilderProtocol {
     public func makeMockModel() -> AnyCodable {
-        let model = DSEmptyStateMlc(componentId: "componentId", iconAtm: .mock, title: "title(optional)", text: "text(optional)")
+        let model = DSEmptyStateMlc(
+            componentId: "componentId",
+            iconAtm: .mock,
+            title: "title(optional)",
+            text: "text(optional) {google}",
+            parameters: [TextParameter(
+            type: .link,
+            data: TextParameterData(
+                name: "google",
+                alt: "alt",
+                resource: "https://www.google.com/"))])
         return .dictionary([
             modelKey: .fromEncodable(encodable: model)
         ])

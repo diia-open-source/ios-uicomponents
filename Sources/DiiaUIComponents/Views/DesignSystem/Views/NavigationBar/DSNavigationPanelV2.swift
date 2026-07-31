@@ -18,7 +18,7 @@ public struct DSNavigationPanelV2: Codable {
 
 /// design_system_code: navigationPanelMlcV2
 public final class DSNavigationPanelV2View: BaseCodeView {
-    private let smallTitle = UILabel().withParameters(font: FontBook.mainFont.regular.size(18), numberOfLines: Constants.smallTitleNumberOfLines, textAlignment: .center, lineBreakMode: .byTruncatingTail)
+    private let smallTitle = UILabel().withParameters(font: FontBook.mainFont.regular.size(16), numberOfLines: Constants.smallTitleNumberOfLines, textAlignment: .center, lineBreakMode: .byTruncatingTail)
     private let backButton = ActionButton(type: .icon)
     private var isClosed = false
     

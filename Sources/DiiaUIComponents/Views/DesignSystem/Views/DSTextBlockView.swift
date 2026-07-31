@@ -177,10 +177,10 @@ public final class DSTextBlockView: BaseCodeView {
                 viewModel.text != nil ||
                 !(viewModel.listItems ?? []).isEmpty
             
-            let subviews = viewModel.items.compactMap {
+            let subviews = viewModel.items.enumerated().compactMap { index, item in
                 viewFabric.makeView(
-                    from: $0,
-                    withPadding: withElementsBefore ?
+                    from: item,
+                    withPadding: (withElementsBefore && index == 0) ?
                         .fixed(paddings: Constants.itemsListPaddings) :
                         .fixed(paddings: .zero),
                     eventHandler: viewModel.eventHandler

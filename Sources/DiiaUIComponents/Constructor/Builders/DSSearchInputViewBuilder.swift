@@ -24,7 +24,11 @@ public struct DSSearchInputViewBuilder: DSViewBuilderProtocol {
                 eventHandler(.inputChanged(.init(
                     inputCode: self.modelKey,
                     inputData: .string(view.searchText ?? .empty))))
-            })
+            }
+        )
+        if let searchTextViewModel = view.searchTextViewModel {
+            eventHandler(.onComponentConfigured(with: .textView(viewModel: searchTextViewModel)))
+        }
         return view
     }
     

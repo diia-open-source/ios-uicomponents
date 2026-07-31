@@ -134,7 +134,7 @@ public final class DSTableItemCheckboxView: BaseCodeView {
     }
     
     @objc private func onTapped() {
-        guard let viewModel = viewModel else { return }
+        guard let viewModel else { return }
         if viewModel.isPartialSelected.value {
             viewModel.isPartialSelected.value = false
             viewModel.isSelected.value = true

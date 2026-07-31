@@ -88,6 +88,7 @@ public final class DSChipBlackMlcView: BaseCodeView {
         textLabel.numberOfLines = 1
         textLabel.textAlignment = .center
         addTapGestureRecognizer()
+        setupAccessibility()
     }
     public override func layoutSubviews() {
         super.layoutSubviews()
@@ -99,6 +100,7 @@ public final class DSChipBlackMlcView: BaseCodeView {
         accessibilityIdentifier = viewModel.componentId
         self.viewModel = viewModel
         self.textLabel.text = viewModel.label
+        accessibilityLabel = viewModel.label
         viewModel.state.observe(observer: self) { [weak self] state in
             self?.updateChipView(state)
         }
@@ -110,15 +112,23 @@ public final class DSChipBlackMlcView: BaseCodeView {
             containerView.isUserInteractionEnabled = true
             containerView.backgroundColor = .black
             textLabel.textColor = .white
+            accessibilityTraits.insert(.selected)
         case .unselected:
             containerView.isUserInteractionEnabled = true
             containerView.backgroundColor = .white
             textLabel.textColor = .black
+            accessibilityTraits.remove(.selected)
         case .disabled:
             containerView.isUserInteractionEnabled = false
             containerView.backgroundColor = .white
             textLabel.textColor = Constants.disabledStateColor
+            accessibilityTraits.insert(.notEnabled)
         }
+    }
+    
+    private func setupAccessibility() {
+        isAccessibilityElement = true
+        accessibilityTraits = .button
     }
     
     private func addTapGestureRecognizer() {

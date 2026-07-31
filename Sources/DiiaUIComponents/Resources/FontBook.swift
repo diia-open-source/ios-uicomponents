@@ -250,6 +250,17 @@ public extension FontBook {
         }
     }()
     
+    static var docHeadingFont: UIFont = {
+        switch UIScreen.screenSize {
+        case .big:
+            return FontBook.mainFont.regular.size(21)
+        case .medium:
+            return FontBook.mainFont.regular.size(19)
+        case .small:
+            return FontBook.mainFont.regular.size(17)
+        }
+    }()
+    
     static let lightSmallHeadingFont: UIFont = {
         switch UIScreen.screenSize {
         case .big:
