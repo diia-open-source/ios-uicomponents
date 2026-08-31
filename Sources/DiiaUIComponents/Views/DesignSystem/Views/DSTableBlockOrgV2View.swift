@@ -60,7 +60,7 @@ public final class DSTableBlockOrgV2View: BaseCodeView {
                     eventHandler(.action(iconAction))
                 }
             }
-            mainHeadingView.configure(with: viewModel)
+            mainHeadingView.configure(with: viewModel, urlOpener: UIComponentsConfiguration.shared.urlOpener)
         }
 
         tableSecondaryHeadingView.isHidden = model.tableSecondaryHeadingMlc == nil

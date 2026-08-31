@@ -16,20 +16,26 @@ public final class DSTableMainHeadingViewModel {
 public final class DSTableMainHeadingView: BaseCodeView {
     // MARK: - Subviews
     private let titleLabel = UILabel().withParameters(font: FontBook.smallHeadingFont)
-    private let descriptionLabel = UILabel().withParameters(font: FontBook.usualFont, textColor: Constants.valueTextColor)
+    private let descriptionTextView = LinkOnlyTextView()
 
-    private lazy var labelsStackView = UIStackView.create(views: [titleLabel, descriptionLabel], spacing: Constants.spacing)
+    private lazy var labelsStackView = UIStackView.create(views: [titleLabel, descriptionTextView], spacing: Constants.spacing)
 
     private let headingButton = ActionButton(type: .icon)
 
     // MARK: - Properties
     private var viewModel: DSTableMainHeadingViewModel?
+    private var urlOpener: URLOpenerProtocol?
     
     // MARK: - Init
     public override func setupSubviews() {
         headingButton.tintColor = .black
         headingButton.isHidden = true
         headingButton.withSize(Constants.buttonSize)
+        
+        descriptionTextView.configureForParametrizedText(linkTextColor: Constants.valueTextColor)
+        descriptionTextView.textAlignment = .left
+        descriptionTextView.font = FontBook.usualFont
+        descriptionTextView.delegate = self
 
         UIStackView.create(
             .horizontal,
@@ -47,27 +53,29 @@ public final class DSTableMainHeadingView: BaseCodeView {
         titleLabel.isAccessibilityElement = true
         titleLabel.accessibilityTraits = .header
         
-        descriptionLabel.isAccessibilityElement = true
-        descriptionLabel.accessibilityTraits = .staticText
+        descriptionTextView.isAccessibilityElement = true
+        descriptionTextView.accessibilityTraits = .staticText
         
         headingButton.isAccessibilityElement = true
         headingButton.accessibilityTraits = .button
     }
     
     // MARK: - Public Methods
-    public func configure(with viewModel: DSTableMainHeadingViewModel) {
+    public func configure(with viewModel: DSTableMainHeadingViewModel, urlOpener: URLOpenerProtocol? = nil) {
         self.viewModel = viewModel
+        self.urlOpener = urlOpener
 
         titleLabel.text = viewModel.headingModel.label
         titleLabel.accessibilityLabel = viewModel.headingModel.label
 
-        descriptionLabel.isHidden = viewModel.headingModel.description == nil
+        descriptionTextView.isHidden = viewModel.headingModel.description == nil
         if let description = viewModel.headingModel.description {
-            descriptionLabel.attributedText = description.attributedTextWithParameters(
+            descriptionTextView.attributedText = description.attributedTextWithParameters(
                     font: FontBook.usualFont,
                     textColor: Constants.valueTextColor,
                     parameters: viewModel.headingModel.parameters ?? [])
-            descriptionLabel.accessibilityLabel = description
+            descriptionTextView.accessibilityLabel = description
+            descriptionTextView.accessibilityValue = .empty
         }
 
         headingButton.isHidden = viewModel.headingModel.icon?.action == nil
@@ -77,6 +85,12 @@ public final class DSTableMainHeadingView: BaseCodeView {
             headingButton.action = Action(iconName: imageProvider.imageNameForCode(imageCode: iconModel.code),
                                           callback: callback)
         }
+    }
+}
+
+extension DSTableMainHeadingView: UITextViewDelegate {
+    public func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+        return !(urlOpener?.url(urlString: URL.absoluteString, linkType: nil) ?? false)
     }
 }
 

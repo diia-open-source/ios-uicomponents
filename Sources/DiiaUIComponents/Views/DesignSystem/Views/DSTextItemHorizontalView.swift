@@ -5,13 +5,11 @@ public struct DSTextItemHorizontalModel: Codable {
     public let componentId: String
     public let label: String
     public let value: String
-    public let iconRight: DSIconModel?
     
-    public init(componentId: String, label: String, value: String, iconRight: DSIconModel?) {
+    public init(componentId: String, label: String, value: String) {
         self.componentId = componentId
         self.label = label
         self.value = value
-        self.iconRight = iconRight
     }
 }
 
@@ -20,7 +18,6 @@ final class DSTextItemHorizontalView: BaseCodeView {
     
     private let mainStack = UIStackView.create(.horizontal, alignment: .center)
     private let labelValueStack = UIStackView.create(.horizontal, spacing: Constants.spacing, alignment: .center)
-    private let iconRight = DSIconView()
     private let titleLabel = UILabel().withParameters(font: FontBook.usualFont, textColor: .black)
     private let valueLabel = UILabel().withParameters(font: FontBook.usualFont, textColor: .black)
     private let valueContainer = UIView()
@@ -29,7 +26,6 @@ final class DSTextItemHorizontalView: BaseCodeView {
     override func setupSubviews() {
         addSubview(mainStack)
         mainStack.fillSuperview()
-        iconRight.withSize(Constants.iconSize)
         
         valueContainer.addSubview(valueLabel)
         valueLabel.fillSuperview(padding: Constants.valuePaddings)
@@ -44,7 +40,6 @@ final class DSTextItemHorizontalView: BaseCodeView {
         mainStack.addArrangedSubviews([
             labelValueStack,
             spacerView,
-            iconRight
         ])
         
         spacerView.setContentHuggingPriority(.defaultLow, for: .horizontal)
@@ -56,11 +51,7 @@ final class DSTextItemHorizontalView: BaseCodeView {
     
     public func configure(with model: DSTextItemHorizontalModel) {
         accessibilityIdentifier = model.componentId
-        iconRight.isHidden = model.iconRight == nil
-        if let iconRight = model.iconRight {
-            self.iconRight.setIcon(iconRight)
-            self.iconRight.accessibilityTraits = iconRight.action != nil ? .button : .image
-        }
+        
         titleLabel.text = model.label
         valueLabel.text = model.value
         
@@ -71,8 +62,6 @@ final class DSTextItemHorizontalView: BaseCodeView {
     private func setupAccessibility() {
         labelValueStack.isAccessibilityElement = true
         labelValueStack.accessibilityTraits = .staticText
-        
-        iconRight.isAccessibilityElement = true
     }
 }
 
@@ -81,7 +70,6 @@ private extension DSTextItemHorizontalView {
         static let spacing: CGFloat = 8
         static let cornerRadius: CGFloat = 8
         static let valueContainerColor: UIColor = .init("#E2ECF4")
-        static let iconSize: CGSize = .init(width: 24, height: 24)
         static let height: CGFloat = 34
         static let valuePaddings: UIEdgeInsets = .init(top: 8, left: 8, bottom: 8, right: 8)
     }

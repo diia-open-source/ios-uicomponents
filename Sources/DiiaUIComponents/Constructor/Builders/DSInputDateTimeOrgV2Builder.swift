@@ -2,29 +2,30 @@
 import UIKit
 import DiiaCommonTypes
 
-/// DS_Code: inputDateTimeOrg
-public struct DSInputDateTimeMlcBuilder: DSViewBuilderProtocol {
-    public let modelKey = "inputDateTimeOrg"
+/// DS_Code: inputDateTimeOrgV2
+public struct DSInputDateTimeOrgV2Builder: DSViewBuilderProtocol {
+    public let modelKey = "inputDateTimeOrgV2"
 
     public func makeView(from object: AnyCodable,
                          withPadding padding: DSViewPaddingType,
                          viewFabric: DSViewFabric?,
                          eventHandler: @escaping (ConstructorItemEvent) -> Void) -> UIView? {
-        guard let data: DSInputDateTimeModel = object.parseValue(forKey: self.modelKey) else { return nil }
+        guard let data: DSInputDateTimeModelV2 = object.parseValue(forKey: self.modelKey) else { return nil }
 
-        let view = DSInputDateTimeView()
+        let view = DSInputDateTimeOrgViewV2()
         let vm = DSInputDateTimeViewModel(
             componentId: data.componentId,
             id: data.id,
             maxDate: data.maxDate,
             minDate: data.minDate,
             inputCode: data.inputCode,
-            inputDateMlc: data.inputDateMlc,
-            inputTimeMlc: data.inputTimeMlc,
-            mandatory: data.inputDateMlc?.mandatory == true,
-            timezone: .init(identifier: "Europe/Kyiv") ?? .current)
+            inputDateMlc: data.inputDateMlcV2,
+            inputTimeMlc: data.inputTimeMlcV2,
+            mandatory: data.inputDateMlcV2?.mandatory == true)
         vm.onChange = { text in
-            eventHandler(.inputChanged(.init(inputCode: data.inputCode ?? self.modelKey, inputData: text != nil ? .string(text ?? "") : .null)))
+            eventHandler(.inputChanged(.init(
+                inputCode: data.inputCode ?? self.modelKey,
+                inputData: text != nil ? .string(text ?? "") : .null)))
         }
         view.configure(viewModel: vm)
 
@@ -33,9 +34,9 @@ public struct DSInputDateTimeMlcBuilder: DSViewBuilderProtocol {
     }
 }
 
-extension DSInputDateTimeMlcBuilder: DSViewMockableBuilderProtocol {
+extension DSInputDateTimeOrgV2Builder: DSViewMockableBuilderProtocol {
     public func makeMockModel() -> AnyCodable {
-        let model = DSInputDateTimeModel(
+        let model = DSInputDateTimeModelV2(
             componentId: "componentId",
             id: "componentId",
             maxDate: nil,

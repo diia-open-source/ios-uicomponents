@@ -27,8 +27,7 @@ extension DSTextItemHorizontalBuilder: DSViewMockableBuilderProtocol {
         let model = DSTextItemHorizontalModel(
             componentId: "componentId",
             label: "label",
-            value: "value",
-            iconRight: .mock
+            value: "value"
         )
         return .dictionary([
             modelKey: .fromEncodable(encodable: model)

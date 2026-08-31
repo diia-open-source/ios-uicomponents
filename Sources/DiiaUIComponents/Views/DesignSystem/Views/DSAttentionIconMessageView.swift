@@ -6,7 +6,7 @@ import DiiaCommonTypes
 final public class DSAttentionIconMessageView: BaseCodeView {
     private let mainHStack = UIStackView.create(.vertical, spacing: Constants.spacing, alignment: .leading)
     private let iconImage = UIImageView()
-    private let textView = UITextView()
+    private let textView = LinkOnlyTextView()
     private var urlOpener: URLOpenerProtocol?
     private var isExpanded: Bool = false
     private let expandButtonTitle = UILabel().withParameters(font: FontBook.usualFont)

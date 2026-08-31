@@ -23,7 +23,7 @@ final public class DSEmptyStateView: BaseCodeView {
     private let mainStack = UIStackView.create(.vertical,spacing: Constants.smallSpacing, alignment: .center)
     private let iconLabelStack = UIStackView.create(.vertical,spacing: Constants.bigSpacing, alignment: .center)
     private let titleLabel = UILabel().withParameters(font: FontBook.mainFont.regular.size(Constants.fontSize), textColor: .black, textAlignment: .center)
-    private let textView = UITextView()
+    private let textView = LinkOnlyTextView()
     private let iconView = DSIconView().withSize(Constants.iconSize)
     private var urlOpener: URLOpenerProtocol?
     
@@ -39,7 +39,6 @@ final public class DSEmptyStateView: BaseCodeView {
             textView
         ])
         textView.font = FontBook.usualFont
-        textView.configureForParametrizedText()
         textView.delegate = self
         self.layer.cornerRadius = Constants.cornerRadius
         self.withBorder(width: Constants.borderWidth, color: Constants.borderColor)

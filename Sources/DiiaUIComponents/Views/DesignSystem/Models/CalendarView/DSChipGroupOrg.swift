@@ -37,10 +37,12 @@ public struct DSChipGroupOrgV2: Codable {
 public struct DSChipItemMlc: Codable {
     public let chipMlc: DSChipMlc?
     public let chipTimeMlc: DSChipTimeMlc?
+    public let btnSortMlc: DSButtonWhiteAdditionalIconAtm?
     
-    public init(chipMlc: DSChipMlc? = nil, chipTimeMlc: DSChipTimeMlc? = nil) {
+    public init(chipMlc: DSChipMlc? = nil, chipTimeMlc: DSChipTimeMlc? = nil, btnSortMlc: DSButtonWhiteAdditionalIconAtm? = nil) {
         self.chipMlc = chipMlc
         self.chipTimeMlc = chipTimeMlc
+        self.btnSortMlc = btnSortMlc
     }
 }
 

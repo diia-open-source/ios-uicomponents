@@ -32,6 +32,7 @@ extension DSNavigationPanelMlcV2Builder: DSViewMockableBuilderProtocol {
             componentId: "componentId",
             title: "Navigation Title",
             iconLeft: DSIconModel(code: "back", accessibilityDescription: "Кнопка: назад", action: .init(type: "back")),
+            iconRight: nil,
             isClosed: false
         )
         return .dictionary([

@@ -38,6 +38,7 @@ public enum TextValidator: Validator {
     case formattedNumber(min: Double?, max: Double?)
     case regEx(regEx: String)
     case date(minDate: Date?, maxDate: Date?, dateFormatter: DateFormatter)
+    case minIntegerDigits(min: Int)
     
     public func isValid(value: String?) -> Bool {
         guard let value = value else { return false }
@@ -62,6 +63,10 @@ public enum TextValidator: Validator {
             if let maxDate = maxDate, maxDate < date { return false }
             if let minDate = minDate, minDate > date { return false }
             return true
+        case .minIntegerDigits(let min):
+            let integerPart = value.components(separatedBy: CharacterSet(charactersIn: ",.")).first ?? value
+            let digitsCount = integerPart.filter(\.isNumber).count
+            return digitsCount >= min
         }
     }
     
@@ -146,6 +151,19 @@ public enum TextInputValidationHelper {
                 return number <= maxValue
             }
             return false
+        }
+    }
+    
+    public static func decimalPlacesValidator(maxDecimalPlaces: Int) -> ((String?, NSRange, String) -> Bool) {
+        return { originalText, range, string in
+            if string.isEmpty { return true }
+            var text = originalText ?? ""
+            if let range = Range(range, in: text) {
+                text = text.replacingCharacters(in: range, with: string)
+            }
+            guard let sepIndex = text.firstIndex(where: { $0 == "," || $0 == "." }) else { return true }
+            let fractionalDigits = text[text.index(after: sepIndex)...]
+            return fractionalDigits.count <= maxDecimalPlaces
         }
     }
 }

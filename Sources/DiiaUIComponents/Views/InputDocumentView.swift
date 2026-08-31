@@ -115,6 +115,7 @@ public final class InputDocumentView: BaseCodeView, DSInputComponentProtocol {
         tapRecognizer.numberOfTapsRequired = 1
         self.addGestureRecognizer(tapRecognizer)
         setupUI()
+        setupAccessibility()
     }
     
     public func setupUI(textFont: UIFont = FontBook.bigText) {
@@ -187,6 +188,12 @@ public final class InputDocumentView: BaseCodeView, DSInputComponentProtocol {
     private func updateInstructionsState() {
         let inputText = textField.text ?? ""
         self.viewModel?.fieldState.value = inputText.isEmpty ? .unfocused : .focused
+    }
+    
+    private func setupAccessibility() {
+        clearSearchBox.isAccessibilityElement = true
+        clearSearchBox.accessibilityTraits = .button
+        clearSearchBox.accessibilityLabel = R.Strings.general_accessibility_text_field_clear_button.localized()
     }
     
     //MARK: - DSInputComponentProtocol

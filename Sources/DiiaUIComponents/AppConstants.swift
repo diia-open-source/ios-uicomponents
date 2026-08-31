@@ -26,6 +26,7 @@ public struct AppConstants {
 
         static let tickerGrayColor = "#ECECEC"
         static let tickerBlueColor = "#E2F2FE"
+        static let tickerAdditionalBlueColor = "#0075FB"
         static let tickerRedColor = "#D95336"
         public static let uncheckedRoundTabBackgroundColor = "#ECF2F7"
     }

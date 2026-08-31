@@ -85,8 +85,10 @@ public final class PhotoCardCarouselView: BaseCodeView {
             self.cellSize = cellSize
             
             self.originalViewModels = sourceModel.items.map {
-                PhotoCardMlcViewModel(photoCardMlc: $0, eventHandler: eventHandler)
+                PhotoCardMlcViewModel(photoCardMlc: $0.photoCardMlc, eventHandler: eventHandler)
             }
+            
+            setupCardObservers()
             
             setupInfiniteViewModels()
             registerCellTypes(cellTypes)
@@ -107,6 +109,25 @@ public final class PhotoCardCarouselView: BaseCodeView {
                 }
             }
         }
+    
+    private func setupCardObservers() {
+        originalViewModels.forEach { cardViewModel in
+            cardViewModel.isSelected.removeObserver(observer: self)
+            cardViewModel.isSelected.observe(observer: self) { [weak self, weak cardViewModel] selected in
+                self?.eventHandler?(.inputChanged(.init(
+                    inputCode: self?.inputCode() ?? Constants.photoCardCarouselOrg,
+                    inputData: .bool(selected))))
+                
+                guard selected,
+                      let cardViewModel,
+                      self?.sourceModel?.controlType == Constants.singleChoice else { return }
+                
+                self?.originalViewModels
+                    .filter { $0 !== cardViewModel && $0.isSelected.value == true }
+                    .forEach { $0.deselect() }
+            }
+        }
+    }
     
     private func setupInfiniteViewModels() {
         guard realItemCount > 0 else { return }
@@ -407,34 +428,47 @@ extension PhotoCardCarouselView {
 // MARK: - DSInputComponentProtocol
 extension PhotoCardCarouselView: DSInputComponentProtocol {
     public func isValid() -> Bool {
-        let selectedCount = originalViewModels.filter({
-            $0.tableItemCheckboxViewModel?.mandatory == false ||
-            $0.tableItemCheckboxViewModel?.isSelected.value == true }).count
-        
-        if selectedCount >= sourceModel?.maxSelected ?? originalViewModels.count {
-            originalViewModels
-                .filter({$0.tableItemCheckboxViewModel?.isSelected.value == false})
-                .forEach({$0.isEnable.value = false})
-        } else {
-            originalViewModels
-                .forEach({$0.isEnable.value = true})
+        if sourceModel?.controlType == Constants.singleChoice {
+            return originalViewModels.contains { $0.isSelected.value }
         }
-        
-        return selectedCount >= sourceModel?.minSelected ?? 0 &&
-        selectedCount <= sourceModel?.maxSelected ?? originalViewModels.count
+        return isValidMultipleChoice()
     }
     
     public func inputCode() -> String {
-        return Constants.photoCardCarouselOrg
+        return sourceModel?.inputCode ?? Constants.photoCardCarouselOrg
     }
     
     public func inputData() -> AnyCodable? {
+        if sourceModel?.controlType == Constants.singleChoice {
+            let selectedId = originalViewModels.first { $0.isSelected.value }?.id
+            if let selectedId {
+                return AnyCodable.string(selectedId)
+            }
+            return nil
+        }
+        return multipleChoiceInputData()
+    }
+    
+    private func isValidMultipleChoice() -> Bool {
+        let selectedCount = originalViewModels.filter { $0.isSelected.value }.count
+        
+        if selectedCount >= sourceModel?.maxSelectedCount ?? originalViewModels.count {
+            originalViewModels
+                .filter { !$0.isSelected.value }
+                .forEach { $0.isEnable.value = false }
+        } else {
+            originalViewModels.forEach { $0.isEnable.value = true }
+        }
+        
+        return selectedCount >= sourceModel?.minSelectedCount ?? 0 &&
+        selectedCount <= sourceModel?.maxSelectedCount ?? originalViewModels.count
+    }
+    
+    private func multipleChoiceInputData() -> AnyCodable? {
         return AnyCodable.array(
-            originalViewModels.compactMap({
-                $0.tableItemCheckboxViewModel?.isSelected.value == false ? nil :
-                AnyCodable.fromEncodable(encodable: $0.componentId)
-            })
-        )
+            originalViewModels
+                .filter { $0.isSelected.value }
+                .map { AnyCodable.string($0.id) })
     }
 }
 
@@ -442,6 +476,7 @@ extension PhotoCardCarouselView {
     public enum Constants {
         public static let pageControlDotColor: UIColor = .black.withAlphaComponent(0.3)
         static let photoCardCarouselOrg = "photoCardCarouselOrg"
+        static let singleChoice = "singleChoice"
         static let dragVelocity: CGFloat = 2.5
         static let interItemInset: CGFloat = 8
         static let defaultCellHeight: CGFloat = 200

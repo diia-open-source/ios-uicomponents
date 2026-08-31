@@ -97,7 +97,7 @@ public final class DSTextBlockView: BaseCodeView {
     private lazy var squareChipStatusContainer = UIStackView.create(.horizontal, views: [squareChipStatusView, UIView()])
 
     private let titleLabel = UILabel().withParameters(font: FontBook.smallHeadingFont)
-    private let textView = UITextView()
+    private let textView = LinkOnlyTextView()
 
     private let bottomItemsStackContainer = UIView()
     private let bottomItemsStack = UIStackView.create(spacing: Constants.itemsSpacing)

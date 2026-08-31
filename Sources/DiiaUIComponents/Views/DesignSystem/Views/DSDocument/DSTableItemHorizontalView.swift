@@ -11,7 +11,7 @@ public final class DSTableItemHorizontalView: BaseCodeView {
     private let supportLabel = UILabel().withParameters(font: FontBook.usualFont)
     private let titleLabel = UILabel().withParameters(font: FontBook.usualFont)
     private let detailsLabel = UILabel().withParameters(font: FontBook.usualFont)
-    private let valueTextView = UITextView()
+    private let valueTextView = LinkOnlyTextView()
     private let valueDetailsLabel = UILabel().withParameters(font: FontBook.usualFont)
     
     private lazy var titleStack = UIStackView.create(views: [titleLabel, detailsLabel])
@@ -40,7 +40,6 @@ public final class DSTableItemHorizontalView: BaseCodeView {
         
         supportLabel.widthAnchor.constraint(equalToConstant: Constants.supportLabelWidth).isActive = true
 
-        valueTextView.configureForParametrizedText()
         valueTextView.delegate = self
         valueTextView.textContainer.lineBreakMode = .byWordWrapping
 

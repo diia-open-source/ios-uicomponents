@@ -109,7 +109,7 @@ public final class DSChipItemView: BaseCodeView {
 
 private extension DSChipItemView {
     enum Constants {
-        static let uncheckedColor = UIColor(white: 1, alpha: 0.3)
+        static let uncheckedColor = UIColor(white: 1, alpha: 0.4)
         static let labelHeight: CGFloat = 20
         static let stackSpacing: CGFloat = 8
         static let labelPadding: CGFloat = 4
@@ -122,10 +122,13 @@ private extension DSChipItemView {
 public class DSChipTabViewModel {
     public let items: [DSChipItem]
     public let onSelect: (DSChipItem) -> Void
+    public let filterButtonVM: DSWhiteAdditionalIconButtonViewModel?
     
     public init(items: [DSChipItem],
+                filterButtonVM: DSWhiteAdditionalIconButtonViewModel? = nil,
                 onSelect: @escaping (DSChipItem) -> Void) {
         self.items = items
+        self.filterButtonVM = filterButtonVM
         self.onSelect = onSelect
     }
 }
@@ -135,8 +138,10 @@ public final class DSChipTabsView: BaseCodeView {
     
     private var itemsScroll = UIScrollView()
     private var itemStack = UIStackView()
+    private let filterButton = DSWhiteAdditionalIconButton()
     private let divider = UIView().withHeight(1)
-    
+    private var filterButtonViewModel: DSWhiteAdditionalIconButtonViewModel?
+
     private var items = [DSChipItemView]()
     private var onSelect: ((DSChipItem) -> Void)?
     
@@ -165,6 +170,13 @@ public final class DSChipTabsView: BaseCodeView {
     
     public func configure(viewModel: DSChipTabViewModel, eventHandler: ((ConstructorItemEvent) -> Void)? = nil) {
         self.onSelect = viewModel.onSelect
+        
+        itemStack.safelyRemoveArrangedSubviews()
+        if let filterButtonViewModel = viewModel.filterButtonVM {
+            filterButton.configure(with: filterButtonViewModel)
+            itemStack.addArrangedSubview(filterButton)
+        }
+        
         for item in viewModel.items {
             let view = DSChipItemView()
             view.configure(viewModel: item)
@@ -176,6 +188,8 @@ public final class DSChipTabsView: BaseCodeView {
             let tap = UITapGestureRecognizer(target: self, action: #selector(selectItem))
             view.addGestureRecognizer(tap)
         }
+        
+        
         eventHandler?(.onComponentConfigured(with: .chipTabsView(viewModel: viewModel)))
     }
     

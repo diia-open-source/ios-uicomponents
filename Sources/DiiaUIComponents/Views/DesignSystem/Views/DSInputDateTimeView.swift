@@ -2,6 +2,7 @@
 import UIKit
 import DiiaCommonTypes
 
+// MARK: - Model
 public struct DSInputDateTimeModel: Codable {
     public let componentId: String?
     public let id: String?
@@ -22,7 +23,12 @@ public struct DSInputDateTimeModel: Codable {
     }
 }
 
+// MARK: - ViewModel
 public final class DSInputDateTimeViewModel {
+    public static let ukraineTimeZone: TimeZone = TimeZone(identifier: "Europe/Kyiv")
+        ?? TimeZone(identifier: "Europe/Kiev")
+        ?? .current
+
     public let componentId: String?
     public let id: String?
     public let maxDate: String?
@@ -31,7 +37,7 @@ public final class DSInputDateTimeViewModel {
     public let inputDateMlc: DSInputDateModel?
     public let inputTimeMlc: DSInputTimeModel?
     public let mandatory: Bool?
-    public let timezone: TimeZone
+    public let displayTimezone: TimeZone
     public var onChange: ((String?) -> Void)?
 
     init(
@@ -43,7 +49,7 @@ public final class DSInputDateTimeViewModel {
         inputDateMlc: DSInputDateModel?,
         inputTimeMlc: DSInputTimeModel?,
         mandatory: Bool? = false,
-        timezone: TimeZone = .current,
+        displayTimezone: TimeZone = DSInputDateTimeViewModel.ukraineTimeZone,
         onChange: ((String?) -> Void)? = nil
     ) {
         self.componentId = componentId
@@ -54,168 +60,214 @@ public final class DSInputDateTimeViewModel {
         self.inputDateMlc = inputDateMlc
         self.inputTimeMlc = inputTimeMlc
         self.mandatory = mandatory
-        self.timezone = timezone
+        self.displayTimezone = displayTimezone
         self.onChange = onChange
     }
 }
 
+// MARK: - View
 /// design_system_code: inputDateTimeOrg
 public final class DSInputDateTimeView: BaseCodeView, DSInputComponentProtocol {
+
+    // MARK: Subviews
     private let stack = UIStackView.create(spacing: Constants.stackSpacing)
+    private var inputDateView: DSInputDateView?
+    private var inputTimeView: DSInputTimeView?
+
+    // MARK: State
     private var viewModel: DSInputDateTimeViewModel?
     private var dateString: String?
     private var timeString: String?
     private var selectedDate: Date?
+
+    private var displayTimeZone: TimeZone = DSInputDateTimeViewModel.ukraineTimeZone
+
+    // MARK: Formatting
+    private let outputDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.calendar = Calendar(identifier: .iso8601)
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        formatter.dateFormat = Constants.outputDateFormat
+        return formatter
+    }()
     
-    private var inputDateView: DSInputDateView?
-    private var inputTimeView: DSInputTimeView?
-    private lazy var dateValidator = TextValidator.date(minDate: nil, maxDate: nil, dateFormatter: outputDateFormatter)
-    
-    private let dayDateFormatter = DateFormatter()
-    private let outputDateFormatter = DateFormatter()
-    private var timezone = TimeZone.current {
-        didSet {
-            dayDateFormatter.timeZone = timezone
-            outputDateFormatter.timeZone = timezone
-            inputDateView?.setTimezone(timeZone: timezone)
-            inputTimeView?.setTimezone(timeZone: timezone)
-        }
-    }
-    
+    private lazy var calendar: Calendar = {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.locale = Locale(identifier: "uk_UA")
+        calendar.timeZone = displayTimeZone
+        return calendar
+    }()
+
+    private lazy var dateValidator = TextValidator.date(
+        minDate: nil,
+        maxDate: nil,
+        dateFormatter: outputDateFormatter
+    )
+
+    // MARK: - Setup
     public override func setupSubviews() {
         translatesAutoresizingMaskIntoConstraints = false
         addSubview(stack)
         stack.fillSuperview()
-        dayDateFormatter.dateFormat = Constants.dateFormat
-        dayDateFormatter.locale = Locale(identifier: "uk_UA")
-        outputDateFormatter.calendar = Calendar(identifier: .iso8601)
-        outputDateFormatter.locale = Locale(identifier: "en_US_POSIX")
-        outputDateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
-        outputDateFormatter.dateFormat = Constants.outputDateFormat
     }
-    
-    public func configure(viewModel: DSInputDateTimeViewModel) {
-        self.accessibilityIdentifier = viewModel.componentId
-        self.viewModel = viewModel
-        stack.safelyRemoveArrangedSubviews()
-        let minDate: Date? = viewModel.minDate != nil ? outputDateFormatter.date(from: viewModel.minDate ?? .empty) : nil
-        let maxDate: Date? = viewModel.maxDate != nil ? outputDateFormatter.date(from: viewModel.maxDate ?? .empty) : nil
-        
-        dateValidator = .date(
-            minDate: minDate,
-            maxDate: maxDate,
-            dateFormatter: outputDateFormatter)
-        if let data = viewModel.inputDateMlc {
-            let inputView = DSInputDateView()
-            self.inputDateView = inputView
-            stack.addArrangedSubview(inputView)
-            
-            let vm = DSInputDateViewModel(
-                componentId: data.componentId,
-                id: data.id,
-                inputCode: data.inputCode,
-                title: data.label,
-                placeholder: R.Strings.general_date_picker_hint.localized(),
-                validators: [],
-                defaultText: data.value,
-                instructionsText: data.hint,
-                enableManualEnter: false) { [weak self] text in
-                    self?.onDateChanged(date: text)
-                }
-            inputView.configure(viewModel: vm)
-        }
-        if let data = viewModel.inputTimeMlc {
-            let vm = DSInputTimeViewModel(
-                componentId: data.componentId,
-                id: data.id,
-                inputCode: data.inputCode,
-                title: data.label,
-                placeholder: R.Strings.general_time_picker_hint.localized(),
-                validators: [],
-                defaultText: data.value,
-                instructionsText: data.hint) { [weak self] text in
-                    self?.onTimeChanged(time: text)
-                }
-            
-            let view = DSInputTimeView()
-            self.inputTimeView = view
-            stack.addArrangedSubview(view)
 
-            view.configure(viewModel: vm)
-            if let value = data.value, let date = outputDateFormatter.date(from: value) {
-                inputTimeView?.setDayDate(date: date)
-            } else {
-                inputTimeView?.isUserInteractionEnabled = false
-            }
-        }
-        self.timezone = viewModel.timezone
+    // MARK: - Configuration
+    public func configure(viewModel: DSInputDateTimeViewModel) {
+        accessibilityIdentifier = viewModel.componentId
+        self.viewModel = viewModel
+        displayTimeZone = viewModel.displayTimezone
+        calendar.timeZone = displayTimeZone
+
+        resetSelection()
+        stack.safelyRemoveArrangedSubviews()
+        inputDateView = nil
+        inputTimeView = nil
+
+        let minDate = date(fromWireString: viewModel.minDate)
+        let maxDate = date(fromWireString: viewModel.maxDate)
+        dateValidator = .date(minDate: minDate, maxDate: maxDate, dateFormatter: outputDateFormatter)
+
+        setupDateView(with: viewModel.inputDateMlc)
+        setupTimeView(with: viewModel.inputTimeMlc)
+        
+        inputDateView?.setTimezone(timeZone: displayTimeZone)
+        inputTimeView?.setTimezone(timeZone: displayTimeZone)
         inputDateView?.setMinMaxDates(minDate: minDate, maxDate: maxDate)
         inputTimeView?.setMinMaxDates(minDate: minDate, maxDate: maxDate)
     }
-    
+
+    // MARK: - DSInputComponentProtocol
     public func isValid() -> Bool {
-        if let selectedDate = selectedDate {
-            let value = outputDateFormatter.string(from: selectedDate)
-            return dateValidator.isValid(value: value)
+        guard let selectedDate else {
+            return viewModel?.mandatory == false
         }
-        return viewModel?.mandatory == false
+        return dateValidator.isValid(value: outputDateFormatter.string(from: selectedDate))
     }
-    
+
     public func inputCode() -> String {
         return viewModel?.inputCode ?? ""
     }
-    
+
     public func inputData() -> DiiaCommonTypes.AnyCodable? {
-        if let date = selectedDate {
-            return .string(outputDateFormatter.string(from: date))
-        }
-        return .null
+        guard let selectedDate else { return .null }
+        return .string(outputDateFormatter.string(from: selectedDate))
     }
-    
-    // MARK: - Private
+
+    // MARK: - Child views
+    private func setupDateView(with model: DSInputDateModel?) {
+        guard let model else { return }
+
+        let view = DSInputDateView()
+        inputDateView = view
+        stack.addArrangedSubview(view)
+
+        let viewModel = DSInputDateViewModel(
+            componentId: model.componentId,
+            id: model.id,
+            inputCode: model.inputCode,
+            title: model.label,
+            placeholder: R.Strings.general_date_picker_hint.localized(),
+            validators: [],
+            defaultText: model.value,
+            instructionsText: model.hint,
+            enableManualEnter: false
+        ) { [weak self] text in
+            self?.onDateChanged(date: text)
+        }
+        view.configure(viewModel: viewModel)
+    }
+
+    private func setupTimeView(with model: DSInputTimeModel?) {
+        guard let model else { return }
+
+        let view = DSInputTimeView()
+        inputTimeView = view
+        stack.addArrangedSubview(view)
+
+        let viewModel = DSInputTimeViewModel(
+            componentId: model.componentId,
+            id: model.id,
+            inputCode: model.inputCode,
+            title: model.label,
+            placeholder: R.Strings.general_time_picker_hint.localized(),
+            validators: [],
+            defaultText: model.value,
+            instructionsText: model.hint
+        ) { [weak self] text in
+            self?.onTimeChanged(time: text)
+        }
+        view.configure(viewModel: viewModel)
+        
+        if let value = model.value, let date = outputDateFormatter.date(from: value) {
+            view.setDayDate(date: date)
+        } else {
+            view.isUserInteractionEnabled = false
+        }
+    }
+
+    // MARK: - Change handling
     private func onDateChanged(date: String) {
-        self.dateString = date
-        self.timeString = nil
+        dateString = date
+        timeString = nil
+
         if let dayDate = inputDateView?.outputFormatter.date(from: date) {
             inputTimeView?.setDayDate(date: dayDate)
             inputTimeView?.isUserInteractionEnabled = true
         }
-        updateDate()
+        recalculateSelectedDate()
     }
-    
+
     private func onTimeChanged(time: String) {
-        self.timeString = time
-        updateDate()
+        timeString = time
+        recalculateSelectedDate()
     }
-    
-    private func updateDate() {
-        var calendar = Calendar.current
-        calendar.timeZone = timezone
-        calendar.locale = Locale(identifier: "uk_UA")
-        if let day = dateString, let date = inputDateView?.outputFormatter.date(from: day) {
-            var dateComponents = calendar.dateComponents([.year, .month, .day], from: date)
-            if let timeArray = timeString?.split(separator: ":").compactMap({ Int($0) }), timeArray.count >= 2 {
-                dateComponents.hour = timeArray[0]
-                dateComponents.minute = timeArray[1]
-                dateComponents.second = 0
-            }
-            selectedDate = calendar.date(from: dateComponents)
-        } else {
-            selectedDate = nil
+
+    private func recalculateSelectedDate() {
+        selectedDate = makeSelectedDate()
+        viewModel?.onChange?(selectedDate.map(outputDateFormatter.string(from:)))
+    }
+
+    // MARK: - Helpers
+    private func makeSelectedDate() -> Date? {
+        guard
+            let dateString,
+            let day = inputDateView?.outputFormatter.date(from: dateString)
+        else { return nil }
+
+        var components = calendar.dateComponents([.year, .month, .day], from: day)
+        if let time = parseTime(timeString) {
+            components.hour = time.hour
+            components.minute = time.minute
+            components.second = 0
         }
-        if let selectedDate = selectedDate {
-            viewModel?.onChange?(outputDateFormatter.string(from: selectedDate))
-            return
-        }
-        viewModel?.onChange?(nil)
+        return calendar.date(from: components)
+    }
+
+    private func parseTime(_ string: String?) -> (hour: Int, minute: Int)? {
+        guard
+            let components = string?.split(separator: ":").compactMap({ Int($0) }),
+            components.count >= 2
+        else { return nil }
+        return (components[0], components[1])
+    }
+
+    private func date(fromWireString string: String?) -> Date? {
+        guard let string, !string.isEmpty else { return nil }
+        return outputDateFormatter.date(from: string)
+    }
+
+    private func resetSelection() {
+        dateString = nil
+        timeString = nil
+        selectedDate = nil
     }
 }
 
+// MARK: - Constants
 private extension DSInputDateTimeView {
     enum Constants {
         static let stackSpacing: CGFloat = 16
-        static let dateFormat = "dd.MM.yyyy"
-        static let timeFormat = "HH:mm"
         static let outputDateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
     }
 }

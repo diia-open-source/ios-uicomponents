@@ -11,6 +11,8 @@ public struct DSCheckboxMlcModel: Codable {
     public let descriptions: [String]?
     public let isSelected: Bool?
     public let isEnabled: Bool?
+    public let descriptionStyle: String?
+    public let chips: [DSCardStatusChipMlc]?
 
     public init(
         id: String,
@@ -20,7 +22,9 @@ public struct DSCheckboxMlcModel: Codable {
         description: String? = nil,
         descriptions: [String]? = nil,
         isSelected: Bool? = nil,
-        isEnabled: Bool? = nil
+        isEnabled: Bool? = nil,
+        descriptionStyle: String? = nil,
+        chips: [DSCardStatusChipMlc] = []
     ) {
         self.id = id
         self.componentId = componentId
@@ -30,6 +34,8 @@ public struct DSCheckboxMlcModel: Codable {
         self.descriptions = descriptions
         self.isSelected = isSelected
         self.isEnabled = isEnabled
+        self.descriptionStyle = descriptionStyle
+        self.chips = chips
     }
     
     static let mock = DSCheckboxMlcModel(

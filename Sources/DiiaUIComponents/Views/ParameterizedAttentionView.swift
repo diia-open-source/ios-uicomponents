@@ -19,7 +19,7 @@ public struct ParameterizedAttentionMessage: Codable {
 /// design_system_code: attentionMessageMlc
 public final class ParameterizedAttentionView: BaseCodeView {
     
-    private var descriptionTextView: UITextView = UITextView()
+    private var descriptionTextView = LinkOnlyTextView()
     private var titleLabel: UILabel = UILabel().withParameters(font: FontBook.bigText)
     private var emojiLabel: UILabel = UILabel().withParameters(font: FontBook.bigEmoji)
     private var accessibilityLinksStackView: UIStackView = UIStackView.create(.vertical, spacing: Constants.accessibilityLinksSpacing, distribution: .equalSpacing)

@@ -21,7 +21,7 @@ public final class ParameterizedStatusInfoView: BaseCodeView {
     
     // MARK: - Views
     private let titleLabel = UILabel().withParameters(font: FontBook.bigText)
-    private let descriptionTextView = UITextView()
+    private let descriptionTextView = LinkOnlyTextView()
     private let emojiLabel = UILabel().withParameters(font: FontBook.smallHeadingFont)
     private let containerView = UIView()
     private var urlOpener: URLOpenerProtocol?
@@ -50,7 +50,6 @@ public final class ParameterizedStatusInfoView: BaseCodeView {
             padding: .init(top: Constants.bigSpacing, left: Constants.standardSpacing, bottom: Constants.bigSpacing, right: Constants.bigSpacing)
         )
         
-        descriptionTextView.configureForParametrizedText()
         descriptionTextView.delegate = self
         
         setupAccessibility()

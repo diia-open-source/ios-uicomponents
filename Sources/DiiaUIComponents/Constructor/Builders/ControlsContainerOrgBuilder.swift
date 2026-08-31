@@ -36,10 +36,11 @@ extension ControlsContainerOrgBuilder: DSViewMockableBuilderProtocol {
             minMandatorySelectedItems: 2,
             maxMandatorySelectedItems: 2,
             controlType: .multipleChoice,
+            selectionStyle: nil,
             items: [
                 ControlsItemOrgModel(
                     componentId: "componentId",
-                    paddingMode: .init(top: .none, side: .none),
+                    paddingMode: .init(top: DSSizingType.none, side: DSSizingType.none),
                     selectorItem: AnyCodable.dictionary(["checkBoxSquareAtm": AnyCodable.dictionary([:])]),
                     size: .medium,
                     alignment: .center,
@@ -50,7 +51,7 @@ extension ControlsContainerOrgBuilder: DSViewMockableBuilderProtocol {
                     innerSideSpacer: .none),
                 ControlsItemOrgModel(
                     componentId: "componentId2",
-                    paddingMode: .init(top: .none, side: .none),
+                    paddingMode: .init(top: DSSizingType.none, side: DSSizingType.none),
                     selectorItem: AnyCodable.dictionary(["checkBoxSquareAtm": AnyCodable.dictionary([:])]),
                     size: .small,
                     alignment: .top,
@@ -61,7 +62,7 @@ extension ControlsContainerOrgBuilder: DSViewMockableBuilderProtocol {
                     innerSideSpacer: .small),
                 ControlsItemOrgModel(
                     componentId: "componentId3",
-                    paddingMode: .init(top: .none, side: .none),
+                    paddingMode: .init(top: DSSizingType.none, side: DSSizingType.none),
                     selectorItem: AnyCodable.dictionary(["radioButtonAtm": AnyCodable.dictionary([:])]),
                     size: .medium,
                     alignment: .top,

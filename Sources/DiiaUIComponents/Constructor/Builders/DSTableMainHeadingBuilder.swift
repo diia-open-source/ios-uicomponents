@@ -20,7 +20,7 @@ public struct DSTableMainHeadingBuilder: DSViewBuilderProtocol {
             }
         }
 
-        headingView.configure(with: viewModel)
+        headingView.configure(with: viewModel, urlOpener: UIComponentsConfiguration.shared.urlOpener)
 
         let box = BoxView(subview: headingView).withConstraints(insets: paddingType.insets(for: object, modelKey: modelKey, defaultInsets: .zero))
         return box

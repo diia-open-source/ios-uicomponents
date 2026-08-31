@@ -28,6 +28,8 @@ extension R {
         case checkmarkIcon
         case forwardWhite
         case calendar
+        case ds_calendar = "DS_calendar"
+        case ds_time = "DS_time"
         case clocks
         case insuranceBar
         case checkboxUnchecked

@@ -10,10 +10,11 @@ public struct ControlsContainerOrgModel: Codable {
     public let minMandatorySelectedItems: Int?
     public let maxMandatorySelectedItems: Int?
     public let controlType: ControlType
+    public let selectionStyle: SelectionStyle?
     public let items: [ControlsItemOrgModel]
     public let btnPrimaryAdditionalAtm: DSButtonModel?
     
-    public init(componentId: String, inputCode: String, mandatory: Bool?, minMandatorySelectedItems: Int?, maxMandatorySelectedItems: Int?, controlType: ControlType, items: [ControlsItemOrgModel], btnPrimaryAdditionalAtm: DSButtonModel?) {
+    public init(componentId: String, inputCode: String, mandatory: Bool?, minMandatorySelectedItems: Int?, maxMandatorySelectedItems: Int?, controlType: ControlType, selectionStyle: SelectionStyle?, items: [ControlsItemOrgModel], btnPrimaryAdditionalAtm: DSButtonModel?) {
         self.componentId = componentId
         self.inputCode = inputCode
         self.mandatory = mandatory
@@ -22,10 +23,30 @@ public struct ControlsContainerOrgModel: Codable {
         self.controlType = controlType
         self.items = items
         self.btnPrimaryAdditionalAtm = btnPrimaryAdditionalAtm
+        self.selectionStyle = selectionStyle
     }
     
     public enum ControlType: String, Codable {
         case singleChoice, multipleChoice
+    }
+    
+    public enum SelectionStyle: String, Codable, EnumDecodable {
+        public static var defaultValue: ControlsContainerOrgModel.SelectionStyle = .empty
+        
+        case filled, empty
+        
+        public var selectedBackground: UIColor {
+            switch self {
+            case .filled:
+                return UIColor("#F1F6F6")
+            case .empty:
+                return .clear
+            }
+        }
+        
+        public var deselectedBackground: UIColor {
+            return .clear
+        }
     }
 }
 
@@ -40,7 +61,7 @@ public final class ControlsContainerOrgViewModel {
         self.eventHandler = eventHandler
 
         let mapped: [ControlsItemOrgViewModel] = model.items.map { item in
-            let vm = ControlsItemOrgViewModel(model: item)
+            let vm = ControlsItemOrgViewModel(model: item, selectionStyle: model.selectionStyle ?? .empty)
             vm.onChangeSelection = { [weak self, weak vm] _ in
                 guard let vm else { return }
                 self?.updateSelected(vm)

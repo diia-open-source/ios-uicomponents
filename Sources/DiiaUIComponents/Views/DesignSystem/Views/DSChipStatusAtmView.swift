@@ -6,7 +6,7 @@ import UIKit
 
 final public class DSChipStatusAtmView: BaseCodeView {
     
-    private let statusLabel = UILabel().withParameters(font: FontBook.statusFont)
+    private let statusLabel = UILabel().withParameters(font: FontBook.mainFont.regular.size(10))
     private let roundView = VerticalRoundView()
     
     override public func setupSubviews() {
@@ -48,7 +48,7 @@ extension DSChipStatusAtmView {
     enum Constants {
         static let borderWidth: CGFloat = 1
         static let superPadding = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 16)
-        static let padding = UIEdgeInsets(top: 1, left: 8, bottom: 1, right: 8)
+        static let padding = UIEdgeInsets(top: 4, left: 8, bottom: 4, right: 8)
         static let size = CGSize(width: 0, height: 16)
     }
 }

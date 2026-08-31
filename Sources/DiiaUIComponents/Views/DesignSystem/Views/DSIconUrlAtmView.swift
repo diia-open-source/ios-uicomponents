@@ -43,6 +43,7 @@ public final class DSIconUrlAtmView: BaseCodeView {
     
     public func configure(with model: DSIconUrlAtmModel, placeholder: UIImage? = nil) {
         self.action = model.action
+        isUserInteractionEnabled = model.action != nil
         let finishCallback: Callback = { [weak self] in
             self?.imageView.isHidden = false
             self?.loadingView.isHidden = true

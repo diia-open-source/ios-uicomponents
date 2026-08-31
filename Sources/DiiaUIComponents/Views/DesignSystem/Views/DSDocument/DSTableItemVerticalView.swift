@@ -8,30 +8,46 @@ public final class DSTableItemVerticalView: DSTableItemView {
     private var eventHandler: ((ConstructorItemEvent) -> Void)?
     
     private let mainStack = UIStackView.create(.horizontal, spacing: Constants.spacing, alignment: .top)
+    private let contentStack = UIStackView.create(spacing: Constants.stackSpacing)
     private let labelValueStack = UIStackView.create(spacing: Constants.stackSpacing)
+    private let labelHeaderStack = UIStackView.create(.horizontal, spacing: Constants.stackSpacing, alignment: .center)
     private let strikeBlockStack = UIStackView.create(spacing: Constants.stackSpacing, alignment: .leading)
     private let strikeTextStack = UIStackView.create(.horizontal, spacing: Constants.stackSpacing)
     private let blueTextStack = UIStackView.create(.horizontal, spacing: Constants.stackSpacing)
+
+    private var supportLabelWidthConstraint: NSLayoutConstraint?
     
     private var urlOpener: URLOpenerProtocol?
     
     public override func setupSubviews() {
         super.setupSubviews()
         translatesAutoresizingMaskIntoConstraints = false
+        
+        labelHeaderStack.addArrangedSubviews([label, icon, UIView()])
+        labelValueStack.addArrangedSubviews([labelHeaderStack, subLabel, value])
         strikeTextStack.addArrangedSubviews([textLabel, strikeTextLabel])
         blueTextStack.addArrangedSubviews([blueIconLeft, blueTextLabel])
         strikeBlockStack.addArrangedSubviews([strikeTextStack, blueTextStack])
-        labelValueStack.addArrangedSubviews([label, subLabel, value, subValue, icon])
-        mainStack.addArrangedSubviews([supportLabel, labelValueStack, strikeBlockStack, actionButton])
+        contentStack.addArrangedSubviews([labelValueStack, strikeBlockStack, subValue])
+        mainStack.addArrangedSubviews([supportLabel, contentStack, actionButton])
         addSubview(mainStack)
         
         value.configureForParametrizedText()
         value.delegate = self
         value.textContainer.lineBreakMode = .byWordWrapping
+        mainStack.anchor(
+            top: topAnchor,
+            leading: leadingAnchor,
+            trailing: trailingAnchor)
+        let bottomAnchor = mainStack.bottomAnchor.constraint(equalTo: bottomAnchor)
+        bottomAnchor.priority = .defaultHigh
+        bottomAnchor.isActive = true
         
-        mainStack.fillSuperview()
-        icon.heightAnchor.constraint(equalTo: icon.widthAnchor,
-                                     multiplier: Constants.signProportion).isActive = true
+        icon.translatesAutoresizingMaskIntoConstraints = false
+        icon.heightAnchor.constraint(
+            equalTo: icon.widthAnchor,
+            multiplier: Constants.signProportion).isActive = true
+        
         setupUI()
         setupAccessibility()
     }
@@ -90,16 +106,15 @@ public final class DSTableItemVerticalView: DSTableItemView {
         subValue.setContentCompressionResistancePriority(.required, for: .horizontal)
         subValue.setContentHuggingPriority(.required, for: .horizontal)
         
-        label.isHidden = model.label == nil
-        subLabel.isHidden = model.secondaryLabel == nil
-        value.isHidden = model.value == nil || model.value?.isEmpty == true
-        subValue.isHidden = model.secondaryValue == nil
-        icon.isHidden = image == nil
-        labelValueStack.isHidden = label.isHidden
-            && subLabel.isHidden
-            && value.isHidden
-            && subValue.isHidden
-            && icon.isHidden
+        
+        label.isHidden = model.label?.isEmpty ?? true
+        subLabel.isHidden = model.secondaryLabel?.isEmpty ?? true
+        value.isHidden = model.value?.isEmpty ?? true
+        subValue.isHidden = model.secondaryValue?.isEmpty ?? true
+        icon.isHidden = model.icon == nil
+        
+        labelHeaderStack.isHidden = label.isHidden && icon.isHidden
+        labelValueStack.isHidden = labelHeaderStack.isHidden && subLabel.isHidden && value.isHidden && subValue.isHidden
         
         actionButton.isHidden = model.icon == nil || value.isHidden
         
@@ -156,7 +171,8 @@ public final class DSTableItemVerticalView: DSTableItemView {
     private func configureSupportingLabel(model: DSTableItemVerticalMlc) {
         let isHidden = model.supportingValue == nil && model.pointSupportingValue == nil
         supportLabel.isHidden = isHidden
-
+        supportLabelWidthConstraint?.isActive = false
+        
         if let pointSupportingValue = model.pointSupportingValue {
             supportLabel.attributedText = pointSupportingValue
                 .attributed(
@@ -166,7 +182,11 @@ public final class DSTableItemVerticalView: DSTableItemView {
                     textAlignment: .left,
                     lineBreakMode: .byWordWrapping
                 )
-            supportLabel.widthAnchor.constraint(equalTo: widthAnchor, multiplier: Constants.pointSupportLabelWidthMultiplier).isActive = true
+            supportLabelWidthConstraint = supportLabel.widthAnchor.constraint(
+                equalTo: widthAnchor,
+                multiplier: Constants.pointSupportLabelWidthMultiplier
+            )
+            supportLabelWidthConstraint?.isActive = true
             mainStack.setCustomSpacing(Constants.supportLabelRightOffset, after: supportLabel)
         } else if let supportingValue = model.supportingValue {
             supportLabel.attributedText = supportingValue
@@ -177,7 +197,12 @@ public final class DSTableItemVerticalView: DSTableItemView {
                     textAlignment: .right,
                     lineBreakMode: .byWordWrapping
                 )
-            supportLabel.widthAnchor.constraint(equalTo: widthAnchor, multiplier: Constants.supportLabelWidthMultiplier).isActive = true
+            supportLabelWidthConstraint = supportLabel.widthAnchor.constraint(
+                equalTo: widthAnchor,
+                multiplier: Constants.supportLabelWidthMultiplier
+            )
+            supportLabelWidthConstraint?.isActive = true
+            mainStack.setCustomSpacing(Constants.spacing, after: supportLabel)
         }
     }
 

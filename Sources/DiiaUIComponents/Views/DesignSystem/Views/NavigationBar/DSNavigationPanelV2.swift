@@ -6,12 +6,14 @@ public struct DSNavigationPanelV2: Codable {
     public let componentId: String?
     public let title: String?
     public let iconLeft: DSIconModel?
+    public let iconRight: DSIconModel?
     public let isClosed: Bool?
     
-    public init(componentId: String?, title: String?, iconLeft: DSIconModel?, isClosed: Bool?) {
+    public init(componentId: String?, title: String?, iconLeft: DSIconModel?, iconRight: DSIconModel?, isClosed: Bool?) {
         self.componentId = componentId
         self.title = title
         self.iconLeft = iconLeft
+        self.iconRight = iconRight
         self.isClosed = isClosed
     }
 }
@@ -20,10 +22,11 @@ public struct DSNavigationPanelV2: Codable {
 public final class DSNavigationPanelV2View: BaseCodeView {
     private let smallTitle = UILabel().withParameters(font: FontBook.mainFont.regular.size(16), numberOfLines: Constants.smallTitleNumberOfLines, textAlignment: .center, lineBreakMode: .byTruncatingTail)
     private let backButton = ActionButton(type: .icon)
+    private let rightButton = ActionButton(type: .icon)
     private var isClosed = false
     
     override public func setupSubviews() {
-        addSubviews([smallTitle, backButton])
+        addSubviews([smallTitle, backButton, rightButton])
         backButton.anchor(top: topAnchor,
                           leading: leadingAnchor,
                           bottom: bottomAnchor,
@@ -34,7 +37,11 @@ public final class DSNavigationPanelV2View: BaseCodeView {
         smallTitle.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         smallTitle.centerYAnchor.constraint(equalTo: backButton.centerYAnchor).isActive = true
         smallTitle.alpha = 0
-        
+        rightButton.anchor(top: topAnchor,
+                           bottom: bottomAnchor,
+                           trailing: trailingAnchor,
+                           padding: Constants.buttonInsets,
+                          size: Constants.closeButtonSize)
         withHeight(Constants.viewHeight)
         
         backButton.iconRenderingMode = .alwaysOriginal
@@ -54,6 +61,15 @@ public final class DSNavigationPanelV2View: BaseCodeView {
                 image: imageProvider.imageForCode(imageCode: leftIcon.code),
                 callback: {
                     eventHandler(.action(leftIcon.action ?? .init(type: "back")))
+                })
+        }
+        rightButton.isHidden = data.iconRight == nil
+        if let rightIcon = data.iconRight, let rightAction = rightIcon.action {
+            let imageProvider = UIComponentsConfiguration.shared.imageProvider
+            rightButton.action = .init(
+                image: imageProvider.imageForCode(imageCode: rightIcon.code),
+                callback: {
+                    eventHandler(.action(rightAction))
                 })
         }
         if data.isClosed == true {
@@ -100,7 +116,7 @@ extension DSNavigationPanelV2View {
         static let smallTitleNumberOfLines: Int = 1
         static let scrollContentOffset: CGFloat = 10
         static let leftPadiing: CGFloat = 8
-        static let buttonInsets: UIEdgeInsets = .init(top: 32, left: 16, bottom: 16, right: 0)
+        static let buttonInsets: UIEdgeInsets = .init(top: 32, left: 16, bottom: 16, right: 16)
         static let bigTitleInset: CGFloat = 24
         static let viewHeight: CGFloat = 76
         static let closeButtonSize = CGSize(width: 28, height: 28)

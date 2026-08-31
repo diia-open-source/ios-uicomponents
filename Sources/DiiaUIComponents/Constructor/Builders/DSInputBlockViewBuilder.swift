@@ -48,3 +48,25 @@ public struct DSInputBlockViewBuilder: DSViewBuilderProtocol {
         return paddingBox
     }
 }
+
+// MARK: - Mock
+extension DSInputBlockViewBuilder: DSViewMockableBuilderProtocol {
+    public func makeMockModel() -> AnyCodable {
+        let model = DSInputBlockModel(
+            componentId: "componentId",
+            tableMainHeadingMlc: .mock,
+            tableSecondaryHeadingMlc: .mock,
+            items: [
+                InputPhoneCodeV2Builder().makeMockModel(),
+                InputTextV2Builder().makeMockModel(),
+                DSInputNumberFractionalViewBuilder().makeMockModel(),
+                DSSelectorOrgV2Builder().makeMockModel()
+            ],
+            attentionIconMessageMlc: .mock
+        )
+        
+        return .dictionary([
+            modelKey: .fromEncodable(encodable: model)
+        ])
+    }
+}

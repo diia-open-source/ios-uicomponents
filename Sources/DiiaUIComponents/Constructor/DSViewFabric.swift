@@ -215,7 +215,7 @@ public extension DSViewFabric {
         DSInputDateMlcBuilder(),
         DSInputTimeMlcBuilder(),
         DSCalendarOrgBuilder(),
-        DSInputDateTimeMlcBuilder(),
+        DSInputDateTimeOrgBuilder(),
         DSDashboardCardMlcBuilder(),
         DSDashboardCardTileOrgBuilder(),
         DSAlertCardBuilder(),
@@ -309,6 +309,9 @@ public extension DSViewFabric {
         DropdownWithInputsBuilder(),
         DSPhotoUploadMlcBuilder(),
         DSTableHeadingWithTextMlcBuilder(),
+        DSInputDateTimeOrgV2Builder(),
+        DSOutlinedPicAtmBuilder(),
+        ContentCardOrgBuilder(),
         CardProgressMlcBuilder()
     ]
 }

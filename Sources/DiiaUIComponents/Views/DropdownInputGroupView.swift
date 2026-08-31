@@ -53,11 +53,18 @@ public final class DropdownInputGroupView: BaseCodeView {
             trailing: trailingAnchor,
             size: Constants.inputSize
         )
+        
+        setupAccessibility()
     }
     
     public func configure(viewModel: DropdownInputGroupViewModel) {
         dropdownListView.configure(viewModel: viewModel.dropdownListViewModel)
         inputDocumentView.configure(viewModel: viewModel.inputDocumentViewModel)
+    }
+    
+    private func setupAccessibility() {
+        isAccessibilityElement = false
+        accessibilityElements = [dropdownListView, inputDocumentView]
     }
 }
 

@@ -22,7 +22,7 @@ public struct DSPhotoUploadMlcBuilder: DSViewBuilderProtocol {
             iconRight: data.iconRight)
         view.configure(with: viewModel, eventHandler: eventHandler)
         eventHandler(.onComponentConfigured(with: .photoUpload(viewModel: viewModel)))
-        let insets = padding.defaultPadding(object: object, modelKey: modelKey)
+        let insets = padding.insets(for: object, modelKey: modelKey, defaultInsets: UIEdgeInsets(left: 16, right: 16, bottom: 0, top: 16))
         let paddingBox = BoxView(subview: view).withConstraints(insets: insets)
         return paddingBox
     }

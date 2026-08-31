@@ -31,21 +31,32 @@ public struct PhotoCardCarouselBuilder: DSViewBuilderProtocol {
 
 public struct PhotoCardCarouseModel: Codable {
     public let componentId: String
-    public let dotNavigationAtm: DSDotNavigationModel
-    public let minSelected: Int?
-    public let maxSelected: Int?
-    public let items: [PhotoCardMlc]
+    public let minSelectedCount: Int?
+    public let maxSelectedCount: Int?
+    public let inputCode: String?
+    public let controlType: String?
+    public let items: [PhotoCardItemMlc]
     
     public init(componentId: String,
-                dotNavigationAtm: DSDotNavigationModel,
-                minSelected: Int?,
-                maxSelected: Int?,
-                items: [PhotoCardMlc]) {
+                minSelectedCount: Int?,
+                maxSelectedCount: Int?,
+                inputCode: String?,
+                controlType: String?,
+                items: [PhotoCardItemMlc]) {
         self.componentId = componentId
-        self.dotNavigationAtm = dotNavigationAtm
-        self.minSelected = minSelected
-        self.maxSelected = maxSelected
+        self.minSelectedCount = minSelectedCount
+        self.maxSelectedCount = maxSelectedCount
+        self.inputCode = inputCode
+        self.controlType = controlType
         self.items = items
+    }
+}
+
+public struct PhotoCardItemMlc: Codable {
+    public let photoCardMlc: PhotoCardMlc
+
+    public init(photoCardMlc: PhotoCardMlc) {
+        self.photoCardMlc = photoCardMlc
     }
 }
 

@@ -15,8 +15,27 @@ public struct DSInputNumberMlc: Codable {
     public let errorMessage: String?
     public let mask: String?
     public let iconRight: DSIconModel?
+    public let decimalCount: Int?
+    public let minIntegerCount: Int?
+    public let autoFillDecimal: Bool?
     
-    public init(componentId: String?, inputCode: String?, label: String, placeholder: String?, hint: String?, value: Double?, maxValue: Double?, minValue: Double?, mandatory: Bool?, errorMessage: String?, mask: String? = nil, iconRight: DSIconModel? = nil) {
+    public init(
+        componentId: String?,
+        inputCode: String?,
+        label: String,
+        placeholder: String?,
+        hint: String?,
+        value: Double?,
+        maxValue: Double?,
+        minValue: Double?,
+        mandatory: Bool?,
+        errorMessage: String?,
+        mask: String? = nil,
+        iconRight: DSIconModel? = nil,
+        decimalCount: Int? = nil,
+        minIntegerCount: Int? = nil,
+        autoFillDecimal: Bool? = false
+    ) {
         self.componentId = componentId
         self.inputCode = inputCode
         self.label = label
@@ -29,6 +48,9 @@ public struct DSInputNumberMlc: Codable {
         self.errorMessage = errorMessage
         self.mask = mask
         self.iconRight = iconRight
+        self.decimalCount = decimalCount
+        self.minIntegerCount = minIntegerCount
+        self.autoFillDecimal = autoFillDecimal
     }
 }
 

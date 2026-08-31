@@ -5,7 +5,7 @@ public class DSTableItemView: BaseCodeView {
         
     internal var label = UILabel()
     internal var subLabel = UILabel()
-    internal var value = UITextView()
+    internal var value = LinkOnlyTextView()
     internal var subValue = UILabel()
     internal var textLabel = UILabel().withParameters(font: FontBook.bigText, textAlignment: .left)
     internal var strikeTextLabel = UILabel().withParameters(font: FontBook.bigText, textColor: .black540, textAlignment: .left)

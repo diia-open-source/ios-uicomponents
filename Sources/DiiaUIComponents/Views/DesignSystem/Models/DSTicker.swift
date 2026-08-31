@@ -43,7 +43,7 @@ public enum DSTickerType: String, Codable, EnumDecodable, Equatable {
         case .positive:
             return R.image.insuranceBar.image ?? UIImage()
         case .informative:
-            return UIImage.from(color: UIColor(AppConstants.Colors.tickerBlueColor))
+            return UIImage.from(color: Constants.tickerInformativeColor)
         case .warning:
             return UIImage.from(color: UIColor(AppConstants.Colors.yellowErrorColor))
         case .negative:
@@ -73,6 +73,7 @@ extension DSTickerType {
         static let gradientBlueColors = [UIColor("#A9CEE7"),UIColor("#4BB3FE")]
         static let gradientPinkColors = [UIColor("#FF3974"),UIColor("#FF6262")]
         static let gradientRainbowColors = [UIColor("#FC2C78"),UIColor("#FFD15C"), UIColor("#4EE89E"), UIColor("#993FC3")]
+        static let tickerInformativeColor = UIColor(AppConstants.Colors.tickerAdditionalBlueColor).withAlphaComponent(0.16)
         static let tickerSize = CGSize(width: 300, height: 32)
     }
 }

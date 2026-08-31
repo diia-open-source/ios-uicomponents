@@ -64,11 +64,13 @@ public struct ControlsItemOrgModel: Codable {
 
 public final class ControlsItemOrgViewModel: Hashable {
     public let model: ControlsItemOrgModel
+    public let selectionStyle: ControlsContainerOrgModel.SelectionStyle
     public let state: Observable<SelectorState> = .init(value: .enabled)
     public var onChangeSelection: ((Bool) -> Void)?
     
-    public init(model: ControlsItemOrgModel) {
+    public init(model: ControlsItemOrgModel, selectionStyle: ControlsContainerOrgModel.SelectionStyle = .empty) {
         self.model = model
+        self.selectionStyle = selectionStyle
         switch (model.isSelected ?? false, model.isEnabled ?? true) {
         case (true, true):
             self.state.value = .selected
@@ -141,7 +143,7 @@ public final class ControlsItemOrgView: BaseCodeView {
         spacerConstraints?.height?.constant = style == .radioButton ? Constants.radioButtonHeight : 1
         viewModel.state.observe(observer: self) { [weak self] state in
             self?.updateSelectorImage(style: style, state: state)
-            self?.updateBackground(style: style, state: state)
+            self?.updateBackground(style: viewModel.selectionStyle, state: state)
         }
         
         layoutIfNeeded()
@@ -151,7 +153,7 @@ public final class ControlsItemOrgView: BaseCodeView {
         self.viewFabric = viewFabric
     }
     
-    private func updateBackground(style: SelectorStyle, state: ControlsItemOrgViewModel.SelectorState) {
+    private func updateBackground(style: ControlsContainerOrgModel.SelectionStyle, state: ControlsItemOrgViewModel.SelectorState) {
         switch state {
         case .enabled, .disabled:
             backgroundColor = style.deselectedBackground
@@ -194,19 +196,6 @@ public final class ControlsItemOrgView: BaseCodeView {
             case .checkbox:
                 return "checkBoxSquareAtm"
             }
-        }
-        
-        public var selectedBackground: UIColor {
-            switch self {
-            case .radioButton:
-                return UIColor("#F1F6F6")
-            case .checkbox:
-                return .clear
-            }
-        }
-        
-        public var deselectedBackground: UIColor {
-            return .clear
         }
         
         public var deselectedImage: UIImage? {

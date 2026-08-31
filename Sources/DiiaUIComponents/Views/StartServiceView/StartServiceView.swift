@@ -7,7 +7,7 @@ public final class StartServiceView: UIView {
     @IBOutlet private weak var greetingsLabel: UILabel!
     @IBOutlet private weak var attentionView: ParameterizedAttentionView!
     @IBOutlet private weak var statusView: StatusInfoView!
-    @IBOutlet private weak var infoTextView: UITextView!
+    @IBOutlet private weak var infoTextView: LinkOnlyTextView!
 
     // MARK: - Life Cycle
     override init(frame: CGRect) {

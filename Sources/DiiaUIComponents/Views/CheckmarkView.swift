@@ -23,7 +23,7 @@ public final class CheckmarkViewModel {
 public final class CheckmarkView: BaseCodeView {
     // MARK: - Properties
     private let checkmarkImageView = UIImageView()
-    private let textView = UITextView()
+    private let textView = LinkOnlyTextView()
     private var isActive = true
     private var onChange: ((Bool) -> Void)?
     
@@ -60,9 +60,7 @@ public final class CheckmarkView: BaseCodeView {
         isUserInteractionEnabled = true
 
         isChecked = false
-
         textView.delegate = self
-        textView.configureForParametrizedText()
 
         setupAccessibility()
     }

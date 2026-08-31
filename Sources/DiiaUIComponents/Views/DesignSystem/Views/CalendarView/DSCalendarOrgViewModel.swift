@@ -9,7 +9,7 @@ public final class DSCalendarOrgViewModel {
     public let calendarOrg: Observable<DSCalendarModel>
     
     public let isLoading = Observable<Bool>(value: false)
-    public let selectedPeriod = Observable<Date>(value: Date())
+    public let selectedPeriod = Observable<Date?>(value: nil)
     public let selectedDate = Observable<Date?>(value: nil)
     public let selectedChipData = Observable<AnyCodable?>(value: nil)
     

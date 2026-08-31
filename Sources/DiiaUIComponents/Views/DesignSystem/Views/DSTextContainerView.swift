@@ -18,7 +18,7 @@ public struct DSTextContainerData: Codable {
 
 /// design_system_code: textLabelContainerMlc
 public final class DSTextContainerView: BaseCodeView {
-    private let textView = UITextView()
+    private let textView = LinkOnlyTextView()
     private let titleLabel = UILabel().withParameters(font: FontBook.detailsTitleFont)
     
     override public func setupSubviews() {

@@ -37,7 +37,22 @@ public struct DSChipTabsViewBuilder: DSViewBuilderProtocol {
                 isSelectable: chipMlc.isSelectable,
                 action: chipMlc.action)
         }
-        let viewModel = DSChipTabViewModel(items: items) { selectedChip in
+        // TODO: Temporary decision. Will move later from items to root structure
+        var filterButtonViewModel: DSWhiteAdditionalIconButtonViewModel?
+        if let filterButtonModel = data.items.first(where: { $0.btnSortMlc != nil })?.btnSortMlc {
+            filterButtonViewModel = .init(
+                name: filterButtonModel.label,
+                image: UIComponentsConfiguration.shared.imageProvider.imageForCode(imageCode: filterButtonModel.icon) ?? UIImage(),
+                badgeCount: .init(value: filterButtonModel.badgeCounterAtm?.count ?? 0),
+                accessibilityDescription: filterButtonModel.accessibilityDescription)
+            filterButtonViewModel?.clickHandler = { [weak filterButtonViewModel] in
+                guard let action = filterButtonModel.action,
+                      let viewModel = filterButtonViewModel else { return }
+                eventHandler(.filterButtonAction(action: action, viewModel: viewModel))
+            }
+        }
+        
+        let viewModel = DSChipTabViewModel(items: items, filterButtonVM: filterButtonViewModel) { selectedChip in
             if let action = selectedChip.action {
                 eventHandler(.action(action))
             } else {

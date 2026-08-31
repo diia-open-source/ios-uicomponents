@@ -252,7 +252,7 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
         calendarStack.safelyRemoveArrangedSubviews()
         setupHeader()
         
-        var dateIteration = calendar.date(from: calendar.dateComponents([.year, .month], from: selectedPeriod))!
+        var dateIteration = calendar.date(from: calendar.dateComponents([.year, .month], from: selectedPeriod ?? Date()))!
         dateIteration = calendar.date(byAdding: .day, value: -1, to: dateIteration)!
         let firstWeekDay = calendar.component(.weekday, from: dateIteration)
         
@@ -334,7 +334,8 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
         for _ in 0..<Constants.monthVertical {
             let rowStack = UIStackView.create(.horizontal, distribution: .fillEqually)
             for _ in 0..<Constants.monthHorizontal {
-                if let date = calendar.date(from: DateComponents(year: selectedPeriod.year, month: month)) {
+                let year = selectedPeriod?.year ?? calendar.component(.year, from: Date())
+                if let date = calendar.date(from: DateComponents(year: year, month: month)) {
                     rowStack.addArrangedSubview(createMonthLabel(date: date))
                 }
                 month += 1
@@ -376,7 +377,7 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
     private func setupHeader() {
         guard let viewModel else { return }
         
-        let selectedPeriod = viewModel.selectedPeriod.value
+        let selectedPeriod = viewModel.selectedPeriod.value ?? Date()
         
         let currentTime = selectedPeriod.monthStr.capitalized + " \(calendar.component(.year, from: selectedPeriod))"
         currentTimeMlcView.configure(for: DSCurrentTimeMlc(label: currentTime))
@@ -397,7 +398,7 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
     
     private func setupYearHeader(for currentTime: DSCurrentTimeMlc? = nil) {
         guard let viewModel else { return }
-        let selectedPeriod = viewModel.selectedPeriod.value
+        let selectedPeriod = viewModel.selectedPeriod.value ?? Date()
         self.stubMsgBoxView.isHidden = true
         self.pagginationMsgView.isHidden = true
         
@@ -451,7 +452,7 @@ public final class DSCalendarOrgView: BaseCodeView, DSInputComponentProtocol {
     
     private func changePeriod(reduce: Bool, for dateStr: String? = nil) {
         guard let viewModel else { return }
-        let selectPeriod = viewModel.selectedPeriod.value
+        let selectPeriod = viewModel.selectedPeriod.value ?? Date()
         viewModel.selectedDate.value = nil
         if calendarMode == .month, let date = dateStr {
             viewModel.selectedPeriod.value = Constants.monthYearFormatter.date(from: date) ?? selectPeriod

@@ -93,7 +93,7 @@ public final class DSListItemView: BaseCodeView {
     private let leftSmallIconView: UIImageView = UIImageView().withSize(Constants.smallIconSize)
     private let titleLabel = UILabel().withParameters(font: FontBook.bigText,
                                                       lineBreakMode: .byTruncatingTail)
-    private let detailsTextView = UITextView()
+    private let detailsTextView = LinkOnlyTextView()
     private let rightIconView: UIImageView = UIImageView().withSize(Constants.smallIconSize)
     private lazy var chipStatusView = DSChipStatusAtmView()
     private lazy var amountView = DSAmountAtm()

@@ -48,7 +48,7 @@ public final class StubMessageViewV2: BaseCodeView {
     // MARK: - UI Elements
     private let emojiLabel = UILabel().withParameters(font: FontBook.stubEmoji)
     private let titleLabel = UILabel().withParameters(font: FontBook.emptyStateTitleFont)
-    private let descriptionTextView = UITextView()
+    private let descriptionTextView = LinkOnlyTextView()
     private let repeatButton = VerticalRoundButton()
     
     private var urlOpener: URLOpenerProtocol?

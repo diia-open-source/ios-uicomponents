@@ -29,6 +29,8 @@ public final class DSScalingTitleView: BaseCodeView {
         titleBottom = titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor)
         titleBottom?.isActive = true
         smallTitle.alpha = 0
+        
+        setupAccessibility()
     }
     
     // MARK: - Setup
@@ -54,6 +56,14 @@ public final class DSScalingTitleView: BaseCodeView {
             self.smallTitle.alpha = isExpanded ? 0 : 1
             self.layoutIfNeeded()
         })
+    }
+    
+    private func setupAccessibility() {
+        smallTitle.isAccessibilityElement = true
+        smallTitle.accessibilityTraits = .header
+        
+        titleLabel.isAccessibilityElement = true
+        titleLabel.accessibilityTraits = .header
     }
 }
 

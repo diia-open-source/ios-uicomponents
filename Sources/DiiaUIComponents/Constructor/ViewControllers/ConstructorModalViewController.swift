@@ -115,6 +115,40 @@ public final class ConstructorModalViewController: UIViewController {
     }
     
     // MARK: - Private
+    private func makeEventHandler() -> (ConstructorItemEvent) -> Void {
+        return { [weak self] event in
+            self?.presenter.handleEvent(event: event)
+        }
+    }
+
+    private func onViewsUpdated() {
+        inputViews = view.findTypedSubviews()
+        conditionViews = view.findTypedSubviews()
+        scrollDependentViews = view.findTypedSubviews()
+
+        if let bodyScrollView = constructorView?.bodyScrollView {
+            scrollDependentViews.forEach {
+                $0.scrollViewDidScroll(scrollView: bodyScrollView)
+            }
+        }
+
+        if !inputViews.isEmpty,
+            let constructorView,
+            let bottomConstraint = constructorView.bottomGroupBottomConstraint {
+            keyboardHandler = .init(type: .constraint(
+                constraint: bottomConstraint,
+                withoutInset: bottomConstraint.constant,
+                keyboardInset: Constants.keyboardSpacing + view.safeAreaInsets.bottom,
+                superview: constructorView))
+        }
+
+        if !scrollDependentViews.isEmpty, let scrollView = constructorView?.bodyScrollView {
+            scrollViewDidScroll(scrollView)
+        }
+
+        inputFieldsWasUpdated()
+    }
+
     @objc private func hideKeyboard() {
         // TODO: - Fix it
         onMainQueue { [weak self] in
@@ -149,12 +183,10 @@ extension ConstructorModalViewController: ConstructorModalScreenViewProtocol {
     }
     
     public func configure(model: DSConstructorModel) {
-        self.originalModel = model
+        originalModel = model
         
-        let eventHandler: (ConstructorItemEvent) -> Void = { [weak self] event in
-            self?.presenter.handleEvent(event: event)
-        }
-        
+        let eventHandler = makeEventHandler()
+
         let topViews = viewFabric.topGroupViews(for: model, eventHandler: eventHandler)
         let bodyViews = viewFabric.bodyViews(for: model, eventHandler: eventHandler)
         let bottomView = viewFabric.bottomGroupViews(for: model, eventHandler: eventHandler)
@@ -162,76 +194,15 @@ extension ConstructorModalViewController: ConstructorModalScreenViewProtocol {
         constructorView?.setupTopGroup(views: topViews)
         constructorView?.setupBody(views: bodyViews, withCloseButton: presenter.hasCloseButton)
         constructorView?.setupBottomGroup(views: bottomView)
-        
-        self.conditionViews = view.findTypedSubviews()
-        self.inputViews = view.findTypedSubviews()
-        self.scrollDependentViews = view.findTypedSubviews()
-        
-        if let bodyScrollView = constructorView?.bodyScrollView {
-            scrollDependentViews.forEach {
-                $0.scrollViewDidScroll(scrollView: bodyScrollView)
-            }
-            for bodyView in bodyViews {
-                if let bodyView = bodyView as? FullSizedViewProtocol {
-                    bodyView.setHeightEqual(to: bodyScrollView)
-                }
-            }
-        }
 
-        if !inputViews.isEmpty,
-            let constructorView = constructorView,
-            let bottomConstraint = constructorView.bottomGroupBottomConstraint {
-            keyboardHandler = .init(type: .constraint(
-                constraint: bottomConstraint,
-                withoutInset: bottomConstraint.constant,
-                keyboardInset: Constants.keyboardSpacing + view.safeAreaInsets.bottom,
-                superview: constructorView))
-        }
-        
-        if !scrollDependentViews.isEmpty, let scrollView = constructorView?.bodyScrollView {
-            scrollViewDidScroll(scrollView)
-        }
-        
-        self.inputFieldsWasUpdated()
+        onViewsUpdated()
     }
     
     public func setupBody(model: DSConstructorModel) {
-        let eventHandler: (ConstructorItemEvent) -> Void = { [weak self] event in
-            self?.presenter.handleEvent(event: event)
-        }
-        let bodyViews = self.viewFabric.bodyViews(for: model, eventHandler: eventHandler)
-        self.constructorView?.setupBody(views: bodyViews)
+        let bodyViews = viewFabric.bodyViews(for: model, eventHandler: makeEventHandler())
+        constructorView?.setupBody(views: bodyViews)
         
-        self.conditionViews = view.findTypedSubviews()
-        self.inputViews = view.findTypedSubviews()
-        self.scrollDependentViews = view.findTypedSubviews()
-        
-        if let bodyScrollView = constructorView?.bodyScrollView {
-            scrollDependentViews.forEach {
-                $0.scrollViewDidScroll(scrollView: bodyScrollView)
-            }
-            for bodyView in bodyViews {
-                if let bodyView = bodyView as? FullSizedViewProtocol {
-                    bodyView.setHeightEqual(to: bodyScrollView)
-                }
-            }
-        }
-
-        if !inputViews.isEmpty,
-            let constructorView = constructorView,
-            let bottomConstraint = constructorView.bottomGroupBottomConstraint {
-            keyboardHandler = .init(type: .constraint(
-                constraint: bottomConstraint,
-                withoutInset: bottomConstraint.constant,
-                keyboardInset: Constants.keyboardSpacing + view.safeAreaInsets.bottom,
-                superview: constructorView))
-        }
-        
-        if !scrollDependentViews.isEmpty, let scrollView = constructorView?.bodyScrollView {
-            scrollViewDidScroll(scrollView)
-        }
-        
-        self.inputFieldsWasUpdated()
+        onViewsUpdated()
     }
     
     public func inputFieldsWasUpdated() {

@@ -99,6 +99,7 @@ public final class DropdownListView: BaseCodeView, DSInputComponentProtocol {
         
         setupConstraints()
         setupGesture()
+        setupAccessibility()
     }
     
     // MARK: - Setup & Constraints
@@ -130,6 +131,11 @@ public final class DropdownListView: BaseCodeView, DSInputComponentProtocol {
         headerView.addGestureRecognizer(tapGesture)
     }
     
+    private func setupAccessibility() {
+        headerView.isAccessibilityElement = true
+        headerView.accessibilityTraits = .button
+    }
+    
     @objc private func headerTapped() {
         viewModel?.toggleState()
     }
@@ -150,6 +156,8 @@ public final class DropdownListView: BaseCodeView, DSInputComponentProtocol {
         viewModel.selectedItem.observe(observer: self) { [weak self] selectedText in
             guard let self else { return }
             self.selectedItemLabel.text = selectedText
+            self.headerView.accessibilityLabel = selectedText
+            self.headerView.accessibilityTraits.insert(.selected)
         }
         
         viewModel.isOpen.observe(observer: self) { [weak self] isOpen in
@@ -206,6 +214,7 @@ public final class DropdownListView: BaseCodeView, DSInputComponentProtocol {
         self.overlayView = overlay
         self.optionsTableView.isScrollEnabled = viewModel.items.count > Constants.maxVisibleItems
         self.tableViewHeightConstraint?.constant = tableHeight
+        UIAccessibility.post(notification: .layoutChanged, argument: optionsTableView)
     }
     
     private func hideOverlay() {
@@ -253,6 +262,7 @@ extension DropdownListView: UITableViewDelegate, UITableViewDataSource {
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         viewModel?.selectItem(at: indexPath.row)
+        UIAccessibility.post(notification: .layoutChanged, argument: headerView)
     }
 }
 

@@ -21,33 +21,41 @@ public struct DSCardStatusChipModel: Codable, Equatable {
     public var statusTextColor: String {
         switch self.type {
         case .fail:
-            return AppConstants.Colors.white
-        default:
-            return AppConstants.Colors.black
+            return "#820812"
+        case .neutral:
+            return "#000000CC"
+        case .pending:
+            return "#4E3403"
+        case .success:
+            return "#075313"
+        case .white:
+            return "#000000"
+        case .blue:
+            return "#073360"
         }
     }
     
     public var statusViewColor: String {
         switch self.type {
         case .fail:
-            return AppConstants.Colors.persianRed
+            return "#FED7D9"
         case .neutral:
-            return AppConstants.Colors.dadaGray
+            return "#0000001A"
         case .pending:
-            return AppConstants.Colors.statusYellow
+            return "#FEF1A4"
         case .success:
-            return AppConstants.Colors.additionalStatusGreen
+            return "#C5F1CC"
         case .white:
-            return AppConstants.Colors.white
+            return "#FFFFFF"
         case .blue:
-            return AppConstants.Colors.statusBlue
+            return "#CCE5FF"
         }
     }
     
     public var borderColor: UIColor {
         switch self.type {
         case .white:
-            return .lightGray
+            return .init("#0000004C")
         default:
             return .clear
         }
