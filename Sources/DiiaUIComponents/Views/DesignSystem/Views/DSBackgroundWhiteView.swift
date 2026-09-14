@@ -6,15 +6,18 @@ public final class DSBackgroundWhiteViewModel {
     public let title: String?
     public let items: [AnyCodable]
     public let componentId: String?
+    public let showDivider: Bool?
     public let eventHandler: (ConstructorItemEvent) -> Void
     
     public init(title: String?,
                 subviews: [AnyCodable],
                 componentId: String?,
+                showDivider: Bool? = nil,
                 eventHandler: @escaping (ConstructorItemEvent) -> Void) {
         self.title = title
         self.items = subviews
         self.componentId = componentId
+        self.showDivider = showDivider
         self.eventHandler = eventHandler
     }
 }

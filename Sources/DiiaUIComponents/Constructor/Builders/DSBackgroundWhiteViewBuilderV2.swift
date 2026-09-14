@@ -22,6 +22,7 @@ public struct DSBackgroundWhiteViewV2Builder: DSViewBuilderProtocol {
             title: nil,
             subviews: data.items,
             componentId: data.componentId,
+            showDivider: data.showDivider,
             eventHandler: eventHandler
         ))
         
@@ -39,7 +40,8 @@ extension DSBackgroundWhiteViewV2Builder: DSViewMockableBuilderProtocol {
             items: [
                 DSRadioBtnGroupOrgV2Builder().makeMockModel(),
                 DSListWidgetItemBuilder().makeMockModel()
-            ]
+            ],
+            showDivider: true
         )
         return .dictionary([
             modelKey: .fromEncodable(encodable: model)

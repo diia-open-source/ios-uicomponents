@@ -179,6 +179,9 @@ extension ControlsContainerOrgView: DSInputComponentProtocol {
     }
     
     public func inputData() -> AnyCodable? {
+        if viewModel?.model.controlType == .singleChoice, let value = viewModel?.selectedItems.first?.model.dataJson {
+            return .string(value)
+        }
         return .array(viewModel?.selectedItems.map { AnyCodable.string($0.model.dataJson) } ?? [])
     }
 }

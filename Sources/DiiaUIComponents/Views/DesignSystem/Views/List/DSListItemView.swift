@@ -18,6 +18,7 @@ public final class DSListItemViewModel: NSObject {
     @objc public dynamic var accessibilityDescription: String?
     @objc public dynamic var isEnabled: Bool
     public let detailsParameters: [TextParameter]?
+    public let btnIconPlainStrokeMlc: DSBtnIconPlainStrokeMlcModel?
     public var onClick: Callback?
     
     public init(id: String? = nil,
@@ -34,6 +35,7 @@ public final class DSListItemViewModel: NSObject {
                 chipStatusAtm: DSCardStatusChipModel? = nil,
                 amountAtm: DSAmountAtmModel? = nil,
                 detailsParameters: [TextParameter]? = nil,
+                btnIconPlainStrokeMlc: DSBtnIconPlainStrokeMlcModel? = nil,
                 onClick: Callback? = nil
     ) {
         self.id = id
@@ -52,6 +54,7 @@ public final class DSListItemViewModel: NSObject {
         self.amountAtm = amountAtm
         self.isLoading = false
         self.detailsParameters = detailsParameters
+        self.btnIconPlainStrokeMlc = btnIconPlainStrokeMlc
     }
     
     public init(item: DSListGroupItem, onClick: Callback? = nil) {
@@ -72,6 +75,7 @@ public final class DSListItemViewModel: NSObject {
         self.amountAtm = item.amountAtm
         self.isLoading = false
         self.detailsParameters = item.parameters
+        self.btnIconPlainStrokeMlc = item.btnIconPlainStrokeMlc
     }
     
     public override var hash: Int {
@@ -98,6 +102,7 @@ public final class DSListItemView: BaseCodeView {
     private lazy var chipStatusView = DSChipStatusAtmView()
     private lazy var amountView = DSAmountAtm()
     private let leftLogoLinkView = DSLogoLinkView().withSize(Constants.bigIconSize)
+    private let additionalButton = DSBtnIconPlainStrokeMlcView()
     private var mainStackView: UIStackView = UIStackView()
     
     private var stackAnchors: AnchoredConstraints?
@@ -114,24 +119,30 @@ public final class DSListItemView: BaseCodeView {
     public override func setupSubviews() {
         translatesAutoresizingMaskIntoConstraints = false
         mainStackView = UIStackView.create(
-            .horizontal,
             views: [
-                leftBase64IconView,
-                leftLogoLinkView,
-                leftBigIconView,
-                leftSmallIconView,
                 UIStackView.create(
+                    .horizontal,
                     views: [
-                        titleLabel,
-                        detailsTextView,
-                        chipStatusView
+                        leftBase64IconView,
+                        leftLogoLinkView,
+                        leftBigIconView,
+                        leftSmallIconView,
+                        UIStackView.create(
+                            views: [
+                                titleLabel,
+                                detailsTextView,
+                                chipStatusView
+                            ],
+                            spacing: Constants.textsSpacing),
+                        rightIconView,
+                        amountView
                     ],
-                    spacing: Constants.textsSpacing),
-                rightIconView,
-                amountView
+                    spacing: Constants.stackSpacing,
+                    alignment: .center),
+                additionalButton
             ],
-            spacing: Constants.stackSpacing,
-            alignment: .center)
+            spacing: Constants.stackSpacing
+        )
         
         addSubview(mainStackView)
         stackAnchors = mainStackView.fillSuperview(padding: Constants.defaultStackPadding)
@@ -166,7 +177,7 @@ public final class DSListItemView: BaseCodeView {
         mainStackView.alignment = stackAlign
     }
     
-    public func configure(viewModel: DSListItemViewModel) {
+    public func configure(viewModel: DSListItemViewModel, eventHandler: ((ConstructorItemEvent) -> Void)? = nil) {
         self.viewModel = viewModel
         self.accessibilityIdentifier = viewModel.componentId
         leftBase64IconView.image = viewModel.leftBase64Icon
@@ -201,6 +212,11 @@ public final class DSListItemView: BaseCodeView {
         amountView.isHidden = viewModel.amountAtm == nil
         if let amountAtm = viewModel.amountAtm {
             amountView.configure(with: amountAtm, textAlignment: .right)
+        }
+        
+        additionalButton.isHidden = viewModel.btnIconPlainStrokeMlc == nil
+        if let btnIconPlainStrokeMlc = viewModel.btnIconPlainStrokeMlc, let eventHandler {
+            additionalButton.configure(with: btnIconPlainStrokeMlc, eventHandler: eventHandler)
         }
         
         accessibilityIdentifier = viewModel.componentId

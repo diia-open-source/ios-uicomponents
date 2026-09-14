@@ -11,6 +11,7 @@ public struct DSTextBlockModel: Codable {
     public let listItems: [AnyCodable]?
     public let parameters: [TextParameter]?
     public let attentionIconMessageMlc: DSAttentionIconMessageMlc?
+    public let showItemsTopDivider: Bool?
     
     public init(
         componentId: String? = nil,
@@ -20,7 +21,8 @@ public struct DSTextBlockModel: Codable {
         items: [AnyCodable],
         listItems: [AnyCodable]? = nil,
         parameters: [TextParameter]? = nil,
-        attentionIconMessageMlc: DSAttentionIconMessageMlc? = nil) {
+        attentionIconMessageMlc: DSAttentionIconMessageMlc? = nil,
+        showItemsTopDivider: Bool? = nil) {
         self.componentId = componentId
         self.squareChipStatusAtm = squareChipStatusAtm
         self.title = title
@@ -29,6 +31,7 @@ public struct DSTextBlockModel: Codable {
         self.listItems = listItems
         self.parameters = parameters
         self.attentionIconMessageMlc = attentionIconMessageMlc
+        self.showItemsTopDivider = showItemsTopDivider
     }
 }
 
@@ -41,6 +44,7 @@ public final class DSTextBlockViewModel {
     public let listItems: [AnyCodable]?
     public let parameters: [TextParameter]?
     public let attentionIconMessageMlc: DSAttentionIconMessageMlc?
+    public let showItemsTopDivider: Bool
     public let eventHandler: (ConstructorItemEvent) -> Void
     
     public init(
@@ -52,6 +56,7 @@ public final class DSTextBlockViewModel {
         listItems: [AnyCodable]?,
         parameters: [TextParameter]? = nil,
         attentionIconMessageMlc: DSAttentionIconMessageMlc? = nil,
+        showItemsTopDivider: Bool = false,
         eventHandler: @escaping (ConstructorItemEvent) -> Void
     ) {
         self.componentId = componentId
@@ -63,6 +68,7 @@ public final class DSTextBlockViewModel {
         self.parameters = parameters
         self.eventHandler = eventHandler
         self.attentionIconMessageMlc = attentionIconMessageMlc
+        self.showItemsTopDivider = showItemsTopDivider
     }
     
     public init(model: DSTextBlockModel, eventHandler: @escaping (ConstructorItemEvent) -> Void) {
@@ -75,6 +81,7 @@ public final class DSTextBlockViewModel {
         self.parameters = model.parameters
         self.eventHandler = eventHandler
         self.attentionIconMessageMlc = model.attentionIconMessageMlc
+        self.showItemsTopDivider = model.showItemsTopDivider ?? false
     }
 }
 
@@ -87,6 +94,7 @@ public final class DSTextBlockView: BaseCodeView {
             titleLabel,
             textView,
             bottomItemsListStackContainer,
+            itemsTopDividerView,
             bottomItemsStackContainer,
             attentionIconMessageView
         ],
@@ -104,7 +112,7 @@ public final class DSTextBlockView: BaseCodeView {
 
     private let bottomItemsListStackContainer = UIView()
     private let bottomItemsListStack = UIStackView.create(spacing: Constants.itemsSpacing)
-    
+    private var itemsTopDividerView = UIView()
     private let attentionIconMessageView = DSAttentionIconMessageView()
 
     // MARK: - Properties
@@ -122,6 +130,9 @@ public final class DSTextBlockView: BaseCodeView {
         addSubview(mainStack)
         mainStack.fillSuperview(padding: Constants.contentPaddings)
 
+        itemsTopDividerView.backgroundColor = Constants.dividerColor
+        itemsTopDividerView.withHeight(Constants.dividerHeight)
+        
         bottomItemsStackContainer.addSubview(bottomItemsStack)
         bottomItemsStack.fillSuperview()
 
@@ -153,6 +164,8 @@ public final class DSTextBlockView: BaseCodeView {
                 textView.text = text
             }
         }
+        
+        itemsTopDividerView.isHidden = viewModel.items.isEmpty || !viewModel.showItemsTopDivider
 
         bottomItemsListStack.safelyRemoveArrangedSubviews()
         bottomItemsListStackContainer.isHidden = viewModel.listItems?.isEmpty ?? true
@@ -233,10 +246,12 @@ private extension DSTextBlockView {
     enum Constants {
         static let cornerRadius: CGFloat = 16
         static let itemsSpacing: CGFloat = 8
-        static let itemsListSpacing: CGFloat = 24
+        static let itemsListSpacing: CGFloat = 16
         static let mainStackSpacing: CGFloat = 16
         static let lineHeight: CGFloat = 24
         static let contentPaddings = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
         static let itemsListPaddings = UIEdgeInsets(top: 8, left: 0, bottom: 0, right: 0)
+        static let dividerHeight: CGFloat = 1
+        static let dividerColor: UIColor = UIColor("#E2ECF4")
     }
 }

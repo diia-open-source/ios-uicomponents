@@ -192,7 +192,7 @@ public final class ControlsItemOrgView: BaseCodeView {
         func objectKey() -> String {
             switch self {
             case .radioButton:
-                return "radioButtonAtm"
+                return "radioBtnAtm"
             case .checkbox:
                 return "checkBoxSquareAtm"
             }

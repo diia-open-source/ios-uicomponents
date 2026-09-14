@@ -1,15 +1,18 @@
 import UIKit
+import DiiaCommonTypes
 
 public struct DSPaginationMessageMlcModel: Codable {
     public let componentId: String
     public let title: String?
     public let description: String?
+    public let parameters: [TextParameter]?
     public let btnStrokeAdditionalAtm: DSButtonModel?
     
-    public init(componentId: String, title: String?, description: String?, btnStrokeAdditionalAtm: DSButtonModel?) {
+    public init(componentId: String, title: String?, description: String?, parameters: [TextParameter]? = nil, btnStrokeAdditionalAtm: DSButtonModel? = nil) {
         self.componentId = componentId
         self.title = title
         self.description = description
+        self.parameters = parameters
         self.btnStrokeAdditionalAtm = btnStrokeAdditionalAtm
     }
 
@@ -25,7 +28,7 @@ final public class DSPaginationMessageMlcView: BaseCodeView {
     private let mainStack = UIStackView.create(.vertical, spacing: Constants.bigSpacing, alignment: .center)
     private let textStack =  UIStackView.create(.vertical, spacing: Constants.smallSpacing, alignment: .center)
     private let titleLabel = UILabel().withParameters(font: FontBook.smallHeadingFont)
-    private let descriptionLabel = UILabel().withParameters(font: FontBook.usualFont)
+    private let descriptionTextView = LinkOnlyTextView()
     private let button = ActionLoadingStateButton()
     private var eventHandler: ((ConstructorItemEvent) -> Void)?
     
@@ -34,7 +37,7 @@ final public class DSPaginationMessageMlcView: BaseCodeView {
         mainStack.fillSuperview(padding: Constants.insets)
         textStack.addArrangedSubviews([
             titleLabel,
-            descriptionLabel
+            descriptionTextView
         ])
         mainStack.addArrangedSubviews([
             textStack,
@@ -45,8 +48,9 @@ final public class DSPaginationMessageMlcView: BaseCodeView {
         button.setStyle(style: .light)
         button.contentEdgeInsets = Constants.buttonEdgeInsets
         titleLabel.textAlignment = .center
-        descriptionLabel.numberOfLines = 0
-        descriptionLabel.textAlignment = .center
+        descriptionTextView.font = FontBook.usualFont
+        descriptionTextView.textAlignment = .center
+        descriptionTextView.delegate = self
         backgroundColor = .clear
     }
     
@@ -55,8 +59,14 @@ final public class DSPaginationMessageMlcView: BaseCodeView {
         titleLabel.isHidden = model.title == nil
         titleLabel.text = model.title
         
-        descriptionLabel.isHidden = model.description == nil
-        descriptionLabel.text = model.description
+        descriptionTextView.isHidden = model.description == nil
+        if let text = model.description {
+            if let parameters = model.parameters, !parameters.isEmpty {
+                descriptionTextView.attributedText = text.attributedTextWithParameters(parameters: parameters)
+            } else {
+                descriptionTextView.text = text
+            }
+        }
         
         button.isHidden = model.btnStrokeAdditionalAtm == nil
         if let button = model.btnStrokeAdditionalAtm {
@@ -73,7 +83,13 @@ final public class DSPaginationMessageMlcView: BaseCodeView {
     }
 
     public func setDescriptionAlignment(_ alignment: NSTextAlignment) {
-        descriptionLabel.textAlignment = alignment
+        descriptionTextView.textAlignment = alignment
+    }
+}
+
+extension DSPaginationMessageMlcView: UITextViewDelegate {
+    public func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+        return !(UIComponentsConfiguration.shared.urlOpener?.url(urlString: URL.absoluteString, linkType: nil) ?? false)
     }
 }
 

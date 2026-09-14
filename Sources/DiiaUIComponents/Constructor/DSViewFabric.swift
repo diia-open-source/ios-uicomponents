@@ -297,6 +297,7 @@ public extension DSViewFabric {
         CardImageCarouselBuilder(),
         DSCheckboxGroupOrgBuilder(),
         DSCheckboxMlcBuilder(),
+        DSSwitchItemMlcBuilder(),
         DSStaticTickerAtmViewBuilder(),
         DSScanModalMessageBuilder(),
         ScanModalCardBuilder(),

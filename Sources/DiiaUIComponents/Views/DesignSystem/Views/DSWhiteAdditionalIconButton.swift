@@ -99,6 +99,10 @@ public final class DSWhiteAdditionalIconButton: BaseCodeView {
         accessibilityTraits = .button
     }
     
+    public func setupUI(backgroundColor: UIColor) {
+        containerView.backgroundColor = backgroundColor
+    }
+    
     public override func layoutSubviews() {
         super.layoutSubviews()
         containerView.layer.cornerRadius = Constants.cornerRadius

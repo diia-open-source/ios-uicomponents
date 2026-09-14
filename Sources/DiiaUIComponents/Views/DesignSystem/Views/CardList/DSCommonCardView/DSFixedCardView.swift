@@ -175,7 +175,7 @@ public final class DSFixedCardView: UIView {
         statusLabel.font = FontBook.statusFont
         label.font = FontBook.usualFont
         titleLabel.withParameters(font: FontBook.bigText, numberOfLines: Constants.titleNumberOfLines)
-        descriptionLabel.withParameters(font: FontBook.usualFont, textColor: .black.withAlphaComponent(Constants.alpha))
+        descriptionLabel.withParameters(font: FontBook.usualFont, textColor: .black540)
         botLabel.font = FontBook.bigText
         primaryButton.titleLabel?.font = FontBook.usualFont
         strokeButton.titleLabel?.font = FontBook.usualFont
@@ -216,7 +216,6 @@ extension DSFixedCardView {
         static let borderWidth: CGFloat = 2
         static let shadowColor: UIColor = .shadowColor
         static let shadowYOffset: CGFloat = 20
-        static let alpha: CGFloat = 0.3
         static let stackSpacing: CGFloat = 8
 
         static let shadowBlur: CGFloat = 16

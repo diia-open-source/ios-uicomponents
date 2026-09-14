@@ -125,7 +125,7 @@ public final class DSInputDateTimeOrgViewV2: BaseCodeView, DSInputComponentProto
             id: model.id,
             inputCode: model.inputCode,
             title: model.label,
-            placeholder: R.Strings.general_date_picker_hint.localized(),
+            placeholder: model.placeholder ?? R.Strings.general_date_picker_hint.localized(),
             validators: [],
             defaultText: model.value,
             instructionsText: model.hint,
@@ -148,7 +148,7 @@ public final class DSInputDateTimeOrgViewV2: BaseCodeView, DSInputComponentProto
             id: model.id,
             inputCode: model.inputCode,
             title: model.label,
-            placeholder: R.Strings.general_time_picker_hint.localized(),
+            placeholder: model.placeholder,
             validators: [],
             defaultText: model.value,
             instructionsText: model.hint

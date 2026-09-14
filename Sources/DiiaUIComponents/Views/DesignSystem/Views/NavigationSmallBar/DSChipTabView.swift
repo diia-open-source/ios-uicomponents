@@ -163,6 +163,8 @@ public final class DSChipTabsView: BaseCodeView {
         itemsScroll.withHeight(Constants.itemHeight)
         itemStack.heightAnchor.constraint(equalTo: itemsScroll.heightAnchor).isActive = true
         
+        filterButton.setupUI(backgroundColor: Constants.filterBackgroundColor)
+        
         divider.backgroundColor = Constants.dividerColor
         addSubview(divider)
         divider.anchor(leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor)
@@ -172,6 +174,7 @@ public final class DSChipTabsView: BaseCodeView {
         self.onSelect = viewModel.onSelect
         
         itemStack.safelyRemoveArrangedSubviews()
+        self.filterButtonViewModel = viewModel.filterButtonVM
         if let filterButtonViewModel = viewModel.filterButtonVM {
             filterButton.configure(with: filterButtonViewModel)
             itemStack.addArrangedSubview(filterButton)
@@ -221,5 +224,6 @@ private extension DSChipTabsView {
         static let startOffset = CGPoint(x: -24, y: .zero)
         static let scrollViewInsets: UIEdgeInsets = .init(top: 0, left: 0, bottom: 16, right: 0)
         static let dividerColor = UIColor("#C5D9E9")
+        static let filterBackgroundColor = UIColor("#FFFFFF4D")
     }
 }

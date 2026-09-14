@@ -7,11 +7,13 @@ public struct DSBackgroundWhiteOrgModel: Codable {
     public let id: String?
     public let items: [AnyCodable]
     public let count: Int?
+    public let showDivider: Bool?
     
-    public init(componentId: String?, id: String?, items: [AnyCodable], count: Int? = nil) {
+    public init(componentId: String?, id: String?, items: [AnyCodable], count: Int? = nil, showDivider: Bool? = nil) {
         self.componentId = componentId
         self.id = id
         self.items = items
         self.count = count
+        self.showDivider = showDivider
     }
 }

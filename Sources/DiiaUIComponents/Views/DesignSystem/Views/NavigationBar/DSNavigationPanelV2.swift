@@ -45,6 +45,7 @@ public final class DSNavigationPanelV2View: BaseCodeView {
         withHeight(Constants.viewHeight)
         
         backButton.iconRenderingMode = .alwaysOriginal
+        rightButton.iconRenderingMode = .alwaysOriginal
         
         setupAccessibility()
     }

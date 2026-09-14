@@ -38,6 +38,7 @@ public struct DSListGroupItem: Codable {
     public let dataJson: String?
     public let accessibilityDescription: String?
     public let parameters: [TextParameter]?
+    public let btnIconPlainStrokeMlc: DSBtnIconPlainStrokeMlcModel?
     
     public init(
         id: String? = nil,
@@ -54,7 +55,8 @@ public struct DSListGroupItem: Codable {
         action: DSActionParameter? = nil,
         dataJson: String? = nil,
         accessibilityDescription: String? = nil,
-        parameters: [TextParameter]? = nil
+        parameters: [TextParameter]? = nil,
+        btnIconPlainStrokeMlc: DSBtnIconPlainStrokeMlcModel? = nil
     ) {
         self.id = id
         self.logoLeft = logoLeft
@@ -71,6 +73,7 @@ public struct DSListGroupItem: Codable {
         self.dataJson = dataJson
         self.accessibilityDescription = accessibilityDescription
         self.parameters = parameters
+        self.btnIconPlainStrokeMlc = btnIconPlainStrokeMlc
     }
 }
 

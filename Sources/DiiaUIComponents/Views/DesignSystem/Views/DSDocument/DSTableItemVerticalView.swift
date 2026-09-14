@@ -111,7 +111,7 @@ public final class DSTableItemVerticalView: DSTableItemView {
         subLabel.isHidden = model.secondaryLabel?.isEmpty ?? true
         value.isHidden = model.value?.isEmpty ?? true
         subValue.isHidden = model.secondaryValue?.isEmpty ?? true
-        icon.isHidden = model.icon == nil
+        icon.isHidden = image == nil
         
         labelHeaderStack.isHidden = label.isHidden && icon.isHidden
         labelValueStack.isHidden = labelHeaderStack.isHidden && subLabel.isHidden && value.isHidden && subValue.isHidden

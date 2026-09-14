@@ -46,10 +46,11 @@ public struct DSInputDateModel: Codable {
     public let mandatory: Bool?
     public let label: String
     public let value: String?
+    public let placeholder: String?
     public let hint: String?
     public let validation: [InputValidationModel]?
     
-    public init(componentId: String?, id: String?, inputCode: String?, blocker: Bool?, mandatory: Bool? = nil, label: String, value: String?, hint: String?, validation: [InputValidationModel]?) {
+    public init(componentId: String?, id: String?, inputCode: String?, blocker: Bool?, mandatory: Bool? = nil, label: String, value: String?, hint: String?, placeholder: String? = nil, validation: [InputValidationModel]?) {
         self.componentId = componentId
         self.id = id
         self.inputCode = inputCode
@@ -59,6 +60,7 @@ public struct DSInputDateModel: Codable {
         self.hint = hint
         self.mandatory = mandatory
         self.validation = validation
+        self.placeholder = placeholder
     }
 }
 

@@ -69,11 +69,8 @@ public final class ContentCardOrgView: BaseCodeView {
         
         topStackView.addArrangedSubviews([chipStatusView, UIView(), rightLabel])
         textStack.addArrangedSubviews([titleLabel, descriptionLabel])
-        let spacer = UIView()
-        spacer.setContentHuggingPriority(.init(1), for: .horizontal)
-        spacer.setContentCompressionResistancePriority(.init(1), for: .horizontal)
         
-        centerStackView.addArrangedSubviews([leftIcon, textStack, spacer])
+        centerStackView.addArrangedSubviews([leftIcon, textStack])
         bottomStackView.addArrangedSubviews([bottomContainerStack, iconBottomView])
         
         mainStackView.addArrangedSubviews([topStackView, centerStackView, pointsLabel, bottomStackView])
@@ -109,7 +106,7 @@ public final class ContentCardOrgView: BaseCodeView {
             pointsLabel.text = points
         }
         if let rightIconText = model.rightIconText {
-            let rightIconView = createIconTexts(model: rightIconText, textColor: .black)
+            let rightIconView = createIconTexts(model: rightIconText, textColor: .black, textFillsWidth: false)
             rightIconView.setContentHuggingPriority(.required, for: .horizontal)
             rightIconView.setContentCompressionResistancePriority(.required, for: .horizontal)
             centerStackView.addArrangedSubviews([rightIconView])
@@ -139,25 +136,29 @@ public final class ContentCardOrgView: BaseCodeView {
         }
     }
     
-    private func createIconTexts(model: DSIconTextModel, textColor: UIColor = UIColor.gray) -> UIStackView {
-        let horizontalStack = UIStackView.create(.horizontal, spacing: Constants.smallSpacing)
-        
-        if let iconLeft = model.iconLeft {
-            let icon = DSIconView()
-            icon.setIcon(iconLeft)
-            icon.withSize(Constants.extraSmallIconSize)
-            icon.setContentHuggingPriority(.required, for: .horizontal)
-            icon.setContentCompressionResistancePriority(.required, for: .horizontal)
-            horizontalStack.addArrangedSubview(icon)
+    private func createIconTexts(
+        model: DSIconTextModel,
+        textColor: UIColor = UIColor.gray,
+        textFillsWidth: Bool = true) -> UIStackView {
+            let horizontalStack = UIStackView.create(.horizontal, spacing: Constants.smallSpacing, alignment: .top)
+            
+            if let iconLeft = model.iconLeft {
+                let icon = DSIconView()
+                icon.setIcon(iconLeft)
+                icon.withSize(Constants.extraSmallIconSize)
+                icon.setContentHuggingPriority(.required, for: .horizontal)
+                icon.setContentCompressionResistancePriority(.required, for: .horizontal)
+                horizontalStack.addArrangedSubview(icon)
+            }
+            
+            let textLabel = UILabel().withParameters(font: FontBook.usualFont, textColor: textColor)
+            textLabel.text = model.text
+            textLabel.setContentCompressionResistancePriority(.required, for: .vertical)
+            textLabel.setContentHuggingPriority(textFillsWidth ? .init(1) : .required, for: .horizontal)
+            textLabel.setContentCompressionResistancePriority(textFillsWidth ? .init(1) : .required, for: .horizontal)
+            horizontalStack.addArrangedSubview(textLabel)
+            return horizontalStack
         }
-        
-        let textLabel = UILabel().withParameters(font: FontBook.usualFont, textColor: textColor)
-        textLabel.text = model.text
-        textLabel.setContentCompressionResistancePriority(.required, for: .vertical)
-        textLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
-        horizontalStack.addArrangedSubview(textLabel)
-        return horizontalStack
-    }
 }
 
 private extension ContentCardOrgView {

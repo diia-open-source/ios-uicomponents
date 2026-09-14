@@ -30,7 +30,9 @@ public struct DSListItemMlcBuilder: DSViewBuilderProtocol {
             isEnabled: listItemState == .enabled,
             chipStatusAtm: item.chipStatusAtm,
             amountAtm: item.amountAtm,
-            detailsParameters: item.parameters)
+            detailsParameters: item.parameters,
+            btnIconPlainStrokeMlc: item.btnIconPlainStrokeMlc
+        )
                 
         viewModel.onClick = {
             guard let parameter = parameter else { return }
@@ -38,7 +40,7 @@ public struct DSListItemMlcBuilder: DSViewBuilderProtocol {
         }
         
         let view = DSListItemView()
-        view.configure(viewModel: viewModel)
+        view.configure(viewModel: viewModel, eventHandler: eventHandler)
         view.setupUI(stackPadding: padding.insets(for: object, modelKey: modelKey, defaultInsets: Constants.defaultStackPadding))
         return view
     }
@@ -67,7 +69,8 @@ extension DSListItemMlcBuilder: DSViewMockableBuilderProtocol {
             chipStatusAtm: .mock,
             action: .mock,
             dataJson: "dataJson",
-            accessibilityDescription: "accessibilityDescription"
+            accessibilityDescription: "accessibilityDescription",
+            btnIconPlainStrokeMlc: DSBtnIconPlainStrokeMlcModel.mock
         )
         
         return .dictionary([

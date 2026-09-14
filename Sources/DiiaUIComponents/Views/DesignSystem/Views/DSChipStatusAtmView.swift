@@ -32,7 +32,7 @@ final public class DSChipStatusAtmView: BaseCodeView {
         roundView.backgroundColor = UIColor(model.statusViewColor)
         if model.type == .white {
             roundView.withBorder(width: Constants.borderWidth,
-                                 color: .lightGray)
+                                 color: model.borderColor)
         }
     }
     

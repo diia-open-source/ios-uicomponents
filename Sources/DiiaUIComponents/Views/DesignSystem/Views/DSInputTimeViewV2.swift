@@ -13,6 +13,8 @@ public final class DSInputTimeViewV2: BaseCodeView, DSInputComponentProtocol {
     private let textFieldContainer = UIView()
     private let roundedContainer = UIView()
 
+    private lazy var instructionBox = BoxView(subview: instructionsLabel).withConstraints(insets: .init(top: 0, left: Constants.horizontalSpacing, bottom: 0, right: Constants.horizontalSpacing))
+
     // MARK: - Properties
     private var viewModel: DSInputTimeViewModel?
     private var timeZone: TimeZone = .current
@@ -43,7 +45,7 @@ public final class DSInputTimeViewV2: BaseCodeView, DSInputComponentProtocol {
         
         stack([
             roundedContainer,
-            BoxView(subview: instructionsLabel).withConstraints(insets: .init(top: 0, left: Constants.horizontalSpacing, bottom: 0, right: Constants.horizontalSpacing)),
+            instructionBox,
         ], spacing: 4)
 
         calendarButton.setImage(
@@ -67,7 +69,7 @@ public final class DSInputTimeViewV2: BaseCodeView, DSInputComponentProtocol {
         datePickerTextField.text = viewModel.defaultText
 
         instructionsLabel.text = viewModel.instructionsText
-        instructionsLabel.isHidden = viewModel.instructionsText?.count ?? 0 == 0
+        instructionBox.isHidden = viewModel.instructionsText?.count ?? 0 == 0
     }
 
     public func setupUI(titleFont: UIFont = FontBook.statusFont,

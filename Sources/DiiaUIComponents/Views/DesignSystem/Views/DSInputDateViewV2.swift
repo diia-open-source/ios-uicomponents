@@ -14,6 +14,8 @@ public final class DSInputDateViewV2: BaseCodeView, DSInputComponentProtocol {
     private let textFieldContainer = UIView()
     private let roundedContainer = UIView()
     
+    private lazy var instructionBox = BoxView(subview: instructionsLabel).withConstraints(insets: .init(top: 0, left: Constants.horizontalSpacing, bottom: 0, right: Constants.horizontalSpacing))
+
     // MARK: - Properties
     private var viewModel: DSInputDateViewModel?
     private let datePicker = UIDatePicker()
@@ -61,7 +63,7 @@ public final class DSInputDateViewV2: BaseCodeView, DSInputComponentProtocol {
         
         stack([
             roundedContainer,
-            BoxView(subview: instructionsLabel).withConstraints(insets: .init(top: 0, left: Constants.horizontalSpacing, bottom: 0, right: Constants.horizontalSpacing)),
+            instructionBox
         ], spacing: 4)
         
         calendarButton.setImage(
@@ -92,7 +94,7 @@ public final class DSInputDateViewV2: BaseCodeView, DSInputComponentProtocol {
         }
 
         instructionsLabel.text = viewModel.instructionsText
-        instructionsLabel.isHidden = viewModel.instructionsText?.count ?? 0 == 0
+        instructionBox.isHidden = viewModel.instructionsText?.count ?? 0 == 0
         
         dateTextField.isHidden = !viewModel.enableManualEnter
         datePickerTextField.isHidden = viewModel.enableManualEnter
