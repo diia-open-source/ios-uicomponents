@@ -167,6 +167,7 @@ public final class DSInputDateView: BaseCodeView, DSInputComponentProtocol {
         dateFormatter.timeZone = timeZone
         outputFormatter.timeZone = timeZone
         inputFormatter.timeZone = timeZone
+        datePicker.timeZone = timeZone
     }
     
     public func setMinMaxDates(minDate: Date?, maxDate: Date?) {
@@ -386,4 +387,3 @@ extension DSInputDateView {
         static let bottomStackPadding: UIEdgeInsets = .init(top: 8, left: 0, bottom: 0, right: 0)
     }
 }
-

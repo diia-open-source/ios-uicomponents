@@ -55,6 +55,7 @@ final class DSPhotoUploadMlcView: BaseCodeView {
         
         addPhotoIcon.withSize(Constants.iconSize)
         photoImageView.contentMode = .scaleAspectFill
+        photoImageView.layer.cornerRadius = Constants.cornerRadius
         photoImageView.layer.masksToBounds = true
         
         photoImageView.tapGestureRecognizer { [weak self] in
@@ -64,7 +65,6 @@ final class DSPhotoUploadMlcView: BaseCodeView {
         self.withHeight(Constants.cardHeight)
         backgroundColor = Constants.backgroundColor
         layer.cornerRadius = Constants.cornerRadius
-        layer.masksToBounds = true
     }
     
     override func layoutSubviews() {
@@ -110,8 +110,6 @@ final class DSPhotoUploadMlcView: BaseCodeView {
                 eventHandler(.action(action))
             }
         }
-        
-        applyState(viewModel.state.value)
     }
     
     private func applyState(_ state: DSPhotoUploadState) {

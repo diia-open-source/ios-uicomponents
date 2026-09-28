@@ -104,7 +104,7 @@ public final class DSTextBlockView: BaseCodeView {
     private let squareChipStatusView = DSSquareChipStatusView()
     private lazy var squareChipStatusContainer = UIStackView.create(.horizontal, views: [squareChipStatusView, UIView()])
 
-    private let titleLabel = UILabel().withParameters(font: FontBook.smallHeadingFont)
+    private let titleLabel = UILabel().withParameters(font: FontBook.usualFont.withSize(Constants.fontSize))
     private let textView = LinkOnlyTextView()
 
     private let bottomItemsStackContainer = UIView()
@@ -253,5 +253,6 @@ private extension DSTextBlockView {
         static let itemsListPaddings = UIEdgeInsets(top: 8, left: 0, bottom: 0, right: 0)
         static let dividerHeight: CGFloat = 1
         static let dividerColor: UIColor = UIColor("#E2ECF4")
+        static let fontSize: CGFloat = 14
     }
 }

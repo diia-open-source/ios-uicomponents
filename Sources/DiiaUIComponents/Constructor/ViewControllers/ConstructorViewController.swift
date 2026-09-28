@@ -114,12 +114,12 @@ final public class ConstructorViewController: UIViewController {
             presenter.onViewDidAppear()
         }
     }
-    
-    public override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
+
+    override public func viewSafeAreaInsetsDidChange() {
+        super.viewSafeAreaInsetsDidChange()
         onLayoutUpdated()
     }
-
+    
     private func initialSetup() {
         setupBackground(.color(.blackSqueeze))
         constructorView?.setupTopGroup(views: [prepareDefaultTopView()])
@@ -197,7 +197,9 @@ final public class ConstructorViewController: UIViewController {
     }
     
     @objc private func hideKeyboard() {
-        view.endEditing(true)
+        onMainQueue { [weak self] in
+            self?.view.endEditing(true)
+        }
     }
 }
 

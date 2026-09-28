@@ -45,7 +45,9 @@ public struct DSListViewBuilder: DSViewBuilderProtocol {
                 accessibilityDescription: item.accessibilityDescription,
                 chipStatusAtm: item.chipStatusAtm,
                 amountAtm: item.amountAtm,
-                detailsParameters: item.parameters)
+                detailsParameters: item.parameters,
+                btnIconPlainStrokeMlc: item.btnIconPlainStrokeMlc
+            )
             if let parameter = item.action {
                 viewModel.onClick = { [weak viewModel, weak groupViewModel] in
                     guard let viewModel = viewModel, let groupViewModel = groupViewModel else { return }
@@ -96,7 +98,8 @@ extension DSListViewBuilder: DSViewMockableBuilderProtocol {
                     chipStatusAtm: .mock,
                     action: .mock,
                     dataJson: "dataJson",
-                    accessibilityDescription: "accessibilityDescription"
+                    accessibilityDescription: "accessibilityDescription",
+                    btnIconPlainStrokeMlc: .mock
                 ),
                 DSListGroupItem(
                     id: "id2",
@@ -112,7 +115,8 @@ extension DSListViewBuilder: DSViewMockableBuilderProtocol {
                     chipStatusAtm: .mock,
                     action: .mock,
                     dataJson: "dataJson",
-                    accessibilityDescription: "accessibilityDescription"
+                    accessibilityDescription: "accessibilityDescription",
+                    btnIconPlainStrokeMlc: .mock
                 )
             ],
             btnPlainIconAtm: .mock

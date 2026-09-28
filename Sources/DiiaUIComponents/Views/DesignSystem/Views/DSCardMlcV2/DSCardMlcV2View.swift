@@ -123,12 +123,12 @@ public final class DSCardMlcV2View: BaseCodeView {
         iconTextsStack.isHidden = viewModel.iconTexts?.isEmpty ?? true
         if let iconTexts = viewModel.iconTexts {
             iconTextsStack.safelyRemoveArrangedSubviews()
-            var iconTextsArray: [UIStackView] = []
-            iconTexts.forEach {
-                let stack = createIconTexts(model: $0)
-                iconTextsArray.append(stack)
+            let iconTextViews: [DSIconTextView] = iconTexts.map { model in
+                let iconTextView = DSIconTextView()
+                iconTextView.configure(with: model, textColor: Constants.grayTextColor, iconSize: Constants.iconTextSize, alignment: .center)
+                return iconTextView
             }
-            iconTextsStack.addArrangedSubviews(iconTextsArray)
+            iconTextsStack.addArrangedSubviews(iconTextViews)
         }
         
         iconUrlView.isHidden = viewModel.iconUrlAtm == nil
@@ -260,26 +260,6 @@ public final class DSCardMlcV2View: BaseCodeView {
             lastAppliedChipsHeight = newHeight
             chipsCollectionViewHeightConstraint?.constant = newHeight
         }
-    }
-    
-    private func createIconTexts(model: DSIconTextModel) -> UIStackView {
-        let horizontalStack = UIStackView.create(.horizontal, spacing: Constants.smallSpacing, alignment: .center)
-        
-        if let iconLeft = model.iconLeft {
-            let icon = DSIconView()
-            icon.setIcon(iconLeft)
-            icon.withSize(Constants.iconTextSize)
-            icon.setContentHuggingPriority(.required, for: .horizontal)
-            icon.setContentCompressionResistancePriority(.required, for: .horizontal)
-            horizontalStack.addArrangedSubview(icon)
-        }
-        
-        let textLabel = UILabel().withParameters(font: FontBook.usualFont, textColor: Constants.grayTextColor)
-        textLabel.text = model.text
-        textLabel.setContentCompressionResistancePriority(.required, for: .vertical)
-        horizontalStack.addArrangedSubview(textLabel)
-        
-        return horizontalStack
     }
     
     private func handleTap() {

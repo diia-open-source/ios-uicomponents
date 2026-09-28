@@ -5,12 +5,14 @@ public struct DSPaginationMessageMlcModel: Codable {
     public let componentId: String
     public let title: String?
     public let description: String?
+    public let iconAtm: DSIconModel?
     public let parameters: [TextParameter]?
     public let btnStrokeAdditionalAtm: DSButtonModel?
     
-    public init(componentId: String, title: String?, description: String?, parameters: [TextParameter]? = nil, btnStrokeAdditionalAtm: DSButtonModel? = nil) {
+    public init(componentId: String, title: String?, description: String?, iconAtm: DSIconModel? = nil, parameters: [TextParameter]? = nil, btnStrokeAdditionalAtm: DSButtonModel? = nil) {
         self.componentId = componentId
         self.title = title
+        self.iconAtm = iconAtm
         self.description = description
         self.parameters = parameters
         self.btnStrokeAdditionalAtm = btnStrokeAdditionalAtm
@@ -20,6 +22,7 @@ public struct DSPaginationMessageMlcModel: Codable {
         componentId: "componentId",
         title: "title",
         description: "description",
+        iconAtm: .mock,
         btnStrokeAdditionalAtm: .mock
     )
 }
@@ -27,6 +30,7 @@ public struct DSPaginationMessageMlcModel: Codable {
 final public class DSPaginationMessageMlcView: BaseCodeView {
     private let mainStack = UIStackView.create(.vertical, spacing: Constants.bigSpacing, alignment: .center)
     private let textStack =  UIStackView.create(.vertical, spacing: Constants.smallSpacing, alignment: .center)
+    private let iconView = DSIconView().withSize(Constants.iconSize)
     private let titleLabel = UILabel().withParameters(font: FontBook.smallHeadingFont)
     private let descriptionTextView = LinkOnlyTextView()
     private let button = ActionLoadingStateButton()
@@ -40,6 +44,7 @@ final public class DSPaginationMessageMlcView: BaseCodeView {
             descriptionTextView
         ])
         mainStack.addArrangedSubviews([
+            iconView,
             textStack,
             button
         ])
@@ -56,6 +61,10 @@ final public class DSPaginationMessageMlcView: BaseCodeView {
     
     public func configure(with model: DSPaginationMessageMlcModel) {
         accessibilityIdentifier = model.componentId
+        iconView.isHidden = model.iconAtm == nil
+        if let iconAtm = model.iconAtm {
+            iconView.setIcon(iconAtm)
+        }
         titleLabel.isHidden = model.title == nil
         titleLabel.text = model.title
         
@@ -97,6 +106,7 @@ private extension DSPaginationMessageMlcView {
     enum Constants {
         static let bigSpacing: CGFloat = 16
         static let smallSpacing: CGFloat = 8
+        static let iconSize: CGSize = .init(width: 32, height: 32)
         static let insets: UIEdgeInsets = .init(top: 24, left: 24, bottom: 24, right: 24)
         static let buttonHeight: CGFloat = 36
         static let buttonEdgeInsets = UIEdgeInsets(top: 0, left: 32, bottom: 0, right: 32)

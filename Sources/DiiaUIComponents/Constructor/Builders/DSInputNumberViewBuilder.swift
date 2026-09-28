@@ -42,19 +42,22 @@ public struct DSInputNumberViewBuilder: DSViewBuilderProtocol {
 // MARK: - Mock
 extension DSInputNumberViewBuilder: DSViewMockableBuilderProtocol {
     public func makeMockModel() -> AnyCodable {
-        let model = DSInputNumberMlc(
+        let model = DSInputNumberMlcModel(
             componentId: "componentId",
-            inputCode: "inputCode",
-            label: "label",
-            placeholder: "test",
-            hint: "hint",
-            value: 1111556,
-            maxValue: nil,
-            minValue: nil,
+            inputCode: "inputNumberMlc",
+            label: "inputNumberMlc",
+            placeholder: "inputNumberMlcPlaceholder",
+            hint: "inputNumberMlcHint",
+            value: "1115556",
+            maxValue: 200,
+            minValue: 300000000,
+            maxCount: nil,
+            minCount: nil,
             mandatory: true,
-            errorMessage: "errorMessage",
+            errorMessage: "From 200 to 300000000",
             mask: nil,
-            iconRight: .mock
+            iconRight: nil,
+            validation: nil
         )
         
         return .dictionary([

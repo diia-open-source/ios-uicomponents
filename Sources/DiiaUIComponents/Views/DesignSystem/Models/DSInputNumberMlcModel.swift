@@ -53,4 +53,3 @@ public struct DSInputNumberMlc: Codable {
         self.autoFillDecimal = autoFillDecimal
     }
 }
-

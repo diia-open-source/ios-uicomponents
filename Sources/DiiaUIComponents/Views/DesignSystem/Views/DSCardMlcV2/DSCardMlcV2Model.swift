@@ -131,8 +131,3 @@ public struct DSCardStatusChipMlc: Codable {
         self.chipStatusAtm = chipStatusAtm
     }
 }
-
-public struct DSIconTextModel: Codable {
-    public let iconLeft: DSIconModel?
-    public let text: String
-}

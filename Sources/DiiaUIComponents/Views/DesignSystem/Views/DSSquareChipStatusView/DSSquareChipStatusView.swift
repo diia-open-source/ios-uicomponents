@@ -15,10 +15,11 @@ public final class DSSquareChipStatusView: BaseCodeView {
     
     public override func layoutSubviews() {
         super.layoutSubviews()
-        layer.cornerRadius = frame.height / 4
+        layer.cornerRadius = Constants.cornerRadius
     }
     
     public func configure(with model: DSSquareChipStatusModel) {
+        accessibilityIdentifier = model.componentId
         textLabel.text = model.name
         textLabel.textColor = UIColor(model.type.textColor)
         backgroundColor = UIColor(model.type.backgroundColor)
@@ -28,6 +29,7 @@ public final class DSSquareChipStatusView: BaseCodeView {
 // MARK: - Constants
 private extension DSSquareChipStatusView {
     enum Constants {
-        static let textPaddings = UIEdgeInsets(top: 2, left: 6, bottom: 2, right: 6)
+        static let cornerRadius: CGFloat = 4
+        static let textPaddings = UIEdgeInsets(top: 4, left: 8, bottom: 4, right: 8)
     }
 }

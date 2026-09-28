@@ -79,8 +79,11 @@ public final class DSInputTimeView: BaseCodeView, DSInputComponentProtocol {
     private var viewModel: DSInputTimeViewModel?
     private var timeZone: TimeZone = .current
     private var separatorColor: UIColor = .statusGray
-    private let datePicker = UIDatePicker()
+    private var datePicker = UIDatePicker()
     private let dateFormatter = DateFormatter()
+    private var selectedDay: Date?
+    private var minDate: Date?
+    private var maxDate: Date?
 
     // MARK: - Lifecycle
     public override func setupSubviews() {
@@ -147,20 +150,42 @@ public final class DSInputTimeView: BaseCodeView, DSInputComponentProtocol {
     }
 
     public func setDayDate(date: Date?) {
-        if let date = date {
-            datePicker.date = date
-            dateUpdated()
+        let inputTime = inputTime()
+        selectedDay = date
+
+        guard let date else {
+            updateDatePickerRange()
+            clearTime()
+            return
         }
+
+        let updatedDate = dateByApplyingTime(from: inputTime ?? Date(), to: date)
+        updateDatePickerRange(preferredDate: updatedDate)
+
+        guard inputTime != nil, isAllowed(updatedDate) else {
+            clearTime()
+            return
+        }
+        dateUpdated()
+    }
+
+    public func setDateTime(date: Date) {
+        selectedDay = date
+        updateDatePickerRange(preferredDate: date)
+        dateUpdated()
     }
     
     public func setTimezone(timeZone: TimeZone) {
         self.timeZone = timeZone
         dateFormatter.timeZone = timeZone
+        datePicker.timeZone = timeZone
+        updateDatePickerRange()
     }
     
     public func setMinMaxDates(minDate: Date?, maxDate: Date?) {
-        self.datePicker.minimumDate = minDate
-        self.datePicker.maximumDate = maxDate
+        self.minDate = minDate
+        self.maxDate = maxDate
+        updateDatePickerRange()
     }
     
     public func updateValidators(validators: [TextValidationErrorGenerator], forceUpdate: Bool = false) {
@@ -195,9 +220,7 @@ public final class DSInputTimeView: BaseCodeView, DSInputComponentProtocol {
         datePickerTextField.tintColor = datePickerTextField.tintColor
         datePickerTextField.inputView = datePicker
 
-        datePicker.datePickerMode = .time
-        datePicker.locale = .init(identifier: "uk_UA")
-        datePicker.preferredDatePickerStyle = .wheels
+        configure(datePicker: datePicker)
 
         let toolbar = ToolbarWithTrailingButton(target: self, action: #selector(dateUpdated))
         
@@ -219,6 +242,99 @@ public final class DSInputTimeView: BaseCodeView, DSInputComponentProtocol {
         dateFormatterOutput.timeZone = timeZone
         dateFormatterOutput.dateFormat = Constants.outputDateFormat
         return dateFormatterOutput.string(from: date)
+    }
+
+    private func dateByApplyingTime(from time: Date, to day: Date) -> Date {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.locale = Locale(identifier: "uk_UA")
+        calendar.timeZone = timeZone
+
+        var components = calendar.dateComponents([.year, .month, .day], from: day)
+        let timeComponents = calendar.dateComponents([.hour, .minute], from: time)
+        components.hour = timeComponents.hour
+        components.minute = timeComponents.minute
+        components.second = 0
+        return calendar.date(from: components) ?? day
+    }
+
+    private func inputTime() -> Date? {
+        guard
+            let value = datePickerTextField.text,
+            value.count == Constants.maxDateSymbols
+        else { return nil }
+        return dateFormatter.date(from: value)
+    }
+
+    private func isAllowed(_ date: Date) -> Bool {
+        if let minDate, date < minDate { return false }
+        if let maxDate, date > maxDate { return false }
+        return true
+    }
+
+    private func clearTime() {
+        datePickerTextField.text = nil
+        updateInstructionsState()
+    }
+
+    private func updateDatePickerRange(preferredDate: Date? = nil) {
+        let pickerDate = preferredDate ?? selectedDay.map {
+            dateByApplyingTime(from: datePicker.date, to: $0)
+        } ?? datePicker.date
+        let range = datePickerRange()
+        let shouldRebuildPicker = datePicker.minimumDate != range.minDate
+            || datePicker.maximumDate != range.maxDate
+
+        if shouldRebuildPicker {
+            datePicker = makeDatePicker()
+            datePickerTextField.inputView = datePicker
+        }
+
+        datePicker.minimumDate = nil
+        datePicker.maximumDate = nil
+        datePicker.setDate(pickerDate, animated: false)
+        datePicker.minimumDate = range.minDate
+        datePicker.maximumDate = range.maxDate
+        datePicker.setDate(clamped(pickerDate, to: range), animated: false)
+
+        if shouldRebuildPicker, datePickerTextField.isFirstResponder {
+            datePickerTextField.reloadInputViews()
+        }
+    }
+
+    private func makeDatePicker() -> UIDatePicker {
+        let datePicker = UIDatePicker()
+        configure(datePicker: datePicker)
+        return datePicker
+    }
+
+    private func configure(datePicker: UIDatePicker) {
+        datePicker.datePickerMode = .time
+        datePicker.locale = .init(identifier: "uk_UA")
+        datePicker.timeZone = timeZone
+        datePicker.preferredDatePickerStyle = .wheels
+    }
+
+    private func datePickerRange() -> (minDate: Date?, maxDate: Date?) {
+        guard let selectedDay else { return (minDate, maxDate) }
+
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = timeZone
+        let pickerMinDate = minDate.flatMap {
+            calendar.isDate($0, inSameDayAs: selectedDay) ? $0 : nil
+        }
+        let pickerMaxDate = maxDate.flatMap {
+            calendar.isDate($0, inSameDayAs: selectedDay) ? $0 : nil
+        }
+        return (pickerMinDate, pickerMaxDate)
+    }
+
+    private func clamped(
+        _ date: Date,
+        to range: (minDate: Date?, maxDate: Date?)
+    ) -> Date {
+        if let minDate = range.minDate, date < minDate { return minDate }
+        if let maxDate = range.maxDate, date > maxDate { return maxDate }
+        return date
     }
 
     private func updateInstructionsState() {
@@ -269,13 +385,16 @@ public final class DSInputTimeView: BaseCodeView, DSInputComponentProtocol {
     }
 
     @objc private func calendarClicked() {
+        let time: Date
         if let dateString = datePickerTextField.text,
            let date = dateFormatter.date(from: dateString),
            dateString.count == Constants.maxDateSymbols {
-            datePicker.date = date
+            time = date
         } else {
-            datePicker.date = Date()
+            time = Date()
         }
+        let pickerDate = dateByApplyingTime(from: time, to: selectedDay ?? Date())
+        updateDatePickerRange(preferredDate: pickerDate)
         datePickerTextField.becomeFirstResponder()
     }
 
@@ -314,4 +433,3 @@ extension DSInputTimeView {
         static let bottomStackPadding: UIEdgeInsets = .init(top: 8, left: 0, bottom: 0, right: 0)
     }
 }
-

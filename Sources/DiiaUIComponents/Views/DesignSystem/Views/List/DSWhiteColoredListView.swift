@@ -54,7 +54,7 @@ public final class DSWhiteColoredListView: BaseCodeView {
                 self.addSeparator()
             }
             for (index, item) in items.enumerated() {
-                self.addListItemView(with: item)
+                self.addListItemView(with: item, eventHandler: eventHandler)
                 if index < items.count - 1 || (index == items.count - 1 && viewModel.buttonModel != nil) {
                     self.addSeparator()
                 }
@@ -78,9 +78,9 @@ public final class DSWhiteColoredListView: BaseCodeView {
     }
     
     // MARK: - Private Methods
-    private func addListItemView(with viewModel: DSListItemViewModel) {
+    private func addListItemView(with viewModel: DSListItemViewModel, eventHandler: ((ConstructorItemEvent) -> Void)? = nil) {
         let itemView = DSListItemView()
-        itemView.configure(viewModel: viewModel)
+        itemView.configure(viewModel: viewModel, eventHandler: eventHandler)
         stackView.addArrangedSubview(itemView)
     }
 

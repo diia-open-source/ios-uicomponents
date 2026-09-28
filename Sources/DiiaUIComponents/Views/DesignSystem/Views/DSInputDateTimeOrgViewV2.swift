@@ -37,6 +37,7 @@ public final class DSInputDateTimeOrgViewV2: BaseCodeView, DSInputComponentProto
     private var dateString: String?
     private var timeString: String?
     private var selectedDate: Date?
+    private var isConfiguring = false
 
     private var displayTimeZone: TimeZone = DSInputDateTimeViewModel.ukraineTimeZone
 
@@ -72,6 +73,7 @@ public final class DSInputDateTimeOrgViewV2: BaseCodeView, DSInputComponentProto
 
     // MARK: - Configuration
     public func configure(viewModel: DSInputDateTimeViewModel) {
+        isConfiguring = true
         accessibilityIdentifier = viewModel.componentId
         self.viewModel = viewModel
         displayTimeZone = viewModel.displayTimezone
@@ -93,6 +95,10 @@ public final class DSInputDateTimeOrgViewV2: BaseCodeView, DSInputComponentProto
         inputTimeView?.setTimezone(timeZone: displayTimeZone)
         inputDateView?.setMinMaxDates(minDate: minDate, maxDate: maxDate)
         inputTimeView?.setMinMaxDates(minDate: minDate, maxDate: maxDate)
+        isConfiguring = false
+        if dateString != nil || timeString != nil {
+            recalculateSelectedDate()
+        }
     }
 
     // MARK: - DSInputComponentProtocol
@@ -119,6 +125,7 @@ public final class DSInputDateTimeOrgViewV2: BaseCodeView, DSInputComponentProto
         let view = DSInputDateViewV2()
         inputDateView = view
         stack.addArrangedSubview(view)
+        view.setTimezone(timeZone: displayTimeZone)
 
         let viewModel = DSInputDateViewModel(
             componentId: model.componentId,
@@ -142,6 +149,7 @@ public final class DSInputDateTimeOrgViewV2: BaseCodeView, DSInputComponentProto
         let view = DSInputTimeViewV2()
         inputTimeView = view
         stack.addArrangedSubview(view)
+        view.setTimezone(timeZone: displayTimeZone)
 
         let viewModel = DSInputTimeViewModel(
             componentId: model.componentId,
@@ -158,7 +166,7 @@ public final class DSInputDateTimeOrgViewV2: BaseCodeView, DSInputComponentProto
         view.configure(viewModel: viewModel)
         
         if let value = model.value, let date = outputDateFormatter.date(from: value) {
-            view.setDayDate(date: date)
+            view.setDateTime(date: date)
         } else {
             view.setState(isActive: false)
         }
@@ -183,6 +191,7 @@ public final class DSInputDateTimeOrgViewV2: BaseCodeView, DSInputComponentProto
 
     private func recalculateSelectedDate() {
         selectedDate = makeSelectedDate()
+        guard !isConfiguring else { return }
         viewModel?.onChange?(selectedDate.map(outputDateFormatter.string(from:)))
     }
 
@@ -194,7 +203,8 @@ public final class DSInputDateTimeOrgViewV2: BaseCodeView, DSInputComponentProto
         else { return nil }
 
         var components = calendar.dateComponents([.year, .month, .day], from: day)
-        if let time = parseTime(timeString) {
+        if inputTimeView != nil {
+            guard let time = parseTime(timeString) else { return nil }
             components.hour = time.hour
             components.minute = time.minute
             components.second = 0

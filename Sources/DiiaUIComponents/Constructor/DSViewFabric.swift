@@ -220,6 +220,7 @@ public extension DSViewFabric {
         DSDashboardCardTileOrgBuilder(),
         DSAlertCardBuilder(),
         DSAttentionIconMessageBuilder(),
+        DSCollapsibleTitleMlcBuilder(),
         DSGrayTitleAtmBulder(),
         DSListItemMlcBuilder(),
         DSPaginationListWhiteViewBuilder(),
